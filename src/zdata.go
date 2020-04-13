@@ -12,16 +12,16 @@ import (
 )
 
 var (
-	language        string
+	language string
 
-	file string
-	count  string
-	field    string
-	parse   string
+	file  string
+	count string
+	field string
+	parse string
 
-	out bool
+	out   bool
 	table string
-	help bool
+	help  bool
 
 	flagSet *flag.FlagSet
 )
