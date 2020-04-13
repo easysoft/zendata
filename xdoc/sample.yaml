@@ -1,6 +1,19 @@
+title: just a test
+desc: this is the test file.
+author: wwccss
+version: 1.0
+
 fields:
-  field1:
+  - name: field1
     datatype: list
-    range: 10-20
+    from: 10
+    to: 20
+    prefix: int_
+    postfix: ' '
+
+  - name: field2
+    datatype: list
+    from: 10
+    to: 20
     prefix: int_
     postfix: ' '

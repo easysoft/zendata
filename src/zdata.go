@@ -48,11 +48,11 @@ func main() {
 	flagSet.BoolVar(&parse, "p", false, "")
 	flagSet.BoolVar(&parse, "parse", false, "")
 
-	flagSet.StringVar(&file, "o", "", "")
-	flagSet.StringVar(&file, "out", "", "")
+	flagSet.StringVar(&out, "o", "", "")
+	flagSet.StringVar(&out, "out", "", "")
 
-	flagSet.StringVar(&file, "t", "", "")
-	flagSet.StringVar(&file, "table", "", "")
+	flagSet.StringVar(&table, "t", "", "")
+	flagSet.StringVar(&table, "table", "", "")
 
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")
@@ -78,7 +78,6 @@ func main() {
 		} else {
 			logUtils.PrintUsage()
 		}
-
 	}
 }
 
