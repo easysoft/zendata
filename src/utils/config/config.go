@@ -24,10 +24,8 @@ func InitConfig() {
 	constant.ConfigFile = vari.ZDataDir + constant.ConfigFile
 	vari.Config = getInst()
 
-	// screen size
 	InitScreenSize()
 
-	// internationalization
 	i118Utils.InitI118(vari.Config.Language)
 }
 
@@ -82,8 +80,6 @@ func ReadCurrConfig() model.Config {
 
 	ini.MapTo(&config, constant.ConfigFile)
 
-	config.Url = commonUtils.UpdateUrl(config.Url)
-
 	return config
 }
 
@@ -126,8 +122,6 @@ func CheckConfigReady() {
 func InputForSet() {
 	conf := ReadCurrConfig()
 
-	var configSite bool
-
 	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("begin_config"), color.FgCyan)
 
 	enCheck := ""
@@ -150,34 +144,6 @@ func InputForSet() {
 		conf.Language = "zh"
 	}
 
-	stdinUtils.InputForBool(&configSite, true, "config_zentao_site")
-	if configSite {
-		conf.Url = stdinUtils.GetInput("(http://.*)", conf.Url, "enter_url", conf.Url)
-
-		conf.Account = stdinUtils.GetInput("(.{2,})", conf.Account, "enter_account", conf.Account)
-
-		conf.Password = stdinUtils.GetInput("(.{2,})", conf.Password, "enter_password", conf.Password)
-	}
-
 	SaveConfig(conf)
 	PrintCurrConfig()
-}
-
-func CheckRequestConfig() {
-	conf := ReadCurrConfig()
-	if conf.Url == "" || conf.Account == "" || conf.Password == "" {
-		InputForRequest()
-	}
-}
-
-func InputForRequest() {
-	conf := ReadCurrConfig()
-
-	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("need_config"), color.FgCyan)
-
-	conf.Url = stdinUtils.GetInput("(http://.*)", conf.Url, "enter_url", conf.Url)
-	conf.Account = stdinUtils.GetInput("(.{2,})", conf.Account, "enter_account", conf.Account)
-	conf.Password = stdinUtils.GetInput("(.{2,})", conf.Password, "enter_password", conf.Password)
-
-	SaveConfig(conf)
 }

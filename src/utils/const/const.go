@@ -7,7 +7,7 @@ import (
 
 var (
 	ConfigVer  = 1
-	ConfigFile = fmt.Sprintf("conf%sztf.conf", string(os.PathSeparator))
+	ConfigFile = fmt.Sprintf("conf%szdata.conf", string(os.PathSeparator))
 
 	UrlZentaoSettings = "zentaoSettings"
 	UrlImportProject  = "importProject"

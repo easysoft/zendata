@@ -4,6 +4,10 @@
     {
       "id": "for_example",
       "translation": "例如 %s"
+    },
+    {
+      "id": "enter_language",
+      "translation": "请输入你期望使用的语言:\n1. 英文 %s\n2. 中文 %s"
     }
   ]
 }

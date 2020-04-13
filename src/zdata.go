@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/easysoft/zendata/src/action"
+	configUtils "github.com/easysoft/zendata/src/utils/config"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/fatih/color"
 	"os"
@@ -16,7 +17,7 @@ var (
 	file  string
 	count int
 	fields string
-	parse string
+	parse bool
 
 	out   string
 	table string
@@ -39,13 +40,13 @@ func main() {
 	flagSet.StringVar(&file, "f", "", "")
 	flagSet.StringVar(&file, "file", "", "")
 
-	flagSet.StringVar(&file, "c", "", "")
-	flagSet.StringVar(&file, "count", "", "")
+	flagSet.IntVar(&count, "c", 10, "")
+	flagSet.IntVar(&count, "count", 10, "")
 
-	flagSet.StringVar(&file, "field", "", "")
+	flagSet.StringVar(&fields, "field", "", "")
 
-	flagSet.StringVar(&file, "p", "", "")
-	flagSet.StringVar(&file, "parse", "", "")
+	flagSet.BoolVar(&parse, "p", false, "")
+	flagSet.BoolVar(&parse, "parse", false, "")
 
 	flagSet.StringVar(&file, "o", "", "")
 	flagSet.StringVar(&file, "out", "", "")
@@ -53,8 +54,8 @@ func main() {
 	flagSet.StringVar(&file, "t", "", "")
 	flagSet.StringVar(&file, "table", "", "")
 
-	flagSet.StringVar(&file, "h", "", "")
-	flagSet.StringVar(&file, "help", "", "")
+	flagSet.BoolVar(&help, "h", false, "")
+	flagSet.BoolVar(&help, "help", false, "")
 
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, "run", ".")
@@ -62,18 +63,18 @@ func main() {
 
 	switch os.Args[1] {
 	case "gen":
-		if err := flagSet.Parse(os.Args[2:]); err == nil {
-			action.Generate(file, count, fields, out, table)
-		}
+		gen(os.Args)
+	case "set", "-set":
+		action.Set()
 	case "help", "-h":
 		logUtils.PrintUsage()
 
-	default: // run
+	default: // gen
 		if len(os.Args) > 1 {
-			args := []string{os.Args[0], "run"}
+			args := []string{os.Args[0], "gen"}
 			args = append(args, os.Args[1:]...)
 
-			//run(args)
+			gen(args)
 		} else {
 			logUtils.PrintUsage()
 		}
@@ -81,9 +82,15 @@ func main() {
 	}
 }
 
+func gen(args []string) {
+	if err := flagSet.Parse(args[2:]); err == nil {
+		action.Generate(file, count, fields, out, table)
+	}
+}
+
 func init() {
 	cleanup()
-	//configUtils.InitConfig()
+	configUtils.InitConfig()
 }
 
 func cleanup() {
