@@ -5,7 +5,10 @@ import (
 	"strings"
 )
 
-func GenerateList(field model.Field, content *string) {
+func GenerateList(field model.Field, count int, fieldMap map[string][]interface{}) {
+	//for i := 0; i < count; i++ {
+	//}
+
 	name := strings.TrimSpace(field.Name)
 	rang := strings.TrimSpace(field.Range)
 	prefix := field.Prefix
@@ -13,7 +16,11 @@ func GenerateList(field model.Field, content *string) {
 
 	rangeItems := strings.Split(rang, ",")
 
+	index := 0
 	for _, item := range rangeItems {
+		if index >= count {
+			break
+		}
 		if strings.TrimSpace(item) == "" {
 			continue
 		}
@@ -24,6 +31,6 @@ func GenerateList(field model.Field, content *string) {
 			end := elemArr[0]
 		}
 
-
+		index++
 	}
 }

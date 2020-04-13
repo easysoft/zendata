@@ -8,26 +8,19 @@ import (
 )
 
 func Generate(def model.Definition, count int, fields string, out string, table string) {
-	content := ""
-	for i := 0; i < count; i++ {
-		AddRow(def, fields, &content)
-	}
-}
-
-func AddRow(def model.Definition, fields string, content *string) {
 	fieldArr := strings.Split(fields, ",")
 
+	fieldMap := map[string][]interface{}{}
 	for _, field := range def.Fields {
 		if !stringUtils.FindInArr(field.Name, fieldArr) {
 			continue
 		}
 
-		AddCol(field, content)
-		*content = *content + "\r\n"
+		GenCol(field, count, fieldMap)
 	}
 }
 
-func AddCol(field model.Field, content *string) {
+func GenCol(field model.Field, count int, fieldMap map[string][]interface{}) {
 	datatype := strings.TrimSpace(field.Datatype)
 	if datatype == "" {
 		datatype = "list"
@@ -35,7 +28,7 @@ func AddCol(field model.Field, content *string) {
 
 	switch datatype {
 		case constant.LIST.String():
-			GenerateList(field, content)
+			GenerateList(field, count, fieldMap)
 
 		case constant.TIMESTAMP.String():
 
