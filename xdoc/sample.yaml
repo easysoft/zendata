@@ -6,14 +6,12 @@ version: 1.0
 fields:
   - name: field1
     datatype: list
-    from: 10
-    to: 20
+    range: 11-20
     prefix: int_
     postfix: ' '
 
   - name: field2
     datatype: list
-    from: 10
-    to: 20
+    range: 21-30
     prefix: int_
     postfix: ' '

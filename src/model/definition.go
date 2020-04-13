@@ -12,8 +12,7 @@ type Definition struct {
 type Field struct {
 	Name string `yaml:"name"`
 	Datatype string `yaml:"datatype"`
-	From string `yaml:"from"`
-	To string `yaml:"to"`
+	Range string `yaml:"range"`
 	Prefix string `yaml:"prefix"`
 	Postfix string `yaml:"postfix"`
 }
