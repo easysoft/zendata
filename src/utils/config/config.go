@@ -2,17 +2,15 @@ package configUtils
 
 import (
 	"fmt"
-	"github.com/easysoft/zentaoatf/src/model"
-	assertUtils "github.com/easysoft/zentaoatf/src/utils/assert"
-	commonUtils "github.com/easysoft/zentaoatf/src/utils/common"
-	"github.com/easysoft/zentaoatf/src/utils/const"
-	"github.com/easysoft/zentaoatf/src/utils/display"
-	fileUtils "github.com/easysoft/zentaoatf/src/utils/file"
-	"github.com/easysoft/zentaoatf/src/utils/i118"
-	langUtils "github.com/easysoft/zentaoatf/src/utils/lang"
-	logUtils "github.com/easysoft/zentaoatf/src/utils/log"
-	stdinUtils "github.com/easysoft/zentaoatf/src/utils/stdin"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	"github.com/easysoft/zendata/src/model"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
+	"github.com/easysoft/zendata/src/utils/const"
+	"github.com/easysoft/zendata/src/utils/display"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	"github.com/easysoft/zendata/src/utils/i118"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stdinUtils "github.com/easysoft/zendata/src/utils/stdin"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"gopkg.in/ini.v1"
 	"os"
@@ -20,10 +18,10 @@ import (
 )
 
 func InitConfig() {
-	vari.ZTFDir = fileUtils.GetZTFDir()
+	vari.ZDataDir = fileUtils.GetZTFDir()
 	CheckConfigPermission()
 
-	constant.ConfigFile = vari.ZTFDir + constant.ConfigFile
+	constant.ConfigFile = vari.ZDataDir + constant.ConfigFile
 	vari.Config = getInst()
 
 	// screen size
@@ -109,12 +107,12 @@ func getInst() model.Config {
 }
 
 func CheckConfigPermission() {
-	//err := syscall.Access(vari.ZTFDir, syscall.O_RDWR)
+	//err := syscall.Access(vari.ZDataDir, syscall.O_RDWR)
 
-	err := fileUtils.MkDirIfNeeded(vari.ZTFDir + "conf")
+	err := fileUtils.MkDirIfNeeded(vari.ZDataDir + "conf")
 	if err != nil {
 		logUtils.PrintToWithColor(
-			fmt.Sprintf("Permission denied to open %s for write. Please change work dir.", vari.ZTFDir), color.FgRed)
+			fmt.Sprintf("Permission denied to open %s for write. Please change work dir.", vari.ZDataDir), color.FgRed)
 		os.Exit(0)
 	}
 }
@@ -161,15 +159,6 @@ func InputForSet() {
 		conf.Password = stdinUtils.GetInput("(.{2,})", conf.Password, "enter_password", conf.Password)
 	}
 
-	if commonUtils.IsWin() {
-		var configInterpreter bool
-		stdinUtils.InputForBool(&configInterpreter, true, "config_script_interpreter")
-		if configInterpreter {
-			scripts := assertUtils.GetCaseByDirAndFile([]string{"."})
-			InputForScriptInterpreter(scripts, &conf, "set")
-		}
-	}
-
 	SaveConfig(conf)
 	PrintCurrConfig()
 }
@@ -191,39 +180,4 @@ func InputForRequest() {
 	conf.Password = stdinUtils.GetInput("(.{2,})", conf.Password, "enter_password", conf.Password)
 
 	SaveConfig(conf)
-}
-
-func InputForScriptInterpreter(scripts []string, config *model.Config, from string) bool {
-	configChanged := false
-
-	langs := assertUtils.GetScriptType(scripts)
-
-	for _, lang := range langs {
-		if lang == "bat" || lang == "shell" {
-			continue
-		}
-
-		deflt := commonUtils.GetFieldVal(*config, lang)
-		if from == "run" && deflt != "" { // already set when run, "-" means ignore
-			continue
-		}
-
-		if deflt == "-" {
-			deflt = ""
-		}
-		sampleOrDefaultTips := ""
-		if deflt == "" {
-			sampleOrDefaultTips = i118Utils.I118Prt.Sprintf("for_example", langUtils.LangMap[lang]["interpreter"]) + " " +
-				i118Utils.I118Prt.Sprintf("empty_to_ignore")
-		} else {
-			sampleOrDefaultTips = deflt
-		}
-
-		configChanged = true
-
-		inter := stdinUtils.GetInputForScriptInterpreter(deflt, "set_script_interpreter", lang, sampleOrDefaultTips)
-		commonUtils.SetFieldVal(config, lang, inter)
-	}
-
-	return configChanged
 }

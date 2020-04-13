@@ -1,0 +1,6 @@
+fields:
+  field1:
+    datatype: list
+    range: 10-20
+    prefix: int_
+    postfix: ' '

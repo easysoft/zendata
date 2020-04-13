@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
 	"strings"
 	"unicode"

@@ -2,8 +2,9 @@ package logUtils
 
 import (
 	"fmt"
-	fileUtils "github.com/easysoft/zentaoatf/src/utils/file"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"

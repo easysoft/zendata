@@ -1,12 +1,10 @@
 package langUtils
 
 import (
-	i118Utils "github.com/easysoft/zentaoatf/src/utils/i118"
-	logUtils "github.com/easysoft/zentaoatf/src/utils/log"
-	stringUtils "github.com/easysoft/zentaoatf/src/utils/string"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/fatih/color"
-	"path"
 	"sort"
 	"strconv"
 	"strings"
@@ -158,15 +156,6 @@ func GetExtToNameMap() map[string]string {
 	}
 
 	return extMap
-}
-
-func GetLangByFile(filePath string) string {
-	ext := path.Ext(filePath)
-	ext = ext[1:]
-
-	lang := vari.ScriptExtToNameMap[ext]
-
-	return lang
 }
 
 func init() {

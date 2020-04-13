@@ -1,0 +1,9 @@
+{
+  "language": "zh",
+  "messages": [
+    {
+      "id": "for_example",
+      "translation": "例如 %s"
+    }
+  ]
+}

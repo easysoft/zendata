@@ -1,0 +1,60 @@
+{
+  "code": 1,
+  "name": "禅道自动化测试框架产品",
+  "cases": [
+    {
+      "id": 100,
+      "title": "测试用例01",
+      "steps": [
+        {
+          "id": 1000,
+          "title": "步骤01"
+        }
+      ]
+    },
+    {
+      "id": 200,
+      "title": "登录失败账号锁定策略",
+      "steps": [
+        {
+          "id": 2000,
+          "title": "连续输入3次错误的密码"
+        },
+        {
+          "id": 2010,
+          "title": "第4次尝试登录",
+          "expect": "系统提示账号被锁定",
+          "isCheckPoint": true
+        },
+        {
+          "id": 2100,
+          "title": "不连续输入3次错误的密码",
+          "isGroup": true,
+          "steps": [
+            {
+              "id": 2101,
+              "title": "输入2次错误的密码",
+              "isGroup": false
+            },
+            {
+              "id": 2102,
+              "title": "输入1次正确的密码",
+              "isGroup": false
+            },
+            {
+              "id": 2103,
+              "title": "再输入1次错误的密码",
+              "isGroup": false
+            },
+            {
+              "id": 2104,
+              "title": "再输入1次正确的密码",
+              "expect": "登录成功，账号未被锁定",
+              "isCheckPoint": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

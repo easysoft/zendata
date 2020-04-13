@@ -1,0 +1,13 @@
+{
+  "language": "en-US",
+  "messages": [
+    {
+      "id": "for_example",
+      "translation": "e.g. %s"
+    },
+    {
+      "id": "total",
+      "translation": "Total"
+    }
+  ]
+}

@@ -2,9 +2,9 @@ package scriptUtils
 
 import (
 	"fmt"
-	"github.com/easysoft/zentaoatf/src/model"
-	fileUtils "github.com/easysoft/zentaoatf/src/utils/file"
-	zentaoUtils "github.com/easysoft/zentaoatf/src/utils/zentao"
+	"github.com/easysoft/zendata/src/model"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	zentaoUtils "github.com/easysoft/zendata/src/utils/zentao"
 	"github.com/emirpasic/gods/maps"
 	"github.com/emirpasic/gods/maps/linkedhashmap"
 	"regexp"

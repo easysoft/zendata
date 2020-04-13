@@ -1,8 +1,8 @@
 package display
 
 import (
-	"github.com/easysoft/zentaoatf/src/utils/common"
-	"github.com/easysoft/zentaoatf/src/utils/shell"
+	"github.com/easysoft/zendata/src/utils/common"
+	"github.com/easysoft/zendata/src/utils/shell"
 	"os"
 	"os/exec"
 	"regexp"

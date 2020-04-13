@@ -2,10 +2,10 @@ package fileUtils
 
 import (
 	"fmt"
-	"github.com/easysoft/zentaoatf/res"
-	commonUtils "github.com/easysoft/zentaoatf/src/utils/common"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
-	"github.com/easysoft/zentaoatf/src/utils/vari"
+	"github.com/easysoft/zendata/res"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
+	constant "github.com/easysoft/zendata/src/utils/const"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"io"
 	"io/ioutil"
 	"os"
@@ -155,7 +155,7 @@ func GetZTFDir() string { // where ztf command in
 }
 
 func GetLogDir() string {
-	path := vari.ZTFDir + constant.LogDir
+	path := vari.ZDataDir + constant.LogDir
 
 	dir, _ := ioutil.ReadDir(path)
 

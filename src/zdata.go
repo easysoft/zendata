@@ -2,9 +2,8 @@ package main
 
 import (
 	"flag"
-	configUtils "github.com/easysoft/zendata/src/utils/config"
+	"github.com/easysoft/zendata/src/action"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"os"
 	"os/signal"
@@ -15,11 +14,11 @@ var (
 	language string
 
 	file  string
-	count string
-	field string
+	count int
+	fields string
 	parse string
 
-	out   bool
+	out   string
 	table string
 	help  bool
 
@@ -62,9 +61,9 @@ func main() {
 	}
 
 	switch os.Args[1] {
-	case "checkout", "co":
+	case "gen":
 		if err := flagSet.Parse(os.Args[2:]); err == nil {
-
+			action.Generate(file, count, fields, out, table)
 		}
 	case "help", "-h":
 		logUtils.PrintUsage()
@@ -84,9 +83,7 @@ func main() {
 
 func init() {
 	cleanup()
-
-	vari.RunFromCui = false
-	configUtils.InitConfig()
+	//configUtils.InitConfig()
 }
 
 func cleanup() {

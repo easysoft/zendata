@@ -1,9 +1,9 @@
 package commonUtils
 
 import (
-	"github.com/easysoft/zentaoatf/src/model"
-	"github.com/easysoft/zentaoatf/src/utils/const"
-	stringUtils "github.com/easysoft/zentaoatf/src/utils/string"
+	"github.com/easysoft/zendata/src/model"
+	"github.com/easysoft/zendata/src/utils/const"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/emirpasic/gods/maps"
 	"os"
 	"path"

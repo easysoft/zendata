@@ -2,9 +2,9 @@ package i118Utils
 
 import (
 	"encoding/json"
-	"github.com/easysoft/zentaoatf/res"
-	"github.com/easysoft/zentaoatf/src/utils/common"
-	constant "github.com/easysoft/zentaoatf/src/utils/const"
+	"github.com/easysoft/zendata/res"
+	"github.com/easysoft/zendata/src/utils/common"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"io/ioutil"
