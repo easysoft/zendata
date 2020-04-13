@@ -1,5 +1,5 @@
-# zentaoatf
-ZentaoATF is an automation testing framework written in Golang.
+# zendata
+ZenData is an data generator for testing automation written in Golang.
 
 ## Features
 1. Support popular programming languages like Python, Ruby, Lua, Tcl, PHP, GO, Shell and Bat;
