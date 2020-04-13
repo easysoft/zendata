@@ -90,6 +90,7 @@ func gen(args []string) {
 
 func init() {
 	cleanup()
+	logUtils.InitLogger()
 	configUtils.InitConfig()
 }
 
