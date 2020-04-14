@@ -6,15 +6,18 @@ import (
 	"strings"
 )
 
-func GenerateList(field model.Field, total int, fieldMap map[string][]interface{}) {
+func GenerateList(field *model.Field, total int, fieldMap map[string][]interface{}) {
 	name := strings.TrimSpace(field.Name)
 	rang := strings.TrimSpace(field.Range)
+	stepStr := strings.TrimSpace(field.Step)
 
 	rangeItems := strings.Split(rang, ",")
 
 	index := 0
 	for itemIndex, item := range rangeItems {
-		if index >= total { break }
+		if index >= total {
+			break
+		}
 		if strings.TrimSpace(item) == "" { continue }
 
 		elemArr := strings.Split(item, "-")
@@ -27,33 +30,77 @@ func GenerateList(field model.Field, total int, fieldMap map[string][]interface{
 		items := make([]interface{}, 0)
 		isLast := itemIndex == len(rangeItems) - 1
 
-		startInt, err1 := strconv.ParseInt(startStr, 0, 64)
-		endInt, err2 := strconv.ParseInt(endStr, 0, 64)
-		if err1 == nil && err2 == nil { // int
-			items = GenerateIntItems(startInt, endInt, index, total, isLast)
+		startInt, errInt1 := strconv.ParseInt(startStr, 0, 64)
+		endInt, errInt2 := strconv.ParseInt(endStr, 0, 64)
+		if errInt1 == nil && errInt2 == nil { // int
+			step, errInt3 := strconv.Atoi(stepStr)
+			if errInt3 != nil {
+				step = 1
+			}
+
+			items = GenerateIntItems(startInt, endInt, int64(step), index, total, isLast)
 		} else {
-			//startFloat, err1 := strconv.ParseFloat(startStr, 64)
-			//endFloat, err2 := strconv.ParseFloat(endStr, 64)
-			//if err1 == nil && err2 == nil { // float
-			//
-			//} else if len(startStr) > 1 && len(endStr) > 1 { // single character
-			//	items = GenerateByteItems(byte(startStr[0]), byte(startStr[0]), index, total)
-			//}
+			startFloat, errFloat1 := strconv.ParseFloat(startStr, 64)
+			endFloat, errFloat2 := strconv.ParseFloat(endStr, 64)
+			if errFloat1 == nil && errFloat2 == nil { // float
+				step, errFloat3 := strconv.ParseFloat(stepStr, 64)
+				if errFloat3 != nil {
+					step = 1.0
+				}
+
+				precision := getPrecision(startFloat, step)
+				field.Precision = precision
+
+				items = GenerateFloatItems(startFloat, endFloat, step, index, total, isLast)
+			} else if len(startStr) == 1 && len(endStr) == 1 { // single character
+				step, errChar3 := strconv.Atoi(stepStr) // use integer step
+				if errChar3 != nil {
+					step = 1
+				}
+
+				items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, index, total, isLast)
+			}
 		}
 
 		fieldMap[name] = append(fieldMap[name], items...)
 		index = index + len(items)
 	}
-
-
 }
 
-func GenerateIntItems(start int64, end int64, index int, total int, isLast bool) []interface{} {
+func GenerateIntItems(start int64, end int64, step int64, index int, total int, isLast bool) []interface{} {
 	arr := make([]interface{}, 0)
 
 	count := index
 	for i := 0; i < total - index; {
-		val := start + int64(i)
+		if count >= total {
+			break
+		}
+
+		val := start + int64(i) * step
+		if val > end {
+			if isLast && count < total { // loop if it's last item and not enough
+				i = 0
+				continue
+			} else {
+				break
+			}
+		}
+
+		arr = append(arr, val)
+		count++
+		i++
+	}
+
+	return arr
+}
+
+func GenerateFloatItems(start float64, end float64, step float64, index int, total int, isLast bool) []interface{} {
+	arr := make([]interface{}, 0)
+
+	count := index
+	for i := 0; i < total - index; {
+		gap := float64(i) * step
+		val := start + gap
 
 		if val > end {
 			if isLast && count < total { // loop if it's last item and not enough
@@ -72,17 +119,42 @@ func GenerateIntItems(start int64, end int64, index int, total int, isLast bool)
 	return arr
 }
 
-func GenerateByteItems(start byte, end byte, index int, total int) []byte {
-	arr := make([]byte, 0)
+func GenerateByteItems(start byte, end byte, step int, index int, total int, isLast bool) []interface{} {
+	arr := make([]interface{}, 0)
 
-	for i := 0; i < total - index; i++ {
-		bt := start + byte(i)
-		if bt >= end {
-			break
+	count := index
+	for i := 0; i < total - index; {
+		val := start + byte(i * step)
+
+		if val > end {
+			if isLast && count < total { // loop if it's last item and not enough
+				i = 0
+				continue
+			} else {
+				break
+			}
 		}
 
-		arr = append(arr, bt)
+		arr = append(arr, val)
+		count++
+		i++
 	}
 
 	return arr
+}
+
+func getPrecision(base float64, step float64) int {
+	val := base + step
+
+	str1 := strconv.FormatFloat(base, 'f', -1, 64)
+	str2 := strconv.FormatFloat(val, 'f', -1, 64)
+
+	index1 := strings.LastIndex(str1, ".")
+	index2 := strings.LastIndex(str2, ".")
+
+	if index1 < index2 {
+		return len(str1) - index1 - 1
+	} else {
+		return len(str2) - index2 - 1
+	}
 }

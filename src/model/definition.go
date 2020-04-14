@@ -15,4 +15,7 @@ type Field struct {
 	Range string `yaml:"range"`
 	Prefix string `yaml:"prefix"`
 	Postfix string `yaml:"postfix"`
+	Step string `yaml:"step"`
+
+	Precision int
 }

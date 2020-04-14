@@ -8,14 +8,15 @@ import (
 	"strings"
 )
 
-func Generate(def model.Definition, total int, fields string, out string, table string) [][]string {
+func Generate(def *model.Definition, total int, fields string, out string, table string) [][]string {
 	fieldArr := strings.Split(fields, ",")
 	fieldMap := map[string][]interface{}{}
-	for _, field := range def.Fields {
+	for index, field := range def.Fields {
 		if !stringUtils.FindInArr(field.Name, fieldArr) {
 			continue
 		}
-		GenerateFieldArr(field, total, fieldMap)
+		GenerateFieldArr(&field, total, fieldMap)
+		def.Fields[index].Precision = field.Precision
 	}
 
 	rows := make([][]string, 0)
@@ -25,19 +26,32 @@ func Generate(def model.Definition, total int, fields string, out string, table 
 				continue
 			}
 
-			str := fieldMap[field.Name][i].(int64)
+			if len(rows) == i { rows = append(rows, make([]string, 0)) }
 
-			if len(rows) == i {
-				rows = append(rows, make([]string, 0))
+			str := "n/a"
+			val := fieldMap[field.Name][i]
+			switch val.(type) {
+				case int64:
+					str = strconv.FormatInt(val.(int64),10)
+				case float64:
+					precision := -1
+					if field.Precision >= 0 {
+						precision = field.Precision
+					}
+					str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+				case byte:
+					str = string(val.(byte))
+				default:
 			}
-			rows[i] = append(rows[i], strconv.FormatInt(str,10))
+
+			rows[i] = append(rows[i], str)
 		}
 	}
 
 	return rows
 }
 
-func GenerateFieldArr(field model.Field, total int, fieldMap map[string][]interface{}) {
+func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]interface{}) {
 	datatype := strings.TrimSpace(field.Datatype)
 	if datatype == "" {
 		datatype = "list"
@@ -54,6 +68,5 @@ func GenerateFieldArr(field model.Field, total int, fieldMap map[string][]interf
 		case constant.SESSION.String():
 
 		default:
-
 	}
 }

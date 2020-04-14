@@ -9,9 +9,18 @@ fields:
     range: 11-20
     prefix: int_
     postfix: ' '
+    step: 1
 
   - name: field2
     datatype: list
-    range: 21-30
-    prefix: int_
+    range: 1.1-9.7
+    prefix: float_
     postfix: ' '
+    step: 0.01
+
+  - name: field3
+    datatype: list
+    range: A-X
+    prefix: char_
+    postfix: ' '
+    step: 2

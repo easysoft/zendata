@@ -24,15 +24,21 @@ func Generate(file string, total int, fields string, out string, table string) {
 		return
 	}
 
-	rows := gen.Generate(definition, total, fields, out, table)
+	rows := gen.Generate(&definition, total, fields, out, table)
 	Print(rows)
 }
 
 
 func Print(rows [][]string) {
 	for i, cols := range rows {
+		line := ""
 		for j, col := range cols {
-			logUtils.Screen(fmt.Sprintf("%d-%d: %s", i, j, col))
+			if j >0 {
+				line = line + ", "
+			}
+			line = line + col
 		}
+
+		logUtils.Screen(fmt.Sprintf("%d: %s", i+1, line))
 	}
 }
