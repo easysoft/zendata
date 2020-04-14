@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -78,4 +79,11 @@ func AddPostfix(str string, width int, ch string) string {
 	}
 
 	return str
+}
+
+func GetNumbWidth(numb int) int {
+	str := strconv.Itoa(numb)
+	width := len(str)
+
+	return width
 }

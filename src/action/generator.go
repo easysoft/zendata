@@ -5,9 +5,9 @@ import (
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"math"
 	"strconv"
 )
 
@@ -32,7 +32,7 @@ func Generate(file string, total int, fields string, out string, table string) {
 
 
 func Print(rows [][]string) {
-	width := math.Floor(math.Log10(float64(len(rows)))) + 1
+	width := stringUtils.GetNumbWidth(len(rows))
 
 	for i, cols := range rows {
 		line := ""
@@ -43,8 +43,7 @@ func Print(rows [][]string) {
 			line = line + col
 		}
 
-		widthStr := strconv.FormatFloat(width, 'f', 0, 64)
-		idStr := fmt.Sprintf("%" + widthStr + "d", i+1)
+		idStr := fmt.Sprintf("%" + strconv.Itoa(width) + "d", i+1)
 		logUtils.Screen(fmt.Sprintf("%s: %s", idStr, line))
 	}
 }
