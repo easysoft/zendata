@@ -7,6 +7,7 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"strconv"
 )
 
 func Generate(file string, total int, fields string, out string, table string) {
@@ -30,6 +31,8 @@ func Generate(file string, total int, fields string, out string, table string) {
 
 
 func Print(rows [][]string) {
+	width := len(rows) / 10 + 1
+
 	for i, cols := range rows {
 		line := ""
 		for j, col := range cols {
@@ -39,6 +42,7 @@ func Print(rows [][]string) {
 			line = line + col
 		}
 
-		logUtils.Screen(fmt.Sprintf("%d: %s", i+1, line))
+		idStr := fmt.Sprintf("%" + strconv.Itoa(width) + "d", i+1)
+		logUtils.Screen(fmt.Sprintf("%s: %s", idStr, line))
 	}
 }
