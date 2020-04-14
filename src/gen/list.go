@@ -2,15 +2,13 @@ package gen
 
 import (
 	"github.com/easysoft/zendata/src/model"
+	"strconv"
 	"strings"
-	"unicode"
 )
 
 func GenerateList(field model.Field, total int, fieldMap map[string][]interface{}) {
 	name := strings.TrimSpace(field.Name)
 	rang := strings.TrimSpace(field.Range)
-	prefix := field.Prefix
-	postfix := field.Postfix
 
 	rangeItems := strings.Split(rang, ",")
 
@@ -20,36 +18,54 @@ func GenerateList(field model.Field, total int, fieldMap map[string][]interface{
 		if strings.TrimSpace(item) == "" { continue }
 
 		elemArr := strings.Split(item, "-")
-		start := elemArr[0]
-		end := ""
+		startStr := elemArr[0]
+		endStr := ""
 		if len(elemArr) > 1 {
-			end = elemArr[1]
+			endStr = elemArr[1]
 		}
 
-		if len(start) > 1 || len(end) > 1 { // must be one character
-			continue
+		items := make([]interface{}, 0)
+
+		startInt, err1 := strconv.ParseInt(startStr, 0, 64)
+		endInt, err2 := strconv.ParseInt(endStr, 0, 64)
+		if err1 == nil && err2 == nil { // int
+			items = GenerateIntItems(startInt, endInt, index, total)
+		} else {
+			//startFloat, err1 := strconv.ParseFloat(startStr, 64)
+			//endFloat, err2 := strconv.ParseFloat(endStr, 64)
+			//if err1 == nil && err2 == nil { // float
+			//
+			//} else if len(startStr) > 1 && len(endStr) > 1 { // single character
+			//	items = GenerateByteItems(byte(startStr[0]), byte(startStr[0]), index, total)
+			//}
 		}
 
-		if (unicode.IsDigit(rune(start[0])) || unicode.IsLetter(rune(start[0]))) && // must be digit or letter
-				 (unicode.IsDigit(rune(end[0])) || unicode.IsLetter(rune(end[0]))) {
-			items := GenerateListItems(byte(start[0]), byte(end[0]), index, total)
-
-			fieldMap[name] = append(fieldMap[name], items)
-			index = index + len(items)
-		}
-			continue
-		}
-
-		index++
+		fieldMap[name] = append(fieldMap[name], items...)
+		index = index + len(items)
 	}
 }
 
-func GenerateListItems(startCh byte, endCh byte, index int, total int) []byte {
+func GenerateIntItems(start int64, end int64, index int, total int) []interface{} {
+	arr := make([]interface{}, 0)
+
+	for i := 0; i < total - index; i++ {
+		bt := start + int64(i)
+		if bt > end {
+			break
+		}
+
+		arr = append(arr, bt)
+	}
+
+	return arr
+}
+
+func GenerateByteItems(start byte, end byte, index int, total int) []byte {
 	arr := make([]byte, 0)
 
 	for i := 0; i < total - index; i++ {
-		bt := startCh + byte(i)
-		if bt >= endCh {
+		bt := start + byte(i)
+		if bt >= end {
 			break
 		}
 

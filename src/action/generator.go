@@ -1,6 +1,7 @@
 package action
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/gen"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -8,7 +9,7 @@ import (
 	"io/ioutil"
 )
 
-func Generate(file string, count int, fields string, out string, table string) {
+func Generate(file string, total int, fields string, out string, table string) {
 	definition := model.Definition{}
 
 	yamlContent, err := ioutil.ReadFile(file)
@@ -23,5 +24,15 @@ func Generate(file string, count int, fields string, out string, table string) {
 		return
 	}
 
-	gen.Generate(definition, count, fields, out, table)
+	rows := gen.Generate(definition, total, fields, out, table)
+	Print(rows)
+}
+
+
+func Print(rows [][]string) {
+	for i, cols := range rows {
+		for j, col := range cols {
+			logUtils.Screen(fmt.Sprintf("%d-%d: %s", i, j, col))
+		}
+	}
 }
