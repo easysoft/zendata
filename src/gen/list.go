@@ -13,7 +13,7 @@ func GenerateList(field model.Field, total int, fieldMap map[string][]interface{
 	rangeItems := strings.Split(rang, ",")
 
 	index := 0
-	for _, item := range rangeItems {
+	for itemIndex, item := range rangeItems {
 		if index >= total { break }
 		if strings.TrimSpace(item) == "" { continue }
 
@@ -25,11 +25,12 @@ func GenerateList(field model.Field, total int, fieldMap map[string][]interface{
 		}
 
 		items := make([]interface{}, 0)
+		isLast := itemIndex == len(rangeItems) - 1
 
 		startInt, err1 := strconv.ParseInt(startStr, 0, 64)
 		endInt, err2 := strconv.ParseInt(endStr, 0, 64)
 		if err1 == nil && err2 == nil { // int
-			items = GenerateIntItems(startInt, endInt, index, total)
+			items = GenerateIntItems(startInt, endInt, index, total, isLast)
 		} else {
 			//startFloat, err1 := strconv.ParseFloat(startStr, 64)
 			//endFloat, err2 := strconv.ParseFloat(endStr, 64)
@@ -43,18 +44,29 @@ func GenerateList(field model.Field, total int, fieldMap map[string][]interface{
 		fieldMap[name] = append(fieldMap[name], items...)
 		index = index + len(items)
 	}
+
+
 }
 
-func GenerateIntItems(start int64, end int64, index int, total int) []interface{} {
+func GenerateIntItems(start int64, end int64, index int, total int, isLast bool) []interface{} {
 	arr := make([]interface{}, 0)
 
-	for i := 0; i < total - index; i++ {
-		bt := start + int64(i)
-		if bt > end {
-			break
+	count := index
+	for i := 0; i < total - index; {
+		val := start + int64(i)
+
+		if val > end {
+			if isLast && count < total { // loop if it's last item and not enough
+				i = 0
+				continue
+			} else {
+				break
+			}
 		}
 
-		arr = append(arr, bt)
+		arr = append(arr, val)
+		count++
+		i++
 	}
 
 	return arr
