@@ -27,7 +27,7 @@ fields:
 
   - name: field4
     datatype: timestamp
-    range: 20080101,20080909-20080910
+    range: 20190101,20200415-20200416
     step: 10000
     prefix: tm_
     postfix: ' '
