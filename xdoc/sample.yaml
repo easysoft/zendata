@@ -20,7 +20,7 @@ fields:
 
   - name: field3
     datatype: list
-    range: Y-X
+    range: a-f
     prefix: char_
     postfix: ' '
     step: 2
