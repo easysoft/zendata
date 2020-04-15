@@ -72,11 +72,11 @@ func GenerateIntItems(start int64, end int64, step int64, index int, total int, 
 
 	count := index
 	for i := 0; i < total - index; {
-		if count >= total {
-			break
-		}
-
 		val := start + int64(i) * step
+		arr = append(arr, val)
+		count++
+		i++
+
 		if val > end {
 			if isLast && count < total { // loop if it's last item and not enough
 				i = 0
@@ -85,10 +85,6 @@ func GenerateIntItems(start int64, end int64, step int64, index int, total int, 
 				break
 			}
 		}
-
-		arr = append(arr, val)
-		count++
-		i++
 	}
 
 	return arr
@@ -102,6 +98,10 @@ func GenerateFloatItems(start float64, end float64, step float64, index int, tot
 		gap := float64(i) * step
 		val := start + gap
 
+		arr = append(arr, val)
+		count++
+		i++
+
 		if val > end {
 			if isLast && count < total { // loop if it's last item and not enough
 				i = 0
@@ -110,10 +110,6 @@ func GenerateFloatItems(start float64, end float64, step float64, index int, tot
 				break
 			}
 		}
-
-		arr = append(arr, val)
-		count++
-		i++
 	}
 
 	return arr
@@ -125,6 +121,9 @@ func GenerateByteItems(start byte, end byte, step int, index int, total int, isL
 	count := index
 	for i := 0; i < total - index; {
 		val := start + byte(i * step)
+		arr = append(arr, val)
+		count++
+		i++
 
 		if val > end {
 			if isLast && count < total { // loop if it's last item and not enough
@@ -134,10 +133,6 @@ func GenerateByteItems(start byte, end byte, step int, index int, total int, isL
 				break
 			}
 		}
-
-		arr = append(arr, val)
-		count++
-		i++
 	}
 
 	return arr
