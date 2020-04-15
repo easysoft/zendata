@@ -25,9 +25,9 @@ fields:
     prefix: char_
     postfix: ' '
 
-- name: field4
-  datatype: timestamp
-  range: 20080101,20080909-20080910:10000
-  step: 10000
-  prefix: tm_
-  postfix: ' '
+  - name: field4
+    datatype: timestamp
+    range: 20080101,20080909-20080910
+    step: 10000
+    prefix: tm_
+    postfix: ' '
