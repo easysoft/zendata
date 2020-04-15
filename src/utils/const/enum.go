@@ -5,7 +5,7 @@ const (
 	LIST FieldType = iota
 	TIMESTAMP
 	IP
-	SESSION
+	SESSION_ID
 )
 func (c FieldType) String() string {
 	switch c {
@@ -15,7 +15,7 @@ func (c FieldType) String() string {
 		return "timestamp"
 	case IP:
 		return "ip"
-	case SESSION:
+	case SESSION_ID:
 		return "session"
 	}
 

@@ -7,20 +7,27 @@ fields:
   - name: field1
     datatype: list
     range: 11-20
+    step: 1
     prefix: int_
     postfix: ' '
-    step: 1
 
   - name: field2
     datatype: list
     range: 1.1-9.7
+    step: 0.01
     prefix: float_
     postfix: ' '
-    step: 0.01
 
   - name: field3
     datatype: list
     range: a-f
+    step: 2
     prefix: char_
     postfix: ' '
-    step: 2
+
+- name: field4
+  datatype: timestamp
+  range: 20080101,20080909-20080910:10000
+  step: 10000
+  prefix: tm_
+  postfix: ' '

@@ -23,3 +23,19 @@ func DateTimeStr(tm time.Time) string {
 func DateTimeStrLong(tm time.Time) string {
 	return tm.Format("20060102150405")
 }
+
+func DateStrToTimestamp(str string) (int64, error) {
+	layout := "20060102"
+
+	loc, err := time.LoadLocation("Local")
+	if err != nil {
+		return 0, err
+	}
+
+	time, err :=time.ParseInLocation(layout, str, loc)
+	if err != nil {
+		return 0, err
+	}
+
+	return time.Unix(), nil
+}

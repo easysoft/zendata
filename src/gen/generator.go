@@ -62,10 +62,13 @@ func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]inter
 			GenerateList(field, total, fieldMap)
 
 		case constant.TIMESTAMP.String():
+			GenerateTimestamp(field, total, fieldMap)
 
 		case constant.IP.String():
+			GenerateIP(field, total, fieldMap)
 
-		case constant.SESSION.String():
+		case constant.SESSION_ID.String():
+			GenerateSessionId(field, total, fieldMap)
 
 		default:
 	}
