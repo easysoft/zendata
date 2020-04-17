@@ -58,18 +58,35 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 
 func GetFieldStr(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
 	str := "n/a"
+	success := false
 	val := fieldMap[field.Name][indexOfRow]
 	switch val.(type) {
 		case int64:
-			str = strconv.FormatInt(val.(int64), 10)
+			if field.Format != "" {
+				str, success = stringUtils.FormatStr(field.Format, val.(int64))
+			}
+			if !success {
+				str = strconv.FormatInt(val.(int64), 10)
+			}
 		case float64:
 			precision := 0
 			if field.Precision > 0 {
 				precision = field.Precision
 			}
-			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+			if field.Format != "" {
+				str, success = stringUtils.FormatStr(field.Format, val.(float64))
+			}
+			if !success {
+				str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+			}
 		case byte:
 			str = string(val.(byte))
+			if field.Format != "" {
+				str, success = stringUtils.FormatStr(field.Format, str)
+			}
+			if !success {
+				str = string(val.(byte))
+			}
 		default:
 	}
 

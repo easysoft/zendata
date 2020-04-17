@@ -18,6 +18,7 @@ type Field struct {
 	Postfix  string  `yaml:"postfix"`
 	Loop  int  `yaml:"loop"`
 	Loopfix  string  `yaml:"loopfix"`
+	Format  string  `yaml:"format"`
 	Expect  string  `yaml:"expect"`
 	Fields   []Field `yaml:"fields,flow"`
 

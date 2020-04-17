@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
 	"strconv"
@@ -86,4 +87,14 @@ func GetNumbWidth(numb int) int {
 	width := len(str)
 
 	return width
+}
+
+func FormatStr(format string, val interface{}) (string, bool) {
+	str := fmt.Sprintf(format, val)
+
+	if strings.Index(str,"%!") == 0 {
+		return "", false
+	}
+
+	return str, true
 }
