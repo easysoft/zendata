@@ -27,6 +27,8 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 				continue
 			}
 
+			prefix := field.Prefix
+			postfix := field.Postfix
 			indexOfRow = i % len(fieldMap[field.Name])
 
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
@@ -47,7 +49,7 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 				default:
 			}
 
-			rows[i] = append(rows[i], str)
+			rows[i] = append(rows[i], prefix + str + postfix)
 		}
 	}
 

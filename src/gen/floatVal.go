@@ -5,12 +5,20 @@ import (
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step float64, index int, total int) []interface{} {
+func GenerateFloatItems(start float64, end float64, step interface{}, index int, total int) []interface{} {
+	if step != nil {
+		return GenerateFloatItemsByStep(start, end, int64(step.(int)), index, total)
+	} else {
+		return GenerateFloatItemsRand(start, end, index, total)
+	}
+}
+
+func GenerateFloatItemsByStep(start float64, end float64, step interface{}, index int, total int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	count := index
 	for i := 0; i < total - index; {
-		gap := float64(i) * step
+		gap := float64(i) * float64(step.(int))
 		val := start + gap
 
 		if val > end {
@@ -30,8 +38,13 @@ func GenerateFloatItems(start float64, end float64, step float64, index int, tot
 	return arr
 }
 
-func getPrecision(base float64, step float64) int {
-	val := base + step
+func GenerateFloatItemsRand(start float64, end float64, index int, total int) []interface{} {
+
+	return nil
+}
+
+func getPrecision(base float64, step interface{}) int {
+	val := base + step.(float64)
 
 	str1 := strconv.FormatFloat(base, 'f', -1, 64)
 	str2 := strconv.FormatFloat(val, 'f', -1, 64)
