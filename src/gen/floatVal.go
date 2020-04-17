@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step float64, index int, total int, isLast bool) []interface{} {
+func GenerateFloatItems(start float64, end float64, step float64, index int, total int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	count := index
@@ -14,7 +14,7 @@ func GenerateFloatItems(start float64, end float64, step float64, index int, tot
 		val := start + gap
 
 		if val > end {
-			if isLast && count < total { // loop if it's last item and not enough
+			if count < total { // loop if it's last item and not enough
 				i = 0
 				continue
 			} else {

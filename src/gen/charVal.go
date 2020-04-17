@@ -4,7 +4,7 @@ import (
 
 )
 
-func GenerateByteItems(start byte, end byte, step int, index int, total int, isLast bool) []interface{} {
+func GenerateByteItems(start byte, end byte, step int, index int, total int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	count := index
@@ -12,7 +12,7 @@ func GenerateByteItems(start byte, end byte, step int, index int, total int, isL
 		val := start + byte(i * step)
 
 		if val > end {
-			if isLast && count < total { // loop if it's last item and not enough
+			if count < total { // loop if it's last item and not enough
 				i = 0
 				continue
 			} else {

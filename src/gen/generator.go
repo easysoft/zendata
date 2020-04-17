@@ -20,22 +20,25 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 	}
 
 	rows := make([][]string, 0)
+	indexOfRow := 0
 	for i := 0; i < total; i++ {
 		for _, field := range def.Fields {
 			if !stringUtils.FindInArr(field.Name, fieldArr) {
 				continue
 			}
 
+			indexOfRow = i % len(fieldMap[field.Name])
+
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
 
 			str := "n/a"
-			val := fieldMap[field.Name][i]
+			val := fieldMap[field.Name][indexOfRow]
 			switch val.(type) {
 				case int64:
 					str = strconv.FormatInt(val.(int64),10)
 				case float64:
-					precision := -1
-					if field.Precision >= 0 {
+					precision := 0
+					if field.Precision > 0 {
 						precision = field.Precision
 					}
 					str = strconv.FormatFloat(val.(float64), 'f', precision, 64)

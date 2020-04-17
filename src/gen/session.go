@@ -14,7 +14,7 @@ func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]inte
 	rangeItems := strings.Split(rang, ",")
 
 	index := 0
-	for itemIndex, item := range rangeItems {
+	for _, item := range rangeItems {
 		if index >= total {
 			break
 		}
@@ -28,7 +28,6 @@ func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]inte
 		}
 
 		items := make([]interface{}, 0)
-		isLast := itemIndex == len(rangeItems) - 1
 
 		startInt, errInt1 := strconv.ParseInt(startStr, 0, 64)
 		endInt, errInt2 := strconv.ParseInt(endStr, 0, 64)
@@ -38,7 +37,7 @@ func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]inte
 				step = 1
 			}
 
-			items = GenerateIntItems(startInt, endInt, int64(step), index, total, isLast)
+			items = GenerateIntItems(startInt, endInt, int64(step), index, total)
 		}
 
 		fieldMap[name] = append(fieldMap[name], items...)

@@ -15,7 +15,7 @@ func GenerateTimestamp(field *model.Field, total int, fieldMap map[string][]inte
 	rangeItems := strings.Split(rang, ",")
 
 	index := 0
-	for itemIndex, item := range rangeItems {
+	for _, item := range rangeItems {
 		if index >= total {
 			break
 		}
@@ -29,7 +29,6 @@ func GenerateTimestamp(field *model.Field, total int, fieldMap map[string][]inte
 		}
 
 		items := make([]interface{}, 0)
-		isLast := itemIndex == len(rangeItems) - 1
 
 		start, err1 := dateUtils.DateStrToTimestamp(startStr)
 		end, err2 := dateUtils.DateStrToTimestamp(endStr)
@@ -39,7 +38,7 @@ func GenerateTimestamp(field *model.Field, total int, fieldMap map[string][]inte
 				step = 1000 // default 1 sec
 			}
 
-			items = GenerateIntItems(start, end, int64(step), index, total, isLast)
+			items = GenerateIntItems(start, end, int64(step), index, total)
 		}
 
 		fieldMap[name] = append(fieldMap[name], items...)
