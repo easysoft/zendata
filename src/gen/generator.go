@@ -27,33 +27,53 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 				continue
 			}
 
-			prefix := field.Prefix
-			postfix := field.Postfix
-			indexOfRow = i % len(fieldMap[field.Name])
-
-			if len(rows) == i { rows = append(rows, make([]string, 0)) }
-
-			str := "n/a"
-			val := fieldMap[field.Name][indexOfRow]
-			switch val.(type) {
-				case int64:
-					str = strconv.FormatInt(val.(int64),10)
-				case float64:
-					precision := 0
-					if field.Precision > 0 {
-						precision = field.Precision
-					}
-					str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
-				case byte:
-					str = string(val.(byte))
-				default:
+			if field.Loop == 0 {
+				field.Loop = 1
 			}
 
-			rows[i] = append(rows[i], prefix + str + postfix)
+			prefix := field.Prefix
+			postfix := field.Postfix
+			if len(rows) == i { rows = append(rows, make([]string, 0)) }
+
+			loopStr := ""
+			for j := 0; j < field.Loop; j++ {
+				if loopStr != "" {
+					loopStr = loopStr + field.Loopfix
+				}
+				str := GetFieldStr(field, fieldMap, indexOfRow)
+				loopStr = loopStr + str
+
+				indexOfRow++
+				if indexOfRow == len(fieldMap[field.Name]) { // no enough
+					indexOfRow = 0
+				}
+			}
+
+			rows[i] = append(rows[i], prefix + loopStr + postfix)
 		}
 	}
 
 	return rows
+}
+
+func GetFieldStr(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
+	str := "n/a"
+	val := fieldMap[field.Name][indexOfRow]
+	switch val.(type) {
+		case int64:
+			str = strconv.FormatInt(val.(int64), 10)
+		case float64:
+			precision := 0
+			if field.Precision > 0 {
+				precision = field.Precision
+			}
+			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+		case byte:
+			str = string(val.(byte))
+		default:
+	}
+
+	return str
 }
 
 func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]interface{}) {

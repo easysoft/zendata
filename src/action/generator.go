@@ -30,7 +30,6 @@ func Generate(file string, total int, fields string, out string, table string) {
 	Print(rows)
 }
 
-
 func Print(rows [][]string) {
 	width := stringUtils.GetNumbWidth(len(rows))
 
