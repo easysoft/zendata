@@ -17,7 +17,13 @@ func GenerateList(field *model.Field, total int, fieldMap map[string][]interface
 		if index >= total { break }
 		if strings.TrimSpace(item) == "" { continue }
 
-		elemArr := strings.Split(item, "-")
+		sectionArr := strings.Split(item, ":")
+		if len(sectionArr) == 0 { continue }
+
+		stepStr := "1"
+		if len(sectionArr) == 2 { stepStr = sectionArr[1] }
+
+		elemArr := strings.Split(sectionArr[0], "-")
 		startStr := elemArr[0]
 		endStr := startStr
 		if len(elemArr) > 1 { endStr = elemArr[1] }
@@ -35,8 +41,8 @@ func GenerateList(field *model.Field, total int, fieldMap map[string][]interface
 		} else if dataType == "float" {
 			startFloat, _ := strconv.ParseFloat(startStr, 64)
 			endFloat, _ := strconv.ParseFloat(endStr, 64)
-
 			field.Precision = precision
+
 			items = GenerateFloatItems(startFloat, endFloat, step.(float64), index, total, isLast)
 		} else if dataType == "char" {
 			items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step.(int), index, total, isLast)
@@ -75,4 +81,6 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			return "char", step, 0
 		}
 	}
+
+	return "", 0, 0
 }

@@ -12,7 +12,7 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 	fieldArr := strings.Split(fields, ",")
 	fieldMap := map[string][]interface{}{}
 	for index, field := range def.Fields {
-		if !stringUtils.FindInArr(field.Note, fieldArr) {
+		if !stringUtils.FindInArr(field.Name, fieldArr) {
 			continue
 		}
 		GenerateFieldArr(&field, total, fieldMap)
@@ -22,14 +22,14 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 	rows := make([][]string, 0)
 	for i := 0; i < total; i++ {
 		for _, field := range def.Fields {
-			if !stringUtils.FindInArr(field.Note, fieldArr) {
+			if !stringUtils.FindInArr(field.Name, fieldArr) {
 				continue
 			}
 
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
 
 			str := "n/a"
-			val := fieldMap[field.Note][i]
+			val := fieldMap[field.Name][i]
 			switch val.(type) {
 				case int64:
 					str = strconv.FormatInt(val.(int64),10)

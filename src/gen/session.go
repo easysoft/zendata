@@ -9,7 +9,7 @@ import (
 func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]interface{}) {
 	name := strings.TrimSpace(field.Note)
 	rang := strings.TrimSpace(field.Range)
-	stepStr := strings.TrimSpace(field.Step)
+	stepStr := strings.TrimSpace("field.Step")
 
 	rangeItems := strings.Split(rang, ",")
 
