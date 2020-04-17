@@ -38,4 +38,8 @@ var (
 
 	UnitTestType []string = []string{"junit", "testng", "phpunit", "pytest", "jtest", "cppunit", "gtest", "qtest"}
 	AutoTestType []string = []string{"selenium", "appium"}
+
+	Power3 = 255 * 255 * 255
+	Power2 = 255 * 255
+	Power1 = 255
 )

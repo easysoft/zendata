@@ -7,7 +7,7 @@ import (
 )
 
 func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]interface{}) {
-	name := strings.TrimSpace(field.Name)
+	name := strings.TrimSpace(field.Note)
 	rang := strings.TrimSpace(field.Range)
 	stepStr := strings.TrimSpace(field.Step)
 
@@ -39,27 +39,6 @@ func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]inte
 			}
 
 			items = GenerateIntItems(startInt, endInt, int64(step), index, total, isLast)
-		} else {
-			startFloat, errFloat1 := strconv.ParseFloat(startStr, 64)
-			endFloat, errFloat2 := strconv.ParseFloat(endStr, 64)
-			if errFloat1 == nil && errFloat2 == nil { // float
-				step, errFloat3 := strconv.ParseFloat(stepStr, 64)
-				if errFloat3 != nil {
-					step = 1.0
-				}
-
-				precision := getPrecision(startFloat, step)
-				field.Precision = precision
-
-				items = GenerateFloatItems(startFloat, endFloat, step, index, total, isLast)
-			} else if len(startStr) == 1 && len(endStr) == 1 { // single character
-				step, errChar3 := strconv.Atoi(stepStr) // use integer step
-				if errChar3 != nil {
-					step = 1
-				}
-
-				items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, index, total, isLast)
-			}
 		}
 
 		fieldMap[name] = append(fieldMap[name], items...)

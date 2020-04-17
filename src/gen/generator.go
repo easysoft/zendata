@@ -12,7 +12,7 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 	fieldArr := strings.Split(fields, ",")
 	fieldMap := map[string][]interface{}{}
 	for index, field := range def.Fields {
-		if !stringUtils.FindInArr(field.Name, fieldArr) {
+		if !stringUtils.FindInArr(field.Note, fieldArr) {
 			continue
 		}
 		GenerateFieldArr(&field, total, fieldMap)
@@ -22,14 +22,14 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 	rows := make([][]string, 0)
 	for i := 0; i < total; i++ {
 		for _, field := range def.Fields {
-			if !stringUtils.FindInArr(field.Name, fieldArr) {
+			if !stringUtils.FindInArr(field.Note, fieldArr) {
 				continue
 			}
 
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
 
 			str := "n/a"
-			val := fieldMap[field.Name][i]
+			val := fieldMap[field.Note][i]
 			switch val.(type) {
 				case int64:
 					str = strconv.FormatInt(val.(int64),10)
@@ -52,23 +52,12 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 }
 
 func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]interface{}) {
-	datatype := strings.TrimSpace(field.Datatype)
-	if datatype == "" {
-		datatype = "list"
-	}
+	datatype := strings.TrimSpace(field.Type)
+	if datatype == "" { datatype = "list" }
 
 	switch datatype {
 		case constant.LIST.String():
 			GenerateList(field, total, fieldMap)
-
-		case constant.TIMESTAMP.String():
-			GenerateTimestamp(field, total, fieldMap)
-
-		case constant.IP.String():
-			GenerateIP(field, total, fieldMap)
-
-		case constant.SESSION_ID.String():
-			GenerateSessionId(field, total, fieldMap)
 
 		default:
 	}

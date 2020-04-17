@@ -10,12 +10,14 @@ type Definition struct {
 }
 
 type Field struct {
-	Name string `yaml:"name"`
-	Datatype string `yaml:"datatype"`
-	Step string `yaml:"step"`
-	Range string `yaml:"range"`
-	Prefix string `yaml:"prefix"`
-	Postfix string `yaml:"postfix"`
+	Name     string  `yaml:"name"`
+	Note     string  `yaml:"note"`
+	Type string  `yaml:"type"`
+	Range    string  `yaml:"range"`
+	Prefix   string  `yaml:"prefix"`
+	Postfix  string  `yaml:"postfix"`
+	Expect  string  `yaml:"expect"`
+	Fields   []Field `yaml:"fields,flow"`
 
 	Precision int
 }

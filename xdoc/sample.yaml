@@ -10,6 +10,20 @@ fields:
     step: 1
     prefix: int_
     postfix: ' '
+      fields:
+        - name: field1.1
+          datatype: list
+          range: 11-20
+          step: 1
+          prefix: int_
+          postfix: ' '
+          fields:
+            - name: field1.1.1
+              datatype: list
+              range: 11-20
+              step: 1
+              prefix: int_
+              postfix: ' '
 
   - name: field2
     datatype: list
@@ -28,6 +42,13 @@ fields:
   - name: field4
     datatype: timestamp
     range: 20190101,20200415-20200416
+    step: 10000
+    prefix: tm_
+    postfix: ' '
+
+  - name: field5
+    datatype: ip
+    range: 192.168.[0-9].[1-254]
     step: 10000
     prefix: tm_
     postfix: ' '
