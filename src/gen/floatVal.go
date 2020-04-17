@@ -1,15 +1,16 @@
 package gen
 
 import (
+	"math/rand"
 	"strconv"
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step interface{}, index int, total int) []interface{} {
-	if step != nil {
-		return GenerateFloatItemsByStep(start, end, int64(step.(int)), index, total)
+func GenerateFloatItems(start float64, end float64, step interface{}, index int, total int, rand bool) []interface{} {
+	if !rand {
+		return GenerateFloatItemsByStep(start, end, step.(float64), index, total)
 	} else {
-		return GenerateFloatItemsRand(start, end, index, total)
+		return GenerateFloatItemsRand(start, end, step.(float64), index, total)
 	}
 }
 
@@ -18,16 +19,14 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, inde
 
 	count := index
 	for i := 0; i < total - index; {
-		gap := float64(i) * float64(step.(int))
-		val := start + gap
+		if count >= total {
+			break
+		}
 
+		gap := float64(i) * step.(float64)
+		val := start + gap
 		if val > end {
-			if count < total { // loop if it's last item and not enough
-				i = 0
-				continue
-			} else {
-				break
-			}
+			break
 		}
 
 		arr = append(arr, val)
@@ -38,9 +37,18 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, inde
 	return arr
 }
 
-func GenerateFloatItemsRand(start float64, end float64, index int, total int) []interface{} {
+func GenerateFloatItemsRand(start float64, end float64, step float64, index int, total int) []interface{} {
+	arr := make([]interface{}, 0)
 
-	return nil
+	genCount := (end - start) / step
+	for i := float64(0); i < genCount; {
+		val := start + float64(rand.Int63n(int64(genCount))) * step
+
+		arr = append(arr, val)
+		i++
+	}
+
+	return arr
 }
 
 func getPrecision(base float64, step interface{}) int {

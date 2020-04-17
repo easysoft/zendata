@@ -6,15 +6,15 @@ import (
 	"math/rand"
 )
 
-func GenerateByteItems(start byte, end byte, step interface{}, index int, total int) []interface{} {
-	if step != nil {
-		return GenerateByteItemsByStep(start, end, int64(step.(int)), index, total)
+func GenerateByteItems(start byte, end byte, step interface{}, index int, total int, rand bool) []interface{} {
+	if !rand {
+		return GenerateByteItemsByStep(start, end, step.(int), index, total)
 	} else {
-		return GenerateByteItemsRand(start, end, index, total)
+		return GenerateByteItemsRand(start, end, step.(int), index, total)
 	}
 }
 
-func GenerateByteItemsByStep(start byte, end byte, step interface{}, index int, total int) []interface{} {
+func GenerateByteItemsByStep(start byte, end byte, step int, index int, total int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	count := index
@@ -23,7 +23,7 @@ func GenerateByteItemsByStep(start byte, end byte, step interface{}, index int, 
 			break
 		}
 
-		val := start + byte(int64(i) * step.(int64))
+		val := start + byte(int(i) * step)
 		if val > end {
 			break
 		}
@@ -36,10 +36,10 @@ func GenerateByteItemsByStep(start byte, end byte, step interface{}, index int, 
 	return arr
 }
 
-func GenerateByteItemsRand(start byte, end byte, index int, total int) []interface{} {
+func GenerateByteItemsRand(start byte, end byte, step int, index int, total int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	genCount := int(end - start + 1)
+	genCount := int(end - start) / step + 1
 	if genCount > total - index {
 		genCount = total - index
 	}

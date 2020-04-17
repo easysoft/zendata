@@ -30,21 +30,21 @@ func GenerateList(field *model.Field, total int, fieldMap map[string][]interface
 
 		items := make([]interface{}, 0)
 
-		dataType, step, precision := CheckRangeType(startStr, endStr, stepStr)
+		dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
 		if dataType == "int" {
 			startInt, _ := strconv.ParseInt(startStr, 0, 64)
 			endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-			items = GenerateIntItems(startInt, endInt, step, index, total)
+			items = GenerateIntItems(startInt, endInt, step, index, total, rand)
 		} else if dataType == "float" {
 			startFloat, _ := strconv.ParseFloat(startStr, 64)
 			endFloat, _ := strconv.ParseFloat(endStr, 64)
 			field.Precision = precision
 
-			items = GenerateFloatItems(startFloat, endFloat, step.(float64), index, total)
+			items = GenerateFloatItems(startFloat, endFloat, step.(float64), index, total, rand)
 		} else if dataType == "char" {
-			items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, index, total)
+			items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, index, total, rand)
 		}
 
 		fieldMap[name] = append(fieldMap[name], items...)
@@ -52,52 +52,56 @@ func GenerateList(field *model.Field, total int, fieldMap map[string][]interface
 	}
 }
 
-func CheckRangeType(startStr string, endStr string, stepStr string) (string, interface{}, int) {
+func CheckRangeType(startStr string, endStr string, stepStr string) (string, interface{}, int, bool) {
+	rand := false
+
 	_, errInt1 := strconv.ParseInt(startStr, 0, 64)
 	_, errInt2 := strconv.ParseInt(endStr, 0, 64)
 	if errInt1 == nil && errInt2 == nil {
-		var step interface{} = nil
+		var step interface{} = 1
 		if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 			stepInt, errInt3 := strconv.Atoi(stepStr)
 			if errInt3 != nil {
 				step = stepInt
-			} else {
-				step = 1
 			}
+		} else {
+			rand = true
 		}
 
-		return "int", step, 0
+		return "int", step, 0, rand
+
 	} else {
 		startFloat, errFloat1 := strconv.ParseFloat(startStr, 64)
 		_, errFloat2 := strconv.ParseFloat(endStr, 64)
 		if errFloat1 == nil && errFloat2 == nil {
-			var step interface{} = nil
+			var step interface{} = 0.1
 			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 				stepFloat, errFloat3 := strconv.ParseFloat(stepStr, 64)
-				if errFloat3 != nil {
+				if errFloat3 == nil {
 					step = stepFloat
-				} else {
-					step = 1.0
 				}
+			} else {
+				rand = true
 			}
 
 			precision := getPrecision(startFloat, step)
 
-			return "float", step, precision
+			return "float", step, precision, rand
+
 		} else if len(startStr) == 1 && len(endStr) == 1 {
-			var step interface{} = nil
+			var step interface{} = 1
 			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 				stepChar, errChar3 := strconv.Atoi(stepStr)
 				if errChar3 != nil {
 					step = stepChar
-				} else {
-					step = 1
 				}
+			} else {
+				rand = true
 			}
 
-			return "char", step, 0
+			return "char", step, 0, rand
 		}
 	}
 
-	return "", 0, 0
+	return "", 0, 0, rand
 }

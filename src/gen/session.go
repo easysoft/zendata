@@ -37,7 +37,7 @@ func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]inte
 				step = 1
 			}
 
-			items = GenerateIntItems(startInt, endInt, int64(step), index, total)
+			items = GenerateIntItems(startInt, endInt, int64(step), index, total, true)
 		}
 
 		fieldMap[name] = append(fieldMap[name], items...)
