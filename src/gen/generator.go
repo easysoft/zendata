@@ -1,8 +1,10 @@
 package gen
 
 import (
+	"encoding/json"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"strconv"
 	"strings"
@@ -27,29 +29,10 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 				continue
 			}
 
-			if field.Loop == 0 {
-				field.Loop = 1
-			}
-
-			prefix := field.Prefix
-			postfix := field.Postfix
+			str := GenerateFieldValWithLoop(field, fieldMap, indexOfRow)
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
-
-			loopStr := ""
-			for j := 0; j < field.Loop; j++ {
-				if loopStr != "" {
-					loopStr = loopStr + field.Loopfix
-				}
-				str := GetFieldStr(field, fieldMap, indexOfRow)
-				loopStr = loopStr + str
-
-				indexOfRow++
-				if indexOfRow == len(fieldMap[field.Name]) { // no enough
-					indexOfRow = 0
-				}
-			}
-
-			rows[i] = append(rows[i], prefix + loopStr + postfix)
+			rows[i] = append(rows[i], str)
+			indexOfRow++
 		}
 	}
 
@@ -69,14 +52,57 @@ func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]inter
 	default:
 	}
 
-	fieldMap[field.Name] = GetFieldPlatArr(fieldValue, total)
+	fieldMap[field.Name] = append(fieldMap[field.Name], fieldValue)
 }
 
-func GetFieldPlatArr(fieldValue model.FieldValue, total int) []interface{} {
+func GenerateFieldValWithLoop(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
+	prefix := field.Prefix
+	postfix := field.Postfix
+
+	loopStr := ""
+	for j := 0; j < field.Loop; j++ {
+		if loopStr != "" {
+			loopStr = loopStr + field.Loopfix
+		}
+		str := GenerateFieldVal(field, fieldMap, indexOfRow)
+		loopStr = loopStr + str
+
+		indexOfRow++
+	}
+
+	return prefix + loopStr + postfix
+}
+
+func GenerateFieldVal(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
+	fieldValue := fieldMap[field.Name][indexOfRow % len(fieldMap[field.Name])].(model.FieldValue)
+
+	str := ""
+	index := indexOfRow % len(fieldValue.Values)
+	if len(fieldValue.Children) == 0 {
+		val := fieldValue.Values[index]
+		str = GetFieldValStr(field, val)
+	} else {
+		str = GetFieldValStrFromNestedObj(fieldValue, index)
+	}
+
+	return str
+}
+
+func GetFieldValStrFromNestedObj(fieldValue model.FieldValue, index int) string {
+	arr := GetFieldPlatArr(fieldValue)
+
+	bytes, _ := json.Marshal(arr)
+	logUtils.Screen(string(bytes))
+
+	return ""
+}
+
+func GetFieldPlatArr(fieldValue model.FieldValue) []interface{} {
 	arr := make([]interface{}, 0)
 
 	if len(fieldValue.Children) > 0 {
-
+		platArr := ConvertNestedFieldToPlatArr(fieldValue)
+		arr = append(arr, platArr...)
 	} else {
 		arr = append(arr, fieldValue.Values...)
 	}
@@ -84,10 +110,22 @@ func GetFieldPlatArr(fieldValue model.FieldValue, total int) []interface{} {
 	return arr
 }
 
-func GetFieldStr(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
+func ConvertNestedFieldToPlatArr(fieldValue model.FieldValue) []interface{} {
+	arr := make([]interface{}, 0)
+
+	for _, child := range fieldValue.Children {
+		if child.Level == 0 {
+
+		}
+	}
+
+	return arr
+}
+
+func GetFieldValStr(field model.Field, val interface{}) string {
 	str := "n/a"
 	success := false
-	val := fieldMap[field.Name][indexOfRow]
+
 	switch val.(type) {
 		case int64:
 			if field.Format != "" {
@@ -120,3 +158,4 @@ func GetFieldStr(field model.Field, fieldMap map[string][]interface{}, indexOfRo
 
 	return str
 }
+

@@ -1,10 +1,8 @@
 package gen
 
 import (
-	"encoding/json"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"strconv"
 	"strings"
 )
@@ -13,15 +11,13 @@ func GenerateList(field *model.Field, total int) model.FieldValue {
 	fieldValue := model.FieldValue{}
 	GenerateListField(field, &fieldValue, 0)
 
-	bytes, _ := json.Marshal(fieldValue)
-	logUtils.Screen(string(bytes))
-
 	return fieldValue
 }
 
 func GenerateListField(field *model.Field, fieldValue *model.FieldValue, level int) {
 	fieldValue.Name = field.Name
 	fieldValue.Precision = field.Precision
+	fieldValue.Level = level
 
 	if len(field.Fields) > 0 {
 		GenerateFieldChildren(field, fieldValue, level)

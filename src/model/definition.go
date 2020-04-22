@@ -29,6 +29,7 @@ type FieldValue struct {
 	Name     string
 	Type     string
 	Precision int
+	Level int
 
 	Values   []interface{}
 	Children []FieldValue
