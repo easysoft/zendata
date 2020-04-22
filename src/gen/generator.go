@@ -56,6 +56,34 @@ func Generate(def *model.Definition, total int, fields string, out string, table
 	return rows
 }
 
+func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]interface{}) {
+	datatype := strings.TrimSpace(field.Type)
+	if datatype == "" { datatype = "list" }
+
+	fieldValue := model.FieldValue{}
+
+	switch datatype {
+	case constant.LIST.String():
+		fieldValue = GenerateList(field, total)
+
+	default:
+	}
+
+	fieldMap[field.Name] = GetFieldPlatArr(fieldValue, total)
+}
+
+func GetFieldPlatArr(fieldValue model.FieldValue, total int) []interface{} {
+	arr := make([]interface{}, 0)
+
+	if len(fieldValue.Children) > 0 {
+
+	} else {
+		arr = append(arr, fieldValue.Values...)
+	}
+
+	return arr
+}
+
 func GetFieldStr(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
 	str := "n/a"
 	success := false
@@ -91,16 +119,4 @@ func GetFieldStr(field model.Field, fieldMap map[string][]interface{}, indexOfRo
 	}
 
 	return str
-}
-
-func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]interface{}) {
-	datatype := strings.TrimSpace(field.Type)
-	if datatype == "" { datatype = "list" }
-
-	switch datatype {
-		case constant.LIST.String():
-			GenerateList(field, total, fieldMap)
-
-		default:
-	}
 }

@@ -1,28 +1,24 @@
 package gen
 
 import (
+	constant "github.com/easysoft/zendata/src/utils/const"
 	"math/rand"
 	"strconv"
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step interface{}, index int, total int, rand bool) []interface{} {
-	if !rand {
-		return GenerateFloatItemsByStep(start, end, step.(float64), index, total)
+func GenerateFloatItems(start float64, end float64, step interface{}, rand bool) []interface{} {
+	if !rand{
+		return GenerateFloatItemsByStep(start, end, step.(float64))
 	} else {
-		return GenerateFloatItemsRand(start, end, step.(float64), index, total)
+		return GenerateFloatItemsRand(start, end, step.(float64))
 	}
 }
 
-func GenerateFloatItemsByStep(start float64, end float64, step interface{}, index int, total int) []interface{} {
+func GenerateFloatItemsByStep(start float64, end float64, step interface{}) []interface{} {
 	arr := make([]interface{}, 0)
 
-	count := index
-	for i := 0; i < total - index; {
-		if count >= total {
-			break
-		}
-
+	for i := 0; i < constant.MaxNumb; {
 		gap := float64(i) * step.(float64)
 		val := start + gap
 		if val > end {
@@ -30,17 +26,19 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, inde
 		}
 
 		arr = append(arr, val)
-		count++
 		i++
 	}
 
 	return arr
 }
 
-func GenerateFloatItemsRand(start float64, end float64, step float64, index int, total int) []interface{} {
+func GenerateFloatItemsRand(start float64, end float64, step float64) []interface{} {
 	arr := make([]interface{}, 0)
 
 	genCount := (end - start) / step
+	if genCount > float64(constant.MaxNumb) {
+		genCount = float64(constant.MaxNumb)
+	}
 	for i := float64(0); i < genCount; {
 		val := start + float64(rand.Int63n(int64(genCount))) * step
 

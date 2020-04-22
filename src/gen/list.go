@@ -1,20 +1,51 @@
 package gen
 
 import (
+	"encoding/json"
 	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"strconv"
 	"strings"
 )
 
-func GenerateList(field *model.Field, total int, fieldMap map[string][]interface{}) {
-	name := strings.TrimSpace(field.Name)
-	rang := strings.TrimSpace(field.Range)
+func GenerateList(field *model.Field, total int) model.FieldValue {
+	fieldValue := model.FieldValue{}
+	GenerateListField(field, &fieldValue, 0)
 
+	bytes, _ := json.Marshal(fieldValue)
+	logUtils.Screen(string(bytes))
+
+	return fieldValue
+}
+
+func GenerateListField(field *model.Field, fieldValue *model.FieldValue, level int) {
+	fieldValue.Name = field.Name
+	fieldValue.Precision = field.Precision
+
+	if len(field.Fields) > 0 {
+		GenerateFieldChildren(field, fieldValue, level)
+	} else {
+		GenerateFieldValues(field, fieldValue, level)
+	}
+}
+
+func GenerateFieldChildren(field *model.Field, fieldValue *model.FieldValue, level int) {
+	for _, child := range field.Fields {
+		childValue := model.FieldValue{}
+		GenerateListField(&child, &childValue, level + 1)
+
+		fieldValue.Children = append(fieldValue.Children, childValue)
+	}
+}
+
+func GenerateFieldValues(field *model.Field, fieldValue *model.FieldValue, level int) {
+	rang := strings.TrimSpace(field.Range)
 	rangeItems := strings.Split(rang, ",")
 
 	index := 0
 	for _, item := range rangeItems {
-		if index >= total { break }
+		if index >= constant.MaxNumb { break }
 		if strings.TrimSpace(item) == "" { continue }
 
 		sectionArr := strings.Split(item, ":")
@@ -36,18 +67,18 @@ func GenerateList(field *model.Field, total int, fieldMap map[string][]interface
 			startInt, _ := strconv.ParseInt(startStr, 0, 64)
 			endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-			items = GenerateIntItems(startInt, endInt, step, index, total, rand)
+			items = GenerateIntItems(startInt, endInt, step, rand)
 		} else if dataType == "float" {
 			startFloat, _ := strconv.ParseFloat(startStr, 64)
 			endFloat, _ := strconv.ParseFloat(endStr, 64)
 			field.Precision = precision
 
-			items = GenerateFloatItems(startFloat, endFloat, step.(float64), index, total, rand)
+			items = GenerateFloatItems(startFloat, endFloat, step.(float64), rand)
 		} else if dataType == "char" {
-			items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, index, total, rand)
+			items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, rand)
 		}
 
-		fieldMap[name] = append(fieldMap[name], items...)
+		fieldValue.Values = append(fieldValue.Values, items...)
 		index = index + len(items)
 	}
 }

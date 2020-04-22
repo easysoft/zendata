@@ -56,13 +56,14 @@ fields:
       - name: field9.1
         type: list
         range: a-z
-        prefix: part1_
-        postfix: '|'
+        postfix: '='
+        loop: 3
+        loopfix: |
       - name: field9.2
         type: list
         range: A-Z
         prefix: part2_
-        postfix: '|'
+        postfix: '-'
       - name: field9.3
         prefix: part3_
         postfix: ''
@@ -71,4 +72,4 @@ fields:
             type: list
             prefix: int_
             range: 10-20
-            postfix: ''
+            postfix: '|'

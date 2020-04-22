@@ -34,7 +34,7 @@ var (
 
 	CmdViewHeight = 10
 
-	RequestTypePathInfo = "PATH_INFO"
+	MaxNumb = 1000000 // max number in array
 
 	UnitTestType []string = []string{"junit", "testng", "phpunit", "pytest", "jtest", "cppunit", "gtest", "qtest"}
 	AutoTestType []string = []string{"selenium", "appium"}

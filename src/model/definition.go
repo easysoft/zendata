@@ -24,3 +24,12 @@ type Field struct {
 
 	Precision int
 }
+
+type FieldValue struct {
+	Name     string
+	Type     string
+	Precision int
+
+	Values   []interface{}
+	Children []FieldValue
+}
