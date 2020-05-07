@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func Generate(file string, total int, fields string, out string, table string) {
+func Generate(file string, total int, fieldsToExport string, out string, table string) {
 	definition := model.Definition{}
 
 	yamlContent, err := ioutil.ReadFile(file)
@@ -26,7 +26,7 @@ func Generate(file string, total int, fields string, out string, table string) {
 		return
 	}
 
-	rows := gen.Generate(&definition, total, fields, out, table)
+	rows := gen.GenerateForDefinition(&definition, total, fieldsToExport, out, table)
 	Print(rows)
 }
 

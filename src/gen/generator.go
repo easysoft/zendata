@@ -1,45 +1,96 @@
 package gen
 
 import (
-	"encoding/json"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"strconv"
 	"strings"
 )
 
-func Generate(def *model.Definition, total int, fields string, out string, table string) [][]string {
-	fieldArr := strings.Split(fields, ",")
-	fieldMap := map[string][]interface{}{}
+func GenerateForDefinition(def *model.Definition, total int, fieldsToExport string, out string, table string) [][]string {
+	fieldsToExportArr := strings.Split(fieldsToExport, ",")
+	fieldNameToValues := map[string][]string{}
+
+	// 为每个field生成值列表
 	for index, field := range def.Fields {
-		if !stringUtils.FindInArr(field.Name, fieldArr) {
+		if !stringUtils.FindInArr(field.Name, fieldsToExportArr) {
 			continue
 		}
-		GenerateFieldArr(&field, total, fieldMap)
+
+		values := GenerateForField(&field, total)
 		def.Fields[index].Precision = field.Precision
+
+		fieldNameToValues[field.Name] = values
 	}
 
+	// 生成指定数量行的数据
 	rows := make([][]string, 0)
-	indexOfRow := 0
 	for i := 0; i < total; i++ {
 		for _, field := range def.Fields {
-			if !stringUtils.FindInArr(field.Name, fieldArr) {
+			if !stringUtils.FindInArr(field.Name, fieldsToExportArr) {
 				continue
 			}
 
-			str := GenerateFieldValWithLoop(field, fieldMap, indexOfRow)
+			values := fieldNameToValues[field.Name]
+			fieldVal := values[i % len(values)]
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
-			rows[i] = append(rows[i], str)
-			indexOfRow++
+			rows[i] = append(rows[i], fieldVal)
 		}
 	}
 
 	return rows
 }
 
-func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]interface{}) {
+func GenerateForField(field *model.Field, total int) []string {
+	if field.Loop == 0 {field.Loop = 1}
+
+	values := make([]string, 0)
+
+	if len(field.Fields) == 0 {
+		values = GenerateForFieldLevel(field, total)
+	} else {
+		arr := make([][]string, 0)
+		for _, child := range field.Fields {
+			childValues := GenerateForField(&child, total)
+			arr = append(arr, childValues)
+		}
+
+		for i := 0; i < total; i++ {
+			concat := ""
+			for _, row := range arr {
+				concat = concat + row[i]
+			}
+
+			values = append(values, concat)
+		}
+	}
+
+	return values
+}
+func GenerateForFieldLevel(field *model.Field, total int) []string {
+	values := make([]string, 0)
+
+	// 整理出值的列表
+	fieldValue := GenerateFieldItems(field, total)
+
+	index := 0
+	count := 0
+	for {
+		// 处理格式、前后缀、loop等
+		str := GenerateFieldValWithLoop(*field, fieldValue, &index)
+		values = append(values, str)
+
+		count++
+		if count >= total {
+			break
+		}
+	}
+
+	return values
+}
+
+func GenerateFieldItems(field *model.Field, total int) model.FieldValue {
 	datatype := strings.TrimSpace(field.Type)
 	if datatype == "" { datatype = "list" }
 
@@ -52,10 +103,10 @@ func GenerateFieldArr(field *model.Field, total int, fieldMap map[string][]inter
 	default:
 	}
 
-	fieldMap[field.Name] = append(fieldMap[field.Name], fieldValue)
+	return fieldValue
 }
 
-func GenerateFieldValWithLoop(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
+func GenerateFieldValWithLoop(field model.Field, fieldValue model.FieldValue, indexOfRow *int) string {
 	prefix := field.Prefix
 	postfix := field.Postfix
 
@@ -64,62 +115,25 @@ func GenerateFieldValWithLoop(field model.Field, fieldMap map[string][]interface
 		if loopStr != "" {
 			loopStr = loopStr + field.Loopfix
 		}
-		str := GenerateFieldVal(field, fieldMap, indexOfRow)
+
+		str := GenerateFieldVal(field, fieldValue, indexOfRow)
 		loopStr = loopStr + str
 
-		indexOfRow++
+		*indexOfRow++
 	}
 
 	return prefix + loopStr + postfix
 }
 
-func GenerateFieldVal(field model.Field, fieldMap map[string][]interface{}, indexOfRow int) string {
-	fieldValue := fieldMap[field.Name][indexOfRow % len(fieldMap[field.Name])].(model.FieldValue)
-
+func GenerateFieldVal(field model.Field, fieldValue model.FieldValue, index *int) string {
 	str := ""
-	index := indexOfRow % len(fieldValue.Values)
-	if len(fieldValue.Children) == 0 {
-		val := fieldValue.Values[index]
-		str = GetFieldValStr(field, val)
-	} else {
-		str = GetFieldValStrFromNestedObj(fieldValue, index)
-	}
+
+	// 叶节点
+	idx := *index % len(fieldValue.Values)
+	val := fieldValue.Values[idx]
+	str = GetFieldValStr(field, val)
 
 	return str
-}
-
-func GetFieldValStrFromNestedObj(fieldValue model.FieldValue, index int) string {
-	arr := GetFieldPlatArr(fieldValue)
-
-	bytes, _ := json.Marshal(arr)
-	logUtils.Screen(string(bytes))
-
-	return ""
-}
-
-func GetFieldPlatArr(fieldValue model.FieldValue) []interface{} {
-	arr := make([]interface{}, 0)
-
-	if len(fieldValue.Children) > 0 {
-		platArr := ConvertNestedFieldToPlatArr(fieldValue)
-		arr = append(arr, platArr...)
-	} else {
-		arr = append(arr, fieldValue.Values...)
-	}
-
-	return arr
-}
-
-func ConvertNestedFieldToPlatArr(fieldValue model.FieldValue) []interface{} {
-	arr := make([]interface{}, 0)
-
-	for _, child := range fieldValue.Children {
-		if child.Level == 0 {
-
-		}
-	}
-
-	return arr
 }
 
 func GetFieldValStr(field model.Field, val interface{}) string {

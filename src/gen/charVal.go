@@ -1,9 +1,7 @@
 package gen
 
 import (
-	"fmt"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"math/rand"
 )
 
@@ -43,7 +41,6 @@ func GenerateByteItemsRand(start byte, end byte, step int) []interface{} {
 
 	for i := 0; i < genCount; {
 		ran := rand.Intn(genCount)
-		logUtils.Screen(fmt.Sprintf("=== %d", ran))
 		val := start + byte(ran)
 
 		arr = append(arr, val)
