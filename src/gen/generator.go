@@ -97,10 +97,10 @@ func GenerateFieldItems(field *model.Field, total int) model.FieldValue {
 	fieldValue := model.FieldValue{}
 
 	switch datatype {
-	case constant.LIST.String():
-		fieldValue = GenerateList(field, total)
+		case constant.LIST.String():
+			fieldValue = GenerateList(field, total)
 
-	default:
+		default:
 	}
 
 	return fieldValue
