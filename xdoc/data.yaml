@@ -59,7 +59,7 @@ fields:
         prefix: '['
         postfix: ']'
         loop: 3
-        loopfix: |
+        loopfix: '|'
       - name: field9.2
         type: list
         range: A-Z
