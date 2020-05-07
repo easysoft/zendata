@@ -62,6 +62,7 @@ func GenerateForField(field *model.Field, total int) []string {
 				concat = concat + row[i]
 			}
 
+			concat = field.Prefix + concat + field.Postfix
 			values = append(values, concat)
 		}
 	}

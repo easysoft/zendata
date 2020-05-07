@@ -56,20 +56,22 @@ fields:
       - name: field9.1
         type: list
         range: a-z
-        postfix: '='
+        prefix: '['
+        postfix: ']'
         loop: 3
         loopfix: |
       - name: field9.2
         type: list
         range: A-Z
-        prefix: part2_
-        postfix: '-'
+        prefix: '['
+        postfix: ']'
       - name: field9.3
-        prefix: part3_
-        postfix: ''
+        prefix: '['
+        postfix: ']'
         fields:
           - name: field9.3.1
             type: list
-            prefix: int_
+            range: X-Z
+          - name: field9.3.2
+            type: list
             range: 10-20
-            postfix: '|'
