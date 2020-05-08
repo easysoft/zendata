@@ -82,6 +82,11 @@ func GenerateFieldValuesFromList(field *model.Field, fieldValue *model.FieldValu
 			items = GenerateFloatItems(startFloat, endFloat, step.(float64), rand)
 		} else if dataType == "char" {
 			items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, rand)
+		} else if dataType == "string" {
+			items = append(items, startStr)
+			if startStr != endStr {
+				items = append(items, endStr)
+			}
 		}
 
 		fieldValue.Values = append(fieldValue.Values, items...)
@@ -203,5 +208,5 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 		}
 	}
 
-	return "", 0, 0, rand
+	return "string", 1, 0, false
 }

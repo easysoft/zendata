@@ -49,28 +49,29 @@ fields:
   - name: field3.2
     note: 从文件读数据
     fields:
+    - name: domain
+      note: 字面常量
+      type: list
+      range: MY_,1-2
+    - name: domain
+      note: 域名，全局定义
+      type: custom
     - name: custom_field
       note: 从文件读定义
       type: custom
       range: custom.yaml
-    - name: domain
-      note: 域名，全局定义
-      type: custom
 
   - name: field4
     note: 引用。
     type: list
     range: ${user_name}${numb}@${domain}.com
-    expect: aaron@gmail.com
   - name: user_name
     note: 用户名
     fields:
     - name: first_name
       type: custom
-      range: buildin.yaml
     - name: last_name
       type: custom
-      range: buildin.yaml
   - name: numb
     type: custom
     range: custom.yaml
