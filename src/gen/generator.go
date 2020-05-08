@@ -186,12 +186,14 @@ func GetFieldValStr(field model.Field, val interface{}) string {
 }
 
 func convertFieldReferToNestedIfNeeded(field *model.Field) {
+	// ${user_name}_${numb}@${domain}
 	regx := regexp.MustCompile(`\$\{([a-zA-z0-9_]+)\}`)
-	arr := regx.FindAllStringSubmatch(field.Range, -1)
-	fmt.Println(arr)
+	arrOfName := regx.FindAllStringSubmatch(field.Range, -1)
+	fmt.Println(arrOfName)
 
-	if len(arr) > 0 {
-		for _, a := range arr {
+	if len(arrOfName) > 0 {
+		for _, a := range arrOfName {
+			nameWapper := a[0]
 			name := a[1]
 
 			child := model.Field{}
