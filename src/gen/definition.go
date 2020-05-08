@@ -6,6 +6,7 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"strings"
 )
 
 func LoadDefinitionFromFile(file string) {
@@ -23,7 +24,7 @@ func LoadDefinitionFromFile(file string) {
 		return
 	}
 
-	if constant.Definition.Title == "" { // only add the fields in first level yaml file
+	if strings.Index(file, "conf") != 0 && constant.Definition.Title == "" { // only add the fields in first level yaml file
 		constant.Definition = def
 	}
 

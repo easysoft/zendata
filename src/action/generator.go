@@ -14,8 +14,8 @@ import (
 func Generate(file string, total int, fieldsToExport string, out string, table string) {
 	constant.ResDir = filepath.Dir(file) + string(os.PathSeparator)
 
-	gen.LoadDefinitionFromFile(file)
 	gen.LoadDefinitionFromFile("conf/buildin.yaml")
+	gen.LoadDefinitionFromFile(file)
 
 	rows := gen.GenerateForDefinition(total, fieldsToExport, out, table)
 	Print(rows)

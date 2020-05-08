@@ -54,7 +54,7 @@ fields:
       type: custom
       range: custom.yaml
     - name: domain
-      note: 域名
+      note: 域名，全局定义
       type: custom
 
   - name: field4
