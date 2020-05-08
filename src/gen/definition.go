@@ -25,9 +25,9 @@ func LoadDefinitionFromFile(file string) {
 
 	if constant.Definition.Title == "" { // only add the fields in first level yaml file
 		constant.Definition = def
-	} else {
-		for _, field := range def.Fields {
-			constant.LoadedFields[field.Name] = field // add to a map
-		}
+	}
+
+	for _, field := range def.Fields {
+		constant.LoadedFields[field.Name] = field // add to a map
 	}
 }

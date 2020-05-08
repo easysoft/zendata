@@ -3,6 +3,8 @@ package gen
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"io/ioutil"
 	"strconv"
 	"strings"
 )
@@ -25,7 +27,6 @@ func GenerateListField(field *model.Field, fieldValue *model.FieldValue, level i
 		GenerateFieldValues(field, fieldValue, level)
 	}
 }
-
 func GenerateFieldChildren(field *model.Field, fieldValue *model.FieldValue, level int) {
 	for _, child := range field.Fields {
 		childValue := model.FieldValue{}
@@ -36,9 +37,17 @@ func GenerateFieldChildren(field *model.Field, fieldValue *model.FieldValue, lev
 }
 
 func GenerateFieldValues(field *model.Field, fieldValue *model.FieldValue, level int) {
-	rang := strings.TrimSpace(field.Range)
-	rangeItems := strings.Split(rang, ",")
+	if strings.Index(field.Range, ".txt") > -1 {
+		GenerateFieldValuesFromText(field, fieldValue, level)
+	} else {
+		GenerateFieldValuesFromList(field, fieldValue, level)
+	}
+}
 
+func GenerateFieldValuesFromList(field *model.Field, fieldValue *model.FieldValue, level int) {
+	rang := strings.TrimSpace(field.Range)
+
+	rangeItems := strings.Split(rang, ",")
 	index := 0
 	for _, item := range rangeItems {
 		if index >= constant.MaxNumb { break }
@@ -76,6 +85,52 @@ func GenerateFieldValues(field *model.Field, fieldValue *model.FieldValue, level
 
 		fieldValue.Values = append(fieldValue.Values, items...)
 		index = index + len(items)
+	}
+}
+
+func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValue, level int) {
+	// get file and step string
+	rang := strings.TrimSpace(field.Range)
+	sectionArr := strings.Split(rang, ":")
+	file := sectionArr[0]
+	stepStr := "1"
+	if len(sectionArr) == 2 { stepStr = sectionArr[1] }
+
+	// read from file
+	list := make([]string, 0)
+	content, err := ioutil.ReadFile(constant.ResDir + file)
+	if err != nil {
+		logUtils.Screen("fail to read " + file)
+		return
+	}
+	str := string(content)
+	str = strings.Replace(str, "\\r\\n", "\\n", -1)
+	list = strings.Split(str, "\n")
+
+	// get step and rand
+	rand := false
+	step := 1
+	if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
+		stepInt, err := strconv.Atoi(stepStr)
+		if err == nil {
+			step = stepInt
+		}
+	} else {
+		rand = true
+	}
+
+	// get index for data retrieve
+	numbs := GenerateIntItems(0, (int64)(len(list) - 1), step, rand)
+	// get data by index
+	index := 0
+	for _, numb := range numbs {
+		item := list[numb.(int64)]
+
+		if index >= constant.MaxNumb { break }
+		if strings.TrimSpace(item) == "" { continue }
+
+		fieldValue.Values = append(fieldValue.Values, item)
+		index = index + 1
 	}
 }
 

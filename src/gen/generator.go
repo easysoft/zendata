@@ -3,9 +3,7 @@ package gen
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
-	"io/ioutil"
 	"strconv"
 	"strings"
 )
@@ -51,12 +49,9 @@ func GenerateForField(field *model.Field,  total int) []string {
 
 	values := make([]string, 0)
 
-	if field.Type == "custom" && field.Range != "" { // customized
-		LoadDefinitionFromFile(field.Range)
-		values = GenerateFieldItemsFromDefinition(field, total)
-
-	} else if strings.Index(field.Range, ".txt:") > -1  { // load list from file
-		values = GenerateFieldItemsFromTextFile(field.Range, total)
+	if field.Type == "custom" && field.Range != "" { // load customized from file
+		//LoadDefinitionFromFile(field.Range)
+		//values = GenerateFieldItemsFromDefinition(field, total)
 
 	} else if len(field.Fields) > 0 { // nested definition
 		arr := make([][]string, 0)
@@ -79,21 +74,6 @@ func GenerateForField(field *model.Field,  total int) []string {
 	}
 
 	return values
-}
-
-func GenerateFieldItemsFromTextFile(file string, total int) []string {
-	list := make([]string, 0)
-
-	content, err := ioutil.ReadFile(file)
-	if err != nil {
-		logUtils.Screen("fail to read " + file)
-		return list
-	}
-
-	str := string(content)
-	str = strings.Replace(str, "\\r\\n", "\\n", -1)
-	list = strings.Split(str, "\\n")
-	return list
 }
 
 func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
@@ -189,6 +169,8 @@ func GetFieldValStr(field model.Field, val interface{}) string {
 			if !success {
 				str = string(val.(byte))
 			}
+		case string:
+			str = val.(string)
 		default:
 	}
 

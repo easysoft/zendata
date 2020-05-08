@@ -16,40 +16,6 @@ fields:
     expect: 1,2,3...,10,20,21,22...,25,27,29.30
 
   - name: field2
-    type: list
-    range: ${user_name}@${domain}.com
-    expect: aaron@gmail.com
-    note: 测试引用和组合，含內置、同文件、列表文件、组合等特性。
-  - name: user_name
-    note: 用户名
-    fields:
-    - name: first_name
-      note: 用户名
-      type: custom
-      config: buildin.yaml
-    - name: last_name
-      note: 用户名
-      type: custom
-      range: buildin.yaml
-  - name: domain
-    note: 域名
-    type: custom
-    range: buildin.yaml
-
-  - name: field6
-    type: custom
-    config: custom.yaml
-  - name: field7
-    note: 复合字段的某一个字段，指定查询条件。
-    type: user.name
-    range: age>10
-  - name: field8
-    note: 复合字段取多个字段。
-    type: user
-    range: age>10
-    format: $name-$age-$sex
-
-  - name: field9
     note: 嵌套的字段
     fields:
       - name: field9.1
@@ -74,3 +40,36 @@ fields:
           - name: field9.3.2
             type: list
             range: 10-20
+
+  - name: field3
+    note: 域名
+    type: list
+    range: list.txt:R
+
+  - name: field4
+    note: 引用。
+    type: list
+    range: ${user_name}${numb}@${domain}.com
+    expect: aaron@gmail.com
+  - name: user_name
+    note: 用户名
+    fields:
+    - name: first_name
+      type: custom
+      range: buildin.yaml
+    - name: last_name
+      type: custom
+      range: buildin.yaml
+  - name: numb
+    type: custom
+    range: custom.yaml
+
+  - name: field5
+    note: 复合字段的某一个字段，指定查询条件。
+    type: user.name
+    range: age>10
+  - name: field5
+    note: 复合字段取多个字段。
+    type: user
+    range: age>10
+    format: $name-$age-$sex

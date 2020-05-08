@@ -35,7 +35,7 @@ var (
 
 	CmdViewHeight = 10
 
-	MaxNumb = 1000000 // max number in array
+	MaxNumb = 100000 // max number in array
 
 	UnitTestType []string = []string{"junit", "testng", "phpunit", "pytest", "jtest", "cppunit", "gtest", "qtest"}
 	AutoTestType []string = []string{"selenium", "appium"}
@@ -44,6 +44,7 @@ var (
 	Power2 = 255 * 255
 	Power1 = 255
 
+	ResDir string = ""
 	Definition model.Definition = model.Definition{}
 	LoadedFields map[string]interface{} = map[string]interface{}{}
 )
