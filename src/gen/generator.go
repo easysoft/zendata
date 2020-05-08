@@ -47,8 +47,11 @@ func GenerateForDefinition(total int, fieldsToExport string, out string, table s
 func GenerateForField(field *model.Field,  total int) []string {
 	values := make([]string, 0)
 
-	if field.Type == "custom" && field.Range != "" { // load customized from file
-		LoadDefinitionFromFile(constant.ResDir + field.Range)
+	if field.Type == "custom" {
+		if field.Range != "" { // specific custom file
+			LoadDefinitionFromFile(constant.ResDir + field.Range)
+		}
+
 		referField := constant.LoadedFields[field.Name]
 		values = GenerateFieldItemsFromDefinition(&referField, total)
 

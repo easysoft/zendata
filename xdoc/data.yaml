@@ -46,10 +46,16 @@ fields:
     type: list
     range: list.txt:R
 
-  - name: custom_field
-    note: 从文件读定义
-    type: custom
-    range: custom.yaml
+  - name: field3.2
+    note: 从文件读数据
+    fields:
+    - name: custom_field
+      note: 从文件读定义
+      type: custom
+      range: custom.yaml
+    - name: domain
+      note: 域名
+      type: custom
 
   - name: field4
     note: 引用。

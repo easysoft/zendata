@@ -5,6 +5,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -86,6 +87,10 @@ func GenerateFieldValuesFromList(field *model.Field, fieldValue *model.FieldValu
 		fieldValue.Values = append(fieldValue.Values, items...)
 		index = index + len(items)
 	}
+
+	if len(fieldValue.Values) == 0 {
+		fieldValue.Values = append(fieldValue.Values, "N/A")
+	}
 }
 
 func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValue, level int) {
@@ -98,10 +103,19 @@ func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValu
 
 	// read from file
 	list := make([]string, 0)
-	content, err := ioutil.ReadFile(constant.ResDir + file)
+	relaPath := constant.ResDir + file
+	content, err := ioutil.ReadFile(relaPath)
 	if err != nil {
-		logUtils.Screen("fail to read " + file)
-		return
+		logUtils.Screen("fail to read " + relaPath)
+
+		relaPath = "conf" + string(os.PathSeparator) + file
+		content, err = ioutil.ReadFile(relaPath)
+		if err != nil {
+			logUtils.Screen("fail to read " + relaPath)
+
+			fieldValue.Values = append(fieldValue.Values, "N/A")
+			return
+		}
 	}
 	str := string(content)
 	str = strings.Replace(str, "\\r\\n", "\\n", -1)
@@ -131,6 +145,10 @@ func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValu
 
 		fieldValue.Values = append(fieldValue.Values, item)
 		index = index + 1
+	}
+
+	if len(fieldValue.Values) == 0 {
+		fieldValue.Values = append(fieldValue.Values, "N/A")
 	}
 }
 
