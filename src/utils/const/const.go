@@ -46,5 +46,5 @@ var (
 
 	ResDir string = ""
 	Definition model.Definition = model.Definition{}
-	LoadedFields map[string]interface{} = map[string]interface{}{}
+	LoadedFields map[string]model.Field = map[string]model.Field{}
 )

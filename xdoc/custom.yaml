@@ -1,0 +1,11 @@
+title: custom
+desc: 自定义数据
+author: zentao
+version: 1.0
+
+fields:
+  - name: custom_field
+    note: 自定义
+    type: list
+    range: 1-99:R
+    format: "%05d"

@@ -41,10 +41,15 @@ fields:
             type: list
             range: 10-20
 
-  - name: field3
-    note: 域名
+  - name: field3.1
+    note: 从文件读数据
     type: list
     range: list.txt:R
+
+  - name: custom_field
+    note: 从文件读定义
+    type: custom
+    range: custom.yaml
 
   - name: field4
     note: 引用。

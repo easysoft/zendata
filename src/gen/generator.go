@@ -45,13 +45,12 @@ func GenerateForDefinition(total int, fieldsToExport string, out string, table s
 }
 
 func GenerateForField(field *model.Field,  total int) []string {
-	if field.Loop == 0 {field.Loop = 1}
-
 	values := make([]string, 0)
 
 	if field.Type == "custom" && field.Range != "" { // load customized from file
-		//LoadDefinitionFromFile(field.Range)
-		//values = GenerateFieldItemsFromDefinition(field, total)
+		LoadDefinitionFromFile(constant.ResDir + field.Range)
+		referField := constant.LoadedFields[field.Name]
+		values = GenerateFieldItemsFromDefinition(&referField, total)
 
 	} else if len(field.Fields) > 0 { // nested definition
 		arr := make([][]string, 0)
@@ -77,6 +76,8 @@ func GenerateForField(field *model.Field,  total int) []string {
 }
 
 func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
+	if field.Loop == 0 {field.Loop = 1}
+
 	values := make([]string, 0)
 
 	// 整理出值的列表
