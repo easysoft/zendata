@@ -2,6 +2,7 @@ package constant
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/src/model"
 	"os"
 )
 
@@ -42,4 +43,7 @@ var (
 	Power3 = 255 * 255 * 255
 	Power2 = 255 * 255
 	Power1 = 255
+
+	Definition model.Definition = model.Definition{}
+	LoadedFields map[string]interface{} = map[string]interface{}{}
 )

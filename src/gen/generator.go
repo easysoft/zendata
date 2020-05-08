@@ -3,12 +3,16 @@ package gen
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"io/ioutil"
 	"strconv"
 	"strings"
 )
 
-func GenerateForDefinition(def *model.Definition, total int, fieldsToExport string, out string, table string) [][]string {
+func GenerateForDefinition(total int, fieldsToExport string, out string, table string) [][]string {
+	def := constant.Definition
+
 	fieldsToExportArr := strings.Split(fieldsToExport, ",")
 	fieldNameToValues := map[string][]string{}
 
@@ -42,14 +46,19 @@ func GenerateForDefinition(def *model.Definition, total int, fieldsToExport stri
 	return rows
 }
 
-func GenerateForField(field *model.Field, total int) []string {
+func GenerateForField(field *model.Field,  total int) []string {
 	if field.Loop == 0 {field.Loop = 1}
 
 	values := make([]string, 0)
 
-	if len(field.Fields) == 0 {
-		values = GenerateForFieldLevel(field, total)
-	} else {
+	if field.Type == "custom" && field.Range != "" { // customized
+		LoadDefinitionFromFile(field.Range)
+		values = GenerateFieldItemsFromDefinition(field, total)
+
+	} else if strings.Index(field.Range, ".txt:") > -1  { // load list from file
+		values = GenerateFieldItemsFromTextFile(field.Range, total)
+
+	} else if len(field.Fields) > 0 { // nested definition
 		arr := make([][]string, 0)
 		for _, child := range field.Fields {
 			childValues := GenerateForField(&child, total)
@@ -65,15 +74,43 @@ func GenerateForField(field *model.Field, total int) []string {
 			concat = field.Prefix + concat + field.Postfix
 			values = append(values, concat)
 		}
+	} else {
+		values = GenerateFieldItemsFromDefinition(field, total)
 	}
 
 	return values
 }
-func GenerateForFieldLevel(field *model.Field, total int) []string {
+
+func GenerateFieldItemsFromTextFile(file string, total int) []string {
+	list := make([]string, 0)
+
+	content, err := ioutil.ReadFile(file)
+	if err != nil {
+		logUtils.Screen("fail to read " + file)
+		return list
+	}
+
+	str := string(content)
+	str = strings.Replace(str, "\\r\\n", "\\n", -1)
+	list = strings.Split(str, "\\n")
+	return list
+}
+
+func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
 	values := make([]string, 0)
 
 	// 整理出值的列表
-	fieldValue := GenerateFieldItems(field, total)
+	datatype := strings.TrimSpace(field.Type)
+	if datatype == "" { datatype = "list" }
+
+	fieldValue := model.FieldValue{}
+
+	switch datatype {
+	case constant.LIST.String():
+		fieldValue = GenerateList(field, total)
+
+	default:
+	}
 
 	index := 0
 	count := 0
@@ -89,22 +126,6 @@ func GenerateForFieldLevel(field *model.Field, total int) []string {
 	}
 
 	return values
-}
-
-func GenerateFieldItems(field *model.Field, total int) model.FieldValue {
-	datatype := strings.TrimSpace(field.Type)
-	if datatype == "" { datatype = "list" }
-
-	fieldValue := model.FieldValue{}
-
-	switch datatype {
-		case constant.LIST.String():
-			fieldValue = GenerateList(field, total)
-
-		default:
-	}
-
-	return fieldValue
 }
 
 func GenerateFieldValWithLoop(field model.Field, fieldValue model.FieldValue, indexOfRow *int) string {
@@ -173,4 +194,3 @@ func GetFieldValStr(field model.Field, val interface{}) string {
 
 	return str
 }
-

@@ -6,25 +6,12 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
 	"strconv"
 )
 
 func Generate(file string, total int, fieldsToExport string, out string, table string) {
 	definition := model.Definition{}
-
-	yamlContent, err := ioutil.ReadFile(file)
-	if err != nil {
-		logUtils.Screen("fail to read " + file)
-		return
-	}
-
-	err = yaml.Unmarshal(yamlContent, &definition)
-	if err != nil {
-		logUtils.Screen("fail to parse " + file)
-		return
-	}
+	gen.LoadDefinitionFromFile(file, &definition)
 
 	rows := gen.GenerateForDefinition(&definition, total, fieldsToExport, out, table)
 	Print(rows)

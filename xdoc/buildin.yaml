@@ -1,0 +1,24 @@
+title: buildin
+desc: 內置数据
+author: zentao
+version: 1.0
+
+fields:
+  - name: domain
+    note: 域名
+    type: list
+    range: domain.txt:R
+  - name: first_name
+    note: 英文名
+    type: list
+    loop: 6
+    prefix: user_
+    expect:
+
+  - name: last_name
+    note: 英文姓
+    type: custom
+    config: custom.yaml
+    loop: 6
+    prefix: user_
+    expect:
