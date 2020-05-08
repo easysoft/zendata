@@ -56,7 +56,7 @@ fields:
     - name: domain
       note: 域名，全局定义
       type: custom
-    - name: custom_field
+    - name: numb
       note: 从文件读定义
       type: custom
       range: custom.yaml
@@ -64,12 +64,15 @@ fields:
   - name: field4
     note: 引用。
     type: list
-    range: ${user_name}${numb}@${domain}.com
+    range: ${user_name}_${numb}@${domain}
   - name: user_name
     note: 用户名
     fields:
     - name: first_name
       type: custom
+    - name: separator
+      type: list
+      range: "_"
     - name: last_name
       type: custom
   - name: numb

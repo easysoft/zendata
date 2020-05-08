@@ -1,9 +1,11 @@
 package gen
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -45,6 +47,8 @@ func GenerateForDefinition(total int, fieldsToExport string, out string, table s
 }
 
 func GenerateForField(field *model.Field,  total int) []string {
+	convertFieldReferToNestedIfNeeded(field)
+
 	values := make([]string, 0)
 
 	if field.Type == "custom" {
@@ -179,4 +183,26 @@ func GetFieldValStr(field model.Field, val interface{}) string {
 	}
 
 	return str
+}
+
+func convertFieldReferToNestedIfNeeded(field *model.Field) {
+	regx := regexp.MustCompile(`\$\{([a-zA-z0-9_]+)\}`)
+	arr := regx.FindAllStringSubmatch(field.Range, -1)
+	fmt.Println(arr)
+
+	if len(arr) > 0 {
+		for _, a := range arr {
+			name := a[1]
+
+			child := model.Field{}
+			if constant.LoadedFields[name].Name != "" {
+				child = constant.LoadedFields[name]
+			} else {
+				child.Name = a[1]
+				child.Type = "custom"
+			}
+
+			field.Fields = append(field.Fields, child)
+		}
+	}
 }

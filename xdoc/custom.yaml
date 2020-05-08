@@ -4,8 +4,8 @@ author: zentao
 version: 1.0
 
 fields:
-  - name: custom_field
-    note: 自定义
+  - name: numb
+    note: 数字
     type: list
     range: 1-99:R
-    format: "%05d"
+    format: "%03d"
