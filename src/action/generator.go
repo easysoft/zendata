@@ -3,17 +3,15 @@ package action
 import (
 	"fmt"
 	"github.com/easysoft/zendata/src/gen"
-	"github.com/easysoft/zendata/src/model"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"strconv"
 )
 
 func Generate(file string, total int, fieldsToExport string, out string, table string) {
-	definition := model.Definition{}
-	gen.LoadDefinitionFromFile(file, &definition)
+	gen.LoadDefinitionFromFile(file)
 
-	rows := gen.GenerateForDefinition(&definition, total, fieldsToExport, out, table)
+	rows := gen.GenerateForDefinition(total, fieldsToExport, out, table)
 	Print(rows)
 }
 
