@@ -1,7 +1,6 @@
 package gen
 
 import (
-	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -189,12 +188,20 @@ func convertFieldReferToNestedIfNeeded(field *model.Field) {
 	// ${user_name}_${numb}@${domain}
 	regx := regexp.MustCompile(`\$\{([a-zA-z0-9_]+)\}`)
 	arrOfName := regx.FindAllStringSubmatch(field.Range, -1)
-	fmt.Println(arrOfName)
 
 	if len(arrOfName) > 0 {
-		for _, a := range arrOfName {
-			nameWapper := a[0]
+		strLeft := field.Range
+		for index, a := range arrOfName {
+			found := a[0]
 			name := a[1]
+
+			arr := strings.Split(strLeft, found)
+
+			// add string constant
+			if arr[0] != "" {
+				strChild := model.Field{Name: "child-" + strconv.Itoa(index), Type: "list", Range: arr[0]}
+				field.Fields = append(field.Fields, strChild)
+			}
 
 			child := model.Field{}
 			if constant.LoadedFields[name].Name != "" {
@@ -205,6 +212,15 @@ func convertFieldReferToNestedIfNeeded(field *model.Field) {
 			}
 
 			field.Fields = append(field.Fields, child)
+
+			arr = arr[1:]
+			strLeft = strings.Join(arr, "")
+
+			if index == len(arrOfName) - 1 && strLeft != "" {
+				// add string constant
+				strChild := model.Field{Name: "child-" + strconv.Itoa(index), Type: "list", Range: strLeft}
+				field.Fields = append(field.Fields, strChild)
+			}
 		}
 	}
 }

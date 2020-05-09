@@ -111,16 +111,20 @@ func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValu
 	relaPath := constant.ResDir + file
 	content, err := ioutil.ReadFile(relaPath)
 	if err != nil {
-		logUtils.Screen("fail to read " + relaPath)
+		logUtils.Screen("fail to read " + relaPath + ", try to use global config")
 
 		relaPath = "conf" + string(os.PathSeparator) + file
 		content, err = ioutil.ReadFile(relaPath)
 		if err != nil {
-			logUtils.Screen("fail to read " + relaPath)
+			logUtils.Screen("fail to read " + relaPath + ", will return")
 
 			fieldValue.Values = append(fieldValue.Values, "N/A")
 			return
+		} else {
+			logUtils.Screen("success to read " + relaPath)
 		}
+	} else {
+		logUtils.Screen("success to read " + relaPath)
 	}
 	str := string(content)
 	str = strings.Replace(str, "\\r\\n", "\\n", -1)
