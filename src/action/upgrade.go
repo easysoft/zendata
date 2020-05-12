@@ -29,10 +29,10 @@ func Upgrade() {
 		var parentCode int
 		var areaCode int
 		var zipCode int
-		var cityCode int
+		var cityCode string
 		var name string
 
-		err = rows.Scan(&id, &level, &parentCode, &areaCode, zipCode, cityCode, name)
+		err = rows.Scan(&id, &level, &parentCode, &areaCode, &zipCode, &cityCode, &name)
 		if err != nil {
 			logUtils.Screen("fail to get sqlite3 row")
 			return

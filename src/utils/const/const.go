@@ -49,5 +49,5 @@ var (
 	LoadedFields map[string]model.Field = map[string]model.Field{}
 
 	SqliteDriver string = "sqlite3"
-	SqliteSource string = "file:def/data/data.sqlite3"
+	SqliteSource string = "file:def/data/data.db"
 )
