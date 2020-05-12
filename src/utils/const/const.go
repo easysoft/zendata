@@ -48,6 +48,11 @@ var (
 	Definition model.Definition = model.Definition{}
 	LoadedFields map[string]model.Field = map[string]model.Field{}
 
+	DataDir string = "def/data/"
 	SqliteDriver string = "sqlite3"
-	SqliteSource string = "file:def/data/data.db"
+	SqliteSource string = "file:" + DataDir + "data.db"
+	ExcelFile string = DataDir + "data.xlsx"
+	ExcelBorder string = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
+		                              {"type":"bottom","color":"999999","style":1}, {"type":"right","color":"999999","style":1}]}`
+	ExcelHeader string = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`
 )

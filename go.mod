@@ -5,7 +5,7 @@ go 1.12
 require golang.org/x/text v0.3.2
 
 require (
-	github.com/360EntSecGroup-Skylar/excelize/v2 v2.2.0 // indirect
+	github.com/360EntSecGroup-Skylar/excelize/v2 v2.2.0
 	github.com/emirpasic/gods v1.12.0
 	github.com/fatih/color v1.9.0
 	github.com/mattn/go-runewidth v0.0.9
