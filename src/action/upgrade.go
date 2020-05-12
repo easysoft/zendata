@@ -11,6 +11,9 @@ import (
 )
 
 func Upgrade() {
+	// TODO: update date from remote server
+
+	// read data from db
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
 	if err != nil {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
@@ -43,6 +46,7 @@ func Upgrade() {
 		sqls = append(sqls, sql)
 	}
 
+	// update seq column
 	for _, sql := range sqls {
 		_, err := db.Exec(sql)
 		if err != nil {
