@@ -79,11 +79,17 @@ fields:
     type: custom
     range: custom.yaml
 
-  - name: field5
+  - name: id
+    note: 数字
+    type: list
+    range: 1-10000
+    isNumb: true
+
+  - name: field6
     note: 复合字段的某一个字段，指定查询条件。
     type: user.name
     range: age>10
-  - name: field5
+  - name: field7
     note: 复合字段取多个字段。
     type: user
     range: age>10

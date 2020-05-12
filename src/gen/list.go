@@ -113,7 +113,7 @@ func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValu
 	if err != nil {
 		logUtils.Screen("fail to read " + relaPath + ", try to use global config")
 
-		relaPath = "conf" + string(os.PathSeparator) + file
+		relaPath = "def" + string(os.PathSeparator) + file
 		content, err = ioutil.ReadFile(relaPath)
 		if err != nil {
 			logUtils.Screen("fail to read " + relaPath + ", will return")

@@ -19,6 +19,7 @@ type Field struct {
 	Loop  int  `yaml:"loop"`
 	Loopfix  string  `yaml:"loopfix"`
 	Format  string  `yaml:"format"`
+	IsNumb  bool  `yaml:"isNumb"`
 	Expect  string  `yaml:"expect"`
 	Fields   []Field `yaml:"fields,flow"`
 

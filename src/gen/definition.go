@@ -24,7 +24,7 @@ func LoadDefinitionFromFile(file string) {
 		return
 	}
 
-	if strings.Index(file, "conf") != 0 && constant.Definition.Title == "" { // only add the fields in first level yaml file
+	if strings.Index(file, "def") != 0 && constant.Definition.Title == "" { // only add the fields in first level yaml file
 		constant.Definition = def
 	}
 

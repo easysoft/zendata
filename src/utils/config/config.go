@@ -36,7 +36,7 @@ func InitScreenSize() {
 }
 
 func SaveConfig(conf model.Config) error {
-	fileUtils.MkDirIfNeeded(fileUtils.GetZTFDir() + "conf")
+	fileUtils.MkDirIfNeeded(fileUtils.GetZTFDir() + "def")
 
 	conf.Version = constant.ConfigVer
 
@@ -105,7 +105,7 @@ func getInst() model.Config {
 func CheckConfigPermission() {
 	//err := syscall.Access(vari.ZDataDir, syscall.O_RDWR)
 
-	err := fileUtils.MkDirIfNeeded(vari.ZDataDir + "conf")
+	err := fileUtils.MkDirIfNeeded(vari.ZDataDir + "def")
 	if err != nil {
 		logUtils.PrintToWithColor(
 			fmt.Sprintf("Permission denied to open %s for write. Please change work dir.", vari.ZDataDir), color.FgRed)

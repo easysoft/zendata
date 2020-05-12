@@ -8,7 +8,7 @@ import (
 
 var (
 	ConfigVer  = 1
-	ConfigFile = fmt.Sprintf("conf%szdata.conf", string(os.PathSeparator))
+	ConfigFile = fmt.Sprintf("def%szdata.conf", string(os.PathSeparator))
 
 	UrlZentaoSettings = "zentaoSettings"
 	UrlImportProject  = "importProject"
@@ -47,4 +47,7 @@ var (
 	ResDir string = ""
 	Definition model.Definition = model.Definition{}
 	LoadedFields map[string]model.Field = map[string]model.Field{}
+
+	SqliteDriver string = "sqlite3"
+	SqliteSource string = "file:def/data/data.sqlite3"
 )

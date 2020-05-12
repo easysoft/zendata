@@ -9,11 +9,13 @@ import (
 	"strings"
 )
 
-func GenerateForDefinition(total int, fieldsToExport string, out string, table string) [][]string {
+func GenerateForDefinition(total int, fieldsToExport string, out string, table string) ([][]string, []bool) {
 	def := constant.Definition
 
 	fieldsToExportArr := strings.Split(fieldsToExport, ",")
 	fieldNameToValues := map[string][]string{}
+
+	colTypes := make([]bool, 0)
 
 	// 为每个field生成值列表
 	for index, field := range def.Fields {
@@ -25,6 +27,7 @@ func GenerateForDefinition(total int, fieldsToExport string, out string, table s
 		def.Fields[index].Precision = field.Precision
 
 		fieldNameToValues[field.Name] = values
+		colTypes = append(colTypes, field.IsNumb)
 	}
 
 	// 生成指定数量行的数据
@@ -42,7 +45,7 @@ func GenerateForDefinition(total int, fieldsToExport string, out string, table s
 		}
 	}
 
-	return rows
+	return rows, colTypes
 }
 
 func GenerateForField(field *model.Field,  total int) []string {

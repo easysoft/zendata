@@ -1,8 +1,11 @@
 package action
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"github.com/easysoft/zendata/src/gen"
+	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -11,29 +14,68 @@ import (
 	"strconv"
 )
 
-func Generate(file string, total int, fieldsToExport string, out string, table string) {
-	constant.ResDir = filepath.Dir(file) + string(os.PathSeparator)
+func Generate(def string, total int, fieldsToExport string, out string, format string, table string) {
+	constant.ResDir = filepath.Dir(def) + string(os.PathSeparator)
 
-	gen.LoadDefinitionFromFile("conf/buildin.yaml")
-	gen.LoadDefinitionFromFile(file)
+	gen.LoadDefinitionFromFile("def/buildin.yaml")
+	gen.LoadDefinitionFromFile(def)
 
-	rows := gen.GenerateForDefinition(total, fieldsToExport, out, table)
-	Print(rows)
+	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport, out, table)
+	content := Print(rows, format, table, colTypes, fieldsToExport)
+
+	WriteToFile(out, content)
 }
 
-func Print(rows [][]string) {
+func Print(rows [][]string, format string, table string, colTypes []bool, fields string) string {
 	width := stringUtils.GetNumbWidth(len(rows))
+
+	content := ""
+	sql := ""
+
+	testData := model.TestData{}
+	testData.Title = "测试数据"
 
 	for i, cols := range rows {
 		line := ""
+		row := model.Row{}
+		valueList := ""
+
 		for j, col := range cols {
 			if j >0 {
 				line = line + ", "
+				valueList = valueList + ", "
 			}
 			line = line + col
+
+			row.Cols = append(row.Cols, col)
+
+			colVal := col
+			if !colTypes[j] { colVal = "'" + colVal + "'" }
+			valueList = valueList + colVal
 		}
+
+		if format == "text" && i < len(rows) - 1 { content = content + line + "\n" }
 
 		idStr := fmt.Sprintf("%" + strconv.Itoa(width) + "d", i+1)
 		logUtils.Screen(fmt.Sprintf("%s: %s", idStr, line))
+
+		testData.Table.Rows = append(testData.Table.Rows, row)
+
+		if format == "sql" {
+			sent := fmt.Sprintf("INSERT INTO %s(%s) VALUES(%s)", table, fields, valueList)
+			sql = sql + sent + ";\n"
+		}
 	}
+
+	if format == "json" {
+		json, _ := json.Marshal(rows)
+		content = string(json)
+	} else if format == "xml" {
+		xml, _ := xml.Marshal(testData)
+		content = string(xml)
+	} else if format == "sql" {
+		content = sql
+	}
+
+	return content
 }

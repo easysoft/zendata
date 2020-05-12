@@ -14,12 +14,13 @@ import (
 var (
 	language string
 
-	file  string
-	count int
+	def    string
+	count  int
 	fields string
-	parse bool
+	parse  bool
 
 	out   string
+	format string
 	table string
 	help  bool
 
@@ -37,8 +38,8 @@ func main() {
 
 	flagSet = flag.NewFlagSet("zdata", flag.ContinueOnError)
 
-	flagSet.StringVar(&file, "f", "", "")
-	flagSet.StringVar(&file, "file", "", "")
+	flagSet.StringVar(&def, "d", "", "")
+	flagSet.StringVar(&def, "def", "", "")
 
 	flagSet.IntVar(&count, "c", 10, "")
 	flagSet.IntVar(&count, "count", 10, "")
@@ -54,6 +55,9 @@ func main() {
 	flagSet.StringVar(&table, "t", "", "")
 	flagSet.StringVar(&table, "table", "", "")
 
+	flagSet.StringVar(&format, "f", "", "")
+	flagSet.StringVar(&format, "format", "", "")
+
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")
 
@@ -66,6 +70,8 @@ func main() {
 		gen(os.Args)
 	case "set", "-set":
 		action.Set()
+	case "upgrade":
+		upgrade(os.Args)
 	case "help", "-h":
 		logUtils.PrintUsage()
 
@@ -81,9 +87,15 @@ func main() {
 	}
 }
 
+func upgrade(args []string) {
+	if err := flagSet.Parse(args[2:]); err == nil {
+		action.Upgrade()
+	}
+}
+
 func gen(args []string) {
 	if err := flagSet.Parse(args[2:]); err == nil {
-		action.Generate(file, count, fields, out, table)
+		action.Generate(def, count, fields, out, format, table)
 	}
 }
 
