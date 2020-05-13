@@ -12,9 +12,12 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 )
 
 func Generate(def string, total int, fieldsToExport string, out string, format string, table string) {
+	startTime := time.Now().Unix()
+
 	constant.ResDir = filepath.Dir(def) + string(os.PathSeparator)
 
 	gen.LoadDefinitionFromFile("def/buildin.yaml")
@@ -24,6 +27,10 @@ func Generate(def string, total int, fieldsToExport string, out string, format s
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
 	WriteToFile(out, content)
+
+	entTime := time.Now().Unix()
+	logUtils.Screen(fmt.Sprintf("Genereate %d records, spend %d secs",
+		len(rows), entTime - startTime ))
 }
 
 func Print(rows [][]string, format string, table string, colTypes []bool, fields string) string {
