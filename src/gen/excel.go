@@ -7,6 +7,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -150,6 +151,7 @@ func ReadDataSQLite(field model.Field) []string {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
 		return list
 	}
+	field.Filter = replaceDotInTableName(field.Filter)
 
 	rows, err := db.Query(field.Filter)
 	if err != nil {
@@ -157,17 +159,90 @@ func ReadDataSQLite(field model.Field) []string {
 		return list
 	}
 
-	for rows.Next() {
-		var val string
+	valMapArr := make([]map[string]string, 0)
+	columns, err := rows.Columns()
+	colNum := len(columns)
 
-		err = rows.Scan(&val)
+	colIndexToName := map[int]string{}
+	for index, col := range columns {
+		colIndexToName[index] = col
+	}
+
+	var values = make([]interface{}, colNum)
+	for i, _ := range values {
+		var itf string
+		values[i] = &itf
+	}
+
+	for rows.Next() {
+		err = rows.Scan(values...)
 		if err != nil {
 			logUtils.Screen("fail to get sqlite3 row: " + err.Error())
 			return list
 		}
 
-		list = append(list, val)
+		rowMap := map[string]string{}
+		for index, v := range values {
+			item := v.(*string)
+
+			rowMap[colIndexToName[index]] = *item
+		}
+
+		valMapArr = append(valMapArr, rowMap)
+	}
+
+	format := field.Format
+	for _, item := range valMapArr {
+		line := replacePlaceholderWithValue(format,item)
+		list = append(list, line)
 	}
 
 	return list
+}
+
+func replacePlaceholderWithValue(format string, valMap map[string]string) string {
+	// ${user_name}_${numb}@${domain}
+	regx := regexp.MustCompile(`\$\{([a-zA-z0-9_]+)\}`)
+	arrOfName := regx.FindAllStringSubmatch(format, -1)
+
+	ret := ""
+	if len(arrOfName) > 0 {
+		strLeft := format
+		for index, a := range arrOfName {
+			found := a[0]
+			name := a[1]
+
+			arr := strings.Split(strLeft, found)
+
+			// add string constant
+			if arr[0] != "" {
+				ret = ret + arr[0]
+			}
+
+			ret = ret + valMap[name]
+
+			arr = arr[1:]
+			strLeft = strings.Join(arr, "")
+
+			if index == len(arrOfName) - 1 && strLeft != "" { // add last item in arr
+				ret = ret + strLeft
+			}
+		}
+	}
+
+	return ret
+}
+
+func replaceDotInTableName(str string) string {
+	ret := ""
+
+	str = strings.Replace(str," from ", " FROM ", -1)
+	str = strings.Replace(str," where ", " WHERE ", -1)
+
+	arr1 := strings.Split(str, " FROM ")
+	arr2 := strings.Split(arr1[1], " WHERE ")
+
+	ret = arr1[0] + " FROM " + strings.Replace(arr2[0],".", "_", -1) + " WHERE " + arr2[1]
+
+	return ret
 }

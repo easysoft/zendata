@@ -82,4 +82,5 @@ fields:
   - name: field6
     note: 复合字段的某一个字段，指定查询条件。
     type: address.city
-    range: select name from address_city where state like '%山东%'
+    format: ${seq}-${name}(${state})
+    range: select * from address.city where state like '%山东%'
