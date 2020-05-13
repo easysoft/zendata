@@ -31,8 +31,9 @@ func Upgrade() {
 
 	sqls := make([]string, 0)
 
-	sheet := "Sheet1"
+	sheet := "city"
 	excel := excelize.NewFile()
+	excel.SetSheetName("Sheet1", sheet)
 	headerData := []interface{}{"seq", "name", "state", "zipCode", "cityCode", "crc"}
 	colNumb := AddExcelRow(excel, sheet, 1, headerData)
 

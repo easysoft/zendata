@@ -53,15 +53,7 @@ func GenerateForField(field *model.Field,  total int) []string {
 
 	values := make([]string, 0)
 
-	if field.Type == "custom" {
-		if field.Range != "" { // specific custom file
-			LoadDefinitionFromFile(constant.ResDir + field.Range)
-		}
-
-		referField := constant.LoadedFields[field.Name]
-		values = GenerateFieldItemsFromDefinition(&referField, total)
-
-	} else if len(field.Fields) > 0 { // nested definition
+	if len(field.Fields) > 0 { // nested definition
 		arr := make([][]string, 0)
 		for _, child := range field.Fields {
 			childValues := GenerateForField(&child, total)
@@ -77,8 +69,22 @@ func GenerateForField(field *model.Field,  total int) []string {
 			concat = field.Prefix + concat + field.Postfix
 			values = append(values, concat)
 		}
-	} else {
+	} else if field.Type == "list" { // list type
 		values = GenerateFieldItemsFromDefinition(field, total)
+
+	} else if field.Type == "custom" { // custom type
+		if field.Range != "" { // specific custom file
+			LoadDefinitionFromFile(constant.ResDir + field.Range)
+		}
+
+		referField := constant.LoadedFields[field.Name]
+		values = GenerateFieldItemsFromDefinition(&referField, total)
+
+	} else {// other type like address.city
+		arr := strings.Split(field.Type, ".")
+		referField := constant.LoadedFields[arr[0]]
+
+		values = GenerateFieldItemsFromDefinition(&referField, total)
 	}
 
 	return values
@@ -95,12 +101,12 @@ func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
 
 	fieldValue := model.FieldValue{}
 
-	switch datatype {
-	case constant.LIST.String():
+	//switch datatype {
+	//case constant.LIST.String():
 		fieldValue = GenerateList(field, total)
-
-	default:
-	}
+	//
+	//default:
+	//}
 
 	index := 0
 	count := 0
