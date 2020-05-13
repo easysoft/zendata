@@ -17,13 +17,15 @@ func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldVal
 	sectionArr := strings.Split(rang, ":")
 	file := sectionArr[0]
 	stepStr := "1"
-	if len(sectionArr) == 2 { stepStr = sectionArr[1] }
+	if len(sectionArr) == 2 {
+		stepStr = sectionArr[1]
+	}
 
 	list := make([]string, 0)
 	path := constant.DataDir + file
 	ConvertExcelToSQLite(*field, path)
 
-	list = strings.Split("str" + path, "\n")
+	list = strings.Split("str"+path, "\n")
 
 	// get step and rand
 	rand := false
@@ -38,14 +40,18 @@ func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldVal
 	}
 
 	// get index for data retrieve
-	numbs := GenerateIntItems(0, (int64)(len(list) - 1), step, rand)
+	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand)
 	// get data by index
 	index := 0
 	for _, numb := range numbs {
 		item := list[numb.(int64)]
 
-		if index >= constant.MaxNumb { break }
-		if strings.TrimSpace(item) == "" { continue }
+		if index >= constant.MaxNumb {
+			break
+		}
+		if strings.TrimSpace(item) == "" {
+			continue
+		}
 
 		fieldValue.Values = append(fieldValue.Values, item)
 		index = index + 1
@@ -63,74 +69,80 @@ func ConvertExcelToSQLite(field model.Field, path string) {
 		return
 	}
 
-	sheet := excel.GetSheetName(0);
-	rows, err := excel.GetRows(sheet)
+	for _, sheet := range excel.GetSheetList() {
+		rows, err := excel.GetRows(sheet)
 
-	dropTemplate := `DROP TABLE IF EXISTS %s;`
-	ddlTemplate := `CREATE TABLE %s (
+		dropTemplate := `DROP TABLE IF EXISTS %s;`
+		ddlTemplate := `CREATE TABLE %s (
 						%s
 					);`
-	insertTemplate := "INSERT INTO %s (%s) VALUES %s"
+		insertTemplate := "INSERT INTO %s (%s) VALUES %s"
 
-	colDefine := ""
-	colList := ""
-	index := 0
-	for _, col := range rows[0] {
-		val := strings.TrimSpace(col)
-		if index > 0 {
-			colDefine = colDefine + ",\n"
-			colList = colList + ", "
+		colDefine := ""
+		colList := ""
+		index := 0
+		for _, col := range rows[0] {
+			val := strings.TrimSpace(col)
+			if index > 0 {
+				colDefine = colDefine + ",\n"
+				colList = colList + ", "
+			}
+
+			colProp := ""
+			if val == "seq" {
+				colProp = "CHAR (5) PRIMARY KEY ASC UNIQUE"
+			} else {
+				colProp = "VARCHAR"
+			}
+			colDefine = "    " + colDefine + val + " " + colProp
+
+			colList = colList + val
+			index++
 		}
 
-		colProp := ""
-		if val == "seq" {
-			colProp = "CHAR (5) PRIMARY KEY ASC UNIQUE"
-		} else {
-			colProp = "VARCHAR"
+		valList := ""
+		for rowIndex, row := range rows {
+			if rowIndex == 0 {
+				continue
+			}
+
+			if rowIndex > 1 {
+				valList = valList + ", "
+			}
+			valList = valList + "("
+
+			for colIndex, colCell := range row {
+				if colIndex > 0 {
+					valList = valList + ", "
+				}
+				valList = valList + "'" + colCell + "'"
+			}
+			valList = valList + ")"
 		}
-		colDefine = "    " +  colDefine + val + " " + colProp
 
-		colList = colList + val
-		index++
-	}
+		dropSql := fmt.Sprintf(dropTemplate, field.Name)
+		ddl := fmt.Sprintf(ddlTemplate, field.Name, colDefine)
+		insertSql := fmt.Sprintf(insertTemplate, field.Name, colList, valList)
 
-	valList := ""
-	for rowIndex, row := range rows {
-		if rowIndex == 0 { continue }
-
-		if rowIndex > 1 { valList = valList + ", " }
-		valList = valList + "("
-
-		for colIndex, colCell := range row {
-			if colIndex > 0 { valList = valList + ", " }
-			valList = valList + "'" + colCell + "'"
-		}
-		valList = valList + ")"
-	}
-
-	dropSql := fmt.Sprintf(dropTemplate, field.Name)
-	ddl := fmt.Sprintf(ddlTemplate, field.Name, colDefine)
-	insertSql := fmt.Sprintf(insertTemplate, field.Name, colList, valList)
-
-	db, err := sql.Open("sqlite3", constant.SqliteSource)
-	_, err = db.Exec(dropSql)
-	_, err = db.Exec(ddl)
-	if err != nil {
-		logUtils.Screen("fail to create table: " + err.Error())
-		return
-	} else {
-		_, err = db.Exec(insertSql)
+		db, err := sql.Open("sqlite3", constant.SqliteSource)
+		_, err = db.Exec(dropSql)
+		_, err = db.Exec(ddl)
 		if err != nil {
-			logUtils.Screen("fail to insert data: " + err.Error())
+			logUtils.Screen("fail to create table: " + err.Error())
 			return
+		} else {
+			_, err = db.Exec(insertSql)
+			if err != nil {
+				logUtils.Screen("fail to insert data: " + err.Error())
+				return
+			}
 		}
+
 	}
 }
 
 func ReadDataSQLite(table string) []string {
 	list := make([]string, 0)
-
-
 
 	return list
 }
