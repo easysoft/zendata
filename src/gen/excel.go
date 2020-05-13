@@ -25,7 +25,7 @@ func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldVal
 	path := constant.DataDir + file
 	ConvertExcelToSQLite(*field, path)
 
-	list = strings.Split("str"+path, "\n")
+	list = ReadDataSQLite(*field)
 
 	// get step and rand
 	rand := false
@@ -120,9 +120,10 @@ func ConvertExcelToSQLite(field model.Field, path string) {
 			valList = valList + ")"
 		}
 
-		dropSql := fmt.Sprintf(dropTemplate, field.Name)
-		ddl := fmt.Sprintf(ddlTemplate, field.Name, colDefine)
-		insertSql := fmt.Sprintf(insertTemplate, field.Name, colList, valList)
+		tableName := field.Name + "_" + sheet
+		dropSql := fmt.Sprintf(dropTemplate, tableName)
+		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
+		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
 
 		db, err := sql.Open("sqlite3", constant.SqliteSource)
 		_, err = db.Exec(dropSql)
@@ -141,8 +142,32 @@ func ConvertExcelToSQLite(field model.Field, path string) {
 	}
 }
 
-func ReadDataSQLite(table string) []string {
+func ReadDataSQLite(field model.Field) []string {
 	list := make([]string, 0)
+
+	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
+	if err != nil {
+		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
+		return list
+	}
+
+	rows, err := db.Query(field.Filter)
+	if err != nil {
+		logUtils.Screen("fail to exec query " + err.Error())
+		return list
+	}
+
+	for rows.Next() {
+		var val string
+
+		err = rows.Scan(&val)
+		if err != nil {
+			logUtils.Screen("fail to get sqlite3 row: " + err.Error())
+			return list
+		}
+
+		list = append(list, val)
+	}
 
 	return list
 }

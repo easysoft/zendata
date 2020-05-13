@@ -83,6 +83,7 @@ func GenerateForField(field *model.Field,  total int) []string {
 	} else {// other type like address.city
 		arr := strings.Split(field.Type, ".")
 		referField := constant.LoadedFields[arr[0]]
+		referField.Filter = field.Range
 
 		values = GenerateFieldItemsFromDefinition(&referField, total)
 	}

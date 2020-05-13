@@ -14,6 +14,7 @@ type Field struct {
 	Note     string  `yaml:"note"`
 	Type string  `yaml:"type"`
 	Range    string  `yaml:"range"`
+	Filter    string  `yaml:"filter"`
 	Prefix   string  `yaml:"prefix"`
 	Postfix  string  `yaml:"postfix"`
 	Loop  int  `yaml:"loop"`
