@@ -1,9 +1,73 @@
-title: the test file
-desc: this is the test file.
-author: wwccss
+title: test file
+desc: this is the test file
+author: zentao
 version: 1.0
 
+class:
+  - name: password
+    type: password.xlsx
+
+  - name: numb
+    type: numb.yaml
+
+  - name: state_city
+    note: SQL查询
+    type: list
+    prefix: '!'
+    postfix: "!"
+    loop: 2
+    loopfix: "   "
+    fields:
+      - name: myprefix
+        type: list
+        range: "#"
+      - name: city
+        type: address.city
+        format: ${seq}-${name}(${state})
+        range: select * from address.city where state like '%山东%'
+        prefix: '['
+        postfix: "]"
+        loop: 2
+        loopfix: ","
+      - name: mypostfix
+        type: list
+        range: "#"
+
 fields:
+  - name: 字段1
+    note:
+    type: list
+    range: ${user_name}_${numb}@${domain}
+  - name: user_name
+    note: 用户名
+    fields:
+      - name: first_name
+        type: custom
+      - name: separator
+        type: list
+        range: "_"
+      - name: last_name
+        type: custom
+
+  - name: 字段2
+    note:
+    type: list
+    prefix: '<'
+    postfix: ">"
+    loop: 2
+    loopfix: "-----"
+    fields:
+      - name: 省市
+        type: state_city
+      - name: numb
+        type: custom
+        range: "   ${numb}   "
+
+
+  - name: test
+    type: custom
+    range: "   ${domain}   "
+
   - name: field1
     note: 默认的列表类型，通过逗号隔成若干区段。
     type: list
@@ -60,37 +124,3 @@ fields:
       note: 从文件读定义
       type: custom
       range: custom.yaml
-
-  - name: field4
-    note: 引用。
-    type: list
-    range: ${user_name}_${numb}@${domain}
-  - name: user_name
-    note: 用户名
-    fields:
-    - name: first_name
-      type: custom
-    - name: separator
-      type: list
-      range: "_"
-    - name: last_name
-      type: custom
-  - name: numb
-    type: custom
-    range: numb.yaml
-
-  - name: field6
-    note: 复合字段的某一个字段，指定查询条件。
-    type: list
-    fields:
-      - name: prefix
-        type: list
-        range: "="
-      - name: first_name
-        type: address.city
-        format: ${seq}-${name}(${state})
-        range: select * from address.city where state like '%山东%'
-        prefix: '['
-        postfix: "]"
-        loop: 3
-        loopfix: "|"

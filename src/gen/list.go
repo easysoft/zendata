@@ -45,13 +45,14 @@ func GenerateFieldValues(field *model.Field, fieldValue *model.FieldValue, level
 }
 
 func GenerateFieldValuesFromList(field *model.Field, fieldValue *model.FieldValue, level int) {
-	rang := strings.TrimSpace(field.Range)
+	//rang := strings.TrimSpace(field.Range)
+	rang := field.Range
 
 	rangeItems := strings.Split(rang, ",")
 	index := 0
 	for _, item := range rangeItems {
 		if index >= constant.MaxNumb { break }
-		if strings.TrimSpace(item) == "" { continue }
+		if item == "" { continue }
 
 		sectionArr := strings.Split(item, ":")
 		if len(sectionArr) == 0 { continue }

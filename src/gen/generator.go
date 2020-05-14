@@ -1,6 +1,7 @@
 package gen
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -69,6 +70,8 @@ func GenerateForField(field *model.Field,  total int) []string {
 			concat = field.Prefix + concat + field.Postfix
 			values = append(values, concat)
 		}
+		values = LoopSubFields(field, values, total)
+
 	} else if field.Type == "list" { // list type
 		values = GenerateFieldItemsFromDefinition(field, total)
 
@@ -78,7 +81,7 @@ func GenerateForField(field *model.Field,  total int) []string {
 		}
 
 		referField := constant.LoadedFields[field.Name]
-		values = GenerateFieldItemsFromDefinition(&referField, total)
+		values = GenerateForField(&referField, total)
 
 	} else {// like address.city to refer to other custom fields
 		arr := strings.Split(field.Type, ".")
@@ -110,7 +113,6 @@ func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
 	//switch datatype {
 	//case constant.LIST.String():
 		fieldValue = GenerateList(field, total)
-	//
 	//default:
 	//}
 
@@ -118,7 +120,7 @@ func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := GenerateFieldValWithLoop(*field, fieldValue, &index)
+		str := GenerateFieldValWithFix(*field, fieldValue, &index, true)
 		values = append(values, str)
 
 		count++
@@ -128,25 +130,6 @@ func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
 	}
 
 	return values
-}
-
-func GenerateFieldValWithLoop(field model.Field, fieldValue model.FieldValue, indexOfRow *int) string {
-	prefix := field.Prefix
-	postfix := field.Postfix
-
-	loopStr := ""
-	for j := 0; j < field.Loop; j++ {
-		if loopStr != "" {
-			loopStr = loopStr + field.Loopfix
-		}
-
-		str := GenerateFieldVal(field, fieldValue, indexOfRow)
-		loopStr = loopStr + str
-
-		*indexOfRow++
-	}
-
-	return prefix + loopStr + postfix
 }
 
 func GenerateFieldVal(field model.Field, fieldValue model.FieldValue, index *int) string {
@@ -193,6 +176,7 @@ func GetFieldValStr(field model.Field, val interface{}) string {
 			}
 		case string:
 			str = val.(string)
+			fmt.Sprintf(str)
 		default:
 	}
 
@@ -238,4 +222,53 @@ func convertFieldReferToNestedIfNeeded(field *model.Field) {
 			}
 		}
 	}
+}
+
+func LoopSubFields(field *model.Field, oldValues []string, total int) []string {
+	if field.Loop == 0 {field.Loop = 1}
+
+	values := make([]string, 0)
+	fieldValue := model.FieldValue{}
+
+	for _, val := range oldValues {
+		fieldValue.Values = append(fieldValue.Values, val)
+	}
+
+	index := 0
+	count := 0
+	for {
+		// 处理格式、前后缀、loop等
+		str := GenerateFieldValWithFix(*field, fieldValue, &index, false)
+		values = append(values, str)
+
+		count++
+		if count >= total {
+			break
+		}
+	}
+
+	return values
+}
+
+func GenerateFieldValWithFix(field model.Field, fieldValue model.FieldValue, indexOfRow *int, withLoop bool) string {
+	prefix := field.Prefix
+	postfix := field.Postfix
+
+	loopStr := ""
+	for j := 0; j < field.Loop; j++ {
+		if loopStr != "" {
+			loopStr = loopStr + field.Loopfix
+		}
+
+		str := GenerateFieldVal(field, fieldValue, indexOfRow)
+		loopStr = loopStr + str
+
+		*indexOfRow++
+	}
+
+	if withLoop {
+		loopStr = prefix + loopStr + postfix
+	}
+
+	return loopStr
 }
