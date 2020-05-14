@@ -77,10 +77,19 @@ fields:
       type: custom
   - name: numb
     type: custom
-    range: custom.yaml
+    range: numb.yaml
 
   - name: field6
     note: 复合字段的某一个字段，指定查询条件。
-    type: address.city
-    format: ${seq}-${name}(${state})
-    range: select * from address.city where state like '%山东%'
+    type: list
+    fields:
+      - name: prefix
+        type: list
+        range: "["
+      - name: first_name
+        type: address.city
+        format: ${seq}-${name}(${state})
+        range: select * from address.city where state like '%山东%'
+      - name: postfix
+        type: list
+        range: "]"
