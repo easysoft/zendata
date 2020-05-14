@@ -7,9 +7,12 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"log"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldValue, level int) {
@@ -24,7 +27,7 @@ func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldVal
 
 	list := make([]string, 0)
 	path := constant.DataDir + file
-	ConvertExcelToSQLite(*field, path)
+	ConvertExcelToSQLiteIfNeeded(*field, path)
 
 	list = ReadDataSQLite(*field)
 
@@ -63,10 +66,14 @@ func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldVal
 	}
 }
 
-func ConvertExcelToSQLite(field model.Field, path string) {
+func ConvertExcelToSQLiteIfNeeded(field model.Field, path string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.Screen("fail to read file: " + err.Error())
+		return
+	}
+
+	if !IsExcelChanged(path) {
 		return
 	}
 
@@ -127,6 +134,7 @@ func ConvertExcelToSQLite(field model.Field, path string) {
 		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
 
 		db, err := sql.Open("sqlite3", constant.SqliteSource)
+		defer db.Close()
 		_, err = db.Exec(dropSql)
 		_, err = db.Exec(ddl)
 		if err != nil {
@@ -147,6 +155,7 @@ func ReadDataSQLite(field model.Field) []string {
 	list := make([]string, 0)
 
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
+	defer db.Close()
 	if err != nil {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
 		return list
@@ -249,4 +258,83 @@ func replaceDotInTableNameLimit(str string) string {
 	}
 
 	return ret
+}
+
+func IsExcelChanged(path string) bool {
+	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
+	defer db.Close()
+	if err != nil {
+		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
+		return true
+	}
+
+	sqlStr := "SELECT id, name, changeTime FROM excel_change"
+	rows, err := db.Query(sqlStr)
+	if err != nil {
+		logUtils.Screen("fail to exec query " + sqlStr + ": " + err.Error())
+		return true
+	}
+
+	fileChangeTime := GetFileModTime(path).Unix()
+
+	found := false
+	changed := false
+	for rows.Next() {
+		found = true
+		var id int
+		var name string
+		var changeTime int64
+
+		err = rows.Scan(&id, &name, &changeTime)
+		if err != nil {
+			logUtils.Screen("fail to get sqlite3 row: " + err.Error())
+			changed = true
+			break
+		}
+
+		if path == name && changeTime < fileChangeTime {
+			changed = true
+			break
+		}
+	}
+	rows.Close()
+
+	if !found { changed = true }
+
+	if changed {
+		if !found {
+			sqlStr = fmt.Sprintf("INSERT INTO excel_change(name, changeTime) VALUES('%s', %d)", path, fileChangeTime)
+		} else {
+			sqlStr = fmt.Sprintf("UPDATE excel_change SET changeTime = %d WHERE name = '%s'", fileChangeTime, path)
+		}
+
+		_, err = db.Exec(sqlStr)
+		if err != nil {
+			logUtils.Screen("fail to insert/update data: " + sqlStr + " " + err.Error())
+		}
+	}
+
+	return changed
+}
+
+func GetFileModTime(path string) time.Time {
+	f, err := os.Open(path)
+	if err != nil {
+		log.Println("open file error:" + path)
+		return time.Now()
+	}
+	defer f.Close()
+
+	fi, err := f.Stat()
+	if err != nil {
+		log.Println("stat fileinfo error")
+		return time.Now()
+	}
+
+	fileChangeTime := fi.ModTime()
+
+	timeStr := fileChangeTime.Format("2006-01-02 15:04:05")
+	logUtils.Screen("file change time is " + timeStr)
+
+	return fileChangeTime
 }

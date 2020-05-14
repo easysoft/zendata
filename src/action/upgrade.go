@@ -17,6 +17,7 @@ func Upgrade() {
 
 	// read data from db
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
+	defer db.Close()
 	if err != nil {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
 		return
