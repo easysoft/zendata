@@ -151,7 +151,7 @@ func ReadDataSQLite(field model.Field) []string {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
 		return list
 	}
-	field.Filter = replaceDotInTableName(field.Filter)
+	field.Filter = replaceDotInTableNameLimit(field.Filter)
 
 	rows, err := db.Query(field.Filter)
 	if err != nil {
@@ -233,16 +233,20 @@ func replacePlaceholderWithValue(format string, valMap map[string]string) string
 	return ret
 }
 
-func replaceDotInTableName(str string) string {
+func replaceDotInTableNameLimit(str string) string {
 	ret := ""
 
 	str = strings.Replace(str," from ", " FROM ", -1)
 	str = strings.Replace(str," where ", " WHERE ", -1)
+	str = strings.Replace(str," limit ", " LIMIT ", -1)
 
 	arr1 := strings.Split(str, " FROM ")
 	arr2 := strings.Split(arr1[1], " WHERE ")
 
 	ret = arr1[0] + " FROM " + strings.Replace(arr2[0],".", "_", -1) + " WHERE " + arr2[1]
+	if !strings.Contains(ret, "LIMIT") {
+		ret = ret + " LIMIT " + strconv.Itoa(constant.MaxNumb)
+	}
 
 	return ret
 }
