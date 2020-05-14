@@ -85,11 +85,12 @@ fields:
     fields:
       - name: prefix
         type: list
-        range: "["
+        range: "="
       - name: first_name
         type: address.city
         format: ${seq}-${name}(${state})
         range: select * from address.city where state like '%山东%'
-      - name: postfix
-        type: list
-        range: "]"
+        prefix: '['
+        postfix: "]"
+        loop: 3
+        loopfix: "|"

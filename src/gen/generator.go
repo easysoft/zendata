@@ -85,6 +85,10 @@ func GenerateForField(field *model.Field,  total int) []string {
 		referField := constant.LoadedFields[arr[0]]
 		referField.Filter = field.Range
 		referField.Format = field.Format
+		referField.Prefix = field.Prefix
+		referField.Postfix = field.Postfix
+		referField.Loop = field.Loop
+		referField.Loopfix = field.Loopfix
 
 		values = GenerateFieldItemsFromDefinition(&referField, total)
 	}
