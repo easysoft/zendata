@@ -133,7 +133,7 @@ func ReadResData(path string) string {
 	return jsonStr
 }
 
-func GetZTFDir() string { // where ztf command in
+func GetExeDir() string { // where ztf command in
 	var dir string
 	arg1 := strings.ToLower(os.Args[0])
 
@@ -155,7 +155,7 @@ func GetZTFDir() string { // where ztf command in
 }
 
 func GetLogDir() string {
-	path := vari.ZDataDir + constant.LogDir
+	path := vari.WorkDir + constant.LogDir
 
 	dir, _ := ioutil.ReadDir(path)
 

@@ -86,7 +86,7 @@ func GenerateForField(field *model.DefField,  total int) []string {
 
 	} else if field.From != "" && field.Range != "" { // refer to yaml file
 		if field.Range != "" { // specific custom file
-			//LoadDefinitionFromFile(constant.InputDir + field.Range)
+			//LoadRootDef(constant.InputDir + field.Range)
 		}
 
 		//referField := constant.ResMap[field.Field]

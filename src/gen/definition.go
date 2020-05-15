@@ -7,10 +7,11 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
-func LoadDefinitionFromFile(file string, fieldsToExport []string) ([]model.ClsRange, []model.ClsInst) {
+func LoadRootDef(file string, fieldsToExport []string) ([]model.ClsRange, []model.ClsInst) {
 	referRangeFields := make([]model.ClsRange, 0)
 	referInstFields := make([]model.ClsInst, 0)
 
@@ -27,27 +28,54 @@ func LoadDefinitionFromFile(file string, fieldsToExport []string) ([]model.ClsRa
 		return referRangeFields, referInstFields
 	}
 
-	if strings.Index(file, "def") != 0 && constant.RootDef.Title == "" { // only add the fields in first level yaml file
-		constant.RootDef = def
-	}
+	constant.RootDef = def
+	//constant.ResMap =
 
 	for _, field := range def.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
 
-		// TODO: dealwith referRangeFields and referInstFields for constant.ResMap
+		if field.From != "" {
+			if field.Select != "" { // excel
+
+			} else if field.Use != "" { // range or instance format
+				//referFile, referType := getReferPath(field.From)
+
+				// init const.ResMap
+			}
+		}
+
+		// TODO:
 	}
 
 	return referRangeFields, referInstFields
 }
 
-func LoadReferRes([]model.ClsRange, []model.ClsInst) {
-	// init const.ResMap
+func getReferPath(from string) (string, string, string) {
+	referFile := ""
+	referType := ""
+	tableName := ""
 
+	sep := string(os.PathSeparator)
 
+	index := strings.LastIndex(from, ".yaml")
+	if index > -1 { // system.nubmer.yaml
+		left := from[:index]
+		left = strings.ReplaceAll(left, ".", sep)
 
-	//for _, field := range def.Fields {
-	//	fieldValue := model.FieldValue{}
-	//	// TODO: 生成fieldValue
-	//	constant.ResMap[field.Field] = fieldValue // add to a map
-	//}
+		referFile = left + ".yaml"
+	} else { // system.address.china
+		index = strings.LastIndex(from, ".")
+
+		left := from[:index]
+		left = strings.ReplaceAll(left, ".", sep)
+
+		referFile = left + ".xlsx"
+		tableName = from[index:]
+	}
+
+	if strings.Index(referFile, "system") > -1 {
+		referFile = constant.ResDir + referFile
+	}
+
+	return referFile, referType, tableName
 }

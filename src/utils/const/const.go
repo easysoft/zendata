@@ -27,9 +27,6 @@ var (
 
 	MaxNumb = 100000 // max number in array
 
-	WorkDir  string = ""
-	InputDir string = ""
-
 	RootDef model.DefData               = model.DefData{}
 	ResMap  map[string]model.FieldValue = map[string]model.FieldValue{}
 

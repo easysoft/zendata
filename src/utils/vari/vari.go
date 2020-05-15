@@ -8,10 +8,11 @@ import (
 var (
 	Config         = model.Config{}
 
-	RunMode     constant.RunMode
-	ZDataDir    string
-	LogDir      string
-	ScreenWidth int
+	RunMode      constant.RunMode
+	WorkDir      string
+	InputDir     string
+	LogDir       string
+	ScreenWidth  int
 	ScreenHeight int
 
 	RequestType  string

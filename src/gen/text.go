@@ -4,6 +4,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -18,9 +19,9 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 	stepStr := "1"
 	if len(sectionArr) == 2 { stepStr = sectionArr[1] }
 
-	// read from file
+	// read frome
 	list := make([]string, 0)
-	relaPath := constant.InputDir + file
+	relaPath := vari.InputDir + file
 	content, err := ioutil.ReadFile(relaPath)
 	if err != nil {
 		logUtils.Screen("fail to read " + relaPath + ", try to use global config")

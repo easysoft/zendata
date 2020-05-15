@@ -37,7 +37,7 @@ fields:
   - field: field6 
     note: 自定义的数据类型。可以通过@tag的方式对数据进行筛选。
     from: system.nubmer.yaml
-    range: small,large
+    use: small,large
 
   - field: field 7 
     note: 自定义的数据类型，包含子字段。
