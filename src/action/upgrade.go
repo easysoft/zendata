@@ -80,7 +80,7 @@ func Upgrade() {
 		}
 	}
 
-	err = excel.SaveAs(constant.ExcelFile)
+	//err = excel.SaveAs(constant.ExcelFile)
 	if err != nil {
 		logUtils.Screen("fail to save excel: " + err.Error())
 	}

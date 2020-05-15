@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldValue, level int) {
+func GenerateFieldValuesFromExcel(field *model.DefField, fieldValue *model.FieldValue, level int) {
 	// get file and step string
 	rang := strings.TrimSpace(field.Range)
 	sectionArr := strings.Split(rang, ":")
@@ -26,10 +26,10 @@ func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldVal
 	}
 
 	list := make([]string, 0)
-	path := constant.DataDir + file
+	path := constant.ResDir + file
 	ConvertExcelToSQLiteIfNeeded(*field, path)
 
-	list = ReadDataSQLite(*field)
+	list = ReadDataFromSQLite(*field)
 
 	// get step and rand
 	rand := false
@@ -66,14 +66,14 @@ func GenerateFieldValuesFromExcel(field *model.Field, fieldValue *model.FieldVal
 	}
 }
 
-func ConvertExcelToSQLiteIfNeeded(field model.Field, path string) {
+func ConvertExcelToSQLiteIfNeeded(field model.DefField, path string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.Screen("fail to read file: " + err.Error())
 		return
 	}
 
-	if !IsExcelChanged(path) {
+	if !isExcelChanged(path) {
 		return
 	}
 
@@ -128,7 +128,7 @@ func ConvertExcelToSQLiteIfNeeded(field model.Field, path string) {
 			valList = valList + ")"
 		}
 
-		tableName := field.Name + "_" + sheet
+		tableName := field.Field + "_" + sheet
 		dropSql := fmt.Sprintf(dropTemplate, tableName)
 		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
 		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
@@ -151,7 +151,7 @@ func ConvertExcelToSQLiteIfNeeded(field model.Field, path string) {
 	}
 }
 
-func ReadDataSQLite(field model.Field) []string {
+func ReadDataFromSQLite(field model.DefField) []string {
 	list := make([]string, 0)
 
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
@@ -160,9 +160,10 @@ func ReadDataSQLite(field model.Field) []string {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
 		return list
 	}
-	field.Filter = replaceDotInTableNameLimit(field.Filter)
+	field.From, field.Where = convertSql(field.From, field.Where)
 
-	rows, err := db.Query(field.Filter)
+	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", field.Select, field.From, field.Where)
+	rows, err := db.Query(sqlStr)
 	if err != nil {
 		logUtils.Screen("fail to exec query " + err.Error())
 		return list
@@ -242,25 +243,18 @@ func replacePlaceholderWithValue(format string, valMap map[string]string) string
 	return ret
 }
 
-func replaceDotInTableNameLimit(str string) string {
-	ret := ""
+func convertSql(from string, where string) (string, string) {
+	from = strings.Replace(from,"system.", "", -1)
+	from = strings.Replace(from,".", "_", -1)
 
-	str = strings.Replace(str," from ", " FROM ", -1)
-	str = strings.Replace(str," where ", " WHERE ", -1)
-	str = strings.Replace(str," limit ", " LIMIT ", -1)
-
-	arr1 := strings.Split(str, " FROM ")
-	arr2 := strings.Split(arr1[1], " WHERE ")
-
-	ret = arr1[0] + " FROM " + strings.Replace(arr2[0],".", "_", -1) + " WHERE " + arr2[1]
-	if !strings.Contains(ret, "LIMIT") {
-		ret = ret + " LIMIT " + strconv.Itoa(constant.MaxNumb)
+	if !strings.Contains(where, "LIMIT") {
+		where = where + " LIMIT " + strconv.Itoa(constant.MaxNumb)
 	}
 
-	return ret
+	return from, where
 }
 
-func IsExcelChanged(path string) bool {
+func isExcelChanged(path string) bool {
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
 	defer db.Close()
 	if err != nil {
@@ -275,7 +269,7 @@ func IsExcelChanged(path string) bool {
 		return true
 	}
 
-	fileChangeTime := GetFileModTime(path).Unix()
+	fileChangeTime := getFileModTime(path).Unix()
 
 	found := false
 	changed := false
@@ -317,7 +311,7 @@ func IsExcelChanged(path string) bool {
 	return changed
 }
 
-func GetFileModTime(path string) time.Time {
+func getFileModTime(path string) time.Time {
 	f, err := os.Open(path)
 	if err != nil {
 		log.Println("open file error:" + path)

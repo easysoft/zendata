@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValue, level int) {
+func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldValue, level int) {
 	// get file and step string
 	rang := strings.TrimSpace(field.Range)
 	sectionArr := strings.Split(rang, ":")
@@ -20,7 +20,7 @@ func GenerateFieldValuesFromText(field *model.Field, fieldValue *model.FieldValu
 
 	// read from file
 	list := make([]string, 0)
-	relaPath := constant.ResDir + file
+	relaPath := constant.InputDir + file
 	content, err := ioutil.ReadFile(relaPath)
 	if err != nil {
 		logUtils.Screen("fail to read " + relaPath + ", try to use global config")

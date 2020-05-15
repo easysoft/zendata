@@ -1,20 +1,46 @@
 package model
 
-type Definition struct {
-	Title string `yaml:"title"`
-	Desc string `yaml:"desc"`
-	Author string `yaml:"author"`
-	Version string`yaml:"version"`
-
-	Fields  []Field `yaml:"fields,flow"`
+type ClsBase struct {
+	Title   string `yaml:"title"`
+	Desc    string `yaml:"desc"`
+	Author  string `yaml:"author"`
+	Version string `yaml:"version"`
 }
 
-type Field struct {
-	Name     string  `yaml:"name"`
-	Note     string  `yaml:"note"`
-	Type string  `yaml:"type"`
+type ClsRange struct {
+	ClsBase
+	FieldBase
+	Field string
+	Ranges map[string]string  `yaml:"ranges"`
+}
+type ClsInst struct {
+	ClsBase
+	Field string
+	Instances []struct {
+		FieldBase
+		Instance string  `yaml:"Instance"`
+	} `yaml:"fields,flow"`
+}
+type DefData struct {
+	ClsBase
+	Fields  []DefField `yaml:"fields,flow"`
+}
+type DefField struct {
+	FieldBase
+	Field     string  `yaml:"field"`
 	Range    string  `yaml:"range"`
-	Filter    string  `yaml:"filter"`
+
+	Fields   []DefField `yaml:"fields,flow"`
+}
+
+type FieldBase struct {
+	Note     string  `yaml:"note"`
+
+	From	string  `yaml:"from"`
+	Select	string  `yaml:"select"`
+	Where	string  `yaml:"where"`
+	Use	string  `yaml:"use"`
+
 	Prefix   string  `yaml:"prefix"`
 	Postfix  string  `yaml:"postfix"`
 	Loop  int  `yaml:"loop"`
@@ -22,16 +48,13 @@ type Field struct {
 	Format  string  `yaml:"format"`
 	IsNumb  bool  `yaml:"isNumb"`
 	Expect  string  `yaml:"expect"`
-	Fields   []Field `yaml:"fields,flow"`
 
 	Precision int
 }
 
 type FieldValue struct {
-	Name     string
-	Type     string
-	Precision int
-	Level int
+	FieldBase
+	Field     string  `yaml:"field"`
 
 	Values   []interface{}
 	Children []FieldValue

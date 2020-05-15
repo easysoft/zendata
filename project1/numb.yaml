@@ -1,0 +1,12 @@
+title: number
+desc: 多个range定义。
+author: wwccss
+version: 1.0
+
+field: number
+prefix: int_
+ranges:
+  small: 1-1000
+  medium: 1001-10000
+  large: 10001-100000
+postfix: \t

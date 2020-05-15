@@ -4,7 +4,7 @@ author: zentao
 version: 1.0
 
 class:
-  - name: password
+  - file: password
     type: password.xlsx
 
   - name: numb
@@ -33,7 +33,7 @@ class:
         type: list
         range: "#"
 
-fields:
+fields1:
   - name: 字段1
     note:
     type: list

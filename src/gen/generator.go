@@ -5,29 +5,27 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
-	"regexp"
 	"strconv"
 	"strings"
 )
 
-func GenerateForDefinition(total int, fieldsToExport string, out string, table string) ([][]string, []bool) {
+func GenerateForDefinition(total int, fieldsToExport []string) ([][]string, []bool) {
 	def := constant.Definition
 
-	fieldsToExportArr := strings.Split(fieldsToExport, ",")
 	fieldNameToValues := map[string][]string{}
 
 	colTypes := make([]bool, 0)
 
 	// 为每个field生成值列表
 	for index, field := range def.Fields {
-		if !stringUtils.FindInArr(field.Name, fieldsToExportArr) {
+		if !stringUtils.FindInArr(field.Field, fieldsToExport) {
 			continue
 		}
 
 		values := GenerateForField(&field, total)
 		def.Fields[index].Precision = field.Precision
 
-		fieldNameToValues[field.Name] = values
+		fieldNameToValues[field.Field] = values
 		colTypes = append(colTypes, field.IsNumb)
 	}
 
@@ -35,11 +33,11 @@ func GenerateForDefinition(total int, fieldsToExport string, out string, table s
 	rows := make([][]string, 0)
 	for i := 0; i < total; i++ {
 		for _, field := range def.Fields {
-			if !stringUtils.FindInArr(field.Name, fieldsToExportArr) {
+			if !stringUtils.FindInArr(field.Field, fieldsToExport) {
 				continue
 			}
 
-			values := fieldNameToValues[field.Name]
+			values := fieldNameToValues[field.Field]
 			fieldVal := values[i % len(values)]
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
 			rows[i] = append(rows[i], fieldVal)
@@ -49,12 +47,10 @@ func GenerateForDefinition(total int, fieldsToExport string, out string, table s
 	return rows, colTypes
 }
 
-func GenerateForField(field *model.Field,  total int) []string {
-	convertFieldReferToNestedIfNeeded(field)
-
+func GenerateForField(field *model.DefField,  total int) []string {
 	values := make([]string, 0)
 
-	if len(field.Fields) > 0 { // nested definition
+	if len(field.Fields) > 0 { // sub fields
 		arr := make([][]string, 0)
 		for _, child := range field.Fields {
 			childValues := GenerateForField(&child, total)
@@ -72,49 +68,48 @@ func GenerateForField(field *model.Field,  total int) []string {
 		}
 		values = LoopSubFields(field, values, total)
 
-	} else if field.Type == "list" { // list type
-		values = GenerateFieldItemsFromDefinition(field, total)
+	} else if field.From != "" && field.Select != "" { // refer to excel
+		arr := strings.Split(field.From, ".")
+		referField := constant.LoadedResValues[arr[0]]
 
-	} else if field.Type == "custom" { // custom type
-		if field.Range != "" { // specific custom file
-			LoadDefinitionFromFile(constant.ResDir + field.Range)
-		}
+		referField.From = field.From
+		referField.Select = field.Select
+		referField.Where = field.Where
 
-		referField := constant.LoadedFields[field.Name]
-		values = GenerateForField(&referField, total)
-
-	} else {// like address.city to refer to other custom fields
-		arr := strings.Split(field.Type, ".")
-		referField := constant.LoadedFields[arr[0]]
-		referField.Filter = field.Range
 		referField.Format = field.Format
 		referField.Prefix = field.Prefix
 		referField.Postfix = field.Postfix
 		referField.Loop = field.Loop
 		referField.Loopfix = field.Loopfix
 
-		values = GenerateFieldItemsFromDefinition(&referField, total)
+		//values = GenerateFieldItemsFromDefinition(&referField, total)
+
+	} else if field.From != "" && field.Range != "" { // refer to yaml file
+		if field.Range != "" { // specific custom file
+			//LoadDefinitionFromFile(constant.InputDir + field.Range)
+		}
+
+		//referField := constant.LoadedResValues[field.Field]
+		//values = GenerateForField(&referField, total)
+		// TODO: 需要处理range: small,large等逻辑
+
+	} else {
+		values = GenerateFieldItemsFromDefinition(field, total)
 	}
 
 	return values
 }
 
-func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
+func GenerateFieldItemsFromDefinition(field *model.DefField, total int) []string {
 	if field.Loop == 0 {field.Loop = 1}
 
 	values := make([]string, 0)
 
 	// 整理出值的列表
-	datatype := strings.TrimSpace(field.Type)
-	if datatype == "" { datatype = "list" }
+	//datatype := strings.TrimSpace(field.Type)
+	//if datatype == "" { datatype = "list" }
 
-	fieldValue := model.FieldValue{}
-
-	//switch datatype {
-	//case constant.LIST.String():
-		fieldValue = GenerateList(field, total)
-	//default:
-	//}
+	fieldValue := GenerateList(field, total)
 
 	index := 0
 	count := 0
@@ -132,7 +127,7 @@ func GenerateFieldItemsFromDefinition(field *model.Field, total int) []string {
 	return values
 }
 
-func GenerateFieldVal(field model.Field, fieldValue model.FieldValue, index *int) string {
+func GenerateFieldVal(field model.DefField, fieldValue model.FieldValue, index *int) string {
 	str := ""
 
 	// 叶节点
@@ -143,7 +138,7 @@ func GenerateFieldVal(field model.Field, fieldValue model.FieldValue, index *int
 	return str
 }
 
-func GetFieldValStr(field model.Field, val interface{}) string {
+func GetFieldValStr(field model.DefField, val interface{}) string {
 	str := "n/a"
 	success := false
 
@@ -183,48 +178,7 @@ func GetFieldValStr(field model.Field, val interface{}) string {
 	return str
 }
 
-func convertFieldReferToNestedIfNeeded(field *model.Field) {
-	// ${user_name}_${numb}@${domain}
-	regx := regexp.MustCompile(`\$\{([a-zA-z0-9_]+)\}`)
-	arrOfName := regx.FindAllStringSubmatch(field.Range, -1)
-
-	if len(arrOfName) > 0 {
-		strLeft := field.Range
-		for index, a := range arrOfName {
-			found := a[0]
-			name := a[1]
-
-			arr := strings.Split(strLeft, found)
-
-			// add string constant
-			if arr[0] != "" {
-				strChild := model.Field{Name: "child-" + strconv.Itoa(index), Type: "list", Range: arr[0]}
-				field.Fields = append(field.Fields, strChild)
-			}
-
-			child := model.Field{}
-			if constant.LoadedFields[name].Name != "" {
-				child = constant.LoadedFields[name]
-			} else {
-				child.Name = a[1]
-				child.Type = "custom"
-			}
-
-			field.Fields = append(field.Fields, child)
-
-			arr = arr[1:]
-			strLeft = strings.Join(arr, "")
-
-			if index == len(arrOfName) - 1 && strLeft != "" {
-				// add string constant
-				strChild := model.Field{Name: "child-" + strconv.Itoa(index), Type: "list", Range: strLeft}
-				field.Fields = append(field.Fields, strChild)
-			}
-		}
-	}
-}
-
-func LoopSubFields(field *model.Field, oldValues []string, total int) []string {
+func LoopSubFields(field *model.DefField, oldValues []string, total int) []string {
 	if field.Loop == 0 {field.Loop = 1}
 
 	values := make([]string, 0)
@@ -250,7 +204,7 @@ func LoopSubFields(field *model.Field, oldValues []string, total int) []string {
 	return values
 }
 
-func GenerateFieldValWithFix(field model.Field, fieldValue model.FieldValue, indexOfRow *int, withLoop bool) string {
+func GenerateFieldValWithFix(field model.DefField, fieldValue model.FieldValue, indexOfRow *int, withLoop bool) string {
 	prefix := field.Prefix
 	postfix := field.Postfix
 

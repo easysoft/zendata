@@ -7,17 +7,16 @@ import (
 	"strings"
 )
 
-func GenerateList(field *model.Field, total int) model.FieldValue {
+func GenerateList(field *model.DefField, total int) model.FieldValue {
 	fieldValue := model.FieldValue{}
 	GenerateListField(field, &fieldValue, 0)
 
 	return fieldValue
 }
 
-func GenerateListField(field *model.Field, fieldValue *model.FieldValue, level int) {
-	fieldValue.Name = field.Name
+func GenerateListField(field *model.DefField, fieldValue *model.FieldValue, level int) {
+	fieldValue.Field = field.Field
 	fieldValue.Precision = field.Precision
-	fieldValue.Level = level
 
 	if len(field.Fields) > 0 {
 		GenerateFieldChildren(field, fieldValue, level)
@@ -25,7 +24,7 @@ func GenerateListField(field *model.Field, fieldValue *model.FieldValue, level i
 		GenerateFieldValues(field, fieldValue, level)
 	}
 }
-func GenerateFieldChildren(field *model.Field, fieldValue *model.FieldValue, level int) {
+func GenerateFieldChildren(field *model.DefField, fieldValue *model.FieldValue, level int) {
 	for _, child := range field.Fields {
 		childValue := model.FieldValue{}
 		GenerateListField(&child, &childValue, level + 1)
@@ -34,7 +33,7 @@ func GenerateFieldChildren(field *model.Field, fieldValue *model.FieldValue, lev
 	}
 }
 
-func GenerateFieldValues(field *model.Field, fieldValue *model.FieldValue, level int) {
+func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldValue, level int) {
 	if strings.Index(field.Range, ".txt") > -1 {
 		GenerateFieldValuesFromText(field, fieldValue, level)
 	} else if strings.Index(field.Range, ".xlsx") > -1 {
@@ -44,7 +43,7 @@ func GenerateFieldValues(field *model.Field, fieldValue *model.FieldValue, level
 	}
 }
 
-func GenerateFieldValuesFromList(field *model.Field, fieldValue *model.FieldValue, level int) {
+func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldValue, level int) {
 	//rang := strings.TrimSpace(field.Range)
 	rang := field.Range
 

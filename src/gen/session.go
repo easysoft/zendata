@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func GenerateSessionId(field *model.Field, total int, fieldMap map[string][]interface{}) {
+func GenerateSessionId(field *model.DefField, total int, fieldMap map[string][]interface{}) {
 	name := strings.TrimSpace(field.Note)
 	rang := strings.TrimSpace(field.Range)
 	stepStr := strings.TrimSpace("field.Step")

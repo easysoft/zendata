@@ -8,16 +8,7 @@ import (
 
 var (
 	ConfigVer  = 1
-	ConfigFile = fmt.Sprintf("def%szdata.conf", string(os.PathSeparator))
-
-	UrlZentaoSettings = "zentaoSettings"
-	UrlImportProject  = "importProject"
-	UrlSubmitResult   = "submitResults"
-	UrlReportBug      = "reportBug"
-
-	ExtNameSuite  = "cs"
-	ExtNameJson   = "json"
-	ExtNameResult = "txt"
+	ConfigFile = fmt.Sprintf("conf%szdata.conf", string(os.PathSeparator))
 
 	LanguageDefault = "en"
 	LanguageEN      = "en"
@@ -26,7 +17,6 @@ var (
 	EnRes = fmt.Sprintf("res%smessages_en.json", string(os.PathSeparator))
 	ZhRes = fmt.Sprintf("res%smessages_zh.json", string(os.PathSeparator))
 
-	//ScriptDir = fmt.Sprintf("scripts%s", string(os.PathSeparator))
 	LogDir = fmt.Sprintf("log%s", string(os.PathSeparator))
 
 	LeftWidth = 36
@@ -37,21 +27,17 @@ var (
 
 	MaxNumb = 100000 // max number in array
 
-	UnitTestType []string = []string{"junit", "testng", "phpunit", "pytest", "jtest", "cppunit", "gtest", "qtest"}
-	AutoTestType []string = []string{"selenium", "appium"}
+	WorkDir  string = ""
+	InputDir string = ""
 
-	Power3 = 255 * 255 * 255
-	Power2 = 255 * 255
-	Power1 = 255
+	Definition      model.DefData               = model.DefData{}
+	LoadedResValues map[string]model.FieldValue = map[string]model.FieldValue{}
 
-	ResDir string = ""
-	Definition model.Definition = model.Definition{}
-	LoadedFields map[string]model.Field = map[string]model.Field{}
+	ResDir     string = "data/"
+	ResBuildIn string = ResDir + "system/buildin.yaml"
 
-	DataDir string = "def/data/"
 	SqliteDriver string = "sqlite3"
-	SqliteSource string = "file:" + DataDir + "data.db"
-	ExcelFile string = DataDir + "data.xlsx"
+	SqliteSource string = "file:" + ResDir + ".cache/.data.db"
 	ExcelBorder string = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
 		                              {"type":"bottom","color":"999999","style":1}, {"type":"right","color":"999999","style":1}]}`
 	ExcelHeader string = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`

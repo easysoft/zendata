@@ -12,18 +12,21 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
-func Generate(def string, total int, fieldsToExport string, out string, format string, table string) {
+func Generate(def string, total int, fieldsToExportStr string, out string, format string, table string) {
 	startTime := time.Now().Unix()
 
-	constant.ResDir = filepath.Dir(def) + string(os.PathSeparator)
+	fieldsToExport := strings.Split(fieldsToExportStr, ",")
 
-	gen.LoadDefinitionFromFile("def/buildin.yaml")
-	gen.LoadDefinitionFromFile(def)
+	constant.InputDir = filepath.Dir(def) + string(os.PathSeparator)
 
-	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport, out, table)
+	referRangeFields, referInstFields := gen.LoadDefinitionFromFile(def, fieldsToExport)
+	gen.LoadReferRes(referRangeFields, referInstFields)
+
+	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
 	WriteToFile(out, content)
@@ -33,7 +36,7 @@ func Generate(def string, total int, fieldsToExport string, out string, format s
 		len(rows), entTime - startTime ))
 }
 
-func Print(rows [][]string, format string, table string, colTypes []bool, fields string) string {
+func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) string {
 	width := stringUtils.GetNumbWidth(len(rows))
 
 	content := ""
@@ -69,7 +72,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		testData.Table.Rows = append(testData.Table.Rows, row)
 
 		if format == "sql" {
-			sent := fmt.Sprintf("INSERT INTO %s(%s) VALUES(%s)", table, fields, valueList)
+			sent := fmt.Sprintf("INSERT INTO %s(%s) VALUES(%s)", table, strings.Join(fields, ","), valueList)
 			sql = sql + sent + ";\n"
 		}
 	}
