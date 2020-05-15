@@ -30,8 +30,8 @@ var (
 	WorkDir  string = ""
 	InputDir string = ""
 
-	Definition      model.DefData               = model.DefData{}
-	LoadedResValues map[string]model.FieldValue = map[string]model.FieldValue{}
+	RootDef model.DefData               = model.DefData{}
+	ResMap  map[string]model.FieldValue = map[string]model.FieldValue{}
 
 	ResDir     string = "data/"
 	ResBuildIn string = ResDir + "system/buildin.yaml"

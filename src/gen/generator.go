@@ -10,7 +10,7 @@ import (
 )
 
 func GenerateForDefinition(total int, fieldsToExport []string) ([][]string, []bool) {
-	def := constant.Definition
+	def := constant.RootDef
 
 	fieldNameToValues := map[string][]string{}
 
@@ -70,7 +70,7 @@ func GenerateForField(field *model.DefField,  total int) []string {
 
 	} else if field.From != "" && field.Select != "" { // refer to excel
 		arr := strings.Split(field.From, ".")
-		referField := constant.LoadedResValues[arr[0]]
+		referField := constant.ResMap[arr[0]]
 
 		referField.From = field.From
 		referField.Select = field.Select
@@ -89,7 +89,7 @@ func GenerateForField(field *model.DefField,  total int) []string {
 			//LoadDefinitionFromFile(constant.InputDir + field.Range)
 		}
 
-		//referField := constant.LoadedResValues[field.Field]
+		//referField := constant.ResMap[field.Field]
 		//values = GenerateForField(&referField, total)
 		// TODO: 需要处理range: small,large等逻辑
 

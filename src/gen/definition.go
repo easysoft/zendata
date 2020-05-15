@@ -4,6 +4,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"strings"
@@ -26,26 +27,27 @@ func LoadDefinitionFromFile(file string, fieldsToExport []string) ([]model.ClsRa
 		return referRangeFields, referInstFields
 	}
 
-	if strings.Index(file, "def") != 0 && constant.Definition.Title == "" { // only add the fields in first level yaml file
-		constant.Definition = def
+	if strings.Index(file, "def") != 0 && constant.RootDef.Title == "" { // only add the fields in first level yaml file
+		constant.RootDef = def
 	}
 
 	for _, field := range def.Fields {
-		_ = field
-		// TODO: dealwith referRangeFields and referInstFields for constant.LoadedResValues
-	}
+		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
 
-	//for _, field := range def.Fields {
-	//	fieldValue := model.FieldValue{}
-	//	// TODO: 生成fieldValue
-	//	constant.LoadedResValues[field.Field] = fieldValue // add to a map
-	//}
+		// TODO: dealwith referRangeFields and referInstFields for constant.ResMap
+	}
 
 	return referRangeFields, referInstFields
 }
 
 func LoadReferRes([]model.ClsRange, []model.ClsInst) {
-	//fieldValueMap := map[string]model.FieldValue{}
-	//
-	//LoadDefinitionFromFile(constant.ResBuildIn) // load buildin resource
+	// init const.ResMap
+
+
+
+	//for _, field := range def.Fields {
+	//	fieldValue := model.FieldValue{}
+	//	// TODO: 生成fieldValue
+	//	constant.ResMap[field.Field] = fieldValue // add to a map
+	//}
 }

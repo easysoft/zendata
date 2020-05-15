@@ -23,8 +23,8 @@ func Generate(def string, total int, fieldsToExportStr string, out string, forma
 
 	constant.InputDir = filepath.Dir(def) + string(os.PathSeparator)
 
-	referRangeFields, referInstFields := gen.LoadDefinitionFromFile(def, fieldsToExport)
-	gen.LoadReferRes(referRangeFields, referInstFields)
+	referRangeFields, referInstFields := gen.LoadDefinitionFromFile(def, fieldsToExport) // init constant.RootDef
+	gen.LoadReferRes(referRangeFields, referInstFields) // init const.ResMap
 
 	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
