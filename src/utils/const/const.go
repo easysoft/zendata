@@ -25,6 +25,7 @@ var (
 
 	CmdViewHeight = 10
 
+	Total = 10
 	MaxNumb = 100000 // max number in array
 
 	RootDef model.DefData               = model.DefData{}

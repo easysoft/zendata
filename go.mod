@@ -8,6 +8,7 @@ require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.2.0
 	github.com/emirpasic/gods v1.12.0
 	github.com/fatih/color v1.9.0
+	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/mattn/go-runewidth v0.0.9
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5

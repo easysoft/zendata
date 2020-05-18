@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -19,13 +20,12 @@ import (
 func Generate(def string, total int, fieldsToExportStr string, out string, format string, table string) {
 	startTime := time.Now().Unix()
 	vari.InputDir = filepath.Dir(def) + string(os.PathSeparator)
+	constant.Total = total
 
 	fieldsToExport := strings.Split(fieldsToExportStr, ",")
 
-	rangeClsFields, instClsFields := gen.LoadClsDef(def, fieldsToExport)
-
-	rangeClsFields = rangeClsFields
-	instClsFields = instClsFields
+	referFieldValueMap := gen.LoadClsDef(def, fieldsToExport)
+	referFieldValueMap = referFieldValueMap
 
 	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport)
 	content := Print(rows, format, table, colTypes, fieldsToExport)

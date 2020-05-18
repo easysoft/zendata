@@ -19,17 +19,12 @@ func GenerateListField(field *model.DefField, fieldValue *model.FieldValue, leve
 	fieldValue.Precision = field.Precision
 
 	if len(field.Fields) > 0 {
-		GenerateFieldChildren(field, fieldValue, level)
+		for _, child := range field.Fields {
+			childValue := model.FieldValue{}
+			GenerateListField(&child, &childValue, level + 1)
+		}
 	} else {
 		GenerateFieldValues(field, fieldValue, level)
-	}
-}
-func GenerateFieldChildren(field *model.DefField, fieldValue *model.FieldValue, level int) {
-	for _, child := range field.Fields {
-		childValue := model.FieldValue{}
-		GenerateListField(&child, &childValue, level + 1)
-
-		fieldValue.Children = append(fieldValue.Children, childValue)
 	}
 }
 
@@ -88,12 +83,12 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 			}
 		}
 
-		fieldValue.Values = append(fieldValue.Values, items...)
+		fieldValue.Values["all"] = append(fieldValue.Values["all"], items...)
 		index = index + len(items)
 	}
 
 	if len(fieldValue.Values) == 0 {
-		fieldValue.Values = append(fieldValue.Values, "N/A")
+		fieldValue.Values["all"] = append(fieldValue.Values["all"], "N/A")
 	}
 }
 

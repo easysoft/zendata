@@ -51,7 +51,7 @@ func GenerateForField(field *model.DefField,  total int) []string {
 	values := make([]string, 0)
 
 	if len(field.Fields) > 0 { // sub fields
-		arr := make([][]string, 0)
+		arr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 		for _, child := range field.Fields {
 			childValues := GenerateForField(&child, total)
 			arr = append(arr, childValues)
@@ -60,7 +60,7 @@ func GenerateForField(field *model.DefField,  total int) []string {
 		for i := 0; i < total; i++ {
 			concat := ""
 			for _, row := range arr {
-				concat = concat + row[i]
+				concat = concat + row[i] // a1 or b2
 			}
 
 			concat = field.Prefix + concat + field.Postfix
@@ -132,7 +132,7 @@ func GenerateFieldVal(field model.DefField, fieldValue model.FieldValue, index *
 
 	// 叶节点
 	idx := *index % len(fieldValue.Values)
-	val := fieldValue.Values[idx]
+	val := fieldValue.Values["all"][idx]
 	str = GetFieldValStr(field, val)
 
 	return str
@@ -185,7 +185,7 @@ func LoopSubFields(field *model.DefField, oldValues []string, total int) []strin
 	fieldValue := model.FieldValue{}
 
 	for _, val := range oldValues {
-		fieldValue.Values = append(fieldValue.Values, val)
+		fieldValue.Values["all"] = append(fieldValue.Values["all"], val)
 	}
 
 	index := 0

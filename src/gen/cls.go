@@ -11,20 +11,20 @@ import (
 	"strings"
 )
 
-func LoadClsDef(file string, fieldsToExport []string) []model.FieldValue {
-	referFieldValues := make([]model.FieldValue, 0)
+func LoadClsDef(file string, fieldsToExport []string) map[string]map[string][]string {
+	referFieldValueMap := map[string]map[string][]string{}
 
 	yamlContent, err := ioutil.ReadFile(file)
 	if err != nil {
 		logUtils.Screen("fail to read " + file)
-		return referFieldValues
+		return referFieldValueMap
 	}
 
 	def := model.DefData{}
 	err = yaml.Unmarshal(yamlContent, &def)
 	if err != nil {
 		logUtils.Screen("fail to parse " + file)
-		return referFieldValues
+		return referFieldValueMap
 	}
 
 	constant.RootDef = def
@@ -32,21 +32,21 @@ func LoadClsDef(file string, fieldsToExport []string) []model.FieldValue {
 	for _, field := range def.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
 
-		loadClsField(&field, &referFieldValues)
+		loadClsField(&field, &referFieldValueMap)
 	}
 
-	return referFieldValues
+	return referFieldValueMap
 }
 
-func loadClsField(field *model.DefField, referFieldValues *[]model.FieldValue) {
+func loadClsField(field *model.DefField, referFieldValueMap *map[string]map[string][]string) {
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
-			loadClsField(&child, referFieldValues)
+			loadClsField(&child, referFieldValueMap)
 		}
 	} else if field.From != "" {
 		referFile, referType, tableName := getReferProp(field.From)
-		fieldValue := getReferFieldValue(referFile, referType, tableName)
-		*referFieldValues = append(*referFieldValues, fieldValue)
+		values := getReferFieldValue(referFile, referType, tableName)
+		(*referFieldValueMap)[field.Field] = values
 	}
 }
 
@@ -63,6 +63,7 @@ func getReferProp(from string) (string, string, string) {
 		left = strings.ReplaceAll(left, ".", sep)
 
 		referFile = left + ".yaml"
+		referType = "yaml"
 	} else { // excel, system.address.china
 		index = strings.LastIndex(from, ".")
 
@@ -71,6 +72,7 @@ func getReferProp(from string) (string, string, string) {
 
 		referFile = left + ".xlsx"
 		tableName = from[index:]
+		referType = "excel"
 	}
 
 	if strings.Index(referFile, "system") > -1 {
@@ -80,10 +82,80 @@ func getReferProp(from string) (string, string, string) {
 	return referFile, referType, tableName
 }
 
-func getReferFieldValue(referFile string, referType string, tableName string) model.FieldValue {
-	fieldValue := model.FieldValue{}
+func getReferFieldValue(referFile string, referType string, tableName string) map[string][]string {
+	values := map[string][]string{}
+
+	if referType == "yaml" {
+		values = getReferFieldValueForYaml(referFile)
+	} else if referType == "excel" {
+		values = getReferFieldValueForExcel(referFile, tableName)
+	}
+
+	return values
+}
+
+func getReferFieldValueForYaml(referFile string) map[string][]string {
+	valueMap := map[string][]string{}
+
+	ranges := model.ClsRanges{}
+
+	yamlContent, err := ioutil.ReadFile(referFile)
+	if err != nil {
+		logUtils.Screen("fail to read " + referFile)
+		return valueMap
+	}
+
+	err = yaml.Unmarshal(yamlContent, &ranges)
+	if err != nil || ranges.Ranges == nil || len(ranges.Ranges) == 0 {
+		logUtils.Screen("fail to parse ClsRanges " + referFile + ", try to parse as ClsInsts")
+
+		insts := model.ClsInsts{}
+
+		yamlContent, err := ioutil.ReadFile(referFile)
+		if err != nil {
+			logUtils.Screen("fail to read " + referFile)
+			return valueMap
+		}
+
+		err = yaml.Unmarshal(yamlContent, &insts)
+		if err != nil {
+			return valueMap
+		} else {
+			valueMap = getReferFieldValueForInstances(insts)
+		}
+
+	} else {
+		valueMap = getReferFieldValueForRanges(ranges)
+	}
+
+	return valueMap
+}
+
+func getReferFieldValueForRanges(ranges model.ClsRanges) map[string][]string {
+	values := map[string][]string{}
+
+	for name, exp := range ranges.Ranges {
+		// convert ranges refer to standard field
+		tempField := model.DefField{Field: ranges.Field, Range: exp}
+
+		values[name] = GenerateFieldItemsFromDefinition(&tempField, constant.Total)
+	}
+
+	return values
+}
+
+func getReferFieldValueForInstances(referFile model.ClsInsts) map[string][]string {
+	values := map[string][]string{}
 
 
 
-	return fieldValue
+	return values
+}
+
+func getReferFieldValueForExcel(referFile string, tableName string) map[string][]string {
+	values := map[string][]string{}
+
+
+
+	return values
 }
