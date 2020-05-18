@@ -61,5 +61,5 @@ type FieldValue struct {
 	FieldBase
 	Field     string  `yaml:"field"`
 
-	Values   map[string][]interface{}
+	Values   []interface{}
 }

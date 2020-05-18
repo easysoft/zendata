@@ -31,7 +31,7 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 		if err != nil {
 			logUtils.Screen("fail to read " + relaPath + ", will return")
 
-			fieldValue.Values["all"] = append(fieldValue.Values["all"], "N/A")
+			fieldValue.Values = append(fieldValue.Values, "N/A")
 			return
 		} else {
 			logUtils.Screen("success to read " + relaPath)
@@ -65,11 +65,11 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 		if index >= constant.MaxNumb { break }
 		if strings.TrimSpace(item) == "" { continue }
 
-		fieldValue.Values["all"] = append(fieldValue.Values["all"], item)
+		fieldValue.Values = append(fieldValue.Values, item)
 		index = index + 1
 	}
 
 	if len(fieldValue.Values) == 0 {
-		fieldValue.Values["all"] = append(fieldValue.Values["all"], "N/A")
+		fieldValue.Values = append(fieldValue.Values, "N/A")
 	}
 }

@@ -132,7 +132,7 @@ func GenerateFieldVal(field model.DefField, fieldValue model.FieldValue, index *
 
 	// 叶节点
 	idx := *index % len(fieldValue.Values)
-	val := fieldValue.Values["all"][idx]
+	val := fieldValue.Values[idx]
 	str = GetFieldValStr(field, val)
 
 	return str
@@ -185,7 +185,7 @@ func LoopSubFields(field *model.DefField, oldValues []string, total int) []strin
 	fieldValue := model.FieldValue{}
 
 	for _, val := range oldValues {
-		fieldValue.Values["all"] = append(fieldValue.Values["all"], val)
+		fieldValue.Values = append(fieldValue.Values, val)
 	}
 
 	index := 0

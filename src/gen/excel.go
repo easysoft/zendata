@@ -57,12 +57,12 @@ func GenerateFieldValuesFromExcel(field *model.DefField, fieldValue *model.Field
 			continue
 		}
 
-		fieldValue.Values["all"] = append(fieldValue.Values["all"], item)
+		fieldValue.Values = append(fieldValue.Values, item)
 		index = index + 1
 	}
 
 	if len(fieldValue.Values) == 0 {
-		fieldValue.Values["all"] = append(fieldValue.Values["all"], "N/A")
+		fieldValue.Values = append(fieldValue.Values, "N/A")
 	}
 }
 

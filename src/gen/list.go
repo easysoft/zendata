@@ -83,12 +83,12 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 			}
 		}
 
-		fieldValue.Values["all"] = append(fieldValue.Values["all"], items...)
+		fieldValue.Values = append(fieldValue.Values, items...)
 		index = index + len(items)
 	}
 
 	if len(fieldValue.Values) == 0 {
-		fieldValue.Values["all"] = append(fieldValue.Values["all"], "N/A")
+		fieldValue.Values = append(fieldValue.Values, "N/A")
 	}
 }
 
