@@ -154,6 +154,14 @@ func GetExeDir() string { // where ztf command in
 	return dir
 }
 
+func GetWorkDir() string { // where ztf command in
+	dir, _ := os.Getwd()
+	dir, _ = filepath.Abs(dir)
+	dir = UpdateDir(dir)
+
+	return dir
+}
+
 func GetLogDir() string {
 	path := vari.WorkDir + constant.LogDir
 

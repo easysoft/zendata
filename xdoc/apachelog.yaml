@@ -52,8 +52,7 @@ fields:
 
   - field: field9 
     note: 嵌套的字段
-    fields: 
-
+    fields:
       - field:  field9.1
         range: a-z
         prefix: part1_

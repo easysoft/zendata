@@ -9,8 +9,11 @@ var (
 	Config         = model.Config{}
 
 	RunMode      constant.RunMode
+
+	ExeDir       string
 	WorkDir      string
 	InputDir     string
+
 	LogDir       string
 	ScreenWidth  int
 	ScreenHeight int

@@ -9,29 +9,29 @@ type ClsBase struct {
 
 // range refer
 type ClsRanges struct {
-	ClsBase
-	FieldBase
+	ClsBase   `yaml:",inline"`
+	FieldBase   `yaml:",inline"`
 	Field string  `yaml:"field"`
 	Ranges map[string]string  `yaml:"ranges"`
 }
 // instance refer
 type ClsInsts struct {
-	ClsBase
+	ClsBase   `yaml:",inline"`
 	Field string  `yaml:"field"`
 	Instances []ClsInst `yaml:"instances,flow"`
 }
 type ClsInst struct {
-	FieldBase
+	FieldBase   `yaml:",inline"`
 	Instance string  `yaml:"instance"`
 }
 
 // common item
 type DefData struct {
-	ClsBase
+	ClsBase   `yaml:",inline"`
 	Fields  []DefField `yaml:"fields,flow"`
 }
 type DefField struct {
-	FieldBase
+	FieldBase   `yaml:",inline"`
 	Field     string  `yaml:"field"`
 	Range    string  `yaml:"range"`
 
@@ -58,8 +58,7 @@ type FieldBase struct {
 }
 
 type FieldValue struct {
-	FieldBase
+	FieldBase   `yaml:",inline"`
 	Field     string  `yaml:"field"`
-
 	Values   []interface{}
 }

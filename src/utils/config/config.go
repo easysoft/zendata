@@ -18,7 +18,8 @@ import (
 )
 
 func InitConfig() {
-	vari.WorkDir = fileUtils.GetExeDir()
+	vari.ExeDir = fileUtils.GetExeDir()
+	vari.WorkDir = fileUtils.GetWorkDir()
 
 	CheckConfigPermission()
 

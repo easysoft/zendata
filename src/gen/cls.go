@@ -3,8 +3,10 @@ package gen
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -27,8 +29,6 @@ func LoadClsDef(file string, fieldsToExport []string) map[string]map[string][]st
 		return referFieldValueMap
 	}
 
-	constant.RootDef = def
-
 	for _, field := range def.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
 
@@ -45,8 +45,8 @@ func loadClsField(field *model.DefField, referFieldValueMap *map[string]map[stri
 		}
 	} else if field.From != "" {
 		referFile, referType, tableName := getReferProp(field.From)
-		values := getReferFieldValue(referFile, referType, tableName)
-		(*referFieldValueMap)[field.Field] = values
+		values, _ := getReferFieldValue(referFile, referType, tableName)
+		(*referFieldValueMap)[field.From] = values
 	}
 }
 
@@ -75,26 +75,36 @@ func getReferProp(from string) (string, string, string) {
 		referType = "excel"
 	}
 
-	if strings.Index(referFile, "system") > -1 {
-		referFile = constant.ResDir + referFile
+	if strings.Index(referFile, "system") == -1 { // no system cls
+		referFile = vari.InputDir + referFile
+
+		if !fileUtils.FileExist(referFile) { // not in input dir
+			referFile = vari.ExeDir + referFile
+
+			if !fileUtils.FileExist(referFile) { // not in exe dir
+				referFile = ""
+			}
+		}
 	}
 
 	return referFile, referType, tableName
 }
 
-func getReferFieldValue(referFile string, referType string, tableName string) map[string][]string {
+func getReferFieldValue(referFile string, referType string, tableName string) (map[string][]string, string) {
+	name := ""
 	values := map[string][]string{}
 
 	if referType == "yaml" {
-		values = getReferFieldValueForYaml(referFile)
+		values, name = getReferFieldValueForYaml(referFile)
 	} else if referType == "excel" {
-		values = getReferFieldValueForExcel(referFile, tableName)
+		values, name = getReferFieldValueForExcel(referFile, tableName)
 	}
 
-	return values
+	return values, name
 }
 
-func getReferFieldValueForYaml(referFile string) map[string][]string {
+func getReferFieldValueForYaml(referFile string) (map[string][]string, string) {
+	name := ""
 	valueMap := map[string][]string{}
 
 	ranges := model.ClsRanges{}
@@ -102,7 +112,7 @@ func getReferFieldValueForYaml(referFile string) map[string][]string {
 	yamlContent, err := ioutil.ReadFile(referFile)
 	if err != nil {
 		logUtils.Screen("fail to read " + referFile)
-		return valueMap
+		return valueMap, ""
 	}
 
 	err = yaml.Unmarshal(yamlContent, &ranges)
@@ -114,21 +124,24 @@ func getReferFieldValueForYaml(referFile string) map[string][]string {
 		yamlContent, err := ioutil.ReadFile(referFile)
 		if err != nil {
 			logUtils.Screen("fail to read " + referFile)
-			return valueMap
+			return valueMap, ""
 		}
 
 		err = yaml.Unmarshal(yamlContent, &insts)
 		if err != nil {
-			return valueMap
+			return valueMap, ""
 		} else {
 			valueMap = getReferFieldValueForInstances(insts)
 		}
 
+		name = insts.Field
+
 	} else {
 		valueMap = getReferFieldValueForRanges(ranges)
+		name = ranges.Field
 	}
 
-	return valueMap
+	return valueMap, name
 }
 
 func getReferFieldValueForRanges(ranges model.ClsRanges) map[string][]string {
@@ -152,10 +165,10 @@ func getReferFieldValueForInstances(referFile model.ClsInsts) map[string][]strin
 	return values
 }
 
-func getReferFieldValueForExcel(referFile string, tableName string) map[string][]string {
+func getReferFieldValueForExcel(referFile string, tableName string) (map[string][]string, string) {
 	values := map[string][]string{}
 
 
 
-	return values
+	return values, ""
 }

@@ -17,14 +17,14 @@ import (
 	"time"
 )
 
-func Generate(def string, total int, fieldsToExportStr string, out string, format string, table string) {
+func Generate(defFile string, total int, fieldsToExportStr string, out string, format string, table string) {
 	startTime := time.Now().Unix()
-	vari.InputDir = filepath.Dir(def) + string(os.PathSeparator)
+	vari.InputDir = filepath.Dir(defFile) + string(os.PathSeparator)
 	constant.Total = total
 
 	fieldsToExport := strings.Split(fieldsToExportStr, ",")
 
-	referFieldValueMap := gen.LoadClsDef(def, fieldsToExport)
+	referFieldValueMap := gen.LoadClsDef(defFile, fieldsToExport)
 	referFieldValueMap = referFieldValueMap
 
 	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport)
