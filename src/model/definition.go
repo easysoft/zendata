@@ -7,20 +7,25 @@ type ClsBase struct {
 	Version string `yaml:"version"`
 }
 
-type ClsRange struct {
+// range refer
+type ClsRanges struct {
 	ClsBase
 	FieldBase
-	Field string
+	Field string  `yaml:"field"`
 	Ranges map[string]string  `yaml:"ranges"`
 }
-type ClsInst struct {
+// instance refer
+type ClsInsts struct {
 	ClsBase
-	Field string
-	Instances []struct {
-		FieldBase
-		Instance string  `yaml:"Instance"`
-	} `yaml:"fields,flow"`
+	Field string  `yaml:"field"`
+	Instances []ClsInst `yaml:"instances,flow"`
 }
+type ClsInst struct {
+	FieldBase
+	Instance string  `yaml:"instance"`
+}
+
+// common item
 type DefData struct {
 	ClsBase
 	Fields  []DefField `yaml:"fields,flow"`
