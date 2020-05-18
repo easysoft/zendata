@@ -22,7 +22,10 @@ func Generate(def string, total int, fieldsToExportStr string, out string, forma
 
 	fieldsToExport := strings.Split(fieldsToExportStr, ",")
 
-	gen.LoadRootDef(def, fieldsToExport)
+	rangeClsFields, instClsFields := gen.LoadClsDef(def, fieldsToExport)
+
+	rangeClsFields = rangeClsFields
+	instClsFields = instClsFields
 
 	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport)
 	content := Print(rows, format, table, colTypes, fieldsToExport)

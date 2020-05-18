@@ -7,12 +7,10 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"os"
-	"strings"
 )
 
-func LoadRootDef(file string, fieldsToExport []string) ([]model.ClsRange, []model.ClsInst) {
-	referRangeFields := make([]model.ClsRange, 0)
+func LoadRootDef(file string, fieldsToExport []string) ([]model.ClsRanges, []model.ClsInst) {
+	referRangeFields := make([]model.ClsRanges, 0)
 	referInstFields := make([]model.ClsInst, 0)
 
 	yamlContent, err := ioutil.ReadFile(file)
@@ -38,7 +36,7 @@ func LoadRootDef(file string, fieldsToExport []string) ([]model.ClsRange, []mode
 			if field.Select != "" { // excel
 
 			} else if field.Use != "" { // range or instance format
-				//referFile, referType := getReferPath(field.From)
+				//referFile, referType := getReferProp(field.From)
 
 				// init const.ResMap
 			}
@@ -48,34 +46,4 @@ func LoadRootDef(file string, fieldsToExport []string) ([]model.ClsRange, []mode
 	}
 
 	return referRangeFields, referInstFields
-}
-
-func getReferPath(from string) (string, string, string) {
-	referFile := ""
-	referType := ""
-	tableName := ""
-
-	sep := string(os.PathSeparator)
-
-	index := strings.LastIndex(from, ".yaml")
-	if index > -1 { // system.nubmer.yaml
-		left := from[:index]
-		left = strings.ReplaceAll(left, ".", sep)
-
-		referFile = left + ".yaml"
-	} else { // system.address.china
-		index = strings.LastIndex(from, ".")
-
-		left := from[:index]
-		left = strings.ReplaceAll(left, ".", sep)
-
-		referFile = left + ".xlsx"
-		tableName = from[index:]
-	}
-
-	if strings.Index(referFile, "system") > -1 {
-		referFile = constant.ResDir + referFile
-	}
-
-	return referFile, referType, tableName
 }
