@@ -23,11 +23,7 @@ func Generate(defFile string, total int, fieldsToExportStr string, out string, f
 	constant.Total = total
 
 	fieldsToExport := strings.Split(fieldsToExportStr, ",")
-
-	referFieldValueMap := gen.LoadClsDef(defFile, fieldsToExport)
-	referFieldValueMap = referFieldValueMap
-
-	rows, colTypes := gen.GenerateForDefinition(total, fieldsToExport)
+	rows, colTypes := gen.GenerateForDefinition(defFile, fieldsToExport, total)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
 	WriteToFile(out, content)

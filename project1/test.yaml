@@ -12,10 +12,14 @@ fields:
   - field: field2
     note: 测试系统字段
     from: system.ip.yaml
-    use: privatec,privateb
+    use: privateC,privateB
 
   - field: field3
     note: 测试Excel数据
     from: system.address.city
     select: name
     where: state like '%山东%'
+
+  - field: field4
+    note: 测试Excel数据
+    range: a-z,0-9

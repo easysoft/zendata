@@ -9,21 +9,22 @@ import (
 	"strings"
 )
 
-func GenerateForDefinition(total int, fieldsToExport []string) ([][]string, []bool) {
-	def := constant.RootDef
+func GenerateForDefinition(defFile string, fieldsToExport []string, total int) ([][]string, []bool) {
+	constant.RootDef = LoadRootDef(defFile)
+	constant.ReferedValues = LoadClsDef(defFile, fieldsToExport)
 
 	fieldNameToValues := map[string][]string{}
 
 	colTypes := make([]bool, 0)
 
 	// 为每个field生成值列表
-	for index, field := range def.Fields {
+	for index, field := range constant.RootDef.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) {
 			continue
 		}
 
 		values := GenerateForField(&field, total)
-		def.Fields[index].Precision = field.Precision
+		constant.RootDef.Fields[index].Precision = field.Precision
 
 		fieldNameToValues[field.Field] = values
 		colTypes = append(colTypes, field.IsNumb)
@@ -32,7 +33,7 @@ func GenerateForDefinition(total int, fieldsToExport []string) ([][]string, []bo
 	// 生成指定数量行的数据
 	rows := make([][]string, 0)
 	for i := 0; i < total; i++ {
-		for _, field := range def.Fields {
+		for _, field := range constant.RootDef.Fields {
 			if !stringUtils.FindInArr(field.Field, fieldsToExport) {
 				continue
 			}
@@ -60,7 +61,7 @@ func GenerateForField(field *model.DefField,  total int) []string {
 		for i := 0; i < total; i++ {
 			concat := ""
 			for _, row := range arr {
-				concat = concat + row[i] // a1 or b2
+				concat = concat + row[i] // get one item from each child, grouped as a1 or b2
 			}
 
 			concat = field.Prefix + concat + field.Postfix
@@ -68,32 +69,21 @@ func GenerateForField(field *model.DefField,  total int) []string {
 		}
 		values = LoopSubFields(field, values, total)
 
-	} else if field.From != "" && field.Select != "" { // refer to excel
-		arr := strings.Split(field.From, ".")
-		referField := constant.ResMap[arr[0]]
+	} else if field.From != "" { // refer field
+		groupValues := constant.ReferedValues[field.From]
 
-		referField.From = field.From
-		referField.Select = field.Select
-		referField.Where = field.Where
+		if field.Use != "" { // refer to cls
+			groups := strings.Split(field.Use, ",")
+			for _, group := range groups {
+				values = append(values, groupValues[group]...)
+			}
 
-		referField.Format = field.Format
-		referField.Prefix = field.Prefix
-		referField.Postfix = field.Postfix
-		referField.Loop = field.Loop
-		referField.Loopfix = field.Loopfix
-
-		//values = GenerateFieldItemsFromDefinition(&referField, total)
-
-	} else if field.From != "" && field.Range != "" { // refer to yaml file
-		if field.Range != "" { // specific custom file
-			//LoadRootDef(constant.InputDir + field.Range)
+		} else { // refer to excel
+			slct := field.Select
+			values = append(values, groupValues[slct]...)
 		}
 
-		//referField := constant.ResMap[field.Field]
-		//values = GenerateForField(&referField, total)
-		// TODO: 需要处理range: small,large等逻辑
-
-	} else {
+	} else { // basic field
 		values = GenerateFieldItemsFromDefinition(field)
 	}
 

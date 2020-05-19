@@ -17,20 +17,7 @@ import (
 func LoadClsDef(file string, fieldsToExport []string) map[string]map[string][]string {
 	referFieldValueMap := map[string]map[string][]string{}
 
-	yamlContent, err := ioutil.ReadFile(file)
-	if err != nil {
-		logUtils.Screen("fail to read " + file)
-		return referFieldValueMap
-	}
-
-	def := model.DefData{}
-	err = yaml.Unmarshal(yamlContent, &def)
-	if err != nil {
-		logUtils.Screen("fail to parse " + file)
-		return referFieldValueMap
-	}
-
-	for _, field := range def.Fields {
+	for _, field := range constant.RootDef.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
 
 		loadClsField(&field, &referFieldValueMap)

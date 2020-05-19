@@ -28,17 +28,17 @@ var (
 	Total = 10
 	MaxNumb = 100000 // max number in array
 
-	RootDef model.DefData               = model.DefData{}
-	ResMap  map[string]model.FieldValue = map[string]model.FieldValue{}
+	RootDef       = model.DefData{}
+	ReferedValues = map[string]map[string][]string{}
 
-	ResDir     string = "data/"
-	ResBuildIn string = ResDir + "system/buildin.yaml"
+	ResDir      = "data/"
+	ResBuildIn  = ResDir + "system/buildin.yaml"
 
-	SqliteDriver string = "sqlite3"
-	SqliteSource string = "file:" + ResDir + ".cache/.data.db"
-	SqliteTrackTable string = "excel_update"
+	SqliteDriver  = "sqlite3"
+	SqliteSource  = "file:" + ResDir + ".cache/.data.db"
+	SqliteTrackTable  = "excel_update"
 
-	ExcelBorder string = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
+	ExcelBorder  = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
 		                              {"type":"bottom","color":"999999","style":1}, {"type":"right","color":"999999","style":1}]}`
-	ExcelHeader string = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`
+	ExcelHeader  = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`
 )
