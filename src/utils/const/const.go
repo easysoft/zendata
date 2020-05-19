@@ -28,11 +28,11 @@ var (
 	Total = 10
 	MaxNumb = 100000 // max number in array
 
-	RootDef       = model.DefData{}
-	ReferedValues = map[string]map[string][]string{}
+	Def = model.DefData{}
+	Res = map[string]map[string][]string{}
 
-	ResDir      = "data/"
-	ResBuildIn  = ResDir + "system/buildin.yaml"
+	ResDir  = "data/"
+	ResPath = ResDir + "system/buildin.yaml"
 
 	SqliteDriver  = "sqlite3"
 	SqliteSource  = "file:" + ResDir + ".cache/.data.db"

@@ -7,20 +7,20 @@ type ClsBase struct {
 	Version string `yaml:"version"`
 }
 
-// range refer
-type ClsRanges struct {
+// range res
+type ResRanges struct {
 	ClsBase   `yaml:",inline"`
 	FieldBase   `yaml:",inline"`
 	Field string  `yaml:"field"`
 	Ranges map[string]string  `yaml:"ranges"`
 }
-// instance refer
-type ClsInsts struct {
+// instance res
+type ResInsts struct {
 	ClsBase   `yaml:",inline"`
-	Field string  `yaml:"field"`
-	Instances []ClsInst `yaml:"instances,flow"`
+	Field string        `yaml:"field"`
+	Instances []ResInst `yaml:"instances,flow"`
 }
-type ClsInst struct {
+type ResInst struct {
 	FieldBase   `yaml:",inline"`
 	Instance string  `yaml:"instance"`
 	Range    string  `yaml:"range"`

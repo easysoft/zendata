@@ -10,21 +10,21 @@ import (
 )
 
 func GenerateForDefinition(defFile string, fieldsToExport []string, total int) ([][]string, []bool) {
-	constant.RootDef = LoadRootDef(defFile)
-	constant.ReferedValues = LoadClsDef(defFile, fieldsToExport)
+	constant.Def = LoadRootDef(defFile)
+	constant.Res = LoadResDef(fieldsToExport)
 
 	fieldNameToValues := map[string][]string{}
 
 	colTypes := make([]bool, 0)
 
 	// 为每个field生成值列表
-	for index, field := range constant.RootDef.Fields {
+	for index, field := range constant.Def.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) {
 			continue
 		}
 
 		values := GenerateForField(&field, total)
-		constant.RootDef.Fields[index].Precision = field.Precision
+		constant.Def.Fields[index].Precision = field.Precision
 
 		fieldNameToValues[field.Field] = values
 		colTypes = append(colTypes, field.IsNumb)
@@ -33,7 +33,7 @@ func GenerateForDefinition(defFile string, fieldsToExport []string, total int) (
 	// 生成指定数量行的数据
 	rows := make([][]string, 0)
 	for i := 0; i < total; i++ {
-		for _, field := range constant.RootDef.Fields {
+		for _, field := range constant.Def.Fields {
 			if !stringUtils.FindInArr(field.Field, fieldsToExport) {
 				continue
 			}
@@ -69,10 +69,10 @@ func GenerateForField(field *model.DefField,  total int) []string {
 		}
 		values = LoopSubFields(field, values, total)
 
-	} else if field.From != "" { // refer field
-		groupValues := constant.ReferedValues[field.From]
+	} else if field.From != "" { // refer to res
+		groupValues := constant.Res[field.From]
 
-		if field.Use != "" { // refer to cls
+		if field.Use != "" { // refer to yaml
 			groups := strings.Split(field.Use, ",")
 			for _, group := range groups {
 				values = append(values, groupValues[group]...)
