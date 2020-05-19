@@ -23,9 +23,10 @@ func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[strin
 	tableName := field.From[idx + 1:]
 
 	list := make([]string, 0)
+	selectCol := ""
 	ConvertExcelToSQLiteIfNeeded(dbName, path)
 
-	list = ReadDataFromSQLite(*field, dbName, tableName)
+	list, selectCol = ReadDataFromSQLite(*field, dbName, tableName)
 
 	// get step and rand
 	rand := false
@@ -44,7 +45,7 @@ func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[strin
 			continue
 		}
 
-		values[tableName] = append(values[tableName], item)
+		values[selectCol] = append(values[selectCol], item)
 		index = index + 1
 	}
 
@@ -136,14 +137,14 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 	}
 }
 
-func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) []string {
+func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) ([]string, string) {
 	list := make([]string, 0)
 
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
 	defer db.Close()
 	if err != nil {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
-		return list
+		return list, ""
 	}
 
 	selectCol := field.Select
@@ -157,7 +158,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) [
 	rows, err := db.Query(sqlStr)
 	if err != nil {
 		logUtils.Screen("fail to exec query " + err.Error())
-		return list
+		return list, ""
 	}
 
 	valMapArr := make([]map[string]string, 0)
@@ -179,7 +180,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) [
 		err = rows.Scan(values...)
 		if err != nil {
 			logUtils.Screen("fail to get sqlite3 row: " + err.Error())
-			return list
+			return list, ""
 		}
 
 		rowMap := map[string]string{}
@@ -201,7 +202,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) [
 		}
 	}
 
-	return list
+	return list, selectCol
 }
 
 func isExcelChanged(path string) bool {
