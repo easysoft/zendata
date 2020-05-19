@@ -5,6 +5,17 @@ version: 1.0
 
 fields:
   - field: field1
-    note:
+    note: 测试自定义字段
     from: numb.yaml
     use: small,large
+
+  - field: field2
+    note: 测试系统字段
+    from: system.ip.yaml
+    use: privatec,privateb
+
+  - field: field3
+    note: 测试Excel数据
+    from: system.address.city
+    select: name
+    where: state like '%山东%'

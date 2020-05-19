@@ -10,10 +10,10 @@ instances:
     postfix: \t
     fields:
      - field: part3
-       range: 0-255
+       range: 0-254
        postfix: .
      - field: part4
-       range: 0-255
+       range: 1-254
 
   - instance: privateB
     prefix: 172.

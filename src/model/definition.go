@@ -23,6 +23,8 @@ type ClsInsts struct {
 type ClsInst struct {
 	FieldBase   `yaml:",inline"`
 	Instance string  `yaml:"instance"`
+	Range    string  `yaml:"range"`
+	Fields  []DefField `yaml:"fields,flow"`
 }
 
 // common item
@@ -34,8 +36,9 @@ type DefField struct {
 	FieldBase   `yaml:",inline"`
 	Field     string  `yaml:"field"`
 	Range    string  `yaml:"range"`
-
 	Fields   []DefField `yaml:"fields,flow"`
+
+	Type     string
 }
 
 type FieldBase struct {

@@ -9,40 +9,27 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"log"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func GenerateFieldValuesFromExcel(field *model.DefField, fieldValue *model.FieldValue, level int) {
-	// get file and step string
-	rang := strings.TrimSpace(field.Range)
-	sectionArr := strings.Split(rang, ":")
-	file := sectionArr[0]
-	stepStr := "1"
-	if len(sectionArr) == 2 {
-		stepStr = sectionArr[1]
-	}
+func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[string][]string, string) {
+	values := map[string][]string{}
+
+	idx := strings.LastIndex(field.From, ".")
+	arr := strings.Split(field.From, ".")
+	dbName := arr[len(arr) - 2]
+	tableName := field.From[idx + 1:]
 
 	list := make([]string, 0)
-	path := constant.ResDir + file
-	ConvertExcelToSQLiteIfNeeded(*field, path)
+	ConvertExcelToSQLiteIfNeeded(dbName, path)
 
-	list = ReadDataFromSQLite(*field)
+	list = ReadDataFromSQLite(*field, dbName, tableName)
 
 	// get step and rand
 	rand := false
 	step := 1
-	if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
-		stepInt, err := strconv.Atoi(stepStr)
-		if err == nil {
-			step = stepInt
-		}
-	} else {
-		rand = true
-	}
-
 	// get index for data retrieve
 	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand)
 	// get data by index
@@ -57,16 +44,14 @@ func GenerateFieldValuesFromExcel(field *model.DefField, fieldValue *model.Field
 			continue
 		}
 
-		fieldValue.Values = append(fieldValue.Values, item)
+		values[tableName] = append(values[tableName], item)
 		index = index + 1
 	}
 
-	if len(fieldValue.Values) == 0 {
-		fieldValue.Values = append(fieldValue.Values, "N/A")
-	}
+	return values, dbName
 }
 
-func ConvertExcelToSQLiteIfNeeded(field model.DefField, path string) {
+func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.Screen("fail to read file: " + err.Error())
@@ -128,7 +113,7 @@ func ConvertExcelToSQLiteIfNeeded(field model.DefField, path string) {
 			valList = valList + ")"
 		}
 
-		tableName := field.Field + "_" + sheet
+		tableName := dbName + "_" + sheet
 		dropSql := fmt.Sprintf(dropTemplate, tableName)
 		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
 		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
@@ -151,7 +136,7 @@ func ConvertExcelToSQLiteIfNeeded(field model.DefField, path string) {
 	}
 }
 
-func ReadDataFromSQLite(field model.DefField) []string {
+func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) []string {
 	list := make([]string, 0)
 
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
@@ -160,9 +145,15 @@ func ReadDataFromSQLite(field model.DefField) []string {
 		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
 		return list
 	}
-	field.From, field.Where = convertSql(field.From, field.Where)
 
-	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", field.Select, field.From, field.Where)
+	selectCol := field.Select
+	from := dbName + "_" + tableName
+	where := field.Where
+	if !strings.Contains(where, "LIMIT") {
+		where = where + " LIMIT " + strconv.Itoa(constant.MaxNumb)
+	}
+
+	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", selectCol, from, where)
 	rows, err := db.Query(sqlStr)
 	if err != nil {
 		logUtils.Screen("fail to exec query " + err.Error())
@@ -201,57 +192,16 @@ func ReadDataFromSQLite(field model.DefField) []string {
 		valMapArr = append(valMapArr, rowMap)
 	}
 
-	format := field.Format
 	for _, item := range valMapArr {
-		line := replacePlaceholderWithValue(format,item)
-		list = append(list, line)
-	}
-
-	return list
-}
-
-func replacePlaceholderWithValue(format string, valMap map[string]string) string {
-	// ${user_name}_${numb}@${domain}
-	regx := regexp.MustCompile(`\$\{([a-zA-z0-9_]+)\}`)
-	arrOfName := regx.FindAllStringSubmatch(format, -1)
-
-	ret := ""
-	if len(arrOfName) > 0 {
-		strLeft := format
-		for index, a := range arrOfName {
-			found := a[0]
-			name := a[1]
-
-			arr := strings.Split(strLeft, found)
-
-			// add string constant
-			if arr[0] != "" {
-				ret = ret + arr[0]
-			}
-
-			ret = ret + valMap[name]
-
-			arr = arr[1:]
-			strLeft = strings.Join(arr, "")
-
-			if index == len(arrOfName) - 1 && strLeft != "" { // add last item in arr
-				ret = ret + strLeft
-			}
+		idx := 0
+		for _, val := range item {
+			if idx > 0 { break }
+			list = append(list, val)
+			idx++
 		}
 	}
 
-	return ret
-}
-
-func convertSql(from string, where string) (string, string) {
-	from = strings.Replace(from,"system.", "", -1)
-	from = strings.Replace(from,".", "_", -1)
-
-	if !strings.Contains(where, "LIMIT") {
-		where = where + " LIMIT " + strconv.Itoa(constant.MaxNumb)
-	}
-
-	return from, where
+	return list
 }
 
 func isExcelChanged(path string) bool {
@@ -262,7 +212,7 @@ func isExcelChanged(path string) bool {
 		return true
 	}
 
-	sqlStr := "SELECT id, name, changeTime FROM excel_change"
+	sqlStr := "SELECT id, name, changeTime FROM " + constant.SqliteTrackTable
 	rows, err := db.Query(sqlStr)
 	if err != nil {
 		logUtils.Screen("fail to exec query " + sqlStr + ": " + err.Error())

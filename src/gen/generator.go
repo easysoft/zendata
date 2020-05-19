@@ -94,13 +94,13 @@ func GenerateForField(field *model.DefField,  total int) []string {
 		// TODO: 需要处理range: small,large等逻辑
 
 	} else {
-		values = GenerateFieldItemsFromDefinition(field, total)
+		values = GenerateFieldItemsFromDefinition(field)
 	}
 
 	return values
 }
 
-func GenerateFieldItemsFromDefinition(field *model.DefField, total int) []string {
+func GenerateFieldItemsFromDefinition(field *model.DefField) []string {
 	if field.Loop == 0 {field.Loop = 1}
 
 	values := make([]string, 0)
@@ -109,7 +109,7 @@ func GenerateFieldItemsFromDefinition(field *model.DefField, total int) []string
 	//datatype := strings.TrimSpace(field.Type)
 	//if datatype == "" { datatype = "list" }
 
-	fieldValue := GenerateList(field, total)
+	fieldValue := GenerateList(field)
 
 	index := 0
 	count := 0
@@ -119,7 +119,7 @@ func GenerateFieldItemsFromDefinition(field *model.DefField, total int) []string
 		values = append(values, str)
 
 		count++
-		if count >= total {
+		if count >= constant.Total {
 			break
 		}
 	}

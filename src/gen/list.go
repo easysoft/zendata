@@ -7,38 +7,39 @@ import (
 	"strings"
 )
 
-func GenerateList(field *model.DefField, total int) model.FieldValue {
+func GenerateList(field *model.DefField) model.FieldValue {
 	fieldValue := model.FieldValue{}
-	GenerateListField(field, &fieldValue, 0)
+	GenerateListField(field, &fieldValue)
 
 	return fieldValue
 }
 
-func GenerateListField(field *model.DefField, fieldValue *model.FieldValue, level int) {
+func GenerateListField(field *model.DefField, fieldValue *model.FieldValue) {
 	fieldValue.Field = field.Field
 	fieldValue.Precision = field.Precision
 
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
 			childValue := model.FieldValue{}
-			GenerateListField(&child, &childValue, level + 1)
+			GenerateListField(&child, &childValue)
 		}
 	} else {
-		GenerateFieldValues(field, fieldValue, level)
+		GenerateFieldValues(field, fieldValue)
 	}
 }
 
-func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldValue, level int) {
+func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldValue) {
 	if strings.Index(field.Range, ".txt") > -1 {
-		GenerateFieldValuesFromText(field, fieldValue, level)
-	} else if strings.Index(field.Range, ".xlsx") > -1 {
-		GenerateFieldValuesFromExcel(field, fieldValue, level)
+		GenerateFieldValuesFromText(field, fieldValue)
 	} else {
-		GenerateFieldValuesFromList(field, fieldValue, level)
+		GenerateFieldValuesFromList(field, fieldValue)
 	}
+	//else if strings.Index(field.Range, ".xlsx") > -1 {
+	//	GenerateFieldValuesFromExcel(field, fieldValue)
+	//}
 }
 
-func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldValue, level int) {
+func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldValue) {
 	//rang := strings.TrimSpace(field.Range)
 	rang := field.Range
 

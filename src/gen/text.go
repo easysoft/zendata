@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldValue, level int) {
+func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldValue) {
 	// get file and step string
 	rang := strings.TrimSpace(field.Range)
 	sectionArr := strings.Split(rang, ":")

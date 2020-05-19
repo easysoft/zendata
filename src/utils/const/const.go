@@ -36,6 +36,8 @@ var (
 
 	SqliteDriver string = "sqlite3"
 	SqliteSource string = "file:" + ResDir + ".cache/.data.db"
+	SqliteTrackTable string = "excel_update"
+
 	ExcelBorder string = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
 		                              {"type":"bottom","color":"999999","style":1}, {"type":"right","color":"999999","style":1}]}`
 	ExcelHeader string = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`
