@@ -1,6 +1,12 @@
-help    -h        查看帮助信息。
-set     -s        设置工具语言属性。用户对当前目录需要有写权限。
-gen               根据定义文件生成数据。
+help   -h   查看帮助信息。
+set    -s   设置工具语言属性。用户对当前目录需要有写权限。
+gen         根据定义文件生成数据。
+            -d -def   指定定义文件
+            -c -count 指定生成数据的条数
+            -field    指定输入的字段，用逗号分隔
+            -o -out   指定输出文件
+            -f format 指定输出格式，支持text、json、xml和sql语句几种格式
+
 
 为了方便在任意目录中执行%s命令，建议将其加入环境变量中，具体方法参照以下地址。
 https://www.ztesting.net/book/ztf-doc/add-to-path-46.html

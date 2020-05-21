@@ -17,11 +17,9 @@ var (
 	def    string
 	count  int
 	fields string
-	parse  bool
 
 	out   string
 	format string
-	table string
 	help  bool
 
 	flagSet *flag.FlagSet
@@ -46,14 +44,8 @@ func main() {
 
 	flagSet.StringVar(&fields, "field", "", "")
 
-	flagSet.BoolVar(&parse, "p", false, "")
-	flagSet.BoolVar(&parse, "parse", false, "")
-
 	flagSet.StringVar(&out, "o", "", "")
 	flagSet.StringVar(&out, "out", "", "")
-
-	flagSet.StringVar(&table, "t", "", "")
-	flagSet.StringVar(&table, "table", "", "")
 
 	flagSet.StringVar(&format, "f", "", "")
 	flagSet.StringVar(&format, "format", "", "")
@@ -70,8 +62,8 @@ func main() {
 		gen(os.Args)
 	case "set", "-set":
 		action.Set()
-	case "upgrade":
-		upgrade(os.Args)
+	//case "upgrade":
+	//	upgrade(os.Args)
 	case "help", "-h":
 		logUtils.PrintUsage()
 
