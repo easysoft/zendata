@@ -9,18 +9,19 @@ import (
 	"github.com/fatih/color"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 )
 
 var (
-	def    string
 	count  int
 	fields string
 
-	out   string
-	table = "text"
+	input  string
+	output string
+	table  = "text"
 	format = "text"
-	help  bool
+	help   bool
 
 	flagSet *flag.FlagSet
 )
@@ -34,18 +35,18 @@ func main() {
 		os.Exit(0)
 	}()
 
-	flagSet = flag.NewFlagSet("zdata", flag.ContinueOnError)
+	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
 
-	flagSet.StringVar(&def, "d", "", "")
-	flagSet.StringVar(&def, "def", "", "")
+	flagSet.StringVar(&input, "i", "", "")
+	flagSet.StringVar(&input, "input", "", "")
 
 	flagSet.IntVar(&count, "c", 10, "")
 	flagSet.IntVar(&count, "count", 10, "")
 
 	flagSet.StringVar(&fields, "field", "", "")
 
-	flagSet.StringVar(&out, "o", "", "")
-	flagSet.StringVar(&out, "out", "", "")
+	flagSet.StringVar(&output, "o", "", "")
+	flagSet.StringVar(&output, "output", "", "")
 
 	flagSet.StringVar(&table, "t", "", "")
 	flagSet.StringVar(&table, "table", "", "")
@@ -60,40 +61,39 @@ func main() {
 	flagSet.BoolVar(&help, "help", false, "")
 
 	if len(os.Args) == 1 {
-		os.Args = append(os.Args, "run", ".")
+		os.Args = append(os.Args, "help")
+	} else if os.Args[1][0:1] == "-" {
+		args := []string{os.Args[0], "gen"}
+		args = append(args, os.Args[1:]...)
+		os.Args = args
 	}
 
 	switch os.Args[1] {
-	case "gen":
-		gen(os.Args)
 	case "set", "-set":
 		action.Set()
+	case "gen":
+		gen(os.Args)
+
 	//case "upgrade":
 	//	upgrade(os.Args)
-	case "help", "-h":
+	default:
 		logUtils.PrintUsage()
-
-	default: // gen
-		if len(os.Args) > 1 {
-			args := []string{os.Args[0], "gen"}
-			args = append(args, os.Args[1:]...)
-
-			gen(args)
-		} else {
-			logUtils.PrintUsage()
-		}
 	}
 }
 
-func upgrade(args []string) {
-	if err := flagSet.Parse(args[2:]); err == nil {
-		action.Upgrade()
-	}
-}
+//func upgrade(args []string) {
+//	if err := flagSet.Parse(args[2:]); err == nil {
+//		action.Upgrade()
+//	}
+//}
 
 func gen(args []string) {
 	if err := flagSet.Parse(args[2:]); err == nil {
-		action.Generate(def, count, fields, out, format, table)
+		if strings.Index(strings.ToLower(input), ".sql") > 0 {
+			action.ParseSql(input, output)
+		} else {
+			action.Generate(input, count, fields, output, format, table)
+		}
 	}
 }
 

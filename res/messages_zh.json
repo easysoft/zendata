@@ -62,6 +62,11 @@
     {
       "id": "file_change_time",
       "translation": "文件修改时间为%s。"
+    },
+
+    {
+      "id": "generate_yaml",
+      "translation": "生成%d个yaml文件于目录%s中, 耗时%d秒。"
     }
   ]
 }

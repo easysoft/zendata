@@ -71,6 +71,11 @@
     {
       "id": "file_change_time",
       "translation": "file change time is "
+    },
+
+    {
+      "id": "generate_yaml",
+      "translation": "Generate %d yaml files in %s, spend %d secs."
     }
   ]
 }
