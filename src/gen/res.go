@@ -4,6 +4,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -105,13 +106,13 @@ func getResForYaml(resFile string) (map[string][]string, string) {
 
 	yamlContent, err := ioutil.ReadFile(resFile)
 	if err != nil {
-		logUtils.Screen("fail to read " + resFile)
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return valueMap, ""
 	}
 
 	err = yaml.Unmarshal(yamlContent, &ranges)
 	if err != nil || ranges.Ranges == nil || len(ranges.Ranges) == 0 { // instances
-		logUtils.Screen("not ResRanges " + resFile + ", try to parse as ResInsts")
+		if vari.Verbose { logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_ranges", resFile)) }
 
 		insts := model.ResInsts{}
 		err = yaml.Unmarshal(yamlContent, &insts)

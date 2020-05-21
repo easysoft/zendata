@@ -21,6 +21,64 @@
     {
       "id": "current_config",
       "translation": "Current config:"
+    },
+
+    {
+      "id": "success_to_read",
+      "translation": "success to read file %s"
+    },
+    {
+      "id": "fail_to_read_file",
+      "translation": "Fail to read file %s."
+    },
+    {
+      "id": "fail_to_parse_file",
+      "translation": "Fail to parse the content of file %s."
+    },
+    {
+      "id": "fail_to_parse_ranges",
+      "translation": "%s is not ResRanges format, try to parse as ResInsts."
+    },
+
+    {
+      "id": "generate_records",
+      "translation": "Generate %d records, spend %d secs"
+    },
+    {
+      "id": "save_testdata",
+      "translation": "Test data saved to %s"
+    },
+    {
+      "id": "fail_to_connect_sqlite",
+      "translation": "fail to open SQLite %s, error: %s"
+    },
+    {
+      "id": "fail_to_exec_query",
+      "translation": "fail to exec query %s "
+    },
+    {
+      "id": "fail_to_parse_row",
+      "translation": "fail to parse sqlite3 row %s"
+    },
+    {
+      "id": "fail_to_update_row",
+      "translation": "fail to insert/update row: "
+    },
+    {
+      "id": "fail_to_save_excel",
+      "translation": "fail to save excel: "
+    },
+    {
+      "id": "fail_to_create_table",
+      "translation": "fail to create table: "
+    },
+    {
+      "id": "fail_to_insert_data",
+      "translation": "fail to insert data: "
+    },
+    {
+      "id": "file_change_time",
+      "translation": "file change time is "
     }
   ]
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/easysoft/zendata/src/action"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"os"
 	"os/signal"
@@ -51,6 +52,9 @@ func main() {
 
 	flagSet.StringVar(&format, "f", "", "")
 	flagSet.StringVar(&format, "format", "", "")
+
+	flagSet.BoolVar(&vari.Verbose, "v", false, "")
+	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")

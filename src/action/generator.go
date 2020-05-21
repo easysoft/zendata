@@ -7,6 +7,7 @@ import (
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -29,8 +30,7 @@ func Generate(defFile string, total int, fieldsToExportStr string, out string, f
 	WriteToFile(out, content)
 
 	entTime := time.Now().Unix()
-	logUtils.Screen(fmt.Sprintf("Genereate %d records, spend %d secs",
-		len(rows), entTime - startTime ))
+	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), entTime - startTime ))
 }
 
 func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) string {

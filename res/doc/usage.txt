@@ -7,6 +7,8 @@ gen         根据定义文件生成数据。
             -o -out   指定输出文件
             -f format 指定输出格式，支持text、json、xml和sql语句几种格式
             -t -table 输出格式为table时，用于指定insert语句的表名
+--verbose   增加此参数，显示详细调试信息。
+
 
 为了方便在任意目录中执行%s命令，建议将其加入环境变量中，具体方法参照以下地址。
 https://www.ztesting.net/book/ztf-doc/add-to-path-46.html

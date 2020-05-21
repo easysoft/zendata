@@ -6,6 +6,7 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"log"
 	"os"
@@ -55,7 +56,7 @@ func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[strin
 func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
-		logUtils.Screen("fail to read file: " + err.Error())
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
 
@@ -124,12 +125,12 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 		_, err = db.Exec(dropSql)
 		_, err = db.Exec(ddl)
 		if err != nil {
-			logUtils.Screen("fail to create table: " + err.Error())
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
 			return
 		} else {
 			_, err = db.Exec(insertSql)
 			if err != nil {
-				logUtils.Screen("fail to insert data: " + err.Error())
+				logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
 				return
 			}
 		}
@@ -143,7 +144,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
 	defer db.Close()
 	if err != nil {
-		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteSource, err.Error()))
 		return list, ""
 	}
 
@@ -157,7 +158,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", selectCol, from, where)
 	rows, err := db.Query(sqlStr)
 	if err != nil {
-		logUtils.Screen("fail to exec query " + err.Error())
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		return list, ""
 	}
 
@@ -179,7 +180,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	for rows.Next() {
 		err = rows.Scan(values...)
 		if err != nil {
-			logUtils.Screen("fail to get sqlite3 row: " + err.Error())
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
 			return list, ""
 		}
 
@@ -209,14 +210,14 @@ func isExcelChanged(path string) bool {
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
 	defer db.Close()
 	if err != nil {
-		logUtils.Screen("fail to open " + constant.SqliteSource + ": " + err.Error())
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteSource, err.Error()))
 		return true
 	}
 
 	sqlStr := "SELECT id, name, changeTime FROM " + constant.SqliteTrackTable
 	rows, err := db.Query(sqlStr)
 	if err != nil {
-		logUtils.Screen("fail to exec query " + sqlStr + ": " + err.Error())
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		return true
 	}
 
@@ -232,7 +233,7 @@ func isExcelChanged(path string) bool {
 
 		err = rows.Scan(&id, &name, &changeTime)
 		if err != nil {
-			logUtils.Screen("fail to get sqlite3 row: " + err.Error())
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
 			changed = true
 			break
 		}
@@ -255,7 +256,7 @@ func isExcelChanged(path string) bool {
 
 		_, err = db.Exec(sqlStr)
 		if err != nil {
-			logUtils.Screen("fail to insert/update data: " + sqlStr + " " + err.Error())
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		}
 	}
 
@@ -279,7 +280,7 @@ func getFileModTime(path string) time.Time {
 	fileChangeTime := fi.ModTime()
 
 	timeStr := fileChangeTime.Format("2006-01-02 15:04:05")
-	logUtils.Screen("file change time is " + timeStr)
+	logUtils.Screen(i118Utils.I118Prt.Sprintf("file_change_time", timeStr))
 
 	return fileChangeTime
 }

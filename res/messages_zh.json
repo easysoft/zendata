@@ -16,6 +16,56 @@
     {
       "id": "current_config",
       "translation": "当前配置："
+    },
+
+    {
+      "id": "success_to_read",
+      "translation": "读取文件%s成功。"
+    },
+    {
+      "id": "fail_to_read_file",
+      "translation": "读取文件%s失败。"
+    },
+    {
+      "id": "fail_to_parse_file",
+      "translation": "解析文件%s失败。"
+    },
+    {
+      "id": "fail_to_parse_ranges",
+      "translation": "%s不是ResRanges格式，尝试解析为ResInsts对象。"
+    },
+
+    {
+      "id": "generate_records",
+      "translation": "生成%d个记录，耗时%d秒。"
+    },
+    {
+      "id": "save_testdata",
+      "translation": "成功保存生成的数据到%s。"
+    },
+    {
+      "id": "fail_to_connect_sqlite",
+      "translation": "打开SQLite数据库%s失败，错误：%s。"
+    },
+    {
+      "id": "fail_to_exec_query",
+      "translation": "SQLite查询失败，语句：%s，错误：%s。"
+    },
+    {
+      "id": "fail_to_parse_row",
+      "translation": "SQLite行解析失败，错误%s。"
+    },
+    {
+      "id": "fail_to_save_excel",
+      "translation": "保存Excel失败，错误：%s。"
+    },
+    {
+      "id": "fail_to_create_table",
+      "translation": "创建表%s失败，错误：%s。"
+    },
+    {
+      "id": "file_change_time",
+      "translation": "文件修改时间为%s。"
     }
   ]
 }

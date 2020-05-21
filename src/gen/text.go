@@ -3,6 +3,7 @@ package gen
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"io/ioutil"
@@ -24,20 +25,20 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 	relaPath := vari.InputDir + file
 	content, err := ioutil.ReadFile(relaPath)
 	if err != nil {
-		logUtils.Screen("fail to read " + relaPath + ", try to use global config")
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", relaPath))
 
 		relaPath = "def" + string(os.PathSeparator) + file
 		content, err = ioutil.ReadFile(relaPath)
 		if err != nil {
-			logUtils.Screen("fail to read " + relaPath + ", will return")
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", relaPath))
 
 			fieldValue.Values = append(fieldValue.Values, "N/A")
 			return
 		} else {
-			logUtils.Screen("success to read " + relaPath)
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("success_to_read", relaPath))
 		}
 	} else {
-		logUtils.Screen("success to read " + relaPath)
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("success_to_read", relaPath))
 	}
 	str := string(content)
 	str = strings.Replace(str, "\\r\\n", "\\n", -1)
