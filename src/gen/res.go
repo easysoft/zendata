@@ -46,13 +46,13 @@ func getResProp(from string) (string, string) {
 	sep := string(os.PathSeparator)
 
 	index := strings.LastIndex(from, ".yaml")
-	if index > -1 { // yaml, system.nubmer.yaml
+	if index > -1 { // yaml, system.ip.v1.yaml
 		left := from[:index]
 		left = strings.ReplaceAll(left, ".", sep)
 
 		resFile = left + ".yaml"
 		resType = "yaml"
-	} else { // excel, system.address.china
+	} else { // excel, system.address.v1.city
 		index = strings.LastIndex(from, ".")
 
 		left := from[:index]

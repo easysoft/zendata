@@ -30,7 +30,7 @@ func Generate(defFile string, total int, fieldsToExportStr string, out string, f
 	WriteToFile(out, content)
 
 	entTime := time.Now().Unix()
-	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), entTime - startTime ))
+	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), out, entTime - startTime ))
 }
 
 func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) string {

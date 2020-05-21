@@ -1,9 +1,0 @@
-title: 域名
-desc: 从文件读取
-author: wwccss
-version: 1.0
-
-field: domain
-instances:
-  - instance: all
-    range: domain.txt:R
