@@ -136,9 +136,13 @@ func getResForRanges(ranges model.ResRanges) map[string][]string {
 
 	for group, exp := range ranges.Ranges {
 		// convert ranges field to standard field
-		tempField := model.DefField{Field: ranges.Field, Range: exp, Type: "cls"}
+		tempField := model.DefField{}
+		copier.Copy(&tempField, ranges)
+		tempField.Field = ranges.Field
+		tempField.Range = exp
+		tempField.Type = "cls"
 
-		groupedValue[group] = GenerateFieldItemsFromDefinition(&tempField)
+		groupedValue[group] = GenerateForField(&tempField, constant.Total)
 	}
 
 	return groupedValue

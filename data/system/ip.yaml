@@ -7,7 +7,7 @@ field: ip
 instances:
   - instance: privateC
     prefix: 192.168.
-    postfix: "\t"
+    postfix: ","
     fields:
      - field: part3
        range: 0-254

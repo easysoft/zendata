@@ -1,5 +1,5 @@
 title: number
-desc: 多个range定义。
+desc:
 author: wwccss
 version: 1.0
 
@@ -9,4 +9,6 @@ ranges:
   small: 1-1000
   medium: 1001-10000
   large: 10001-100000
-postfix: \t
+postfix: "\t"
+loop: 3
+loopfix: "|"
