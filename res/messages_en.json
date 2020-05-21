@@ -9,9 +9,18 @@
       "id": "total",
       "translation": "Total"
     },
+
+    {
+      "id": "begin_config",
+      "translation": "Begin to config, type 'exit' to quit."
+    },
     {
       "id": "enter_language",
       "translation": "Enter the language you want to use:\n1. English %s\n2. Chinese %s"
+    },
+    {
+      "id": "current_config",
+      "translation": "Current config:"
     }
   ]
 }
