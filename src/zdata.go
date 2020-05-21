@@ -12,14 +12,13 @@ import (
 )
 
 var (
-	language string
-
 	def    string
 	count  int
 	fields string
 
 	out   string
-	format string
+	table = "text"
+	format = "text"
 	help  bool
 
 	flagSet *flag.FlagSet
@@ -46,6 +45,9 @@ func main() {
 
 	flagSet.StringVar(&out, "o", "", "")
 	flagSet.StringVar(&out, "out", "", "")
+
+	flagSet.StringVar(&table, "t", "", "")
+	flagSet.StringVar(&table, "table", "", "")
 
 	flagSet.StringVar(&format, "f", "", "")
 	flagSet.StringVar(&format, "format", "", "")
