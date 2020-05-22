@@ -6,7 +6,7 @@ import (
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -31,7 +31,7 @@ func ParseSql(file string, out string) {
 			def.Fields = append(def.Fields, field)
 		}
 
-		bytes, _ := yaml.Marshal(def)
+		bytes, _ := yaml.Marshal(&def)
 		out = fileUtils.UpdateDir(out)
 		outFile := out + tableName + ".yaml"
 		WriteToFile(outFile, string(bytes))

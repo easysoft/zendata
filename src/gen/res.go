@@ -9,7 +9,7 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/copier"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
 	"strings"

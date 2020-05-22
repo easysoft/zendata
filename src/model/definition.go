@@ -55,7 +55,7 @@ type FieldBase struct {
 }
 type DefSimple struct {
 	ClsBase   `yaml:",inline"`
-	Fields  []FieldSimple `yaml:"fields,flow"`
+	Fields  []FieldSimple `yaml:"fields"`
 }
 type FieldSimple struct {
 	Field  string  `yaml:"field"`
