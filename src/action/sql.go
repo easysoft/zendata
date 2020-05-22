@@ -6,6 +6,7 @@ import (
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -21,18 +22,19 @@ func ParseSql(file string, out string) {
 	for tableName, statement := range statements {
 		columns := getColumnsFromCreateStatement(statement)
 
-		def := model.DefData{}
+		def := model.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.DefField{}
+			field := model.FieldSimple{}
 			field.Init(col)
 			def.Fields = append(def.Fields, field)
 		}
 
+		bytes, _ := yaml.Marshal(def)
 		out = fileUtils.UpdateDir(out)
-		outFile := out + tableName
-		WriteToFile(outFile, "content")
+		outFile := out + tableName + ".yaml"
+		WriteToFile(outFile, string(bytes))
 	}
 
 	entTime := time.Now().Unix()

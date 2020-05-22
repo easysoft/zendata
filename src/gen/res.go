@@ -141,7 +141,6 @@ func getResForRanges(ranges model.ResRanges) map[string][]string {
 		copier.Copy(&tempField, ranges)
 		tempField.Field = ranges.Field
 		tempField.Range = exp
-		tempField.Type = "cls"
 
 		groupedValue[group] = GenerateForField(&tempField, constant.Total)
 	}
@@ -156,7 +155,7 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 		group := inst.Instance
 
 		// convert instant field to standard field
-		tempField := model.DefField{Field: insts.Field, Type: "cls"}
+		tempField := model.DefField{Field: insts.Field}
 
 		child := model.DefField{Field: inst.Instance}
 		copier.Copy(&child, inst)

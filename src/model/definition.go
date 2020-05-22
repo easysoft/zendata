@@ -37,28 +37,37 @@ type DefField struct {
 	Field     string  `yaml:"field"`
 	Range    string  `yaml:"range"`
 	Fields   []DefField `yaml:"fields,flow"`
-
-	Type     string
 }
 
+// base struct
 type FieldBase struct {
-	Note     string  `yaml:"note"`
+	FieldSimple
 
 	From	string  `yaml:"from"`
 	Select	string  `yaml:"select"`
 	Where	string  `yaml:"where"`
 	Use	string  `yaml:"use"`
 
-	Prefix   string  `yaml:"prefix"`
-	Postfix  string  `yaml:"postfix"`
-	Loop  int  `yaml:"loop"`
-	Loopfix  string  `yaml:"loopfix"`
-	Format  string  `yaml:"format"`
 	IsNumb  bool  `yaml:"isNumb"`
 	Expect  string  `yaml:"expect"`
 
 	Precision int
 }
+type DefSimple struct {
+	ClsBase   `yaml:",inline"`
+	Fields  []FieldSimple `yaml:"fields,flow"`
+}
+type FieldSimple struct {
+	Field  string  `yaml:"field"`
+	Note     string  `yaml:"note"`
+	Prefix   string  `yaml:"prefix"`
+	Postfix  string  `yaml:"postfix"`
+	Loop  int  `yaml:"loop"`
+	Loopfix  string  `yaml:"loopfix"`
+	Format  string  `yaml:"format"`
+}
+
+
 
 type FieldValue struct {
 	FieldBase   `yaml:",inline"`
@@ -66,12 +75,12 @@ type FieldValue struct {
 	Values   []interface{}
 }
 
-func (def *DefData) Init(tableName, author, desc, version string) {
+func (def *DefSimple) Init(tableName, author, desc, version string) {
 	def.Title = "table " + tableName
 	def.Author = author
 	def.Desc = desc
 	def.Version = version
 }
-func (fld *DefField) Init(field string) {
+func (fld *FieldSimple) Init(field string) {
 	fld.Field = field
 }
