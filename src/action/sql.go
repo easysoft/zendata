@@ -1,6 +1,8 @@
 package action
 
 import (
+	"github.com/easysoft/zendata/src/model"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -15,35 +17,50 @@ func ParseSql(file string, out string) {
 	startTime := time.Now().Unix()
 	vari.InputDir = filepath.Dir(file) + string(os.PathSeparator)
 
-	sents := getCreateSent(file)
-	for _, sent := range sents {
-		fields := getFieldsFromCreateSent(sent)
-		fields = fields
+	statements := getCreateStatement(file)
+	for tableName, statement := range statements {
+		columns := getColumnsFromCreateStatement(statement)
+
+		def := model.DefData{}
+		def.Init(tableName, "automated export", "", "1.0")
+
+		for _, col := range columns {
+			field := model.DefField{}
+			field.Init(col)
+			def.Fields = append(def.Fields, field)
+		}
+
+		out = fileUtils.UpdateDir(out)
+		outFile := out + tableName
+		WriteToFile(outFile, "content")
 	}
 
 	entTime := time.Now().Unix()
-	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_yaml", len(sents), out, entTime - startTime ))
+	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_yaml", len(statements), out, entTime - startTime ))
 }
 
-func getCreateSent(file string) []string {
-	sents := make([]string, 0)
+func getCreateStatement(file string) map[string]string {
+	statements := map[string]string{}
 
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
 		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", file))
-		return sents
+		return statements
 	}
 
-	re := regexp.MustCompile(`(?siU)(CREATE TABLE.*;)`)
+	re := regexp.MustCompile("(?siU)(CREATE TABLE.*;)")
 	arr := re.FindAllString(string(content), -1)
 	for _, item := range arr {
-		sents = append(sents,item)
+		re := regexp.MustCompile("(?iU)CREATE TABLE.*`(.+)`")
+		arr2 := re.FindAllStringSubmatch(item, -1)
+
+		statements[arr2[0][1]] = item
 	}
 
-	return sents
+	return statements
 }
 
-func getFieldsFromCreateSent(sent string) []string {
+func getColumnsFromCreateStatement(sent string) []string {
 	fieldLines := make([]string, 0)
 
 	re := regexp.MustCompile("(?iU)`(.+)`\\s.*,")

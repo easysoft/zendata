@@ -65,3 +65,13 @@ type FieldValue struct {
 	Field     string  `yaml:"field"`
 	Values   []interface{}
 }
+
+func (def *DefData) Init(tableName, author, desc, version string) {
+	def.Title = "table " + tableName
+	def.Author = author
+	def.Desc = desc
+	def.Version = version
+}
+func (fld *DefField) Init(field string) {
+	fld.Field = field
+}
