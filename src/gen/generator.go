@@ -77,11 +77,12 @@ func GenerateForField(field *model.DefField,  total int) []string {
 			for _, group := range groups {
 				values = append(values, groupValues[group]...)
 			}
-
 		} else { // refer to excel
 			slct := field.Select
 			values = append(values, groupValues[slct]...)
 		}
+
+		values = LoopSubFields(field, values, total)
 
 	} else { // basic field
 		values = GenerateFieldItemsFromDefinition(field)

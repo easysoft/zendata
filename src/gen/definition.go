@@ -53,12 +53,12 @@ func MergerDefine(defaultDef, ymlDef *model.DefData) {
 	defaultFieldMap := map[string]*model.DefField{}
 	ymlFieldMap := map[string]*model.DefField{}
 
-	for _, field := range defaultDef.Fields {
-		CreatePathToFieldMap(&field, defaultFieldMap)
+	for _, field1 := range defaultDef.Fields {
+		CreatePathToFieldMap(field1, defaultFieldMap)
 	}
 
-	for _, field := range ymlDef.Fields {
-		CreatePathToFieldMap(&field, ymlFieldMap)
+	for _, field2 := range ymlDef.Fields {
+		CreatePathToFieldMap(field2, ymlFieldMap)
 	}
 
 	for path, field := range ymlFieldMap {
@@ -78,7 +78,7 @@ func MergerDefine(defaultDef, ymlDef *model.DefData) {
 	}
 }
 
-func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField) {
+func CreatePathToFieldMap(field model.DefField, mp map[string]*model.DefField) {
 	if field.Path == "" { // root
 		field.Path = field.Field
 	}
@@ -87,11 +87,16 @@ func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField) 
 		for _, child := range field.Fields {
 			child.Path = field.Path + "~~" + child.Field
 
-			CreatePathToFieldMap(&child, mp)
+			CreatePathToFieldMap(child, mp)
 		}
 	} else {
-		mp[field.Path] = field
+		path := field.Path
+		logUtils.Screen(path + " -> " + field.Field)
+		mp[path] = &field
 	}
+
+	a := 1
+	a = a + 1
 }
 
 func CopyField(child model.DefField, parent *model.DefField) {

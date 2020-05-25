@@ -16,7 +16,7 @@ fields:
     loop: 3
 
   - field: field2
-    note: 测试系统字段
+    note: 测试系统字段 in yaml
     from: system.ip.v1.yaml
     use: privateC,privateB
     loop: 3
