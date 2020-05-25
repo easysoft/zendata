@@ -19,7 +19,3 @@ fields:
     from: system.address.v1.city
     select: name
     where: state like '%山东%'
-
-  - field: field4
-    note: 测试Excel数据
-    range: a-z,0-9

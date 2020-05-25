@@ -1,2 +1,5 @@
-$>ztf.exe set  根据系统提示，设置工具语言属性。
-$>ztf.exe gen -d sample/test.yaml -c 15 -field field1 -o sample/output.txt -f text  执行数据生成命令。使用定义文件sample/test.yaml，生成15行数据，以text格式的输出到sample/output.txt文件中。
+$>ztf.exe -s  根据系统提示，设置工具语言属性。
+$>ztf.exe -y sample/test.yaml -c 15 -field field1 -o sample/output.txt -f text
+               执行数据生成命令。使用配置文件sample/test.yaml，生成15行数据，以text格式的输出到sample/output.txt文件中。
+$>ztf.exe -d sample/common.yaml -y sample/test.yaml -c 15 -field field1 -o sample/output.txt -f text
+               执行数据生成命令。使用文件sample/test.yam覆盖默认配置sample/common.yaml中的内容。

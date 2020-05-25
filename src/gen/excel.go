@@ -19,9 +19,10 @@ func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[strin
 	values := map[string][]string{}
 
 	idx := strings.LastIndex(field.From, ".")
-	arr := strings.Split(field.From, ".")
-	dbName := arr[len(arr) - 2]
 	tableName := field.From[idx + 1:]
+
+	arr := strings.Split(field.From, ".")
+	dbName := arr[len(arr) - 3] + "_" + arr[len(arr) - 2]
 
 	list := make([]string, 0)
 	selectCol := ""
@@ -249,9 +250,11 @@ func isExcelChanged(path string) bool {
 
 	if changed {
 		if !found {
-			sqlStr = fmt.Sprintf("INSERT INTO excel_change(name, changeTime) VALUES('%s', %d)", path, fileChangeTime)
+			sqlStr = fmt.Sprintf("INSERT INTO %s(name, changeTime) VALUES('%s', %d)",
+				constant.SqliteTrackTable, path, fileChangeTime)
 		} else {
-			sqlStr = fmt.Sprintf("UPDATE excel_change SET changeTime = %d WHERE name = '%s'", fileChangeTime, path)
+			sqlStr = fmt.Sprintf("UPDATE %s SET changeTime = %d WHERE name = '%s'",
+				constant.SqliteTrackTable, fileChangeTime, path)
 		}
 
 		_, err = db.Exec(sqlStr)

@@ -9,22 +9,20 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 )
 
-func Generate(defFile string, total int, fieldsToExportStr string, out string, format string, table string) {
+func Generate(deflt string, yml string, total int, fieldsToExportStr string, out string, format string, table string) {
 	startTime := time.Now().Unix()
-	vari.InputDir = filepath.Dir(defFile) + string(os.PathSeparator)
+	vari.InputDir = filepath.Dir(yml) + string(os.PathSeparator)
 	constant.Total = total
 
 	fieldsToExport := strings.Split(fieldsToExportStr, ",")
-	rows, colTypes := gen.GenerateForDefinition(defFile, fieldsToExport, total)
+	rows, colTypes := gen.GenerateForDefinition(yml, fieldsToExport, total)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
 	WriteToFile(out, content)
@@ -34,7 +32,7 @@ func Generate(defFile string, total int, fieldsToExportStr string, out string, f
 }
 
 func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) string {
-	width := stringUtils.GetNumbWidth(len(rows))
+	//width := stringUtils.GetNumbWidth(len(rows))
 
 	content := ""
 	sql := ""
@@ -63,8 +61,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 
 		if format == "text" && i < len(rows) - 1 { content = content + line + "\n" }
 
-		idStr := fmt.Sprintf("%" + strconv.Itoa(width) + "d", i+1)
-		logUtils.Screen(fmt.Sprintf("%s: %s", idStr, line))
+		logUtils.Screen(fmt.Sprintf("%s", line))
 
 		testData.Table.Rows = append(testData.Table.Rows, row)
 

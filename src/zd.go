@@ -9,11 +9,12 @@ import (
 	"github.com/fatih/color"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 )
 
 var (
+	deflt string
+	yml string
 	count  int
 	fields string
 
@@ -21,6 +22,10 @@ var (
 	output string
 	table  = "text"
 	format = "text"
+
+	viewRes string
+	viewDetail string
+
 	help   bool
 
 	flagSet *flag.FlagSet
@@ -36,6 +41,12 @@ func main() {
 	}()
 
 	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
+
+	flagSet.StringVar(&deflt, "d", "", "")
+	flagSet.StringVar(&deflt, "deflt", "", "")
+
+	flagSet.StringVar(&yml, "y", "", "")
+	flagSet.StringVar(&yml, "yml", "", "")
 
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
@@ -54,14 +65,14 @@ func main() {
 	flagSet.StringVar(&format, "f", "", "")
 	flagSet.StringVar(&format, "format", "", "")
 
+	flagSet.StringVar(&viewRes, "v", "", "")
+	flagSet.StringVar(&viewDetail, "vv", "", "")
+
 	flagSet.BoolVar(&vari.Verbose, "v", false, "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
-	flagSet.BoolVar(&help, "h", false, "")
-	flagSet.BoolVar(&help, "help", false, "")
-
 	if len(os.Args) == 1 {
-		os.Args = append(os.Args, "help")
+		os.Args = append(os.Args, "-help")
 	} else if os.Args[1][0:1] == "-" {
 		args := []string{os.Args[0], "gen"}
 		args = append(args, os.Args[1:]...)
@@ -69,30 +80,21 @@ func main() {
 	}
 
 	switch os.Args[1] {
-	case "set", "-set":
+	case "-s", "-set":
 		action.Set()
-	case "gen":
-		gen(os.Args)
-
-	//case "upgrade":
-	//	upgrade(os.Args)
-	default:
+	case "-h", "-help":
 		logUtils.PrintUsage()
+	default:
+		gen(os.Args)
 	}
 }
 
-//func upgrade(args []string) {
-//	if err := flagSet.Parse(args[2:]); err == nil {
-//		action.Upgrade()
-//	}
-//}
-
 func gen(args []string) {
 	if err := flagSet.Parse(args[2:]); err == nil {
-		if strings.Index(strings.ToLower(input), ".sql") > 0 {
+		if input != "" {
 			action.ParseSql(input, output)
 		} else {
-			action.Generate(input, count, fields, output, format, table)
+			action.Generate(deflt, yml, count, fields, output, format, table)
 		}
 	}
 }
