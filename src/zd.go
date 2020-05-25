@@ -7,6 +7,7 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"io/ioutil"
 	"os"
 	"os/signal"
 	"syscall"
@@ -82,7 +83,7 @@ func main() {
 	case "-s", "-set":
 		set()
 	case "-h", "-help":
-		logUtils.PrintUsage()
+		usage()
 	default:
 		gen(os.Args)
 	}
@@ -93,17 +94,25 @@ func set() {
 }
 
 func gen(args []string) {
+	flagSet.SetOutput(ioutil.Discard)
 	if err := flagSet.Parse(args[2:]); err == nil {
 		if input != "" {
 			action.ParseSql(input, output)
 		} else {
 			action.Generate(deflt, yml, count, fields, output, format, table)
 		}
+	} else {
+		usage()
 	}
+}
+
+func usage() {
+	logUtils.PrintUsage()
 }
 
 func init() {
 	cleanup()
+
 	logUtils.InitLogger()
 	configUtils.InitConfig()
 }

@@ -123,7 +123,6 @@ func CheckConfigReady() {
 
 func InputForSet() {
 	conf := ReadCurrConfig()
-
 	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("begin_config"), color.FgCyan)
 
 	enCheck := ""

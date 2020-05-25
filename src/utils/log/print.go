@@ -20,12 +20,12 @@ func PrintUsage() {
 	PrintToWithColor("Usage: ", color.FgCyan)
 
 	usage := fileUtils.ReadResData(usageFile)
-	exeFile := "ztf"
+	exeFile := "zd"
 	if commonUtils.IsWin() {
 		exeFile += ".exe"
 	}
 	usage = fmt.Sprintf(usage, exeFile)
-	fmt.Printf("%s\n", usage)
+	fmt.Printf("   %s\n", usage)
 
 	PrintToWithColor("\nExample: ", color.FgCyan)
 	sample := fileUtils.ReadResData(sampleFile)
@@ -42,7 +42,7 @@ func PrintUsage() {
 		regx, _ = regexp.Compile(`\.bat\s{4}`)
 		sample = regx.ReplaceAllString(sample, ".shell")
 	}
-	fmt.Printf("%s\n", sample)
+	fmt.Printf("   %s\n", sample)
 }
 
 func PrintTo(str string) {
