@@ -5,3 +5,5 @@
 /test/
 /xdoc/test/out/
 /build/
+/data/.cache/.data.db-shm
+/data/.cache/.data.db-wal
