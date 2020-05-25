@@ -39,9 +39,8 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 
 	MergerDefine(&defaultDef, &ymlDef)
 
-	fieldsToExportIsEmpty := len(*fieldsToExport) == 0
-	for _, field := range ymlDef.Fields {
-		if fieldsToExportIsEmpty {
+	if len(*fieldsToExport) == 0 {
+		for _, field := range ymlDef.Fields {
 			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 	}
@@ -53,18 +52,19 @@ func MergerDefine(defaultDef, ymlDef *model.DefData) {
 	defaultFieldMap := map[string]*model.DefField{}
 	ymlFieldMap := map[string]*model.DefField{}
 
-	for _, field1 := range defaultDef.Fields {
-		CreatePathToFieldMap(field1, defaultFieldMap)
+	for i := range defaultDef.Fields {
+		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap)
 	}
 
-	for _, field2 := range ymlDef.Fields {
-		CreatePathToFieldMap(field2, ymlFieldMap)
+	for i := range ymlDef.Fields {
+		CreatePathToFieldMap(&ymlDef.Fields[i], ymlFieldMap)
 	}
 
 	for path, field := range ymlFieldMap {
 		parent, exist := defaultFieldMap[path]
 		if exist {
 			CopyField(*field, parent)
+			defaultFieldMap[path] = parent
 		}
 	}
 
@@ -78,63 +78,60 @@ func MergerDefine(defaultDef, ymlDef *model.DefData) {
 	}
 }
 
-func CreatePathToFieldMap(field model.DefField, mp map[string]*model.DefField) {
+func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField) {
 	if field.Path == "" { // root
 		field.Path = field.Field
 	}
 
 	if len(field.Fields) > 0 {
-		for _, child := range field.Fields {
-			child.Path = field.Path + "~~" + child.Field
+		for i := range field.Fields {
+			field.Fields[i].Path = field.Path + "~~" + field.Fields[i].Field
 
-			CreatePathToFieldMap(child, mp)
+			CreatePathToFieldMap(&field.Fields[i], mp)
 		}
 	} else {
 		path := field.Path
-		logUtils.Screen(path + " -> " + field.Field)
-		mp[path] = &field
+		//logUtils.Screen(path + " -> " + field.Field)
+		mp[path] = field
 	}
-
-	a := 1
-	a = a + 1
 }
 
 func CopyField(child model.DefField, parent *model.DefField) {
-	parent.Range = child.Range
+	(*parent).Range = child.Range
 
 	if child.Note != "" {
-		parent.Note = child.Note
+		(*parent).Note = child.Note
 	}
 	if child.Prefix != "" {
-		parent.Prefix = child.Prefix
+		(*parent).Prefix = child.Prefix
 	}
 	if child.Postfix != "" {
-		parent.Postfix = child.Postfix
+		(*parent).Postfix = child.Postfix
 	}
 	if child.Loop != 0 {
-		parent.Loop = child.Loop
+		(*parent).Loop = child.Loop
 	}
 	if child.Loopfix != "" {
-		parent.Loopfix = child.Loopfix
+		(*parent).Loopfix = child.Loopfix
 	}
 	if child.Format != "" {
-		parent.Format = child.Format
+		(*parent).Format = child.Format
 	}
 
 	if child.From != "" {
-		parent.From = child.From
+		(*parent).From = child.From
 	}
 	if child.Select != "" {
-		parent.Select = child.Select
+		(*parent).Select = child.Select
 	}
 	if child.Where != "" {
-		parent.Where = child.Where
+		(*parent).Where = child.Where
 	}
 	if child.Use != "" {
-		parent.Use = child.Use
+		(*parent).Use = child.Use
 	}
 
 	if child.Precision != 0 {
-		parent.Precision = child.Precision
+		(*parent).Precision = child.Precision
 	}
 }
