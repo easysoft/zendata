@@ -1,5 +1,5 @@
    $>zd.exe -s 根据系统提示，设置工具语言属性。
-   $>zd.exe -y sample/test.yaml -c 15 -field field1 -o sample/output.txt -f text
-            执行数据生成命令。使用配置文件sample/test.yaml，生成15行数据，以text格式的输出到sample/output.txt文件中。
-   $>zd.exe -d sample/common.yaml -y sample/test.yaml -c 15 -field field1 -o sample/output.txt -f text
-            执行数据生成命令。使用文件sample/test.yam覆盖默认配置sample/common.yaml中的内容。
+   $>zd.exe -y demo/test.yaml -c 15 -field field1 -o demo/output.txt -f text
+            执行数据生成命令。使用配置文件demo/test.yaml，生成15行数据，以text格式的输出到demo/output.txt文件中。
+   $>zd.exe -d demo/common.yaml -y demo/test.yaml -c 15 -field field1 -o demo/output.txt -f text
+            执行数据生成命令。使用文件demo/test.yam覆盖默认配置demo/common.yaml中的内容。

@@ -25,7 +25,9 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 	rows, colTypes := gen.GenerateForDefinition(deflt, yml, fieldsToExport, total)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
-	WriteToFile(out, content)
+	if out != "" {
+		WriteToFile(out, content)
+	}
 
 	entTime := time.Now().Unix()
 	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), out, entTime - startTime ))

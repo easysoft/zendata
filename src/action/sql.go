@@ -32,9 +32,15 @@ func ParseSql(file string, out string) {
 		}
 
 		bytes, _ := yaml.Marshal(&def)
-		out = fileUtils.UpdateDir(out)
-		outFile := out + tableName + ".yaml"
-		WriteToFile(outFile, string(bytes))
+		content := string(bytes)
+
+		if out != "" {
+			out = fileUtils.UpdateDir(out)
+			outFile := out + tableName + ".yaml"
+			WriteToFile(outFile, content)
+		} else {
+			logUtils.Screen(content)
+		}
 	}
 
 	entTime := time.Now().Unix()

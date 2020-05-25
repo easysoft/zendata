@@ -5,12 +5,10 @@ version: 1.0
 
 fields:
   - field: field0
-    note:
     range: a-z
     loop: 3
 
   - field: field1
-    note: 测试自定义字段
     from: numb.yaml
     use: small,large
     loop: 3
@@ -22,7 +20,6 @@ fields:
     loop: 3
 
   - field: field3
-    note: 测试Excel数据
     from: system.address.v1.city
     select: name
     where: state like '%山东%'

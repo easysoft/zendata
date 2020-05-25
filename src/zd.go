@@ -43,7 +43,7 @@ func main() {
 	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
 
 	flagSet.StringVar(&deflt, "d", "", "")
-	flagSet.StringVar(&deflt, "deflt", "", "")
+	flagSet.StringVar(&deflt, "default", "", "")
 
 	flagSet.StringVar(&yml, "y", "", "")
 	flagSet.StringVar(&yml, "yml", "", "")
@@ -80,12 +80,16 @@ func main() {
 
 	switch os.Args[1] {
 	case "-s", "-set":
-		action.Set()
+		set()
 	case "-h", "-help":
 		logUtils.PrintUsage()
 	default:
 		gen(os.Args)
 	}
+}
+
+func set() {
+	action.Set()
 }
 
 func gen(args []string) {
