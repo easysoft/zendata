@@ -1,8 +1,6 @@
-/def/
 /log/
 /.idea/
 /bin/
-/release/
 /test/
-/zdata/
 /xdoc/test/out/
+/build/

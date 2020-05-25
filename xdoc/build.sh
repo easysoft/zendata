@@ -1,34 +1,34 @@
-rm -rf zt
-mkdir zt
-mkdir zt/log
-cp -r conf zt/
-cp -r runtime zt/
-cp -r demo zt/
+rm -rf build
+mkdir build
+mkdir build/log
+cp -r conf build/
+cp -r data build/
+cp -r demo build/
 
 /Users/aaron/go/bin/go-bindata -o=res/res.go -pkg=res res/ res/doc
 
-CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o zt/zt-x86.exe src/zt.go
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o zt/zt-amd64.exe src/zt.go
+CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o build/zd-x86.exe src/zd.go
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o build/zd-amd64.exe src/zd.go
 
-GO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o zt/zt-linux src/zt.go
-CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o zt/zt-mac src/zt.go
+GO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/zd-linux src/zd.go
+CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o build/zd-mac src/zd.go
 
-cd zt
+cd build
 
-cp zt-x86.exe zt.exe
-zip -r zt-win-x86-2.2.zip zt.exe conf demo
-rm zt.exe
+cp zd-x86.exe zd.exe
+zip -r zd-win-x86-2.2.zip zd.exe conf data demo
+rm zd.exe
 
-cp zt-amd64.exe zt.exe
-zip -r zt-win-amd64-2.2.zip zt.exe conf demo
-rm zt.exe
+cp zd-amd64.exe zd.exe
+zip -r zd-win-amd64-2.2.zip zd.exe conf data demo
+rm zd.exe
 
-cp zt-linux zt
-tar -zcvf zt-linux-2.2.tar.gz zt conf demo
-rm zt
+cp zd-linux zd
+tar -zcvf zd-linux-2.2.tar.gz zd conf data demo
+rm zd
 
-cp zt-mac zt
-zip -r zt-mac-2.2.zip zt conf demo
-rm zt
+cp zd-mac zd
+zip -r zd-mac-2.2.zip zd conf data demo
+rm zd
 
 cd ..
