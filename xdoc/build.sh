@@ -16,19 +16,19 @@ CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o build/zd-mac src/zd.go
 cd build
 
 cp zd-x86.exe zd.exe
-zip -r zd-win-x86-2.2.zip zd.exe conf data demo
+zip -r zd-win-x86-0.8.zip zd.exe conf data demo
 rm zd.exe
 
 cp zd-amd64.exe zd.exe
-zip -r zd-win-amd64-2.2.zip zd.exe conf data demo
+zip -r zd-win-amd64-0.8.zip zd.exe conf data demo
 rm zd.exe
 
 cp zd-linux zd
-tar -zcvf zd-linux-2.2.tar.gz zd conf data demo
+tar -zcvf zd-linux-0.8.tar.gz zd conf data demo
 rm zd
 
 cp zd-mac zd
-zip -r zd-mac-2.2.zip zd conf data demo
+zip -r zd-mac-0.8.zip zd conf data demo
 rm zd
 
 cd ..
