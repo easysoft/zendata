@@ -155,9 +155,12 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 		group := inst.Instance
 
 		// convert instant field to standard field
-		tempField := model.DefField{Field: insts.Field}
+		tempField := model.DefField{}
+		tempField.Field = insts.Field
 
-		child := model.DefField{Field: inst.Instance}
+		child := model.DefField{}
+		child.Field = inst.Instance
+
 		copier.Copy(&child, inst)
 
 		tempField.Fields = append(tempField.Fields, child)

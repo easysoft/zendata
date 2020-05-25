@@ -11,7 +11,7 @@ type ClsBase struct {
 type ResRanges struct {
 	ClsBase   `yaml:",inline"`
 	FieldBase   `yaml:",inline"`
-	Field string  `yaml:"field"`
+	//Field string  `yaml:"field"`
 	Ranges map[string]string  `yaml:"ranges"`
 }
 // instance res
@@ -34,14 +34,16 @@ type DefData struct {
 }
 type DefField struct {
 	FieldBase   `yaml:",inline"`
-	Field     string  `yaml:"field"`
+	//Field     string  `yaml:"field"`
 	Range    string  `yaml:"range"`
 	Fields   []DefField `yaml:"fields,flow"`
+
+	Path string
 }
 
 // base struct
 type FieldBase struct {
-	FieldSimple
+	FieldSimple   `yaml:",inline"`
 
 	From	string  `yaml:"from"`
 	Select	string  `yaml:"select"`

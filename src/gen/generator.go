@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-func GenerateForDefinition(defFile string, fieldsToExport []string, total int) ([][]string, []bool) {
-	constant.Def = LoadRootDef(defFile)
+func GenerateForDefinition(deflt, yml string, fieldsToExport []string, total int) ([][]string, []bool) {
+	constant.Def = LoadRootDef(deflt, yml, &fieldsToExport)
 	constant.Res = LoadResDef(fieldsToExport)
 
 	fieldNameToValues := map[string][]string{}

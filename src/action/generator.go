@@ -22,7 +22,7 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 	constant.Total = total
 
 	fieldsToExport := strings.Split(fieldsToExportStr, ",")
-	rows, colTypes := gen.GenerateForDefinition(yml, fieldsToExport, total)
+	rows, colTypes := gen.GenerateForDefinition(deflt, yml, fieldsToExport, total)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
 	WriteToFile(out, content)

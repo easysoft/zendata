@@ -62,13 +62,12 @@ func main() {
 	flagSet.StringVar(&table, "t", "", "")
 	flagSet.StringVar(&table, "table", "", "")
 
-	flagSet.StringVar(&format, "f", "", "")
-	flagSet.StringVar(&format, "format", "", "")
+	flagSet.StringVar(&format, "f", "text", "")
+	flagSet.StringVar(&format, "format", "text", "")
 
 	flagSet.StringVar(&viewRes, "v", "", "")
 	flagSet.StringVar(&viewDetail, "vv", "", "")
 
-	flagSet.BoolVar(&vari.Verbose, "v", false, "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
 	if len(os.Args) == 1 {
