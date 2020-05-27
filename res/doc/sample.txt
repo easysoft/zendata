@@ -3,6 +3,6 @@
    $>zd.exe -y demo/test.yaml -c 15 -field field1 -o demo/output.txt -f text
             执行数据生成命令。使用配置文件demo/test.yaml，生成15行数据，以text格式的输出到demo/output.txt文件中。
    $>zd.exe -d demo/common.yaml -y demo/test.yaml -c 15 -field field1 -o demo/output.txt -f sql -t table_name
-            生成sql格式的输出，表名为table_name。使用文件demo/test.yam覆盖默认配置demo/common.yaml中的内容。
+            生成SQL格式的输出，表名为table_name。使用文件demo/test.yam覆盖默认配置demo/common.yaml中的内容。
    $>zd.exe -i xdoc/test/zentao.sql -o out
-            从数据库Schema创建yaml定义文件，输出到out目录下。
+            从指定的数据库Schema创建yaml定义文件，输出到out目录下。
