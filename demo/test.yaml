@@ -1,6 +1,6 @@
-title: 测试
-desc: 测试文件
-author: wwccss
+title: test
+desc: This is a test file.
+author: zentao
 version: 1.0
 
 fields:
@@ -9,17 +9,20 @@ fields:
     loop: 3
 
   - field: field1
+    note: 引用同级目录中的yaml文件，取small和large两个分组的值
     from: numb.yaml
     use: small,large
-    loop: 3
+    expect: 1,2,3,101,102...
 
   - field: field2
-    note: 测试系统字段 in yaml
+    note: 引用內置IP地址Excel中的C类地址
     from: system.ip.v1.yaml
-    use: privateC,privateB
-    loop: 3
+    use: privateC
+    expect: 192.168.0.1 ...​
 
   - field: field3
+    node: 引用內置城市Excel中的数据
     from: system.address.v1.city
     select: name
     where: state like '%山东%'
+    expect: 青岛、济南 ...​
