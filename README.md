@@ -2,19 +2,18 @@
 ZenData is an data generator for testing automation written in Golang.
 
 ## Features
-1. Support popular programming languages like Python, Ruby, Lua, Tcl, PHP, GO, Shell and Bat;
-2. Reduce the invasive of existing testing scripts;
-3. Integration with ZenTao - Open source project management system.
+1. Generate massive test data by using yaml config files;
+2. Customize your own definitions base on build-in generator;
+3. Export database schema as yaml config files.
 
 ## QuickStart
 ### Run from release file
-1. Download last release file from [here](https://github.com/easysoft/zentaoatf/releases);
-2. Type 'ztf/ztf.exe help' to get the help doc.
+1. Download last release file from [here](https://github.com/easysoft/zendata/releases);
+2. Type 'zd/zd.exe -h' to get the help.
 
 ### Run from Golang codes
-1. Enter 'git clone https://github.com/easysoft/zentaoatf.git' to get the source codes;
-2. Overwrite edit.go and view.go from https://github.com/rocket049/gocui to fix the Chinese related bug;
-3. Type 'go run src/atf.go help' to get the help doc.
+1. Enter 'git clone https://github.com/easysoft/zendata.git' to get the source codes;
+3. Type 'go run src/zd.go -h' to get the help.
 
 ## Licenses
 All source code is licensed under the [GPLv3 License](LICENSE.md).
