@@ -7,7 +7,7 @@ field: number
 prefix: "'"
 postfix: "'"
 loop: 2
-loopfix: "."
+loopfix: "-"
 ranges:
   small: 1-9
   medium: 11-99

@@ -26,7 +26,7 @@ func PrintUsage() {
 		exeFile += ".exe"
 	}
 	usage = fmt.Sprintf(usage, exeFile)
-	fmt.Printf("   %s\n", usage)
+	fmt.Printf("%s\n", usage)
 
 	PrintToWithColor("\n" + i118Utils.I118Prt.Sprintf("example"), color.FgCyan)
 	sample := fileUtils.ReadResData(sampleFile)
@@ -43,7 +43,7 @@ func PrintUsage() {
 		regx, _ = regexp.Compile(`\.bat\s{4}`)
 		sample = regx.ReplaceAllString(sample, ".shell")
 	}
-	fmt.Printf("   %s\n", sample)
+	fmt.Printf("%s\n", sample)
 }
 
 func PrintTo(str string) {

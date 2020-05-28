@@ -5,3 +5,7 @@ version: 1.0
 
 fields:
   - field: field1
+    loop: 2
+    loopfix: " "
+    prefix: "{"
+    postfix: "}"

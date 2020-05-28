@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	Config         = model.Config{}
+	Config      = model.Config{Version: 1, Language: "en"}
 
 	RunMode      constant.RunMode
 

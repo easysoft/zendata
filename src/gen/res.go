@@ -142,7 +142,7 @@ func getResForRanges(ranges model.ResRanges) map[string][]string {
 		tempField.Field = ranges.Field
 		tempField.Range = exp
 
-		groupedValue[group] = GenerateForField(&tempField, constant.Total)
+		groupedValue[group] = GenerateForField(&tempField, constant.Total, false)
 	}
 
 	return groupedValue
@@ -165,7 +165,7 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 
 		tempField.Fields = append(tempField.Fields, child)
 
-		groupedValue[group] = GenerateForField(&tempField, constant.Total)
+		groupedValue[group] = GenerateForField(&tempField, constant.Total, false)
 	}
 
 	return groupedValue

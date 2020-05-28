@@ -7,6 +7,8 @@ field: ip
 instances:
   - instance: privateC
     prefix: 192.168.
+    loop: 2
+    loopfix: "-"
     fields:
      - field: part3
        range: 0-254

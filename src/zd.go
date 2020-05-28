@@ -76,8 +76,6 @@ func main() {
 	}
 
 	switch os.Args[1] {
-	case "-s", "-set":
-		set()
 	case "-h", "-help":
 		usage()
 	default:
@@ -89,10 +87,6 @@ func main() {
 
 		gen(os.Args)
 	}
-}
-
-func set() {
-	action.Set()
 }
 
 func gen(args []string) {

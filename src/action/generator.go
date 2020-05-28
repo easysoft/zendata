@@ -7,27 +7,29 @@ import (
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 func Generate(deflt string, yml string, total int, fieldsToExportStr string, out string, format string, table string) {
-	startTime := time.Now().Unix()
+	//startTime := time.Now().Unix()
 
 	if deflt != "" && yml == "" {
 		yml = deflt
 		deflt = ""
 	}
 
+	fieldsToExport := make([]string, 0)
+	if fieldsToExportStr != "" {
+		fieldsToExport = strings.Split(fieldsToExportStr, ",")
+	}
+
 	vari.InputDir = filepath.Dir(yml) + string(os.PathSeparator)
 	constant.Total = total
 
-	fieldsToExport := strings.Split(fieldsToExportStr, ",")
 	rows, colTypes := gen.GenerateForDefinition(deflt, yml, fieldsToExport, total)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
@@ -35,8 +37,8 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 		WriteToFile(out, content)
 	}
 
-	entTime := time.Now().Unix()
-	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), out, entTime - startTime ))
+	//entTime := time.Now().Unix()
+	//logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), out, entTime - startTime ))
 }
 
 func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) string {
@@ -55,8 +57,8 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 
 		for j, col := range cols {
 			if j >0 {
-				line = line + ", "
-				valueList = valueList + ", "
+				line = line + ""
+				valueList = valueList + ""
 			}
 			line = line + col
 

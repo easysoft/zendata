@@ -13,14 +13,17 @@ fields:
     from: numb.yaml
     use: small,large
     loop: 3
-    loopfix: "-"
-    postfix: ","
+    loopfix: " "
+    postfix: "            "
     expect: 1,2,3,101,102...
 
   - field: field2
     note: 引用內置IP地址数据定义中的C类地址
     from: system.ip.v1.yaml
     use: privateC
+    prefix: _
+    loop: 3
+    loopfix: "  "
     expect: 192.168.0.1 ...​
 
   - field: field3

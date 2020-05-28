@@ -37,13 +37,13 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 		return ymlDef
 	}
 
-	MergerDefine(&defaultDef, &ymlDef)
-
 	if len(*fieldsToExport) == 0 {
 		for _, field := range ymlDef.Fields {
 			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 	}
+
+	MergerDefine(&defaultDef, &ymlDef)
 
 	return defaultDef
 }
@@ -51,13 +51,14 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 func MergerDefine(defaultDef, ymlDef *model.DefData) {
 	defaultFieldMap := map[string]*model.DefField{}
 	ymlFieldMap := map[string]*model.DefField{}
+	sortedKeys := make([]string, 0)
 
 	for i := range defaultDef.Fields {
-		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap)
+		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 
 	for i := range ymlDef.Fields {
-		CreatePathToFieldMap(&ymlDef.Fields[i], ymlFieldMap)
+		CreatePathToFieldMap(&ymlDef.Fields[i], ymlFieldMap, &sortedKeys)
 	}
 
 	for path, field := range ymlFieldMap {
@@ -68,7 +69,8 @@ func MergerDefine(defaultDef, ymlDef *model.DefData) {
 		}
 	}
 
-	for _, field := range ymlFieldMap {
+	for _, key := range sortedKeys {
+		field := ymlFieldMap[key]
 		if strings.Index(field.Path, "~~") > -1 { continue } // only for top fields
 
 		_, exist := defaultFieldMap[field.Path]
@@ -78,7 +80,7 @@ func MergerDefine(defaultDef, ymlDef *model.DefData) {
 	}
 }
 
-func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField) {
+func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, keys *[]string) {
 	if field.Path == "" { // root
 		field.Path = field.Field
 	}
@@ -87,12 +89,16 @@ func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField) 
 		for i := range field.Fields {
 			field.Fields[i].Path = field.Path + "~~" + field.Fields[i].Field
 
-			CreatePathToFieldMap(&field.Fields[i], mp)
+			CreatePathToFieldMap(&field.Fields[i], mp, keys)
 		}
 	} else {
 		path := field.Path
 		//logUtils.Screen(path + " -> " + field.Field)
 		mp[path] = field
+
+		if keys != nil {
+			*keys = append(*keys, path)
+		}
 	}
 }
 
