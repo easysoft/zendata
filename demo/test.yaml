@@ -15,13 +15,13 @@ fields:
     expect: 1,2,3,101,102...
 
   - field: field2
-    note: 引用內置IP地址Excel中的C类地址
+    note: 引用內置IP地址数据定义中的C类地址
     from: system.ip.v1.yaml
     use: privateC
     expect: 192.168.0.1 ...​
 
   - field: field3
-    node: 引用內置城市Excel中的数据
+    node: 检索、引用內置城市Excel中的数据
     from: system.address.v1.city
     select: name
     where: state like '%山东%'

@@ -73,10 +73,6 @@ func main() {
 
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, "-help")
-	} else if os.Args[1][0:1] == "-" {
-		args := []string{os.Args[0], "gen"}
-		args = append(args, os.Args[1:]...)
-		os.Args = args
 	}
 
 	switch os.Args[1] {
@@ -85,6 +81,12 @@ func main() {
 	case "-h", "-help":
 		usage()
 	default:
+		if os.Args[1][0:1] == "-" {
+			args := []string{os.Args[0], "gen"}
+			args = append(args, os.Args[1:]...)
+			os.Args = args
+		}
+
 		gen(os.Args)
 	}
 }

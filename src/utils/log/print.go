@@ -5,6 +5,7 @@ import (
 	"fmt"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	"github.com/fatih/color"
 	"os"
 	"regexp"
@@ -17,7 +18,7 @@ var (
 )
 
 func PrintUsage() {
-	PrintToWithColor("Usage: ", color.FgCyan)
+	PrintToWithColor(i118Utils.I118Prt.Sprintf("usage"), color.FgCyan)
 
 	usage := fileUtils.ReadResData(usageFile)
 	exeFile := "zd"
@@ -27,7 +28,7 @@ func PrintUsage() {
 	usage = fmt.Sprintf(usage, exeFile)
 	fmt.Printf("   %s\n", usage)
 
-	PrintToWithColor("\nExample: ", color.FgCyan)
+	PrintToWithColor("\n" + i118Utils.I118Prt.Sprintf("example"), color.FgCyan)
 	sample := fileUtils.ReadResData(sampleFile)
 	if !commonUtils.IsWin() {
 		regx, _ := regexp.Compile(`\\`)
