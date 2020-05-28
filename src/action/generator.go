@@ -18,13 +18,14 @@ import (
 
 func Generate(deflt string, yml string, total int, fieldsToExportStr string, out string, format string, table string) {
 	startTime := time.Now().Unix()
-	vari.InputDir = filepath.Dir(yml) + string(os.PathSeparator)
-	constant.Total = total
 
 	if deflt != "" && yml == "" {
 		yml = deflt
 		deflt = ""
 	}
+
+	vari.InputDir = filepath.Dir(yml) + string(os.PathSeparator)
+	constant.Total = total
 
 	fieldsToExport := strings.Split(fieldsToExportStr, ",")
 	rows, colTypes := gen.GenerateForDefinition(deflt, yml, fieldsToExport, total)

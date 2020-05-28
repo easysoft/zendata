@@ -183,7 +183,7 @@ func LoopSubFields(field *model.DefField, oldValues []string, total int) []strin
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := GenerateFieldValWithFix(*field, fieldValue, &index, false)
+		str := GenerateFieldValWithFix(*field, fieldValue, &index, true)
 		values = append(values, str)
 
 		count++
