@@ -12,6 +12,8 @@ fields:
     note: 引用同级目录中的yaml文件，取small和large两个分组的值
     from: numb.yaml
     use: small,large
+    loop: 3
+    loopfix: "|"
     expect: 1,2,3,101,102...
 
   - field: field2
