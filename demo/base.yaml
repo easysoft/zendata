@@ -1,0 +1,14 @@
+title: 测试
+desc: 测试文件
+author: wwccss
+version: 1.0
+
+fields:
+  - field: field1
+    note: 引用同级目录中的yaml文件，取small和large两个分组的值
+    from: numb.yaml
+    use: small,large
+    loop: 3
+    loopfix: "|"
+    prefix: "["
+    postfix: "]"

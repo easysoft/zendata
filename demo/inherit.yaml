@@ -1,0 +1,7 @@
+title: test
+desc: This is a test file.
+author: zentao
+version: 1.0
+
+fields:
+  - field: field1

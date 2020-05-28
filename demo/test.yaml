@@ -13,7 +13,8 @@ fields:
     from: numb.yaml
     use: small,large
     loop: 3
-    loopfix: "|"
+    loopfix: "-"
+    postfix: ","
     expect: 1,2,3,101,102...
 
   - field: field2
