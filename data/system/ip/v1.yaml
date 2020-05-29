@@ -6,6 +6,7 @@ version: 1.0
 field: ip
 instances:
   - instance: privateC
+    note: C类IP地址
     prefix: 192.168.
     loop: 2
     loopfix: "-"
@@ -17,6 +18,7 @@ instances:
        range: 1-254
 
   - instance: privateB
+    note: B类IP地址
     prefix: 172.
     postfix: "\t"
     fields:
