@@ -2,7 +2,7 @@
 /log/
 /.idea/
 /bin/
-/xdoc/test/out/
+/xdoc/bak/out/
 /build/
 /data/.cache/.data.db-shm
 /data/.cache/.data.db-wal
