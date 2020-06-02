@@ -1,0 +1,22 @@
+title: test
+desc: This is a test file.
+author: zentao
+version: 1.0
+
+fields:
+  - field: refer
+    from: system.ip.v1.yaml
+    use: privateC
+    prefix: "'"
+    postfix: "'"
+    loop: 3
+    loopfix: "  "
+
+  - field: excel
+    from: system.address.v1.city
+    select: name
+    where: state like '%山东%'
+    prefix: "'"
+    postfix: "'"
+    loop: 3
+    loopfix: "  "

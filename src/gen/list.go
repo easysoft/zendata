@@ -102,7 +102,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 		var step interface{} = 1
 		if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 			stepInt, errInt3 := strconv.Atoi(stepStr)
-			if errInt3 != nil {
+			if errInt3 == nil {
 				step = stepInt
 			}
 		} else {
@@ -133,7 +133,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			var step interface{} = 1
 			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 				stepChar, errChar3 := strconv.Atoi(stepStr)
-				if errChar3 != nil {
+				if errChar3 == nil {
 					step = stepChar
 				}
 			} else {
