@@ -56,9 +56,9 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		valueList := ""
 
 		for j, col := range cols {
-			if j >0 {
-				line = line + ""
-				valueList = valueList + ""
+			if j >0 && format == "sql" {
+				line = line + ","
+				valueList = valueList + ","
 			}
 			line = line + col
 
