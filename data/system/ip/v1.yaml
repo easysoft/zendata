@@ -8,8 +8,8 @@ instances:
   - instance: privateC
     note: C类IP地址
     prefix: 192.168.
-    loop: 2
-    loopfix: "-"
+#    loop: 2
+#    loopfix: "-"
     fields:
      - field: part3
        range: 0-254
@@ -20,7 +20,7 @@ instances:
   - instance: privateB
     note: B类IP地址
     prefix: 172.
-    postfix: "\t"
+#    postfix: "\t"
     fields:
       - field: part2
         range: 16-31

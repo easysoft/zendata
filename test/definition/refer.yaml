@@ -9,8 +9,8 @@ fields:
     use: privateC
     prefix: "'"
     postfix: "'"
-    loop: 3
-    loopfix: "  "
+    loop: 2
+    loopfix: "-"
 
   - field: excel
     from: system.address.v1.city
@@ -19,4 +19,4 @@ fields:
     prefix: "'"
     postfix: "'"
     loop: 3
-    loopfix: "  "
+    loopfix: "-"

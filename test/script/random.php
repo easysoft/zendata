@@ -7,21 +7,27 @@ cid=0
 pid=0
 
 [group]
-  1. usage output >>
-  2. basic output >>
-  3. step output >>
+  1. output >>
 
 [esac]
 */
 
 $output = [];
-exec('../build/zd-mac -h', $output);
-print(">> $output[0]\n");
+exec('./zd-mac -y ../test/definition/basic.yaml -c 7 -field random -o ../test/output/output.txt -f text', $output);
+$line = $output[0];
+print("Got $line\n");
 
-$output = [];
-exec('../build/zd-mac -y definition/basic.yaml -c 15 -field field1 -o test/output.txt -f text', $output);
-print(">> $output[0]\n");
+// 1,2,2,2,8,1
+$numbs = explode(",", $line);
+$count = sprintf("%d", count($numbs));
+print(">> $count\n");
 
-$output = [];
-exec('../build/zd-mac -y definition/basic.yaml -c 15 -field field2 -o test/output.txt -f text', $output);
-print(">> $output[0]\n");
+$result = 'not random';
+$i = 0;
+for($i = 0; $i < $count; $i++) {
+  if ($numbs[$i] != $i + 1) { // at lease one not equal sequence numb 1,2,3,4,5,6
+    $result = 'is random';
+    break;
+  }
+}
+print(">> $result\n");

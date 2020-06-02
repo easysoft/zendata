@@ -282,8 +282,8 @@ func getFileModTime(path string) time.Time {
 
 	fileChangeTime := fi.ModTime()
 
-	timeStr := fileChangeTime.Format("2006-01-02 15:04:05")
-	logUtils.Screen(i118Utils.I118Prt.Sprintf("file_change_time", timeStr))
+	//timeStr := fileChangeTime.Format("2006-01-02 15:04:05")
+	//logUtils.Screen(i118Utils.I118Prt.Sprintf("file_change_time", timeStr))
 
 	return fileChangeTime
 }

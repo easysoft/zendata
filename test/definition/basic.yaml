@@ -25,5 +25,3 @@ fields:
     range: 1-10:R
     loop: 6
     loopfix: ","
-    prefix: "'"
-    postfix: "'"

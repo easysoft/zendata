@@ -13,5 +13,5 @@ pid=0
 */
 
 $output = [];
-exec('../build/zd-mac -y definition/refer.yaml -c 3 -field refer -o test/output.txt -f text', $output);
+exec('./zd-mac -y ../test/definition/refer.yaml -c 7 -field refer -o ../test/output/output.txt -f text', $output);
 print(">> $output[0]\n");
