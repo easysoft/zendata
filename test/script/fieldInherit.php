@@ -2,7 +2,7 @@
 <?php
 /**
 [case]
-title=field
+title=field inherit
 cid=0
 pid=0
 
