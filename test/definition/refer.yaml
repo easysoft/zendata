@@ -12,6 +12,14 @@ fields:
     loop: 2
     loopfix: "-"
 
+  - field: refer2
+    from: _numb.yaml
+    use: small,large
+    loop: 4
+    loopfix: " "
+    prefix: "-"
+    postfix: "-"
+
   - field: excel
     from: system.address.v1.city
     select: name

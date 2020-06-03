@@ -5,7 +5,14 @@ version: 1.0
 
 fields:
   - field: basic
+    note: 继承基本字段
     loop: 2
     loopfix: " "
     prefix: "{"
     postfix: "}"
+
+  - field: refer2
+    note: 继承引用字段
+    loop: 2
+    prefix: "="
+    postfix: "-"
