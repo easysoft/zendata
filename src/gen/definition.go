@@ -103,10 +103,11 @@ func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, 
 }
 
 func CopyField(child model.DefField, parent *model.DefField) {
-	(*parent).Range = child.Range
-
 	if child.Note != "" {
 		(*parent).Note = child.Note
+	}
+	if child.Range != "" {
+		(*parent).Range = child.Range
 	}
 	if child.Prefix != "" {
 		(*parent).Prefix = child.Prefix

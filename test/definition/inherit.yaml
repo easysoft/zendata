@@ -1,0 +1,11 @@
+title: test
+desc: This is a test file.
+author: zentao
+version: 1.0
+
+fields:
+  - field: basic
+    loop: 2
+    loopfix: " "
+    prefix: "{"
+    postfix: "}"

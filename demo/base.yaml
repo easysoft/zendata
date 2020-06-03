@@ -5,10 +5,5 @@ version: 1.0
 
 fields:
   - field: field1
-    note: 引用同级目录中的yaml文件，取small和large两个分组的值
-    from: numb.yaml
-    use: small,large
-    loop: 2
-    loopfix: "|"
-    prefix: "["
-    postfix: "]"
+    note: 基本属性
+    range: "a-z"
