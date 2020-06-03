@@ -85,19 +85,19 @@ func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, 
 		field.Path = field.Field
 	}
 
+	path := field.Path
+	//logUtils.Screen(path + " -> " + field.Field)
+	mp[path] = field
+
+	if keys != nil {
+		*keys = append(*keys, path)
+	}
+
 	if len(field.Fields) > 0 {
 		for i := range field.Fields {
 			field.Fields[i].Path = field.Path + "~~" + field.Fields[i].Field
 
 			CreatePathToFieldMap(&field.Fields[i], mp, keys)
-		}
-	} else {
-		path := field.Path
-		//logUtils.Screen(path + " -> " + field.Field)
-		mp[path] = field
-
-		if keys != nil {
-			*keys = append(*keys, path)
 		}
 	}
 }

@@ -42,8 +42,6 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 }
 
 func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) string {
-	//width := stringUtils.GetNumbWidth(len(rows))
-
 	content := ""
 	sql := ""
 
@@ -69,7 +67,9 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 			valueList = valueList + colVal
 		}
 
-		if format == "text" && i < len(rows) - 1 { content = content + line + "\n" }
+		if format == "text" && i < len(rows) {
+			content = content + line + "\n"
+		}
 
 		logUtils.Screen(fmt.Sprintf("%s", line))
 

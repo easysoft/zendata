@@ -4,6 +4,11 @@ author: zentao
 version: 1.0
 
 fields:
+  - field: char
+    range: a-z
+  - field: numb
+    range: 1-9
+
   - field: basic
     note: 基本属性
     range: a-z

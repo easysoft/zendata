@@ -64,7 +64,9 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 				concat = concat + row[i] // get one item from each child, grouped as a1 or b2
 			}
 
-			concat = field.Prefix + concat + field.Postfix
+			// should be done by calling LoopSubFields func as below, so disable this line
+			//concat = field.Prefix + concat + field.Postfix
+
 			values = append(values, concat)
 		}
 		values = LoopSubFields(field, values, total, withFix)
