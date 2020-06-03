@@ -11,6 +11,7 @@ pid=0
   2. value from text >>
   3. value from json >>
   4. value from xml >>
+  5. first line of sql >>
 
 [esac]
 */
@@ -36,3 +37,9 @@ $xml = simplexml_load_file("../test/output/output.xml");
 $content = file_get_contents('../test/output/output.xml');
 $val = $xml->table->row->col[0];
 print(">> $val\n");
+
+$output = [];
+exec('./zd-mac -y ../test/definition/basic.yaml -c 3 -field char,numb -o ../test/output/output.sql -f sql', $output);
+$content = file_get_contents('../test/output/output.sql');
+$arr = explode("\n", $content);
+print(">> $arr[0]\n");
