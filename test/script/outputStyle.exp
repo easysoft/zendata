@@ -2,4 +2,4 @@
 >> a1
 >> a
 >> a
->> 'a','1'
+>> INSERT INTO (char,numb) VALUES('a','1');
