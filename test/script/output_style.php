@@ -40,8 +40,12 @@ $content = file_get_contents('../test/output/output.sql');
 $arr = explode("\n", $content);
 print(">> $arr[0]\n");
 
-$output = [];
-exec("$cmd -y ../test/definition/basic.yaml -c 3 -field char,numb -o ../test/output/output.xml -f xml", $output);
-$xml = simplexml_load_file('../test/output/output.xml'); // sudo apt-get install php7.0-simplexml
-$val = $xml->table->row->col[0];
-print(">> $val\n");
+if (function_exists('simplexml_load_file')) {
+    print('simplexml_load_file missing, pls use "sudo apt-get install php7.0-simplexml" to install');
+} else {
+    $output = [];
+    exec("$cmd -y ../test/definition/basic.yaml -c 3 -field char,numb -o ../test/output/output.xml -f xml", $output);
+    $xml = simplexml_load_file('../test/output/output.xml'); // sudo apt-get install php7.0-simplexml
+    $val = $xml->table->row->col[0];
+    print(">> $val\n");
+}
