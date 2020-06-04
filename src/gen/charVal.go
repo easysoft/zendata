@@ -31,12 +31,12 @@ func GenerateByteItemsByStep(start byte, end byte, step int, limit int) []interf
 	return arr
 }
 
-func GenerateByteItemsRand(start byte, end byte, step int, limit int) []interface{} {
+func GenerateByteItemsRand(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	count := int(end - start) / step + 1
-	if count > limit {
-		count = limit
+	if count > repeat {
+		count = repeat
 	}
 	if count > constant.MaxNumb {
 		count = constant.MaxNumb

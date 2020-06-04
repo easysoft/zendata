@@ -32,12 +32,12 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, limi
 	return arr
 }
 
-func GenerateFloatItemsRand(start float64, end float64, step float64, limit int) []interface{} {
+func GenerateFloatItemsRand(start float64, end float64, step float64, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	count := (end - start) / step
-	if count > float64(limit) {
-		count = float64(limit)
+	if count > float64(repeat) {
+		count = float64(repeat)
 	}
 	if count > float64(constant.MaxNumb) {
 		count = float64(constant.MaxNumb)

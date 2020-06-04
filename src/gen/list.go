@@ -49,7 +49,7 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 		if index >= constant.MaxNumb { break }
 		if rangeItem == "" { continue }
 
-		entry, stepStr, limit := ParseRangeItem(rangeItem)
+		entry, stepStr, repeat := ParseRangeItem(rangeItem)
 		typ, desc := ParseEntry(entry)
 
 		items := make([]interface{}, 0)
@@ -60,7 +60,7 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 			startStr := elemArr[0]
 			endStr := startStr
 			if len(elemArr) > 1 { endStr = elemArr[1] }
-			items = GenerateValuesFromInterval(field, startStr, endStr, stepStr, limit)
+			items = GenerateValuesFromInterval(field, startStr, endStr, stepStr, repeat)
 		}
 
 		fieldValue.Values = append(fieldValue.Values, items...)
@@ -158,12 +158,12 @@ func ParseRange(rang string) []string {
 func ParseRangeItem(item string) (string, string, int) {
 	entry := ""
 	step := "1"
-	limit := -1
+	repeat := -1
 
 	regx := regexp.MustCompile(`\{(.*)\}`)
 	arr := regx.FindStringSubmatch(item)
 	if len(arr) == 2 {
-		limit, _ = strconv.Atoi(arr[1])
+		repeat, _ = strconv.Atoi(arr[1])
 	}
 	item = regx.ReplaceAllString(item, "")
 
@@ -173,10 +173,10 @@ func ParseRangeItem(item string) (string, string, int) {
 		step = sectionArr[1]
 	}
 
-	return entry, step, limit
+	return entry, step, repeat
 }
 
-func GenerateValuesFromInterval(field *model.DefField, startStr string, endStr string, stepStr string, limit int) []interface{} {
+func GenerateValuesFromInterval(field *model.DefField, startStr string, endStr string, stepStr string, repeat int) []interface{} {
 	items := make([]interface{}, 0)
 
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
@@ -185,15 +185,15 @@ func GenerateValuesFromInterval(field *model.DefField, startStr string, endStr s
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = GenerateIntItems(startInt, endInt, step, rand, limit)
+		items = GenerateIntItems(startInt, endInt, step, rand, repeat)
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItems(startFloat, endFloat, step.(float64), rand, limit)
+		items = GenerateFloatItems(startFloat, endFloat, step.(float64), rand, repeat)
 	} else if dataType == "char" {
-		items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, rand, limit)
+		items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, rand, repeat)
 	} else if dataType == "string" {
 		items = append(items, startStr)
 		if startStr != endStr {
