@@ -34,7 +34,7 @@ func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[strin
 	rand := false
 	step := 1
 	// get index for data retrieve
-	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand)
+	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1)
 	// get data by index
 	index := 0
 	for _, numb := range numbs {

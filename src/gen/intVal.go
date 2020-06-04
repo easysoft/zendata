@@ -44,7 +44,8 @@ func GenerateIntItemsByStep(start int64, end int64, step int, repeat int) []inte
 func GenerateIntItemsRand(start int64, end int64, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	countInRound := (end - start) / int64(step) + 1
+	mod := (end - start) % int64(step)
+	countInRound := (end - start) / int64(step)
 
 	total := 0
 	for round := 0; round < repeat; round++ {
