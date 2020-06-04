@@ -1,0 +1,14 @@
+title: test
+desc: This is a test file.
+author: zentao
+version: 1.0
+
+fields:
+  - field: objectype
+    range: [bug,task]:2{3},story{2}
+
+  - field: objectid
+    range: [1-9]:R{2},[a,b1,c]:R{2}
+
+  - field: action
+    range: [create,resolve,close]{10},[create,finish,close]{10}

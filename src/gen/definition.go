@@ -2,6 +2,7 @@ package gen
 
 import (
 	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"gopkg.in/yaml.v3"
@@ -15,6 +16,7 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 
 	if defaultFile != "" {
 		defaultContent, err := ioutil.ReadFile(defaultFile)
+		defaultContent = replaceSpecialChars(defaultContent)
 		if err != nil {
 			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
 			return defaultDef
@@ -27,13 +29,14 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 	}
 
 	yamlContent, err := ioutil.ReadFile(ymlFile)
+	yamlContent = replaceSpecialChars(yamlContent)
 	if err != nil {
 		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", ymlFile))
 		return ymlDef
 	}
 	err = yaml.Unmarshal(yamlContent, &ymlDef)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", ymlFile))
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", ymlFile))
 		return ymlDef
 	}
 
@@ -142,3 +145,20 @@ func CopyField(child model.DefField, parent *model.DefField) {
 		(*parent).Precision = child.Precision
 	}
 }
+
+func replaceSpecialChars(bytes []byte) []byte {
+	str := string(bytes)
+
+	ret := ""
+	for _, line := range strings.Split(str, "\n") {
+		if strings.Index(strings.TrimSpace(line), "range") == 0 {
+			line = strings.ReplaceAll(line,"[", string(constant.LeftChar))
+			line = strings.ReplaceAll(line,"]", string(constant.RightChar))
+		}
+
+		ret += line + "\n"
+	}
+
+	return []byte(ret)
+}
+

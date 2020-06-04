@@ -5,42 +5,43 @@ import (
 	"math/rand"
 )
 
-func GenerateIntItems(start int64, end int64, step interface{}, rand bool) []interface{} {
+func GenerateIntItems(start int64, end int64, step interface{}, rand bool, limit int) []interface{} {
 	if !rand {
-		return GenerateIntItemsByStep(start, end, step.(int))
+		return GenerateIntItemsByStep(start, end, step.(int), limit)
 	} else{
-		return GenerateIntItemsRand(start, end, step.(int))
+		return GenerateIntItemsRand(start, end, step.(int), limit)
 	}
 }
 
-func GenerateIntItemsByStep(start int64, end int64, step int) []interface{} {
+func GenerateIntItemsByStep(start int64, end int64, step int, limit int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	count := 0
 	for i := 0; i < constant.MaxNumb; {
 		val := start + int64(i * step)
-		if val > end {
+		if val > end || i > limit {
 			break
 		}
 
 		arr = append(arr, val)
-		count++
 		i++
 	}
 
 	return arr
 }
 
-func GenerateIntItemsRand(start int64, end int64, step int) []interface{} {
+func GenerateIntItemsRand(start int64, end int64, step int, limit int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	genCount := (end - start) / int64(step) + 1
-	if genCount > int64(constant.MaxNumb) {
-		genCount = int64(constant.MaxNumb)
+	count := (end - start) / int64(step) + 1
+	if count > int64(limit) {
+		count = int64(limit)
+	}
+	if count > int64(constant.MaxNumb) {
+		count = int64(constant.MaxNumb)
 	}
 
-	for i := int64(0); i < genCount; {
-		val := start + int64(rand.Int63n(genCount))
+	for i := int64(0); i < count; {
+		val := start + rand.Int63n(count)
 
 		arr = append(arr, val)
 		i++

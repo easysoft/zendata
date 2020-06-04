@@ -7,21 +7,21 @@ import (
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step interface{}, rand bool) []interface{} {
+func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, limit int) []interface{} {
 	if !rand{
-		return GenerateFloatItemsByStep(start, end, step.(float64))
+		return GenerateFloatItemsByStep(start, end, step.(float64), limit)
 	} else {
-		return GenerateFloatItemsRand(start, end, step.(float64))
+		return GenerateFloatItemsRand(start, end, step.(float64), limit)
 	}
 }
 
-func GenerateFloatItemsByStep(start float64, end float64, step interface{}) []interface{} {
+func GenerateFloatItemsByStep(start float64, end float64, step interface{}, limit int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	for i := 0; i < constant.MaxNumb; {
 		gap := float64(i) * step.(float64)
 		val := start + gap
-		if val > end {
+		if val > end || i > limit {
 			break
 		}
 
@@ -32,15 +32,19 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}) []in
 	return arr
 }
 
-func GenerateFloatItemsRand(start float64, end float64, step float64) []interface{} {
+func GenerateFloatItemsRand(start float64, end float64, step float64, limit int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	genCount := (end - start) / step
-	if genCount > float64(constant.MaxNumb) {
-		genCount = float64(constant.MaxNumb)
+	count := (end - start) / step
+	if count > float64(limit) {
+		count = float64(limit)
 	}
-	for i := float64(0); i < genCount; {
-		val := start + float64(rand.Int63n(int64(genCount))) * step
+	if count > float64(constant.MaxNumb) {
+		count = float64(constant.MaxNumb)
+	}
+
+	for i := float64(0); i < count; {
+		val := start + float64(rand.Int63n(int64(count))) * step
 
 		arr = append(arr, val)
 		i++
