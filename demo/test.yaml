@@ -6,7 +6,7 @@ version: 1.0
 fields:
   - field: field0
     note: 基本属性
-    range: a-z
+    range: abc*5,123,456
     loop: 3
     loopfix: ","
     prefix: "'"

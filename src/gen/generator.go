@@ -69,7 +69,7 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 
 			values = append(values, concat)
 		}
-		values = LoopSubFields(field, values, total, withFix)
+		values = LoopSubFields(field, values, total, true)
 
 	} else if field.From != "" { // refer to res
 		groupValues := constant.Res[field.From]

@@ -7,10 +7,6 @@ fields:
   - field: refer
     from: system.ip.v1.yaml
     use: privateC
-    prefix: "'"
-    postfix: "'"
-    loop: 2
-    loopfix: "-"
 
   - field: refer2
     from: _numb.yaml
