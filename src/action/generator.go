@@ -46,7 +46,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 	sql := ""
 
 	testData := model.TestData{}
-	testData.Title = "测试数据"
+	testData.Title = "Test Data"
 
 	for i, cols := range rows {
 		line := ""
