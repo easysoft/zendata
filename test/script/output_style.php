@@ -42,6 +42,6 @@ print(">> $arr[0]\n");
 
 $output = [];
 exec("$cmd -y ../test/definition/basic.yaml -c 3 -field char,numb -o ../test/output/output.xml -f xml", $output);
-$xml = simplexml_load_file('../test/output/output.xml');
+$xml = simplexml_load_file('../test/output/output.xml'); // sudo apt-get install php7.0-simplexml
 $val = $xml->table->row->col[0];
 print(">> $val\n");
