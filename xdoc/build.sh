@@ -4,7 +4,7 @@ mkdir build/log
 cp -r data build/
 cp -r demo build/
 
-/Users/aaron/go/bin/go-bindata -o=res/res.go -pkg=res res/ res/doc
+go-bindata -o=res/res.go -pkg=res res/ res/doc
 
 CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o build/zd-x86.exe src/zd.go
 CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o build/zd-amd64.exe src/zd.go

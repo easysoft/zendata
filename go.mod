@@ -9,6 +9,7 @@ require (
 	github.com/emirpasic/gods v1.12.0
 	github.com/fatih/color v1.9.0
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
+	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mattn/go-runewidth v0.0.9
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
