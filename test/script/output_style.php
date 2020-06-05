@@ -40,7 +40,7 @@ $content = file_get_contents('../test/output/output.sql');
 $arr = explode("\n", $content);
 print(">> $arr[0]\n");
 
-if (function_exists('simplexml_load_file')) {
+if (!function_exists('simplexml_load_file')) {
     print("lib simplexml_load_file missing, pls use 'sudo apt-get install php7.0-simplexml' to install\n");
 } else {
     $output = [];

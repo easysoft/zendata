@@ -155,7 +155,7 @@ func ParseRange(rang string) []string {
 func ParseRangeItem(item string) (string, string, int) {
 	entry := ""
 	step := "1"
-	repeat := -1
+	repeat := 1
 
 	regx := regexp.MustCompile(`\{(.*)\}`)
 	arr := regx.FindStringSubmatch(item)

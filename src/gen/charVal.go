@@ -20,7 +20,7 @@ func GenerateByteItemsByStep(start byte, end byte, step int, repeat int) []inter
 	for round := 0; round < repeat; round++ {
 		for i := 0; true; {
 			val := start + byte(int(i)*step)
-			if val > end || i > repeat {
+			if val > end {
 				break
 			}
 
