@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	"math/rand"
 	"regexp"
 	"strconv"
 	"strings"
@@ -54,13 +55,9 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 
 		items := make([]interface{}, 0)
 		if typ == "literal" {
-
+			items = GenerateValuesFromLiteral(field, desc, stepStr, repeat)
 		} else if typ == "interval" {
-			elemArr := strings.Split(desc, "-")
-			startStr := elemArr[0]
-			endStr := startStr
-			if len(elemArr) > 1 { endStr = elemArr[1] }
-			items = GenerateValuesFromInterval(field, startStr, endStr, stepStr, repeat)
+			items = GenerateValuesFromInterval(field, desc, stepStr, repeat)
 		}
 
 		fieldValue.Values = append(fieldValue.Values, items...)
@@ -176,7 +173,45 @@ func ParseRangeItem(item string) (string, string, int) {
 	return entry, step, repeat
 }
 
-func GenerateValuesFromInterval(field *model.DefField, startStr string, endStr string, stepStr string, repeat int) []interface{} {
+func GenerateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) []interface{} {
+	items := make([]interface{}, 0)
+
+	elemArr := strings.Split(desc, ",")
+	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
+	step, _ := strconv.Atoi(stepStr)
+	total := 0
+	for round := 0; round < repeat; round++ {
+		for i := 0; i < len(elemArr); {
+			val := ""
+			if stepStr == "r" {
+				val = elemArr[rand.Intn(len(elemArr))]
+			} else {
+				val = elemArr[i]
+			}
+
+			items = append(items, val)
+			i += step
+			total++
+
+			if total > constant.MaxNumb {
+				break
+			}
+		}
+
+		if total >= constant.MaxNumb {
+			break
+		}
+	}
+
+	return items
+}
+
+func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr string, repeat int) []interface{} {
+	elemArr := strings.Split(desc, "-")
+	startStr := elemArr[0]
+	endStr := startStr
+	if len(elemArr) > 1 { endStr = elemArr[1] }
+
 	items := make([]interface{}, 0)
 
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)

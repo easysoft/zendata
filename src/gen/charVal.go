@@ -5,27 +5,37 @@ import (
 	"math/rand"
 )
 
-func GenerateByteItems(start byte, end byte, step interface{}, rand bool, limit int) []interface{} {
+func GenerateByteItems(start byte, end byte, step interface{}, rand bool, repeat int) []interface{} {
 	if !rand {
-		return GenerateByteItemsByStep(start, end, step.(int), limit)
+		return GenerateByteItemsByStep(start, end, step.(int), repeat)
 	} else {
-		return GenerateByteItemsRand(start, end, step.(int), limit)
+		return GenerateByteItemsRand(start, end, step.(int), repeat)
 	}
 }
 
-func GenerateByteItemsByStep(start byte, end byte, step int, limit int) []interface{} {
+func GenerateByteItemsByStep(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	count := constant.MaxNumb
-	for i := 0; i < constant.MaxNumb; {
-		val := start + byte(int(i) * step)
-		if val > end || i > limit {
-			break
+	total := 0
+	for round := 0; round < repeat; round++ {
+		for i := 0; true; {
+			val := start + byte(int(i)*step)
+			if val > end || i > repeat {
+				break
+			}
+
+			arr = append(arr, val)
+			i++
+			total++
+
+			if total > constant.MaxNumb {
+				break
+			}
 		}
 
-		arr = append(arr, val)
-		count++
-		i++
+		if total > constant.MaxNumb {
+			break
+		}
 	}
 
 	return arr
@@ -34,20 +44,26 @@ func GenerateByteItemsByStep(start byte, end byte, step int, limit int) []interf
 func GenerateByteItemsRand(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	count := int(end - start) / step + 1
-	if count > repeat {
-		count = repeat
-	}
-	if count > constant.MaxNumb {
-		count = constant.MaxNumb
-	}
+	countInRound := int(end - start) / step + 1
 
-	for i := 0; i < count; {
-		ran := rand.Intn(count)
-		val := start + byte(ran)
+	total := 0
+	for round := 0; round < repeat; round++ {
+		for i := 0; i < countInRound; {
+			ran := rand.Intn(countInRound)
+			val := start + byte(ran)
 
-		arr = append(arr, val)
-		i++
+			arr = append(arr, val)
+			i++
+			total++
+
+			if total > constant.MaxNumb {
+				break
+			}
+		}
+
+		if total > constant.MaxNumb {
+			break
+		}
 	}
 
 	return arr
