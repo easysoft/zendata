@@ -11,9 +11,9 @@ function getZDCmd()
         $ret = './zd-mac';
     } else if ($is64bit && $os == 'linux') {
         $ret = './zd-linux';
-    } else if ($is64bit && $os == 'windows') {
+    } else if ($is64bit && strpos($os,"win") > -1) {
         $ret = 'zd-amd64.exe';
-    } else if (!$is64bit && $os == 'windows') {
+    } else if (!$is64bit && strpos($os,"win") > -1) {
         $ret = 'zd-x86.exe';
     }
 
