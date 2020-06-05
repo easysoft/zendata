@@ -38,7 +38,7 @@ func GenerateTimestamp(field *model.DefField, total int, fieldMap map[string][]i
 				step = 1000 // default 1 sec
 			}
 
-			items = GenerateIntItems(start, end, int64(step), true)
+			items = GenerateIntItems(start, end, int64(step), true, 1)
 		}
 
 		fieldMap[name] = append(fieldMap[name], items...)

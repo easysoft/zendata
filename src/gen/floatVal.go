@@ -7,43 +7,64 @@ import (
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step interface{}, rand bool) []interface{} {
+func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, repeat int) []interface{} {
 	if !rand{
-		return GenerateFloatItemsByStep(start, end, step.(float64))
+		return GenerateFloatItemsByStep(start, end, step.(float64), repeat)
 	} else {
-		return GenerateFloatItemsRand(start, end, step.(float64))
+		return GenerateFloatItemsRand(start, end, step.(float64), repeat)
 	}
 }
 
-func GenerateFloatItemsByStep(start float64, end float64, step interface{}) []interface{} {
+func GenerateFloatItemsByStep(start float64, end float64, step interface{}, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	for i := 0; i < constant.MaxNumb; {
-		gap := float64(i) * step.(float64)
-		val := start + gap
-		if val > end {
+	total := 0
+	for round := 0; round < repeat; round++ {
+		for i := 0; true; {
+			gap := float64(i) * step.(float64)
+			val := start + gap
+			if val > end {
+				break
+			}
+
+			arr = append(arr, val)
+			i++
+			total++
+
+			if total > constant.MaxNumb {
+				break
+			}
+		}
+		if total > constant.MaxNumb {
 			break
 		}
-
-		arr = append(arr, val)
-		i++
 	}
 
 	return arr
 }
 
-func GenerateFloatItemsRand(start float64, end float64, step float64) []interface{} {
+func GenerateFloatItemsRand(start float64, end float64, step float64, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	genCount := (end - start) / step
-	if genCount > float64(constant.MaxNumb) {
-		genCount = float64(constant.MaxNumb)
-	}
-	for i := float64(0); i < genCount; {
-		val := start + float64(rand.Int63n(int64(genCount))) * step
+	countInRound := (end - start) / step
 
-		arr = append(arr, val)
-		i++
+	total := 0
+	for round := 0; round < repeat; round++ {
+		for i := float64(0); i < countInRound; {
+			val := start + float64(rand.Int63n(int64(countInRound)))*step
+
+			arr = append(arr, val)
+			i++
+			total++
+
+			if total > constant.MaxNumb {
+				break
+			}
+		}
+
+		if total > constant.MaxNumb {
+			break
+		}
 	}
 
 	return arr

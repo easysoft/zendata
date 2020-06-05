@@ -40,21 +40,30 @@ fields:
     expect: 青岛、济南 ...​
 
   - field: field4
+    node: 嵌套字段
     fields:
-      - field: field1.1
+      - field: field4.1
         type: list
         range: 1-9
         postfix: ". "
-      - field: field1.2
+      - field: field4.2
         prefix: '['
         postfix: ']'
         loop: 2
         loopfix: ","
         fields:
-          - field: field1.2.1
+          - field: field4.2.1
             type: list
             range: X-Z
-          - field: field1.2.2
+          - field: field4.2.2
             type: list
             range: 1-9
             loop: 2
+
+  - field: field5
+    note: 滚动字段
+    range: abc*5,123,456
+    loop: 3
+    loopfix: ","
+    prefix: "'"
+    postfix: "'"

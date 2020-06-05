@@ -5,46 +5,65 @@ import (
 	"math/rand"
 )
 
-func GenerateByteItems(start byte, end byte, step interface{}, rand bool) []interface{} {
+func GenerateByteItems(start byte, end byte, step interface{}, rand bool, repeat int) []interface{} {
 	if !rand {
-		return GenerateByteItemsByStep(start, end, step.(int))
+		return GenerateByteItemsByStep(start, end, step.(int), repeat)
 	} else {
-		return GenerateByteItemsRand(start, end, step.(int))
+		return GenerateByteItemsRand(start, end, step.(int), repeat)
 	}
 }
 
-func GenerateByteItemsByStep(start byte, end byte, step int) []interface{} {
+func GenerateByteItemsByStep(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	count := constant.MaxNumb
-	for i := 0; i < constant.MaxNumb; {
-		val := start + byte(int(i) * step)
-		if val > end {
-			break
+	total := 0
+	for round := 0; round < repeat; round++ {
+		for i := 0; true; {
+			val := start + byte(int(i)*step)
+			if val > end {
+				break
+			}
+
+			arr = append(arr, val)
+			i++
+			total++
+
+			if total > constant.MaxNumb {
+				break
+			}
 		}
 
-		arr = append(arr, val)
-		count++
-		i++
+		if total > constant.MaxNumb {
+			break
+		}
 	}
 
 	return arr
 }
 
-func GenerateByteItemsRand(start byte, end byte, step int) []interface{} {
+func GenerateByteItemsRand(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	genCount := int(end - start) / step + 1
-	if genCount > constant.MaxNumb {
-		genCount = constant.MaxNumb
-	}
+	countInRound := int(end - start) / step + 1
 
-	for i := 0; i < genCount; {
-		ran := rand.Intn(genCount)
-		val := start + byte(ran)
+	total := 0
+	for round := 0; round < repeat; round++ {
+		for i := 0; i < countInRound; {
+			ran := rand.Intn(countInRound)
+			val := start + byte(ran)
 
-		arr = append(arr, val)
-		i++
+			arr = append(arr, val)
+			i++
+			total++
+
+			if total > constant.MaxNumb {
+				break
+			}
+		}
+
+		if total > constant.MaxNumb {
+			break
+		}
 	}
 
 	return arr
