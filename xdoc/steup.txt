@@ -1,2 +1,2 @@
 go get -u github.com/jteeuwen/go-bindata/...
-scp build/zd-linux aaron@172.16.13.132:/home/aaron/dev/project/go/zendata/build
+scp aaron@172.16.13.132:/home/aaron/dev/project/go/zendata/build build/zd-linux
