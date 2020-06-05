@@ -1,10 +1,5 @@
 rd /s/q build
 mkdir build
-mkdir build\log
-mkdir build\data
-mkdir build\demo
-xcopy data build\data /s /e /h
-xcopy demo build\demo /s /e /h
 
 go-bindata -o=res/res.go -pkg=res res/ res/doc
 
