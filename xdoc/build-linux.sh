@@ -15,3 +15,4 @@ tar -zcvf zd-linux-1.0.tar.gz zd data demo
 rm zd
 
 cd ..
+scp build/zd-linux* aaron@172.16.13.1:/Users/aaron/testing/project/zd/build

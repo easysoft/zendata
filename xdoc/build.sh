@@ -6,8 +6,8 @@ cp -r demo build/
 
 go-bindata -o=res/res.go -pkg=res res/ res/doc
 
-CGO_ENABLED=0 GOOS=windows GOARCH=386 go build -o build/zd-x86.exe src/zd.go
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o build/zd-amd64.exe src/zd.go
+CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o build/zd-x86.exe src/zd.go
+CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o build/zd-amd64.exe src/zd.go
 
 GO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o build/zd-linux src/zd.go
 CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -o build/zd-mac src/zd.go

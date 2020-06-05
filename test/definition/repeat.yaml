@@ -1,0 +1,16 @@
+title: test
+desc: This is a test file.
+author: zentao
+version: 1.0
+
+fields:
+  - field: objectype
+    range: [bug,task,story]:2{3},[testcase]{2}
+    postfix: " "
+
+  - field: objectid
+    range: 1.0-9.0:3{2}
+    postfix: " "
+
+  - field: action
+    range: [create,resolve,close]{2},[create,finish,close]{10}
