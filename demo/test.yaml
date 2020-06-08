@@ -59,11 +59,3 @@ fields:
             type: list
             range: 1-9
             loop: 2
-
-  - field: field5
-    note: 滚动字段
-    range: abc*5,123,456
-    loop: 3
-    loopfix: ","
-    prefix: "'"
-    postfix: "'"

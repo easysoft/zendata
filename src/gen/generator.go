@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-func GenerateForDefinition(deflt, yml string, fieldsToExport []string, total int) ([][]string, []bool) {
-	constant.Def = LoadRootDef(deflt, yml, &fieldsToExport)
-	constant.Res = LoadResDef(fieldsToExport)
+func GenerateForDefinition(deflt, yml string, fieldsToExport *[]string, total int) ([][]string, []bool) {
+	constant.Def = LoadRootDef(deflt, yml, fieldsToExport)
+	constant.Res = LoadResDef(*fieldsToExport)
 
 	fieldNameToValues := map[string][]string{}
 
@@ -19,7 +19,7 @@ func GenerateForDefinition(deflt, yml string, fieldsToExport []string, total int
 
 	// 为每个field生成值列表
 	for index, field := range constant.Def.Fields {
-		if !stringUtils.FindInArr(field.Field, fieldsToExport) {
+		if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
 			continue
 		}
 
@@ -34,7 +34,7 @@ func GenerateForDefinition(deflt, yml string, fieldsToExport []string, total int
 	rows := make([][]string, 0)
 	for i := 0; i < total; i++ {
 		for _, field := range constant.Def.Fields {
-			if !stringUtils.FindInArr(field.Field, fieldsToExport) {
+			if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
 				continue
 			}
 
