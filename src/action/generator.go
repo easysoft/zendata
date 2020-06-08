@@ -30,7 +30,7 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 	vari.InputDir = filepath.Dir(yml) + string(os.PathSeparator)
 	constant.Total = total
 
-	rows, colTypes := gen.GenerateForDefinition(deflt, yml, fieldsToExport, total)
+	rows, colTypes := gen.GenerateForDefinition(deflt, yml, &fieldsToExport, total)
 	content := Print(rows, format, table, colTypes, fieldsToExport)
 
 	if out != "" {
