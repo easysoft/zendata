@@ -76,7 +76,12 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		testData.Table.Rows = append(testData.Table.Rows, row)
 
 		if format == "sql" {
-			sent := fmt.Sprintf("INSERT INTO %s(%s) VALUES(%s)", table, strings.Join(fields, ","), valueList)
+			fieldNames := make([]string, 0)
+
+			for _, f := range fields {
+				fieldNames = append(fieldNames, "`" + f + "`")
+			}
+			sent := fmt.Sprintf("INSERT INTO %s(%s) VALUES(%s)", table, strings.Join(fieldNames, ", "), valueList)
 			sql = sql + sent + ";\n"
 		}
 	}
