@@ -92,13 +92,12 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() ([]byte, error){
-	"res/doc/sample.txt":   res_doc_sample_txt,
-	"res/doc/usage.txt":    res_doc_usage_txt,
+	"res/doc/sample.txt": res_doc_sample_txt,
+	"res/doc/usage.txt": res_doc_usage_txt,
 	"res/messages_en.json": res_messages_en_json,
 	"res/messages_zh.json": res_messages_zh_json,
-	"res/res.go":           res_res_go,
+	"res/res.go": res_res_go,
 }
-
 // AssetDir returns the file names below a certain
 // directory embedded in the file by go-bindata.
 // For example if you run go-bindata on data/... and data contains the
@@ -135,14 +134,22 @@ func AssetDir(name string) ([]string, error) {
 }
 
 type _bintree_t struct {
-	Func     func() ([]byte, error)
+	Func func() ([]byte, error)
 	Children map[string]*_bintree_t
 }
-
 var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
-	"res/doc/sample.txt":   &_bintree_t{res_doc_sample_txt, map[string]*_bintree_t{}},
-	"res/doc/usage.txt":    &_bintree_t{res_doc_usage_txt, map[string]*_bintree_t{}},
-	"res/messages_en.json": &_bintree_t{res_messages_en_json, map[string]*_bintree_t{}},
-	"res/messages_zh.json": &_bintree_t{res_messages_zh_json, map[string]*_bintree_t{}},
-	"res/res.go":           &_bintree_t{res_res_go, map[string]*_bintree_t{}},
+	"res": &_bintree_t{nil, map[string]*_bintree_t{
+		"doc": &_bintree_t{nil, map[string]*_bintree_t{
+			"sample.txt": &_bintree_t{res_doc_sample_txt, map[string]*_bintree_t{
+			}},
+			"usage.txt": &_bintree_t{res_doc_usage_txt, map[string]*_bintree_t{
+			}},
+		}},
+		"messages_en.json": &_bintree_t{res_messages_en_json, map[string]*_bintree_t{
+		}},
+		"messages_zh.json": &_bintree_t{res_messages_zh_json, map[string]*_bintree_t{
+		}},
+		"res.go": &_bintree_t{res_res_go, map[string]*_bintree_t{
+		}},
+	}},
 }}
