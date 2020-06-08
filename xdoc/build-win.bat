@@ -12,4 +12,4 @@ go build -o build\zd-x86.exe src/zd.go
 SET GOARCH=amd64
 go build -o build\zd-amd64.exe src/zd.go
 
-scp build\zd-* aaron@172.16.13.1:/Users/aaron/testing/project/zd/build
+scp build\zd-* aaron@172.16.13.1:/Users/aaron/rd/project/zentao/go/zd/build
