@@ -69,6 +69,9 @@ func main() {
 	flagSet.StringVar(&viewRes, "v", "", "")
 	flagSet.StringVar(&viewDetail, "vv", "", "")
 
+	flagSet.BoolVar(&vari.WithHead, "head", false, "")
+	flagSet.StringVar(&vari.HeadSep, "sep", ",", "")
+
 	flagSet.BoolVar(&vari.HttpService, "s", false, "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")

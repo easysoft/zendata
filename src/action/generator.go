@@ -61,6 +61,18 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 	content := ""
 	sql := ""
 
+	if vari.WithHead {
+		line := ""
+		for idx, field := range fields {
+			line += field
+			if idx < len(fields) - 1 {
+				line += vari.HeadSep
+			}
+		}
+		logUtils.Screen(fmt.Sprintf("%s", line))
+		content += line + "\n"
+	}
+
 	testData := model.TestData{}
 	testData.Title = "Test Data"
 
@@ -102,23 +114,37 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		}
 	}
 
-	jsonStr := "[]"
+	respJson := "[]"
 	if format == "json" || vari.HttpService {
-		jsonObj, _ := json.Marshal(rows)
-		content = string(jsonObj)
-		if vari.HttpService {
-			jsonStr = content
+		if vari.WithHead {
+			mapObj := RowsToMap(rows, fields)
+			jsonObj, _ := json.Marshal(mapObj)
+			respJson = string(jsonObj)
+		} else {
+			jsonObj, _ := json.Marshal(rows)
+			respJson = string(jsonObj)
 		}
 	}
 
-	if format == "xml" {
+	if format == "json" {
+		content = respJson
+	} else if format == "xml" {
 		xml, _ := xml.Marshal(testData)
 		content = string(xml)
 	} else if format == "sql" {
 		content = sql
 	}
 
-	return content, jsonStr
+	return content, respJson
+}
+
+func RowsToMap(rows [][]string, fieldsToExport []string) (ret map[string]string) {
+	for _, cols := range rows {
+		for j, col := range cols {
+			ret[fieldsToExport[j]] = col
+		}
+	}
+	return
 }
 
 func DataHandler(w http.ResponseWriter, r *http.Request) {

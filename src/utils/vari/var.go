@@ -22,6 +22,8 @@ var (
 	Verbose     bool
 	Interpreter string
 
+	WithHead bool
+	HeadSep string
 	HttpService bool
 	JsonResp string = "[]"
 )
