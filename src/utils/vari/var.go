@@ -21,4 +21,7 @@ var (
 	RequestType  string
 	Verbose     bool
 	Interpreter string
+
+	HttpService bool
+	JsonResp string = "[]"
 )

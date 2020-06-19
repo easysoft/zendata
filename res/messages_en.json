@@ -84,6 +84,10 @@
     {
       "id": "generate_yaml",
       "translation": "Generate %d yaml files in %s, spend %d secs."
+    },
+    {
+      "id": "press_to_exist",
+      "translation": "Press ctrl+c to exist."
     }
   ]
 }

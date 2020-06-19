@@ -7,8 +7,11 @@ import (
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/fatih/color"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,17 +34,30 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 	constant.Total = total
 
 	rows, colTypes := gen.GenerateForDefinition(deflt, yml, &fieldsToExport, total)
-	content := Print(rows, format, table, colTypes, fieldsToExport)
+	var content string
+	content, vari.JsonResp = Print(rows, format, table, colTypes, fieldsToExport)
 
 	if out != "" {
 		WriteToFile(out, content)
+	}
+
+	if out != "" {
+		WriteToFile(out, content)
+	}
+
+	if vari.HttpService {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("press_to_exist"), color.FgCyan)
+
+		http.HandleFunc("/", DataHandler)
+		http.HandleFunc("/data", DataHandler)
+		http.ListenAndServe(":58848", nil)
 	}
 
 	//entTime := time.Now().Unix()
 	//logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), out, entTime - startTime ))
 }
 
-func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) string {
+func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) (string, string) {
 	content := ""
 	sql := ""
 
@@ -86,15 +102,25 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		}
 	}
 
-	if format == "json" {
-		json, _ := json.Marshal(rows)
-		content = string(json)
-	} else if format == "xml" {
+	jsonStr := "[]"
+	if format == "json" || vari.HttpService {
+		jsonObj, _ := json.Marshal(rows)
+		content = string(jsonObj)
+		if vari.HttpService {
+			jsonStr = content
+		}
+	}
+
+	if format == "xml" {
 		xml, _ := xml.Marshal(testData)
 		content = string(xml)
 	} else if format == "sql" {
 		content = sql
 	}
 
-	return content
+	return content, jsonStr
+}
+
+func DataHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, vari.JsonResp)
 }

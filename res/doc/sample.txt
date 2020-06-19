@@ -3,6 +3,9 @@
   $>zd.exe -y demo/test.yaml -c 15 -field field1 -o demo/output.txt -f text
            执行数据生成命令。使用配置文件demo/test.yaml，生成15行数据，以text格式的输出到demo/output.txt文件中。
 
+  $>zd.exe -y demo/test.yaml -c 15 -s
+           执行数据生成命令。使用配置文件demo/test.yaml，生成15行数据，以行列的json形式输出到http://<ip_address/data接口。
+
   $>zd.exe -y demo/test.yaml -c 15 -field field1 -o demo/insert.sql -f sql -t table_name
            执行数据生成命令。以SQL语句形式输出到demo/insert.sql文件中，表名为table_name。
 
