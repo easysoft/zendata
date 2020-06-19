@@ -117,8 +117,8 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 	respJson := "[]"
 	if format == "json" || vari.HttpService {
 		if vari.WithHead {
-			mapObj := RowsToMap(rows, fields)
-			jsonObj, _ := json.Marshal(mapObj)
+			mapArr := RowsToMap(rows, fields)
+			jsonObj, _ := json.Marshal(mapArr)
 			respJson = string(jsonObj)
 		} else {
 			jsonObj, _ := json.Marshal(rows)
@@ -138,13 +138,16 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 	return content, respJson
 }
 
-func RowsToMap(rows [][]string, fieldsToExport []string) (ret map[string]string) {
-	ret = map[string]string{}
+func RowsToMap(rows [][]string, fieldsToExport []string) (ret []map[string]string) {
+	ret = []map[string]string{}
 
 	for _, cols := range rows {
+		rowMap := map[string]string{}
 		for j, col := range cols {
-			ret[fieldsToExport[j]] = col
+			rowMap[fieldsToExport[j]] = col
 		}
+
+		ret = append(ret, rowMap)
 	}
 	return
 }
