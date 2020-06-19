@@ -128,16 +128,22 @@ func ParseRange(rang string) []string {
 
 	tagOpen := false
 	temp := ""
-	for i := 0; i < len(rang); i++ {
-		c := rang[i]
 
-		if int32(c) == constant.RightChar {
+	runeArr := make([]rune, 0)
+	for _, c := range rang {
+		runeArr = append(runeArr, c)
+	}
+
+	for i := 0; i < len(runeArr); i++ {
+		c := runeArr[i]
+
+		if c == constant.RightChar {
 			tagOpen = false
-		} else if int32(c) == constant.LeftChar  {
+		} else if c == constant.LeftChar  {
 			tagOpen = true
 		}
 
-		if i == len(rang) - 1 {
+		if i == len(runeArr) - 1 {
 			temp += fmt.Sprintf("%c", c)
 			items = append(items, temp)
 		} else if !tagOpen && c == ',' {

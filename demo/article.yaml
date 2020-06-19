@@ -10,7 +10,7 @@ fields:
     fields:
       - field: title1
         type: list
-        range: "Title"
+        range: "[标题A,TitleB]"
         postfix: "-"
       - field: title2
         range: 1-999

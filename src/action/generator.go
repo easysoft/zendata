@@ -139,6 +139,8 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 }
 
 func RowsToMap(rows [][]string, fieldsToExport []string) (ret map[string]string) {
+	ret = map[string]string{}
+
 	for _, cols := range rows {
 		for j, col := range cols {
 			ret[fieldsToExport[j]] = col

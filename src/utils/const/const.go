@@ -31,8 +31,8 @@ var (
 	Def = model.DefData{}
 	Res = map[string]map[string][]string{}
 
-	LeftChar = '('
-	RightChar = ')'
+	LeftChar rune = '('
+	RightChar rune = ')'
 
 	ResDir  = "data/"
 	ResPath = ResDir + "system/buildin.yaml"
