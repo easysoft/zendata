@@ -163,6 +163,11 @@ func ParseRangeItem(item string) (string, string, int) {
 	step := "1"
 	repeat := 1
 
+	item = strings.TrimSpace(item)
+	if string(item[0]) == string(constant.LeftChar) && string(item[len(item) - 1]) == string(constant.RightChar) {
+		return item, step, repeat
+	}
+
 	regx := regexp.MustCompile(`\{(.*)\}`)
 	arr := regx.FindStringSubmatch(item)
 	if len(arr) == 2 {

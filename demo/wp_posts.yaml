@@ -1,0 +1,58 @@
+title: table wp_posts
+desc: ""
+author: automated export
+version: "1.0"
+fields:
+  - field: post_author
+    note: "作者"
+    range: "1"
+  - field: post_status
+    note: "发布状态"
+    range: "publish"
+  - field: post_date
+    note: "发布日期"
+    range: "[2020-06-06 06:06:06]"
+  - field: post_date_gmt
+    note: ""
+    range: "[2020-06-06 06:06:06]"
+  - field: post_modified
+    note: ""
+    range: "[2020-06-06 06:06:06]"
+  - field: post_modified_gmt
+    note: ""
+    range: "[2020-06-06 06:06:06]"
+  - field: guid
+    note: ""
+    range: "[http://localhost:8080/?p=3800]"
+  - field: post_title
+    note: 文章标题
+    fields:
+      - field: title1
+        type: list
+        range: "[标题A,TitleB]"
+        postfix: "-"
+      - field: title2
+        range: 1-999
+        format: "%03d"
+  - field: post_content
+    node: 文章内容
+    fields:
+      - field: field4.1
+        type: list
+        range: [Epic,Feature,Story]:R{1}
+        prefix: "<h5>"
+        postfix: ":</h5>"
+      - field: field4.2
+        postfix: "<br/>Aaron 2020/06/18"
+        fields:
+          - field: field4.2.1
+            loop: 3
+            fields:
+              - field: field4.2.1.1
+                postfix: "<br/>"
+                loop: 3
+                fields:
+                  - field: field4.2.2
+                    range: a-z:R
+                    postfix: " "
+                    loop: 6
