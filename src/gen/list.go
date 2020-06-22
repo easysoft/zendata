@@ -164,7 +164,8 @@ func ParseRangeItem(item string) (string, string, int) {
 	repeat := 1
 
 	item = strings.TrimSpace(item)
-	if string(item[0]) == string(constant.LeftChar) && string(item[len(item) - 1]) == string(constant.RightChar) {
+	if string(item[0]) == string(constant.LeftChar) &&  // It's a whole when meet (xxx)
+			string(item[len(item) - 1]) == string(constant.RightChar) {
 		return item, step, repeat
 	}
 
