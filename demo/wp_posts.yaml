@@ -3,27 +3,6 @@ desc: ""
 author: automated export
 version: "1.0"
 fields:
-  - field: post_author
-    note: "作者"
-    range: "1"
-  - field: post_status
-    note: "发布状态"
-    range: "publish"
-  - field: post_date
-    note: "发布日期"
-    range: "[2020-06-06 06:06:06]"
-  - field: post_date_gmt
-    note: ""
-    range: "[2020-06-06 06:06:06]"
-  - field: post_modified
-    note: ""
-    range: "[2020-06-06 06:06:06]"
-  - field: post_modified_gmt
-    note: ""
-    range: "[2020-06-06 06:06:06]"
-  - field: guid
-    note: ""
-    range: "[http://localhost:8080/?p=3800]"
   - field: post_title
     note: 文章标题
     fields:
@@ -56,3 +35,26 @@ fields:
                     range: a-z:R
                     postfix: " "
                     loop: 6
+
+  - field: post_author
+    range: "1"
+  - field: post_status
+    range: "publish"
+  - field: post_date
+    range: "[2020-06-06 06:06:06]"
+  - field: post_date_gmt
+    range: "[2020-06-06 06:06:06]"
+  - field: post_modified
+    range: "[2020-06-06 06:06:06]"
+  - field: post_modified_gmt
+    range: "[2020-06-06 06:06:06]"
+  - field: guid
+    range: "[http://localhost:8080/?p=3800]"
+  - field: post_excerpt
+    range: ""
+  - field: to_ping
+    range: ""
+  - field: pinged
+    range: ""
+  - field: post_content_filtered
+    range: ""
