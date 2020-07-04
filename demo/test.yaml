@@ -36,6 +36,7 @@ fields:
     from: system.address.v1.city
     select: name
     where: state like '%西藏%'
+    postfix: " "
     expect: 青岛、济南 ...​
 
   - field: fieldA
@@ -43,8 +44,8 @@ fields:
     fields:
       - field: fieldA.1
         type: list
-        range: 1-9
-        postfix: ". "
+        range: 1-999
+        postfix: "."
       - field: fieldA.2
         prefix: '['
         postfix: ']'
