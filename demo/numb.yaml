@@ -1,15 +1,11 @@
 title: number
 desc:
-author: wwccss
+author: zentao
 version: 1.0
 
 field: number
-note: 数值类型数据
-#prefix: "'"
-#postfix: "'"
-#loop: 2
-#loopfix: "-"
+note: 数字类型
 ranges:
-  small: 1-9
-  medium: 11-99
-  large: 10001-99999
+  small: 0-3
+  medium: 11-13
+  large: 101-103

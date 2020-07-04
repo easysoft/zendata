@@ -23,7 +23,6 @@ type ResInsts struct {
 type ResInst struct {
 	FieldBase   `yaml:",inline"`
 	Instance string  `yaml:"instance"`
-	Range    string  `yaml:"range"`
 	Fields  []DefField `yaml:"fields,flow"`
 }
 

@@ -4,58 +4,57 @@ author: zentao
 version: 1.0
 
 fields:
-  - field: field0
-    note: 基本属性
-    range: abc*5,123,456
+  - field: field1
+    note: 字符区间步长、随机
+    range: a-f:R,0-9:2
     loop: 3
     loopfix: ","
-    prefix: "'"
-    postfix: "'"
-
-  - field: field1
-    note: 引用同级目录中的yaml文件，取small和large两个分组的值
-    from: numb.yaml
-    use: small,large
-#    loop: 3
-#    loopfix: " "
-#    prefix: "["
-#    postfix: "]"
-    expect: 1,2,3,101,102...
+    prefix: "["
+    postfix: "] "
 
   - field: field2
+    note: 单词、重复
+    range: [bug,task,story]:2{2},[testcase]{2}
+    postfix: " "
+
+  - field: field3
+    note: 引用同级目录中的yaml文件，取small和large两个分组的值
+    from: numb.yaml
+    use: large
+    postfix: " "
+    expect: 101,102,103...
+
+  - field: field4
     note: 引用內置IP地址数据定义中的C类地址
     from: system.ip.v1.yaml
     use: privateC
-    prefix: "["
-    postfix: "]"
-    loop: 3
-    loopfix: "  "
+    postfix: " "
     expect: 192.168.0.1 ...​
 
-  - field: field3
+  - field: field5
     node: 检索、引用內置城市Excel中的数据
     from: system.address.v1.city
     select: name
-    where: state like '%山东%'
+    where: state like '%西藏%'
     expect: 青岛、济南 ...​
 
-  - field: field4
+  - field: fieldA
     node: 嵌套字段
     fields:
-      - field: field4.1
+      - field: fieldA.1
         type: list
         range: 1-9
         postfix: ". "
-      - field: field4.2
+      - field: fieldA.2
         prefix: '['
         postfix: ']'
         loop: 2
         loopfix: ","
         fields:
-          - field: field4.2.1
+          - field: fieldA.2.1
             type: list
             range: X-Z
-          - field: field4.2.2
+          - field: fieldA.2.2
             type: list
             range: 1-9
             loop: 2
