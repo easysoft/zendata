@@ -9,6 +9,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"net/http"
@@ -49,7 +50,6 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("press_to_exist"), color.FgCyan)
 
 		http.HandleFunc("/", DataHandler)
-		http.HandleFunc("/data", DataHandler)
 		http.ListenAndServe(":58848", nil)
 	}
 
@@ -82,7 +82,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		valueList := ""
 
 		for j, col := range cols {
-			if j >0 && format == "sql" {
+			if j >0 && format == constant.FormatSql {
 				line = line + ","
 				valueList = valueList + ","
 			}
@@ -91,11 +91,12 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 			row.Cols = append(row.Cols, col)
 
 			colVal := col
+			colVal = stringUtils.AddPad(colVal)
 			if !colTypes[j] { colVal = "'" + colVal + "'" }
 			valueList = valueList + colVal
 		}
 
-		if format == "text" && i < len(rows) {
+		if format == constant.FormatText && i < len(rows) {
 			content = content + line + "\n"
 		}
 
@@ -103,7 +104,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 
 		testData.Table.Rows = append(testData.Table.Rows, row)
 
-		if format == "sql" {
+		if format == constant.FormatSql {
 			fieldNames := make([]string, 0)
 
 			for _, f := range fields {
@@ -115,7 +116,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 	}
 
 	respJson := "[]"
-	if format == "json" || vari.HttpService {
+	if format == constant.FormatJson || vari.HttpService {
 		if vari.WithHead {
 			mapArr := RowsToMap(rows, fields)
 			jsonObj, _ := json.Marshal(mapArr)
@@ -126,12 +127,12 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		}
 	}
 
-	if format == "json" {
+	if format == constant.FormatJson {
 		content = respJson
-	} else if format == "xml" {
+	} else if format == constant.FormatJson {
 		xml, _ := xml.Marshal(testData)
 		content = string(xml)
-	} else if format == "sql" {
+	} else if format == constant.FormatSql {
 		content = sql
 	}
 

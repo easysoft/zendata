@@ -1,6 +1,5 @@
 rm -rf build
 mkdir build
-mkdir build/log
 cp -r data build/
 cp -r demo build/
 

@@ -1,3 +1,5 @@
 go get -u github.com/jteeuwen/go-bindata/...
 
- go run src/zd.go -y demo/article.yaml -c 3 -head -s
+go run src/zd.go -y demo/article.yaml -c 3 -head -s
+
+rsrc -manifest xdoc/main.exe.manifest -ico xdoc/fav.ico -o zd.syso

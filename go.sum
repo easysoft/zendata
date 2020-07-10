@@ -1,6 +1,8 @@
 github.com/360EntSecGroup-Skylar/excelize v1.4.1 h1:l55mJb6rkkaUzOpSsgEeKYtS6/0gHwBYyfo5Jcjv/Ks=
 github.com/360EntSecGroup-Skylar/excelize/v2 v2.2.0 h1:5DuRTdH6M8yPjvFfBkACVmuk7SoTzmaB8yM6KVqEhP8=
 github.com/360EntSecGroup-Skylar/excelize/v2 v2.2.0/go.mod h1:Uwb0d1GgxJieUWZG5WylTrgQ2SrldfjagAxheU8W6MQ=
+github.com/akavel/rsrc v0.9.0 h1:HwUDC0+tMFWqN4D5G+o5siGD4oVsC3jn6zM8ocjc3nY=
+github.com/akavel/rsrc v0.9.0/go.mod h1:uLoCtb9J+EyAqh+26kdrTgmzRBFPGOolLWKpdxkKq+c=
 github.com/awesome-gocui/gocui v0.6.0 h1:hhDJiQC12tEsJNJ+iZBBVaSSLFYo9llFuYpQlL5JZVI=
 github.com/awesome-gocui/gocui v0.6.0/go.mod h1:1QikxFaPhe2frKeKvEwZEIGia3haiOxOUXKinrv17mA=
 github.com/awesome-gocui/termbox-go v0.0.0-20190427202837-c0aef3d18bcc h1:wGNpKcHU8Aadr9yOzsT3GEsFLS7HQu8HxQIomnekqf0=

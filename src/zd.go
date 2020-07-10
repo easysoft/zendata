@@ -4,29 +4,34 @@ import (
 	"flag"
 	"github.com/easysoft/zendata/src/action"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
 	"os/signal"
+	"path"
+	"strings"
 	"syscall"
 )
 
 var (
-	deflt string
-	yml string
+	deflt  string
+	yaml   string
 	count  int
 	fields string
 
 	input  string
 	output string
-	table  = "text"
-	format = "text"
+	table  string
+	format = constant.FormatText
 
 	viewRes string
 	viewDetail string
 
+	example bool
 	help   bool
 
 	flagSet *flag.FlagSet
@@ -46,33 +51,41 @@ func main() {
 	flagSet.StringVar(&deflt, "d", "", "")
 	flagSet.StringVar(&deflt, "default", "", "")
 
-	flagSet.StringVar(&yml, "y", "", "")
-	flagSet.StringVar(&yml, "yml", "", "")
+	flagSet.StringVar(&yaml, "c", "", "")
+	flagSet.StringVar(&yaml, "config", "", "")
 
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
 
-	flagSet.IntVar(&count, "c", 10, "")
-	flagSet.IntVar(&count, "count", 10, "")
+	flagSet.IntVar(&count, "n", 10, "")
+	flagSet.IntVar(&count, "lines", 10, "")
 
+	flagSet.StringVar(&fields, "F", "", "")
 	flagSet.StringVar(&fields, "field", "", "")
 
 	flagSet.StringVar(&output, "o", "", "")
 	flagSet.StringVar(&output, "output", "", "")
 
-	flagSet.StringVar(&table, "t", "", "")
-	flagSet.StringVar(&table, "table", "", "")
-
-	flagSet.StringVar(&format, "f", "text", "")
-	flagSet.StringVar(&format, "format", "text", "")
+	flagSet.StringVar(&table, "t", "table_name", "")
+	flagSet.StringVar(&table, "table", "table_name", "")
 
 	flagSet.StringVar(&viewRes, "v", "", "")
 	flagSet.StringVar(&viewDetail, "vv", "", "")
 
-	flagSet.BoolVar(&vari.WithHead, "head", false, "")
-	flagSet.StringVar(&vari.HeadSep, "sep", ",", "")
+	flagSet.StringVar(&vari.HeadSep, "H", "\t", "")
+	flagSet.StringVar(&vari.HeadSep, "human", "\t", "")
+
+	flagSet.IntVar(&vari.Length, "length", 0, "")
+	flagSet.StringVar(&vari.LeftPad, "leftPad", "", "")
+	flagSet.StringVar(&vari.RightPad, "rightPad", "", "")
 
 	flagSet.BoolVar(&vari.HttpService, "s", false, "")
+
+	flagSet.BoolVar(&example, "e", false, "")
+	flagSet.BoolVar(&example, "example", false, "")
+
+	flagSet.BoolVar(&help, "h", false, "")
+	flagSet.BoolVar(&help, "help", false, "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
@@ -81,8 +94,10 @@ func main() {
 	}
 
 	switch os.Args[1] {
+	case "-e", "-example":
+		logUtils.PrintExample()
 	case "-h", "-help":
-		usage()
+		logUtils.PrintUsage()
 	default:
 		if os.Args[1][0:1] == "-" {
 			args := []string{os.Args[0], "gen"}
@@ -97,18 +112,28 @@ func main() {
 func gen(args []string) {
 	flagSet.SetOutput(ioutil.Discard)
 	if err := flagSet.Parse(args[2:]); err == nil {
+		if vari.HeadSep != "" {
+			vari.WithHead = true
+		}
+
+		if output != "" {
+			ext := strings.ToLower(path.Ext(output))
+			if len(ext) > 1 {
+				ext = strings.TrimLeft(ext,".")
+			}
+			if stringUtils.InArray(ext, constant.Formats) {
+				format = ext
+			}
+		}
+
 		if input != "" {
 			action.ParseSql(input, output)
 		} else {
-			action.Generate(deflt, yml, count, fields, output, format, table)
+			action.Generate(deflt, yaml, count, fields, output, format, table)
 		}
 	} else {
-		usage()
+		logUtils.PrintUsage()
 	}
-}
-
-func usage() {
-	logUtils.PrintUsage()
 }
 
 func init() {

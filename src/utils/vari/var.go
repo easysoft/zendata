@@ -24,6 +24,11 @@ var (
 
 	WithHead bool
 	HeadSep string
+
+	Length int
+	LeftPad string
+	RightPad string
+
 	HttpService bool
 	JsonResp string = "[]"
 )

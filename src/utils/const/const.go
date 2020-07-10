@@ -31,6 +31,12 @@ var (
 	Def = model.DefData{}
 	Res = map[string]map[string][]string{}
 
+	FormatText = "text"
+	FormatJson = "json"
+	FormatXml = "xml"
+	FormatSql = "sql"
+	Formats = []string{FormatText, FormatJson, FormatXml, FormatSql}
+
 	LeftChar rune = '('
 	RightChar rune = ')'
 

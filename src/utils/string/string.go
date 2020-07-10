@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"strconv"
 	"strings"
@@ -97,4 +98,34 @@ func FormatStr(format string, val interface{}) (string, bool) {
 	}
 
 	return str, true
+}
+
+func InArray(need interface{}, arr []string) bool {
+	for _,v := range arr{
+		if need == v{
+			return true
+		}
+	}
+	return false
+}
+
+func AddPad(str string) string {
+	if vari.Length > 0 {
+		gap := vari.Length - len(str)
+		if vari.LeftPad != "" {
+			vari.LeftPad = vari.LeftPad[:1]
+			pads := strings.Repeat(vari.LeftPad, gap)
+			str = pads + str
+		} else if vari.RightPad != "" {
+			vari.RightPad = vari.RightPad[:1]
+			pads := strings.Repeat(vari.RightPad, gap)
+			str = str + pads
+		} else {
+			vari.LeftPad = " "
+			pads := strings.Repeat(vari.LeftPad, gap)
+			str = pads + str
+		}
+	}
+
+	return str
 }

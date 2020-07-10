@@ -5,7 +5,6 @@ import (
 	"fmt"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	"github.com/fatih/color"
 	"os"
 	"regexp"
@@ -13,12 +12,17 @@ import (
 )
 
 var (
+	exampleFile  = fmt.Sprintf("res%sdoc%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
 	usageFile  = fmt.Sprintf("res%sdoc%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
-	sampleFile = fmt.Sprintf("res%sdoc%ssample.txt", string(os.PathSeparator), string(os.PathSeparator))
 )
 
+func PrintExample() {
+	content := fileUtils.ReadResData(exampleFile)
+	fmt.Printf("%s\n", content)
+}
+
 func PrintUsage() {
-	PrintToWithColor(i118Utils.I118Prt.Sprintf("usage"), color.FgCyan)
+	//PrintToWithColor(i118Utils.I118Prt.Sprintf("usage"), color.FgCyan)
 
 	usage := fileUtils.ReadResData(usageFile)
 	exeFile := "zd"
@@ -26,24 +30,17 @@ func PrintUsage() {
 		exeFile += ".exe"
 	}
 	usage = fmt.Sprintf(usage, exeFile)
-	fmt.Printf("%s\n", usage)
-
-	PrintToWithColor("\n" + i118Utils.I118Prt.Sprintf("example"), color.FgCyan)
-	sample := fileUtils.ReadResData(sampleFile)
 	if !commonUtils.IsWin() {
 		regx, _ := regexp.Compile(`\\`)
-		sample = regx.ReplaceAllString(sample, "/")
+		usage = regx.ReplaceAllString(usage, "/")
 
-		regx, _ = regexp.Compile(`ztf.exe`)
-		sample = regx.ReplaceAllString(sample, "ztf")
+		regx, _ = regexp.Compile(`zd.exe`)
+		usage = regx.ReplaceAllString(usage, "zd")
 
-		regx, _ = regexp.Compile(`/bat/`)
-		sample = regx.ReplaceAllString(sample, "/shell/")
-
-		regx, _ = regexp.Compile(`\.bat\s{4}`)
-		sample = regx.ReplaceAllString(sample, ".shell")
+		regx, _ = regexp.Compile(`d:`)
+		usage = regx.ReplaceAllString(usage, "/home/user")
 	}
-	fmt.Printf("%s\n", sample)
+	fmt.Printf("%s\n", usage)
 }
 
 func PrintTo(str string) {
