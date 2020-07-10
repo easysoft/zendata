@@ -86,8 +86,8 @@
       "translation": "Generate %d yaml files in %s, spend %d secs."
     },
     {
-      "id": "press_to_exist",
-      "translation": "Press ctrl+c to exist."
+      "id": "start_server",
+      "translation": "Success yo start zendata http service, press CTRL+C to exist. \n You may use http://%s:%dto retrieve the data，for example: \n curl http://%s:%d/?default=/demo/default.yaml&config=/demo/test.yaml&n=100."
     }
   ]
 }

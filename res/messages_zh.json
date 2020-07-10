@@ -77,8 +77,8 @@
       "translation": "生成%d个yaml文件于目录%s中, 耗时%d秒。"
     },
     {
-      "id": "press_to_exist",
-      "translation": "按ctrl+c键推出。"
+      "id": "start_server",
+      "translation": "zendata http服务已经成功运行，按CTRL+C键推出。\n 您可以通过http://%s:%d地址来调用，比如：\n curl http://%s:%d/?default=/demo/default.yaml&config=/demo/test.yaml&n=100."
     }
   ]
 }

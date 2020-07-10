@@ -75,11 +75,19 @@ func main() {
 	flagSet.StringVar(&vari.HeadSep, "H", "\t", "")
 	flagSet.StringVar(&vari.HeadSep, "human", "\t", "")
 
-	flagSet.IntVar(&vari.Length, "length", 0, "")
+	flagSet.IntVar(&vari.Length, "W", 0, "")
+	flagSet.IntVar(&vari.Length, "width", 0, "")
+	flagSet.StringVar(&vari.LeftPad, "L", "", "")
 	flagSet.StringVar(&vari.LeftPad, "leftPad", "", "")
+	flagSet.StringVar(&vari.RightPad, "R", "", "")
 	flagSet.StringVar(&vari.RightPad, "rightPad", "", "")
 
-	flagSet.BoolVar(&vari.HttpService, "s", false, "")
+	flagSet.StringVar(&vari.Ip, "b", "", "")
+	flagSet.StringVar(&vari.Ip, "bind", "", "")
+	flagSet.IntVar(&vari.Port, "p", 0, "")
+	flagSet.IntVar(&vari.Port, "port", 0, "")
+	flagSet.StringVar(&vari.Root, "r", "", "")
+	flagSet.StringVar(&vari.Root, "root", "", "")
 
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")

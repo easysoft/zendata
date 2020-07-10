@@ -29,6 +29,8 @@ var (
 	LeftPad string
 	RightPad string
 
-	HttpService bool
 	JsonResp string = "[]"
+	Ip string
+	Port int
+	Root string
 )

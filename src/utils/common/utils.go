@@ -5,6 +5,7 @@ import (
 	"github.com/easysoft/zendata/src/utils/const"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/emirpasic/gods/maps"
+	"net"
 	"os"
 	"path"
 	"path/filepath"
@@ -114,4 +115,80 @@ func LinkedMapToMap(mp maps.Map) map[string]string {
 	}
 
 	return ret
+}
+
+func GetIp() string {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return ""
+	}
+
+	ipMap := map[string]string{}
+	for _, iface := range ifaces {
+		if iface.Flags&net.FlagUp == 0 {
+			continue // interface down
+		}
+		if iface.Flags&net.FlagLoopback != 0 {
+			continue // loopback interface
+		}
+		addrs, err := iface.Addrs()
+		if err != nil {
+			return ""
+		}
+		for _, addr := range addrs {
+			ip := getIpFromAddr(addr)
+			if ip == nil {
+				continue
+			}
+
+			ipType := GetIpType(ip)
+			ipMap[ipType] = ip.String()
+		}
+	}
+
+	if ipMap["public"] != "" {
+		return ipMap["public"]
+	} else if ipMap["private"] != "" {
+		return ipMap["private"]
+	} else {
+		return ""
+	}
+}
+
+func getIpFromAddr(addr net.Addr) net.IP {
+	var ip net.IP
+	switch v := addr.(type) {
+	case *net.IPNet:
+		ip = v.IP
+	case *net.IPAddr:
+		ip = v.IP
+	}
+	if ip == nil || ip.IsLoopback() {
+		return nil
+	}
+	ip = ip.To4()
+	if ip == nil {
+		return nil // not an ipv4 address
+	}
+
+	return ip
+}
+
+func GetIpType(IP net.IP) string {
+	if IP.IsLoopback() || IP.IsLinkLocalMulticast() || IP.IsLinkLocalUnicast() {
+		return ""
+	}
+	if ip4 := IP.To4(); ip4 != nil {
+		switch true {
+		case ip4[0] == 10:
+			return "private"
+		case ip4[0] == 172 && ip4[1] >= 16 && ip4[1] <= 31:
+			return "private"
+		case ip4[0] == 192 && ip4[1] == 168:
+			return "private"
+		default:
+			return "public"
+		}
+	}
+	return ""
 }

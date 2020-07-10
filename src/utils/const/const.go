@@ -40,6 +40,9 @@ var (
 	LeftChar rune = '('
 	RightChar rune = ')'
 
+	DefaultPort = 8848
+	DefaultRoot = "./"
+
 	ResDir  = "data/"
 	ResPath = ResDir + "system/buildin.yaml"
 

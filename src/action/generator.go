@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -46,11 +47,21 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 		WriteToFile(out, content)
 	}
 
-	if vari.HttpService {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("press_to_exist"), color.FgCyan)
+	if vari.Ip != "" || vari.Port != 0 || vari.Root != ""{
+		if vari.Ip == "" {
+			vari.Ip = commonUtils.GetIp()
+		}
+		if vari.Port == 0 {
+			vari.Port = constant.DefaultPort
+		}
+		if vari.Root == "" {
+			vari.Root = constant.DefaultRoot
+		}
+
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server"), color.FgCyan)
 
 		http.HandleFunc("/", DataHandler)
-		http.ListenAndServe(":58848", nil)
+		http.ListenAndServe(fmt.Sprintf("%s:%d", vari.Ip, vari.Port), nil)
 	}
 
 	//entTime := time.Now().Unix()
