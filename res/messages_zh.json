@@ -78,7 +78,7 @@
     },
     {
       "id": "start_server",
-      "translation": "zendata http服务已经成功运行，按CTRL+C键推出。\n 您可以通过http://%s:%d地址来调用，比如：\n curl http://%s:%d/?default=/demo/default.yaml&config=/demo/test.yaml&n=100."
+      "translation": "zendata http服务已经成功运行，按CTRL+C键推出。\n 您可以通过http://%s:%d地址来调用，比如：\n curl http://%s:%d/?default=demo/default.yaml&config=demo/test.yaml&lines=100."
     }
   ]
 }

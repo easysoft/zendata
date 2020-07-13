@@ -16,7 +16,8 @@ import (
 
 func ParseSql(file string, out string) {
 	startTime := time.Now().Unix()
-	vari.InputDir = filepath.Dir(file) + string(os.PathSeparator)
+	abs, _ := filepath.Abs(filepath.Dir(file))
+	vari.InputDir = abs + string(os.PathSeparator)
 
 	statements := getCreateStatement(file)
 	for tableName, statement := range statements {

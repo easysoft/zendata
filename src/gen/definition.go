@@ -16,7 +16,7 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 
 	if defaultFile != "" {
 		defaultContent, err := ioutil.ReadFile(defaultFile)
-		defaultContent = replaceSpecialChars(defaultContent)
+		defaultContent = ReplaceSpecialChars(defaultContent)
 		if err != nil {
 			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
 			return defaultDef
@@ -29,7 +29,7 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 	}
 
 	yamlContent, err := ioutil.ReadFile(ymlFile)
-	yamlContent = replaceSpecialChars(yamlContent)
+	yamlContent = ReplaceSpecialChars(yamlContent)
 	if err != nil {
 		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", ymlFile))
 		return ymlDef
@@ -146,7 +146,7 @@ func CopyField(child model.DefField, parent *model.DefField) {
 	}
 }
 
-func replaceSpecialChars(bytes []byte) []byte {
+func ReplaceSpecialChars(bytes []byte) []byte {
 	str := string(bytes)
 
 	ret := ""

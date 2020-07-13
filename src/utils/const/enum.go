@@ -26,6 +26,8 @@ type RunMode int
 const (
 	RunModeGen RunMode = iota
 	RunModeParse
+	RunModeServer
+	RunModeServerRequest
 )
 func (c RunMode) String() string {
 	switch c {
@@ -33,6 +35,8 @@ func (c RunMode) String() string {
 		return "gen"
 	case RunModeParse:
 		return "parse"
+	case RunModeServer:
+		return "server"
 	}
 	return "unknown"
 }

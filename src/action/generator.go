@@ -6,14 +6,10 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
-	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"github.com/fatih/color"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,8 +27,8 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
-
-	vari.InputDir = filepath.Dir(yml) + string(os.PathSeparator)
+	abs, _ := filepath.Abs(filepath.Dir(yml))
+	vari.InputDir = abs + string(os.PathSeparator)
 	constant.Total = total
 
 	rows, colTypes := gen.GenerateForDefinition(deflt, yml, &fieldsToExport, total)
@@ -41,24 +37,6 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 
 	if out != "" {
 		WriteToFile(out, content)
-	}
-
-	if out != "" {
-		WriteToFile(out, content)
-	}
-
-	if vari.Ip != "" || vari.Port != 0 {
-		if vari.Ip == "" {
-			vari.Ip = commonUtils.GetIp()
-		}
-		if vari.Port == 0 {
-			vari.Port = constant.DefaultPort
-		}
-
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server"), color.FgCyan)
-
-		http.HandleFunc("/", DataHandler)
-		http.ListenAndServe(fmt.Sprintf("%s:%d", vari.Ip, vari.Port), nil)
 	}
 
 	//entTime := time.Now().Unix()
@@ -123,16 +101,11 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 		}
 	}
 
-	respJson := "[]"
-	if format == constant.FormatJson || vari.Ip != "" || vari.Port != 0 {
-		if vari.WithHead {
-			mapArr := RowsToMap(rows, fields)
-			jsonObj, _ := json.Marshal(mapArr)
-			respJson = string(jsonObj)
-		} else {
-			jsonObj, _ := json.Marshal(rows)
-			respJson = string(jsonObj)
-		}
+	respJson := "{}"
+	if format == constant.FormatJson || vari.RunMode == constant.RunModeServer {
+		mapArr := RowsToMap(rows, fields)
+		jsonObj, _ := json.Marshal(mapArr)
+		respJson = string(jsonObj)
 	}
 
 	if format == constant.FormatJson {
@@ -159,8 +132,4 @@ func RowsToMap(rows [][]string, fieldsToExport []string) (ret []map[string]strin
 		ret = append(ret, rowMap)
 	}
 	return
-}
-
-func DataHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, vari.JsonResp)
 }

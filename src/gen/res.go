@@ -63,19 +63,20 @@ func getResProp(from string) (string, string) { // from resource
 	}
 
 	if strings.Index(resFile, "system") == -1 { // no system resource
-		resFile = vari.WorkDir + resFile
-		if !fileUtils.FileExist(resFile) { // not in work dir
-			resFile = vari.InputDir + resFile
+		resPath := vari.WorkDir + resFile
+		if !fileUtils.FileExist(resPath) { // not in work dir
+			resPath = vari.InputDir + resFile
 
-			if !fileUtils.FileExist(resFile) { // not in input dir (same dir as yaml file in)
-				resFile = vari.ExeDir + resFile
+			if !fileUtils.FileExist(resPath) { // not in input dir (same dir as yaml file in)
+				resPath = vari.ExeDir + resFile
 
-				if !fileUtils.FileExist(resFile) { // not in exe dir
-					resFile = ""
+				if !fileUtils.FileExist(resPath) { // not in exe dir
+					resPath = ""
 				}
 			}
 		}
-	} else {
+		resFile = resPath
+	} else { // system resource
 		resFile = constant.ResDir + resFile
 	}
 

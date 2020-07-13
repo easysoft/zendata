@@ -2,27 +2,33 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/easysoft/zendata/src/action"
+	"github.com/easysoft/zendata/src/service"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"os/signal"
 	"path"
+	"strconv"
 	"strings"
 	"syscall"
 )
 
 var (
-	deflt  string
-	yaml   string
-	count  int
-	fields string
+	defaultFile string
+	yamlFile    string
+	count       int
+	fields      string
 
 	root string
 	input  string
@@ -50,11 +56,11 @@ func main() {
 
 	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
 
-	flagSet.StringVar(&deflt, "d", "", "")
-	flagSet.StringVar(&deflt, "default", "", "")
+	flagSet.StringVar(&defaultFile, "d", "", "")
+	flagSet.StringVar(&defaultFile, "default", "", "")
 
-	flagSet.StringVar(&yaml, "c", "", "")
-	flagSet.StringVar(&yaml, "config", "", "")
+	flagSet.StringVar(&yamlFile, "c", "", "")
+	flagSet.StringVar(&yamlFile, "config", "", "")
 
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
@@ -109,30 +115,38 @@ func main() {
 	case "-h", "-help":
 		logUtils.PrintUsage()
 	default:
-		if os.Args[1][0:1] == "-" {
-			args := []string{os.Args[0], "gen"}
-			args = append(args, os.Args[1:]...)
-			os.Args = args
-		}
+		flagSet.SetOutput(ioutil.Discard)
+		if err := flagSet.Parse(os.Args[1:]); err == nil {
+			if vari.Ip != "" || vari.Port != 0 {
+				vari.RunMode = constant.RunModeServer
+			} else if input != "" {
+				vari.RunMode = constant.RunModeParse
+			}
 
-		gen(os.Args)
+			toGen()
+		} else {
+			logUtils.PrintUsage()
+		}
 	}
 }
 
-func gen(args []string) {
-	flagSet.SetOutput(ioutil.Discard)
-	if err := flagSet.Parse(args[2:]); err == nil {
+func toGen() {
+	if vari.RunMode == constant.RunModeServer {
 		vari.ExeDir = fileUtils.GetExeDir()
 		vari.WorkDir = fileUtils.GetWorkDir()
+		StartServer()
+	} else if vari.RunMode == constant.RunModeParse {
+		action.ParseSql(input, output)
+	} else if vari.RunMode == constant.RunModeGen {
+		vari.ExeDir = fileUtils.GetExeDir()
+		vari.WorkDir = fileUtils.GetWorkDir()
+
 		if root != "" {
 			vari.WorkDir = root
 		}
-		// vari.InputDir will init for different gen type
-
 		if vari.HeadSep != "" {
 			vari.WithHead = true
 		}
-
 		if output != "" {
 			ext := strings.ToLower(path.Ext(output))
 			if len(ext) > 1 {
@@ -143,14 +157,37 @@ func gen(args []string) {
 			}
 		}
 
-		if input != "" {
-			action.ParseSql(input, output)
-		} else {
-			action.Generate(deflt, yaml, count, fields, output, format, table)
-		}
-	} else {
-		logUtils.PrintUsage()
+		action.Generate(defaultFile, yamlFile, count, fields, output, format, table)
+	} else if vari.RunMode == constant.RunModeServerRequest {
+		action.Generate(defaultFile, yamlFile, count, fields, output, format, table)
 	}
+}
+
+func StartServer() {
+	if vari.Ip == "" {
+		vari.Ip = commonUtils.GetIp()
+	}
+	if vari.Port == 0 {
+		vari.Port = constant.DefaultPort
+	}
+
+	port := strconv.Itoa(vari.Port)
+	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server", vari.Ip, port, vari.Ip, port),
+		color.FgCyan)
+
+	http.HandleFunc("/", DataHandler)
+	http.ListenAndServe(fmt.Sprintf(":%d", vari.Port), nil)
+}
+
+func DataHandler(w http.ResponseWriter, req *http.Request) {
+	root, defaultFile, yamlFile, count, fields,
+		vari.HeadSep, vari.Length, vari.LeftPad, vari.RightPad,
+		format, table = service.ParseRequestParams(req)
+
+	vari.RunMode = constant.RunModeServerRequest
+	output = ""
+	toGen()
+	fmt.Fprintln(w, vari.JsonResp)
 }
 
 func init() {
