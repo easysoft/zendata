@@ -34,11 +34,11 @@ func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile string, 
 	configDefContent := req.FormValue("config")
 
 	if defaultDefContent != "" {
-		defaultFile = vari.WorkDir + "___default.yaml"
+		defaultFile = vari.WorkDir + "._default.yaml"
 		fileUtils.WriteFile(defaultFile, defaultDefContent)
 	}
 	if configDefContent != "" {
-		yamlFile = vari.WorkDir + "___config.yaml"
+		yamlFile = vari.WorkDir + "._config.yaml"
 		fileUtils.WriteFile(yamlFile, configDefContent)
 	}
 

@@ -26,7 +26,7 @@ import (
 
 var (
 	defaultFile string
-	yamlFile    string
+	configFile  string
 	count       int
 	fields      string
 
@@ -59,8 +59,8 @@ func main() {
 	flagSet.StringVar(&defaultFile, "d", "", "")
 	flagSet.StringVar(&defaultFile, "default", "", "")
 
-	flagSet.StringVar(&yamlFile, "c", "", "")
-	flagSet.StringVar(&yamlFile, "config", "", "")
+	flagSet.StringVar(&configFile, "c", "", "")
+	flagSet.StringVar(&configFile, "config", "", "")
 
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
@@ -157,9 +157,9 @@ func toGen() {
 			}
 		}
 
-		action.Generate(defaultFile, yamlFile, count, fields, output, format, table)
+		action.Generate(defaultFile, configFile, count, fields, output, format, table)
 	} else if vari.RunMode == constant.RunModeServerRequest {
-		action.Generate(defaultFile, yamlFile, count, fields, output, format, table)
+		action.Generate(defaultFile, configFile, count, fields, output, format, table)
 	}
 }
 
@@ -180,7 +180,7 @@ func StartServer() {
 }
 
 func DataHandler(w http.ResponseWriter, req *http.Request) {
-	root, defaultFile, yamlFile, count, fields,
+	root, defaultFile, configFile, count, fields,
 		vari.HeadSep, vari.Length, vari.LeftPad, vari.RightPad,
 		format, table = service.ParseRequestParams(req)
 

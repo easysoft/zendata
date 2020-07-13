@@ -15,23 +15,23 @@ import (
 	"strings"
 )
 
-func Generate(deflt string, yml string, total int, fieldsToExportStr string, out string, format string, table string) {
+func Generate(defaultFile string, configFile string, total int, fieldsToExportStr string, out string, format string, table string) {
 	//startTime := time.Now().Unix()
 
-	if deflt != "" && yml == "" {
-		yml = deflt
-		deflt = ""
+	if defaultFile != "" && configFile == "" {
+		configFile = defaultFile
+		defaultFile = ""
 	}
 
 	fieldsToExport := make([]string, 0)
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
-	abs, _ := filepath.Abs(filepath.Dir(yml))
+	abs, _ := filepath.Abs(filepath.Dir(configFile))
 	vari.InputDir = abs + string(os.PathSeparator)
 	constant.Total = total
 
-	rows, colTypes := gen.GenerateForDefinition(deflt, yml, &fieldsToExport, total)
+	rows, colTypes := gen.GenerateForDefinition(defaultFile, configFile, &fieldsToExport, total)
 	var content string
 	content, vari.JsonResp = Print(rows, format, table, colTypes, fieldsToExport)
 
