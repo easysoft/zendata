@@ -9,7 +9,7 @@ import (
 
 func main() {
 	urlStr := "http://127.0.0.1:8848/?F=field3&lines=12"
-	file := "src/unittest/test.yaml"
+	file := "test/code/test.yaml"
 
 	yamlContent, _ := ioutil.ReadFile(file)
 	yamlContent = gen.ReplaceSpecialChars(yamlContent)
