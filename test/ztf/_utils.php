@@ -18,7 +18,7 @@ function getZDCmd()
     }
 
     if ($ret == '') {
-        die('Please test on 64/32 bits windows, or 64 bits linux, mac system.\n');
+        die('Please test on 64/32 bits windows, 64 bits linux or mac system.\n');
     } else {
         print("$ret \n");
     }
