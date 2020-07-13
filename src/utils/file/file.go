@@ -133,7 +133,7 @@ func ReadResData(path string) string {
 	return jsonStr
 }
 
-func GetExeDir() string { // where ztf command in
+func GetExeDir() string { // where zd.exe file in
 	var dir string
 	arg1 := strings.ToLower(os.Args[0])
 
@@ -154,7 +154,7 @@ func GetExeDir() string { // where ztf command in
 	return dir
 }
 
-func GetWorkDir() string { // where ztf command in
+func GetWorkDir() string { // where run command in
 	dir, _ := os.Getwd()
 	dir, _ = filepath.Abs(dir)
 	dir = UpdateDir(dir)

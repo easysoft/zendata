@@ -39,7 +39,7 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 	}
 }
 
-func getResProp(from string) (string, string) {
+func getResProp(from string) (string, string) { // from resource
 	resFile := ""
 	resType := ""
 
@@ -62,14 +62,17 @@ func getResProp(from string) (string, string) {
 		resType = "excel"
 	}
 
-	if strings.Index(resFile, "system") == -1 { // no system cls
-		resFile = vari.InputDir + resFile
+	if strings.Index(resFile, "system") == -1 { // no system resource
+		resFile = vari.WorkDir + resFile
+		if !fileUtils.FileExist(resFile) { // not in work dir
+			resFile = vari.InputDir + resFile
 
-		if !fileUtils.FileExist(resFile) { // not in input dir
-			resFile = vari.ExeDir + resFile
+			if !fileUtils.FileExist(resFile) { // not in input dir (same dir as yaml file in)
+				resFile = vari.ExeDir + resFile
 
-			if !fileUtils.FileExist(resFile) { // not in exe dir
-				resFile = ""
+				if !fileUtils.FileExist(resFile) { // not in exe dir
+					resFile = ""
+				}
 			}
 		}
 	} else {

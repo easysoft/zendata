@@ -47,15 +47,12 @@ func Generate(deflt string, yml string, total int, fieldsToExportStr string, out
 		WriteToFile(out, content)
 	}
 
-	if vari.Ip != "" || vari.Port != 0 || vari.Root != ""{
+	if vari.Ip != "" || vari.Port != 0 {
 		if vari.Ip == "" {
 			vari.Ip = commonUtils.GetIp()
 		}
 		if vari.Port == 0 {
 			vari.Port = constant.DefaultPort
-		}
-		if vari.Root == "" {
-			vari.Root = constant.DefaultRoot
 		}
 
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server"), color.FgCyan)
@@ -127,7 +124,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 	}
 
 	respJson := "[]"
-	if format == constant.FormatJson || vari.HttpService {
+	if format == constant.FormatJson || vari.Ip != "" || vari.Port != 0 {
 		if vari.WithHead {
 			mapArr := RowsToMap(rows, fields)
 			jsonObj, _ := json.Marshal(mapArr)

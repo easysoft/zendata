@@ -32,5 +32,4 @@ var (
 	JsonResp string = "[]"
 	Ip string
 	Port int
-	Root string
 )

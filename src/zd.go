@@ -5,6 +5,7 @@ import (
 	"github.com/easysoft/zendata/src/action"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -23,6 +24,7 @@ var (
 	count  int
 	fields string
 
+	root string
 	input  string
 	output string
 	table  string
@@ -86,8 +88,8 @@ func main() {
 	flagSet.StringVar(&vari.Ip, "bind", "", "")
 	flagSet.IntVar(&vari.Port, "p", 0, "")
 	flagSet.IntVar(&vari.Port, "port", 0, "")
-	flagSet.StringVar(&vari.Root, "r", "", "")
-	flagSet.StringVar(&vari.Root, "root", "", "")
+	flagSet.StringVar(&root, "r", "", "")
+	flagSet.StringVar(&root, "root", "", "")
 
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")
@@ -120,6 +122,13 @@ func main() {
 func gen(args []string) {
 	flagSet.SetOutput(ioutil.Discard)
 	if err := flagSet.Parse(args[2:]); err == nil {
+		vari.ExeDir = fileUtils.GetExeDir()
+		vari.WorkDir = fileUtils.GetWorkDir()
+		if root != "" {
+			vari.WorkDir = root
+		}
+		// vari.InputDir will init for different gen type
+
 		if vari.HeadSep != "" {
 			vari.WithHead = true
 		}
