@@ -232,10 +232,6 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 	if len(elemArr) > 1 { endStr = elemArr[1] }
 
 	items := make([]interface{}, 0)
-
-	// deal with exp like user-01
-
-
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
 	if dataType == "int" {
@@ -252,12 +248,10 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 	} else if dataType == "char" {
 		items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, rand, repeat)
 	} else if dataType == "string" {
-		//items = append(items, startStr)
-		//if startStr != endStr {
-		//	items = append(items, endStr)
-		//}
-
-		items = append(items, desc)
+		if repeat == 0 { repeat = 1 }
+		for i := 0; i < repeat; i++ {
+			items = append(items, desc)
+		}
 	}
 
 	return items
