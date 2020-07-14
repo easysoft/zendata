@@ -35,6 +35,10 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 		resFile, resType := getResProp(field.From)
 		values, _ := getResValue(resFile, resType, field)
 		(*res)[field.From] = values
+	} else if field.Config != "" {
+		resFile, resType := getResProp(field.Config)
+		values, _ := getResValue(resFile, resType, field)
+		(*res)[field.Config] = values
 	}
 }
 
@@ -67,10 +71,9 @@ func getResProp(from string) (string, string) { // from resource
 		resPath := resFile
 		if !filepath.IsAbs(resPath) {
 
-			resPath = vari.DefaultDir + resFile
+			resPath = vari.ConfigDir + resFile
 			if !fileUtils.FileExist(resPath) {
-
-				resPath = vari.ConfigDir + resFile
+				resPath = vari.DefaultDir + resFile
 				if !fileUtils.FileExist(resPath) {
 					resPath = ""
 				}
@@ -110,50 +113,34 @@ func getResForYaml(resFile string) (map[string][]string, string) {
 	resName := ""
 	valueMap := map[string][]string{}
 
-	ranges := model.ResRanges{}
-
 	yamlContent, err := ioutil.ReadFile(resFile)
 	if err != nil {
 		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return valueMap, ""
 	}
 
-	err = yaml.Unmarshal(yamlContent, &ranges)
-	if err != nil || ranges.Ranges == nil || len(ranges.Ranges) == 0 { // instances
-		if vari.Verbose { logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_ranges", resFile)) }
-
-		insts := model.ResInsts{}
-		err = yaml.Unmarshal(yamlContent, &insts)
-		if err != nil {
-			return valueMap, ""
-		} else {
-			valueMap = getResForInstances(insts)
-		}
-
+	insts := model.ResInsts{}
+	err = yaml.Unmarshal(yamlContent, &insts)
+	if err == nil && insts.Instances != nil && len(insts.Instances) > 0 { // instances
+		valueMap = getResForInstances(insts)
 		resName = insts.Field
-
-	} else { // ranges
-		valueMap = getResForRanges(ranges)
-		resName = ranges.Field
+	} else {
+		ranges := model.ResRanges{}
+		err = yaml.Unmarshal(yamlContent, &ranges)
+		if err == nil && ranges.Ranges != nil && len(ranges.Ranges) > 0 { // ranges
+			valueMap = getResForRanges(ranges)
+			resName = ranges.Field
+		} else {
+			configRes := model.DefField{}
+			err = yaml.Unmarshal(yamlContent, &configRes)
+			if err == nil { // config
+				valueMap = getResForConfig(configRes)
+				resName = configRes.Field
+			}
+		}
 	}
 
 	return valueMap, resName
-}
-
-func getResForRanges(ranges model.ResRanges) map[string][]string {
-	groupedValue := map[string][]string{}
-
-	for group, exp := range ranges.Ranges {
-		// convert ranges field to standard field
-		tempField := model.DefField{}
-		copier.Copy(&tempField, ranges)
-		tempField.Field = ranges.Field
-		tempField.Range = exp
-
-		groupedValue[group] = GenerateForField(&tempField, constant.Total, false)
-	}
-
-	return groupedValue
 }
 
 func getResForInstances(insts model.ResInsts) map[string][]string {
@@ -175,6 +162,31 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 
 		groupedValue[group] = GenerateForField(&tempField, constant.Total, false)
 	}
+
+	return groupedValue
+}
+
+func getResForRanges(ranges model.ResRanges) map[string][]string {
+	groupedValue := map[string][]string{}
+
+	for group, exp := range ranges.Ranges {
+		// convert ranges field to standard field
+		tempField := model.DefField{}
+		copier.Copy(&tempField, ranges)
+		tempField.Field = ranges.Field
+		tempField.Range = exp
+
+		groupedValue[group] = GenerateForField(&tempField, constant.Total, false)
+	}
+
+	return groupedValue
+}
+
+func getResForConfig(configRes model.DefField) map[string][]string {
+	groupedValue := map[string][]string{}
+
+	// config field is a standard field
+	groupedValue["all"] = GenerateForField(&configRes, constant.Total, false)
 
 	return groupedValue
 }

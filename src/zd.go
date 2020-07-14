@@ -80,8 +80,8 @@ func main() {
 	flagSet.StringVar(&viewRes, "v", "", "")
 	flagSet.StringVar(&viewDetail, "vv", "", "")
 
-	flagSet.StringVar(&vari.HeadSep, "H", "\t", "")
-	flagSet.StringVar(&vari.HeadSep, "human", "\t", "")
+	flagSet.StringVar(&vari.HeadSep, "H", "", "")
+	flagSet.StringVar(&vari.HeadSep, "human", "", "")
 
 	flagSet.IntVar(&vari.Length, "W", 0, "")
 	flagSet.IntVar(&vari.Length, "width", 0, "")
@@ -145,6 +145,7 @@ func toGen() {
 		if vari.HeadSep != "" {
 			vari.WithHead = true
 		}
+
 		if output != "" {
 			ext := strings.ToLower(path.Ext(output))
 			if len(ext) > 1 {

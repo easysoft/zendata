@@ -7,13 +7,6 @@ type ClsBase struct {
 	Version string `yaml:"version"`
 }
 
-// range res
-type ResRanges struct {
-	ClsBase   `yaml:",inline"`
-	FieldBase   `yaml:",inline"`
-	//Field string  `yaml:"field"`
-	Ranges map[string]string  `yaml:"ranges"`
-}
 // instance res
 type ResInsts struct {
 	ClsBase   `yaml:",inline"`
@@ -26,6 +19,13 @@ type ResInst struct {
 	Fields  []DefField `yaml:"fields,flow"`
 }
 
+// range res
+type ResRanges struct {
+	ClsBase   `yaml:",inline"`
+	FieldBase   `yaml:",inline"`
+	Ranges map[string]string  `yaml:"ranges"`
+}
+
 // common item
 type DefData struct {
 	ClsBase   `yaml:",inline"`
@@ -33,8 +33,6 @@ type DefData struct {
 }
 type DefField struct {
 	FieldBase   `yaml:",inline"`
-	//Field     string  `yaml:"field"`
-	//Range    string  `yaml:"range"`
 	Fields   []DefField `yaml:"fields,flow"`
 
 	Path string
@@ -44,6 +42,7 @@ type DefField struct {
 type FieldBase struct {
 	FieldSimple   `yaml:",inline"`
 
+	Config	string  `yaml:"config"`
 	From	string  `yaml:"from"`
 	Select	string  `yaml:"select"`
 	Where	string  `yaml:"where"`

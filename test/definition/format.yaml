@@ -7,7 +7,7 @@ fields:
   - field: int
     note: 基本属性
     range: 1-10
-    formt: "%+d"
+    format: "%+d"
     postfix: ", "
 
   - field: float

@@ -74,7 +74,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 	_, errInt1 := strconv.ParseInt(startStr, 0, 64)
 	_, errInt2 := strconv.ParseInt(endStr, 0, 64)
-	if errInt1 == nil && errInt2 == nil {
+	if errInt1 == nil && errInt2 == nil { // is int
 		var step interface{} = 1
 		if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 			stepInt, errInt3 := strconv.Atoi(stepStr)
@@ -90,7 +90,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 	} else {
 		startFloat, errFloat1 := strconv.ParseFloat(startStr, 64)
 		_, errFloat2 := strconv.ParseFloat(endStr, 64)
-		if errFloat1 == nil && errFloat2 == nil {
+		if errFloat1 == nil && errFloat2 == nil { // is float
 			var step interface{} = 0.1
 			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 				stepFloat, errFloat3 := strconv.ParseFloat(stepStr, 64)
@@ -105,7 +105,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 			return "float", step, precision, rand
 
-		} else if len(startStr) == 1 && len(endStr) == 1 {
+		} else if len(startStr) == 1 && len(endStr) == 1 { // is char
 			var step interface{} = 1
 			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 				stepChar, errChar3 := strconv.Atoi(stepStr)
@@ -120,7 +120,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 		}
 	}
 
-	return "string", 1, 0, false
+	return "string", 1, 0, false // is string
 }
 
 func ParseRange(rang string) []string {
@@ -226,6 +226,9 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 
 	items := make([]interface{}, 0)
 
+	// deal with exp like user-01
+
+
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
 	if dataType == "int" {
@@ -242,10 +245,12 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 	} else if dataType == "char" {
 		items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, rand, repeat)
 	} else if dataType == "string" {
-		items = append(items, startStr)
-		if startStr != endStr {
-			items = append(items, endStr)
-		}
+		//items = append(items, startStr)
+		//if startStr != endStr {
+		//	items = append(items, endStr)
+		//}
+
+		items = append(items, desc)
 	}
 
 	return items

@@ -5,6 +5,10 @@ version: 1.0
 
 field: number
 note: 数值类型数据
+prefix: "'"
+postfix: "'"
+loop: 2
+loopfix: ","
 ranges:
   small: 1-9
   medium: 11-99

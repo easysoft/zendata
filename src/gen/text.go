@@ -1,13 +1,16 @@
 package gen
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"io/ioutil"
-	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -20,28 +23,19 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 	stepStr := "1"
 	if len(sectionArr) == 2 { stepStr = sectionArr[1] }
 
-	// read frome
+	// read from
 	list := make([]string, 0)
-	relaPath := vari.InputDir + file
-	content, err := ioutil.ReadFile(relaPath)
+	realPath := findFilePath(file)
+	content, err := ioutil.ReadFile(realPath)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", relaPath))
-
-		relaPath = "def" + string(os.PathSeparator) + file
-		content, err = ioutil.ReadFile(relaPath)
-		if err != nil {
-			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", relaPath))
-
-			fieldValue.Values = append(fieldValue.Values, "N/A")
-			return
-		} else {
-			logUtils.Screen(i118Utils.I118Prt.Sprintf("success_to_read", relaPath))
-		}
-	} else {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("success_to_read", relaPath))
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", realPath))
+		fieldValue.Values = append(fieldValue.Values, fmt.Sprintf("FILE_NOT_FOUND: %s", realPath))
+		return
 	}
+
 	str := string(content)
 	str = strings.Replace(str, "\\r\\n", "\\n", -1)
+	str = stringUtils.TrimAll(str)
 	list = strings.Split(str, "\n")
 
 	// get step and rand
@@ -73,4 +67,29 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 	if len(fieldValue.Values) == 0 {
 		fieldValue.Values = append(fieldValue.Values, "N/A")
 	}
+}
+
+func findFilePath(file string) string {
+	resPath := file
+	if !filepath.IsAbs(resPath) {
+
+		resPath = vari.ConfigDir + file
+		if !fileUtils.FileExist(resPath) {
+
+			resPath = vari.DefaultDir + file
+			if !fileUtils.FileExist(resPath) {
+
+				resPath = vari.ExeDir + constant.ResDir + file
+				if !fileUtils.FileExist(resPath) {
+					resPath = ""
+				}
+			}
+		}
+	} else {
+		if !fileUtils.FileExist(resPath) {
+			resPath = ""
+		}
+	}
+
+	return resPath
 }

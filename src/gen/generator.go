@@ -76,9 +76,9 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 		values = LoopSubFields(field, values, total, true)
 
 	} else if field.From != "" { // refer to res
-		groupValues := vari.Res[field.From]
 
-		if field.Use != "" { // refer to yaml
+		if field.Use != "" { // refer to instance
+			groupValues := vari.Res[field.From]
 			groups := strings.Split(field.Use, ",")
 			for _, group := range groups {
 				if group == "all" {
@@ -89,13 +89,17 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 					values = append(values, groupValues[group]...)
 				}
 			}
-		} else { // refer to excel
+		} else if field.Select != "" { // refer to excel
+			groupValues := vari.Res[field.From]
 			slct := field.Select
 			values = append(values, groupValues[slct]...)
 		}
 
 		values = LoopSubFields(field, values, total, true)
 
+	} else if field.Config != "" { // refer to another define
+		groupValues := vari.Res[field.Config]
+		values = append(values, groupValues["all"]...)
 	} else { // basic field
 		values = GenerateFieldItemsFromDefinition(field)
 	}
