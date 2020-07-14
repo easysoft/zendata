@@ -74,7 +74,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 	_, errInt1 := strconv.ParseInt(startStr, 0, 64)
 	_, errInt2 := strconv.ParseInt(endStr, 0, 64)
-	if errInt1 == nil && errInt2 == nil { // is int
+	_, errInt3 := strconv.ParseInt(stepStr, 0, 64)
+	if errInt1 == nil && errInt2 == nil && errInt3 == nil { // is int
 		var step interface{} = 1
 		if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 			stepInt, errInt3 := strconv.Atoi(stepStr)
@@ -90,7 +91,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 	} else {
 		startFloat, errFloat1 := strconv.ParseFloat(startStr, 64)
 		_, errFloat2 := strconv.ParseFloat(endStr, 64)
-		if errFloat1 == nil && errFloat2 == nil { // is float
+		_, errFloat3 := strconv.ParseFloat(stepStr, 64)
+		if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
 			var step interface{} = 0.1
 			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
 				stepFloat, errFloat3 := strconv.ParseFloat(stepStr, 64)
@@ -102,7 +104,6 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			}
 
 			precision := getPrecision(startFloat, step)
-
 			return "float", step, precision, rand
 
 		} else if len(startStr) == 1 && len(endStr) == 1 { // is char
