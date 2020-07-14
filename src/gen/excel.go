@@ -111,14 +111,14 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 			valList = valList + "("
 
 			for colIndex, colCell := range row {
+				if colIndex >= colCount {
+					break
+				}
+
 				if colIndex > 0 {
 					valList = valList + ", "
 				}
 				valList = valList + "'" + colCell + "'"
-
-				if colIndex >= colCount {
-					break
-				}
 			}
 			valList = valList + ")"
 		}
