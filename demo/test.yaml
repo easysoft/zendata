@@ -1,0 +1,11 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+
+  - field: field_common                 # 覆盖default.yaml中的定义。
+    #range: a-z                         # a,b,c...，不设置默认使用原始配置，使用参数-d demo/default.yaml -c demo/test.yaml执行。
+    prefix: "["                         # 前缀
+    postfix: "]"                        # 后缀
