@@ -11,8 +11,6 @@ var (
 	RunMode      constant.RunMode
 
 	ExeDir       string
-	WorkDir      string
-	InputDir     string
 
 	LogDir       string
 	ScreenWidth  int
@@ -32,4 +30,10 @@ var (
 	JsonResp string = "[]"
 	Ip string
 	Port int
+
+	Def = model.DefData{}
+	Res = map[string]map[string][]string{}
+
+	DefaultDir string
+	ConfigDir string
 )

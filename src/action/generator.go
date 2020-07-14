@@ -10,8 +10,6 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -27,8 +25,7 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
-	abs, _ := filepath.Abs(filepath.Dir(configFile))
-	vari.InputDir = abs + string(os.PathSeparator)
+
 	constant.Total = total
 
 	rows, colTypes := gen.GenerateForDefinition(defaultFile, configFile, &fieldsToExport, total)

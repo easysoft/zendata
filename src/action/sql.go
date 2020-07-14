@@ -5,19 +5,14 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	"github.com/easysoft/zendata/src/utils/vari"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 	"regexp"
 	"time"
 )
 
 func ParseSql(file string, out string) {
 	startTime := time.Now().Unix()
-	abs, _ := filepath.Abs(filepath.Dir(file))
-	vari.InputDir = abs + string(os.PathSeparator)
 
 	statements := getCreateStatement(file)
 	for tableName, statement := range statements {

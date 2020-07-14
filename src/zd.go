@@ -133,16 +133,14 @@ func main() {
 func toGen() {
 	if vari.RunMode == constant.RunModeServer {
 		vari.ExeDir = fileUtils.GetExeDir()
-		vari.WorkDir = fileUtils.GetWorkDir()
 		StartServer()
 	} else if vari.RunMode == constant.RunModeParse {
 		action.ParseSql(input, output)
 	} else if vari.RunMode == constant.RunModeGen {
 		vari.ExeDir = fileUtils.GetExeDir()
-		vari.WorkDir = fileUtils.GetWorkDir()
 
 		if root != "" {
-			vari.WorkDir = root
+			vari.ExeDir = root
 		}
 		if vari.HeadSep != "" {
 			vari.WithHead = true

@@ -12,18 +12,17 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
 func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 	res := map[string]map[string][]string{}
 
-	for _, field := range constant.Def.Fields {
+	for _, field := range vari.Def.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
-
 		loadResField(&field, &res)
 	}
-
 	return res
 }
 
@@ -62,22 +61,27 @@ func getResProp(from string) (string, string) { // from resource
 		resType = "excel"
 	}
 
-	if strings.Index(resFile, "system") == -1 { // no system resource
-		resPath := vari.WorkDir + resFile
-		if !fileUtils.FileExist(resPath) { // not in work dir
-			resPath = vari.InputDir + resFile
+	if strings.Index(resFile, "system") > -1 { // system resource
+		resFile = vari.ExeDir + constant.ResDir + resFile
+	} else {
+		resPath := resFile
+		if !filepath.IsAbs(resPath) {
 
-			if !fileUtils.FileExist(resPath) { // not in input dir (same dir as yaml file in)
-				resPath = vari.ExeDir + resFile
+			resPath = vari.DefaultDir + resFile
+			if !fileUtils.FileExist(resPath) {
 
-				if !fileUtils.FileExist(resPath) { // not in exe dir
+				resPath = vari.ConfigDir + resFile
+				if !fileUtils.FileExist(resPath) {
 					resPath = ""
 				}
 			}
+		} else {
+			if !fileUtils.FileExist(resPath) {
+				resPath = ""
+			}
 		}
+
 		resFile = resPath
-	} else { // system resource
-		resFile = constant.ResDir + resFile
 	}
 
 	return resFile, resType

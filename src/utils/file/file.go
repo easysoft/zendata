@@ -163,7 +163,7 @@ func GetWorkDir() string { // where run command in
 }
 
 func GetLogDir() string {
-	path := vari.WorkDir + constant.LogDir
+	path := vari.ExeDir + constant.LogDir
 
 	dir, _ := ioutil.ReadDir(path)
 
@@ -233,4 +233,11 @@ func CopyFile(src, dst string) (int64, error) {
 	defer destination.Close()
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
+}
+
+func GetAbsDir(path string) string {
+	abs, _ := filepath.Abs(filepath.Dir(path))
+	abs = UpdateDir(abs)
+
+	return abs
 }

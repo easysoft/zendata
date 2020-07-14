@@ -10,10 +10,11 @@ import (
 	"strings"
 )
 
-func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.DefData {
+func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) model.DefData {
 	defaultDef := model.DefData{}
-	ymlDef := model.DefData{}
+	configDef := model.DefData{}
 
+	// load defaultDef
 	if defaultFile != "" {
 		defaultContent, err := ioutil.ReadFile(defaultFile)
 		defaultContent = ReplaceSpecialChars(defaultContent)
@@ -28,43 +29,46 @@ func LoadRootDef(defaultFile, ymlFile string, fieldsToExport *[]string) model.De
 		}
 	}
 
-	yamlContent, err := ioutil.ReadFile(ymlFile)
+	// load configDef
+	yamlContent, err := ioutil.ReadFile(configFile)
 	yamlContent = ReplaceSpecialChars(yamlContent)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", ymlFile))
-		return ymlDef
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", configFile))
+		return configDef
 	}
-	err = yaml.Unmarshal(yamlContent, &ymlDef)
+	err = yaml.Unmarshal(yamlContent, &configDef)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", ymlFile))
-		return ymlDef
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", configFile))
+		return configDef
 	}
 
+	// use all fields as default
 	if len(*fieldsToExport) == 0 {
-		for _, field := range ymlDef.Fields {
+		for _, field := range configDef.Fields {
 			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 	}
 
-	MergerDefine(&defaultDef, &ymlDef)
+	MergerDefine(&defaultDef, &configDef)
 
 	return defaultDef
 }
 
-func MergerDefine(defaultDef, ymlDef *model.DefData) {
+func MergerDefine(defaultDef, configDef *model.DefData) {
 	defaultFieldMap := map[string]*model.DefField{}
-	ymlFieldMap := map[string]*model.DefField{}
+	configFieldMap := map[string]*model.DefField{}
 	sortedKeys := make([]string, 0)
 
 	for i := range defaultDef.Fields {
 		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 
-	for i := range ymlDef.Fields {
-		CreatePathToFieldMap(&ymlDef.Fields[i], ymlFieldMap, &sortedKeys)
+	for i := range configDef.Fields {
+		CreatePathToFieldMap(&configDef.Fields[i], configFieldMap, &sortedKeys)
 	}
 
-	for path, field := range ymlFieldMap {
+	// overwrite
+	for path, field := range configFieldMap {
 		parent, exist := defaultFieldMap[path]
 		if exist {
 			CopyField(*field, parent)
@@ -72,9 +76,10 @@ func MergerDefine(defaultDef, ymlDef *model.DefData) {
 		}
 	}
 
+	// append
 	for _, key := range sortedKeys {
-		field := ymlFieldMap[key]
-		if strings.Index(field.Path, "~~") > -1 { continue } // only for top fields
+		field := configFieldMap[key]
+		if strings.Index(field.Path, "~~") > -1 { continue } // ignore no-top fields
 
 		_, exist := defaultFieldMap[field.Path]
 		if !exist {

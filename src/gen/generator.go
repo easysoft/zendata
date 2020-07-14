@@ -4,27 +4,32 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"strconv"
 	"strings"
 )
 
 func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]string, total int) ([][]string, []bool) {
-	constant.Def = LoadRootDef(defaultFile, configFile, fieldsToExport)
-	constant.Res = LoadResDef(*fieldsToExport)
+	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
+	vari.ConfigDir = fileUtils.GetAbsDir(configFile)
+
+	vari.Def = LoadConfigDef(defaultFile, configFile, fieldsToExport)
+	vari.Res = LoadResDef(*fieldsToExport)
 
 	fieldNameToValues := map[string][]string{}
 
 	colTypes := make([]bool, 0)
 
 	// 为每个field生成值列表
-	for index, field := range constant.Def.Fields {
+	for index, field := range vari.Def.Fields {
 		if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
 			continue
 		}
 
 		values := GenerateForField(&field, total, true)
-		constant.Def.Fields[index].Precision = field.Precision
+		vari.Def.Fields[index].Precision = field.Precision
 
 		fieldNameToValues[field.Field] = values
 		colTypes = append(colTypes, field.IsNumb)
@@ -33,7 +38,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 	// 生成指定数量行的数据
 	rows := make([][]string, 0)
 	for i := 0; i < total; i++ {
-		for _, field := range constant.Def.Fields {
+		for _, field := range vari.Def.Fields {
 			if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
 				continue
 			}
@@ -66,18 +71,23 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 
 			// should be done by calling LoopSubFields func as below, so disable this line
 			//concat = field.Prefix + concat + field.Postfix
-
 			values = append(values, concat)
 		}
 		values = LoopSubFields(field, values, total, true)
 
 	} else if field.From != "" { // refer to res
-		groupValues := constant.Res[field.From]
+		groupValues := vari.Res[field.From]
 
 		if field.Use != "" { // refer to yaml
 			groups := strings.Split(field.Use, ",")
 			for _, group := range groups {
-				values = append(values, groupValues[group]...)
+				if group == "all" {
+					for _, arr := range groupValues { // add all
+						values = append(values, arr...)
+					}
+				} else {
+					values = append(values, groupValues[group]...)
+				}
 			}
 		} else { // refer to excel
 			slct := field.Select

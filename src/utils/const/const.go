@@ -2,7 +2,6 @@ package constant
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/src/model"
 	"os"
 )
 
@@ -28,9 +27,6 @@ var (
 	Total = 10
 	MaxNumb = 100000 // max number in array
 
-	Def = model.DefData{}
-	Res = map[string]map[string][]string{}
-
 	FormatText = "text"
 	FormatJson = "json"
 	FormatXml = "xml"
@@ -44,7 +40,6 @@ var (
 	DefaultRoot = "./"
 
 	ResDir  = "data/"
-	ResPath = ResDir + "system/buildin.yaml"
 
 	SqliteDriver  = "sqlite3"
 	SqliteSource  = "file:" + ResDir + ".cache/.data.db"
