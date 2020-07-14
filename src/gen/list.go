@@ -74,7 +74,10 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 	_, errInt1 := strconv.ParseInt(startStr, 0, 64)
 	_, errInt2 := strconv.ParseInt(endStr, 0, 64)
-	_, errInt3 := strconv.ParseInt(stepStr, 0, 64)
+	var errInt3 error
+	if strings.ToLower(stepStr) != "r" {
+		_, errInt3 = strconv.ParseInt(stepStr, 0, 64)
+	}
 	if errInt1 == nil && errInt2 == nil && errInt3 == nil { // is int
 		var step interface{} = 1
 		if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
@@ -91,7 +94,10 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 	} else {
 		startFloat, errFloat1 := strconv.ParseFloat(startStr, 64)
 		_, errFloat2 := strconv.ParseFloat(endStr, 64)
-		_, errFloat3 := strconv.ParseFloat(stepStr, 64)
+		var errFloat3 error
+		if strings.ToLower(stepStr) != "r" {
+			_, errFloat3 = strconv.ParseFloat(stepStr, 64)
+		}
 		if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
 			var step interface{} = 0.1
 			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
