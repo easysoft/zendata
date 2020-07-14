@@ -76,8 +76,11 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 
 		colDefine := ""
 		colList := ""
+		colCount := 0
 		index := 0
 		for _, col := range rows[0] {
+			colCount++
+
 			val := strings.TrimSpace(col)
 			if index > 0 {
 				colDefine = colDefine + ",\n"
@@ -112,6 +115,10 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 					valList = valList + ", "
 				}
 				valList = valList + "'" + colCell + "'"
+
+				if colIndex >= colCount {
+					break
+				}
 			}
 			valList = valList + ")"
 		}
@@ -124,18 +131,22 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 		db, err := sql.Open("sqlite3", constant.SqliteSource)
 		defer db.Close()
 		_, err = db.Exec(dropSql)
+		if err != nil {
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
+			return
+		}
+
 		_, err = db.Exec(ddl)
 		if err != nil {
 			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
 			return
-		} else {
-			_, err = db.Exec(insertSql)
-			if err != nil {
-				logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
-				return
-			}
 		}
 
+		_, err = db.Exec(insertSql)
+		if err != nil {
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
+			return
+		}
 	}
 }
 
@@ -215,7 +226,8 @@ func isExcelChanged(path string) bool {
 		return true
 	}
 
-	sqlStr := "SELECT id, name, changeTime FROM " + constant.SqliteTrackTable
+	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s WHERE name = '%s';",
+		constant.SqliteTrackTable, path)
 	rows, err := db.Query(sqlStr)
 	if err != nil {
 		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))

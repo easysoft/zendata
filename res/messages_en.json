@@ -69,6 +69,10 @@
       "translation": "fail to save excel: "
     },
     {
+      "id": "fail_to_drop_table",
+      "translation": "fail to drop table %s, error: %s"
+    },
+    {
       "id": "fail_to_create_table",
       "translation": "fail to create table: "
     },

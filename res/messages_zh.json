@@ -64,6 +64,10 @@
       "translation": "保存Excel失败，错误：%s。"
     },
     {
+      "id": "fail_to_drop_table",
+      "translation": "删除表%s失败，错误：%s"
+    },
+    {
       "id": "fail_to_create_table",
       "translation": "创建表%s失败，错误：%s。"
     },
