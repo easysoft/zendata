@@ -5,7 +5,7 @@ version: 1.0
 
 fields:
 
-  - field: field_common                 # 覆盖default.yaml中的定义。
-    #range: a-z                         # a,b,c...，不设置默认使用原始配置，使用参数-d demo/default.yaml -c demo/test.yaml执行。
-    prefix: "["                         # 前缀
-    postfix: "]"                        # 后缀
+  - field: field_common   # 覆盖default.yaml中的定义，使用参数-d demo/default.yaml -c demo/test.yaml执行。
+    #range: a-z           # a,b,c...，不设置默认使用原始配置
+    prefix: "["           # 复写前缀
+    postfix: "]"          # 复写后缀
