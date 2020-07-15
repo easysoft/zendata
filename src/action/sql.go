@@ -8,6 +8,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -55,10 +56,15 @@ func getCreateStatement(file string) map[string]string {
 	re := regexp.MustCompile("(?siU)(CREATE TABLE.*;)")
 	arr := re.FindAllString(string(content), -1)
 	for _, item := range arr {
-		re := regexp.MustCompile("(?iU)CREATE TABLE.*`(.+)`")
-		arr2 := re.FindAllStringSubmatch(item, -1)
+		re := regexp.MustCompile("(?i)CREATE TABLE.*\\s+(.+)\\s+\\(") // get table name
+		firstLine := strings.Split(item, "\n")[0]
+		arr2 := re.FindAllStringSubmatch(firstLine, -1)
 
-		statements[arr2[0][1]] = item
+		if len(arr2) > 0 && len(arr2[0]) > 1 {
+			tableName := arr2[0][1]
+			tableName = strings.ReplaceAll(tableName, "`", "")
+			statements[tableName] = item
+		}
 	}
 
 	return statements
@@ -67,10 +73,15 @@ func getCreateStatement(file string) map[string]string {
 func getColumnsFromCreateStatement(sent string) []string {
 	fieldLines := make([]string, 0)
 
-	re := regexp.MustCompile("(?iU)`(.+)`\\s.*,")
+	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
 	arr := re.FindAllStringSubmatch(string(sent), -1)
 	for _, item := range arr {
-		fieldLines = append(fieldLines, item[1])
+		line := strings.ToLower(item[0])
+		if !strings.Contains(line, " table ") && !strings.Contains(line, " key ") {
+			field := item[1]
+			field = strings.ReplaceAll(field, "`", "")
+			fieldLines = append(fieldLines, field)
+		}
 	}
 
 	return fieldLines

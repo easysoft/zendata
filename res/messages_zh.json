@@ -19,7 +19,7 @@
     },
     {
       "id": "enter_language",
-      "translation": "请输入你期望使用的语言:\n1. 英文 %s\n2. 中文 %s"
+      "translation": "1) 请选择您要使用的语言，中文请输入数字1。\n2) Please select the language. Input 2 for English."
     },
     {
       "id": "current_config",
@@ -82,7 +82,11 @@
     },
     {
       "id": "start_server",
-      "translation": "zendata http服务已经成功运行，按CTRL+C键推出。\n 您可以通过http://%s:%d地址来调用，比如：\n curl http://%s:%d/?default=demo/default.yaml&config=demo/test.yaml&lines=100."
+      "translation": "zendata http服务已经成功运行，按CTRL+C键推出。\n您可以通过http://%s:%s地址来调用，比如：\n curl http://%s:%s/?default=demo/default.yaml&config=demo/test.yaml&lines=100."
+    },
+    {
+      "id": "excel_data",
+      "translation": "Excel数据源。"
     }
   ]
 }

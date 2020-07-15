@@ -24,7 +24,7 @@
     },
     {
       "id": "enter_language",
-      "translation": "Enter the language you want to use:\n1. English %s\n2. Chinese %s"
+      "translation": "1) 请选择您要使用的语言，中文请输入数字1。\n2) Please select the language. Input 2 for English."
     },
     {
       "id": "current_config",
@@ -91,7 +91,11 @@
     },
     {
       "id": "start_server",
-      "translation": "Success yo start zendata http service, press CTRL+C to exist. \n You may use http://%s:%s to retrieve the data，for example: \n curl http://%s:%s/?default=demo/default.yaml&config=demo/test.yaml&lines=100."
+      "translation": "Success yo start zendata http service, press CTRL+C to exist. \nYou may use http://%s:%s to retrieve the data，for example: \n curl http://%s:%s/?default=demo/default.yaml&config=demo/test.yaml&lines=100."
+    },
+    {
+      "id": "excel_data",
+      "translation": "Excel Data."
     }
   ]
 }

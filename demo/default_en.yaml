@@ -1,0 +1,124 @@
+﻿title: zendata config syntax
+desc: 
+
+  # File composition
+
+    # zendata defines the format for each field in YAML file.
+    # YAML file is composed of file description and field definition.
+
+  # File description
+
+    # title:   A short text to summarize the data type defined by this file.
+    # desc:    Detailed text to describe the data type defined in this file, optional.
+    # author:  Optional.
+    # version: Version number, optional.
+
+  # Field list
+
+    # Field is defined in fields.
+    # A YAML file contains one or more fields.
+    # Field list starts from -field.
+    # A child field can be defined by fields.
+
+  # Field definition
+
+    # field:    Field name; letters, digits, underlines and dots only.
+    # range:    List range; the most important definition.
+    # loop:     The number of loops; define how many times a field can loop.
+    # loopfix:  The connector for each loop.
+
+    # format:   Support formatted output.
+
+    # prefix:   Prefix of this field.
+    # postfix:  Postfix of this field.
+
+    # length:   The length of this field. If separators are not used, specify the field length in bytes.
+    # leftpad:  Left-padded characters. If the length is not enough, specify a character. The default is space.
+    # rightpad: Right-padded characters. If the length is not enough, specify a character.
+
+    # config:   Refer to the definition in other file.
+
+    # from:     Refer to a definition file.
+    # use:      Use instances defined in the referred file. 
+    # select:   If refer to an excel table, you can query a field in it.
+    # where:    If refer to an excel table, you can use query conditions.
+  
+  # range definition
+
+    # Use commas to connect elements. e.g. range: 1,2,3.
+    # Elements can be a range, e.g. range:1-10, A-Z.
+    # Use colons to define steps, e.g. range:1-10:2.
+    # Steps can be decimals, e.g. range: 1-10:0.1.
+    # Intervals can be set as random by R, e.g. range: 1-10:R. Set either random or a specified step.
+    # Use a file to specify a list, e.g. range: list.txt. If the file name is a relative path, it is based on the config file.
+    # Use {n} to repeat a element, e.g. range: user1{100},user2{100}.
+    # Use [], if intervals and elements are repeated, e.g. range: [user1,user2,user3]{100}.
+
+author: zentao
+version: 1.0
+
+fields:
+
+  - field: field_common                 # The list type by default. Separated by commas.
+    range: 1-10, 20-25, 27, 29, 30      # 1,2,3...,10,20,21,22...,25,27,29.30
+    prefix: int_                        # Prefix
+    postfix: \t                         # Postfix
+
+  - field: field_step                 # Interval steps can be specified.
+    range: 1-10:2, 1-2:0.1            # 1,3,5,7,9,1, 1.1,1.2...,2
+
+  - field: field_random               # Use R to specify randomly. Set either R or a specified step.
+    range: 1-10:R                     # 1,5,8...
+
+  - field: field_file                 # Read a list from a file and set it as random.
+    range: _users.txt:R               # Using the lines of users.txt as range and set it as random.
+
+  - field: field_loop                   # Self-loop field.
+    range: a-z                          # a_b_c | d_e_f | g_h_i
+    loop: 3                             # Loop three times.
+    loopfix: _                          # The connector for each loop.
+    postfix: |
+
+  - field: field_repeat                 # Use {} to define repeated elements.
+    range: user-1{3},[user2,user3]{2}   # user-1,user-1,user-1,user2,user3,user2,user3
+
+  - field: field_format                 # Output as formatted strings.
+    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
+    format: "passwd%02d"
+
+  - field: field_use_another_file       # Other definition file can be referred.
+    config: _numb_field.yaml            # Refer to the definition in nubmer.yaml of the current directory.
+
+  - field: field_use_ranges_file        # Other definition file can be referred, in which more than one ranges are defined.
+    from: _numb_ranges.yaml             # Refer to the definition in _numb_ranges.yaml of the current directory.
+    use: medium                         # use medium range.
+
+  - field: field_use_instance           # Refer to other definition file which defines multiple instances.
+    from: system.ip.v1.yaml             # Refer to data/system/ip/v1.yaml.
+    use: privateB,privateC              # Use the two instances of privateC and privateB defined in this file.
+
+  - field: field_use_excel                    # Read the data from the data source of excel.
+    from: system.address.v1.china             # Read the book named china in data/system/address/v1.xlsx.
+    select: city                              # Query the field city.
+    where: zipCode>250000 AND zipCode<274001  # Query condition.
+
+  - field: field_with_children                # Embeded field.
+    fields:
+      - field: child1
+        range: a-z
+        prefix: part1_
+        postfix: '|'
+
+      - field:  child2
+        range: A-Z
+        prefix: part2_
+        postfix: '|'
+
+      - field: child_with_child
+        prefix: part3_
+        postfix:
+        fields:
+          - field: field_grandson
+            prefix: int_
+            range: 10-20
+            postfix:

@@ -8,7 +8,6 @@ import (
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -36,6 +35,7 @@ var (
 	table  string
 	format = constant.FormatText
 
+	listRes bool
 	viewRes string
 	viewDetail string
 
@@ -77,8 +77,11 @@ func main() {
 	flagSet.StringVar(&table, "t", "table_name", "")
 	flagSet.StringVar(&table, "table", "table_name", "")
 
+	flagSet.BoolVar(&listRes, "l", false, "")
+	flagSet.BoolVar(&listRes, "list", false, "")
+
 	flagSet.StringVar(&viewRes, "v", "", "")
-	flagSet.StringVar(&viewDetail, "vv", "", "")
+	flagSet.StringVar(&viewRes, "view", "", "")
 
 	flagSet.StringVar(&vari.HeadSep, "H", "", "")
 	flagSet.StringVar(&vari.HeadSep, "human", "", "")
@@ -117,6 +120,14 @@ func main() {
 	default:
 		flagSet.SetOutput(ioutil.Discard)
 		if err := flagSet.Parse(os.Args[1:]); err == nil {
+			if listRes {
+				service.ListRes()
+				return
+			} else if viewRes != "" {
+				service.ViewRes(viewRes)
+				return
+			}
+
 			if vari.Ip != "" || vari.Port != 0 {
 				vari.RunMode = constant.RunModeServer
 			} else if input != "" {
@@ -132,13 +143,10 @@ func main() {
 
 func toGen() {
 	if vari.RunMode == constant.RunModeServer {
-		vari.ExeDir = fileUtils.GetExeDir()
 		StartServer()
 	} else if vari.RunMode == constant.RunModeParse {
 		action.ParseSql(input, output)
 	} else if vari.RunMode == constant.RunModeGen {
-		vari.ExeDir = fileUtils.GetExeDir()
-
 		if root != "" {
 			vari.ExeDir = root
 		}

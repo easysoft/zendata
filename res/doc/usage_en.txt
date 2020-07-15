@@ -1,0 +1,57 @@
+﻿$zd
+
+zendata is a generic data generator. You can use YAML file to define the data format and use zendata to create it.
+
+Parameters
+
+  -d  --default    The default config file for data format.
+  -c  --config     The current config file for data format, and it can override the config in the default file.
+  -o  --output     The file name of the data generated. You can specify the output format by the extension name.
+                   For example json, xml and sql.  The text data in the original format is output by default.
+  -n  --lines      The number of lines of data to be generated. The default is 10.
+
+  -F  --field      This parameter can be used to specify the fields, separated by commas. The default is all fields.
+  -t  --table      If the output format is sql, using it to specify the table name to insert data to.
+  -H  --human      Output a readable format, print the field name, and use the tab key to split.
+
+  -p  --port       Run the HTTP on the specified port. The data in JSON format can be obtained via http://ip/ port. 
+                   Only data generation is supported.
+  -b  --bind       Listen IP addresses. All IP addresses are listened by default.
+  -r  --root       The root directory when running HTTP. The client can call the config file under the root directory. 
+                   If not specified, take the directory where the zd executable file is located.
+
+  -i  --input      Specify a sql schema file and output the YAML config file for each table. 
+                   You need to specify an output directory by using -o.
+  -s  --server     Database server type. Support mysql|oracle|sqlite|sqlserver. 
+                   The default is mysql. This parameter can be used to parse YAML files or generate SQL.
+  -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
+                   Also you can output the readable format via -H.
+
+  -e  --example    Print the data format config file of the example.
+  -l  --list       List all supported data formats.
+  -v  --view       View the detailed definition of a data format.
+  -h  --help       Print help.
+
+Command Line Examples
+
+$>zd.exe -d demo/default.yaml # Generate 10 lines of data according to the config file specified by -d.
+$>zd.exe -c demo/default.yaml # Generate 10 lines of data according to the config file specified by -c.
+$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100  # Using the parameter of -c and -d at the same time.
+
+$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.txt   # Output data in original format.
+$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.json  # Output data in JSON.
+$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.xml   # Output data in XML.
+$>zd.exe -d demo/default.yaml -n 100 -o test.sql -t user -s mysql    # Output the sql inserted into the table user.
+
+$>zd.exe -i db.sql -s mysql -o db  # Generate YAML files for each table by parsing db.sql and store them in the db directory.
+$>zd.exe -c demo/default.yaml -i test.txt --decode  # Parse the file specified by -i according to the config of -d.
+
+Service Example
+
+$zd.exe -p 80 -r d:\zd\config  # Listen port 80. Use d:\zd\config as the root.
+
+Client Call
+
+$curl http://loclahost/?d=default.yaml&c=config.yaml&n=100&o=test.sql&t=user  # Specify the server config file via GET.
+$curl http://loclahost/?default=default.yamloutput=test.sql&table=user        # Parameter names can be full.
+$curl -d "default=...&config=...&lines=10" http://localhost/                  # The config can be uploaded via POST.

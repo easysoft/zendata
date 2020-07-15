@@ -241,3 +241,24 @@ func GetAbsDir(path string) string {
 
 	return abs
 }
+
+func ConvertResPath(path string) (resType, resFile string) {
+	index := strings.LastIndex(path, ".yaml")
+	if index > -1 { // yaml, system.ip.v1.yaml
+		left := path[:index]
+		left = strings.ReplaceAll(left, ".", constant.PthSep)
+
+		resFile = left + ".yaml"
+		resType = "yaml"
+	} else { // excel, system.address.v1.city
+		index = strings.LastIndex(path, ".")
+
+		left := path[:index]
+		left = strings.ReplaceAll(left, ".", constant.PthSep)
+
+		resFile = left + ".xlsx"
+		resType = "excel"
+	}
+
+	return
+}

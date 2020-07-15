@@ -1,3 +1,8 @@
+-- sqlite
+CREATE TABLE user (
+    field_common VARCHAR (500)
+);
+
 -- DROP TABLE IF EXISTS `zt_action`;
 CREATE TABLE IF NOT EXISTS `zt_action` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
@@ -17,51 +22,3 @@ CREATE TABLE IF NOT EXISTS `zt_action` (
   KEY `project` (`project`),
   KEY `objectID` (`objectID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
--- DROP TABLE IF EXISTS `zt_block`;
-CREATE TABLE IF NOT EXISTS `zt_block` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `account` char(30) NOT NULL,
-  `module` varchar(20) NOT NULL,
-  `title` varchar(100) NOT NULL,
-  `source` varchar(20) NOT NULL,
-  `block` varchar(20) NOT NULL,
-  `params` text NOT NULL,
-  `order` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `grid` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `height` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `hidden` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `accountModuleOrder` (`account`,`module`,`order`),
-  KEY `account` (`account`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-CREATE TABLE `wp_posts` (
-  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `post_author` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `post_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `post_date_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `post_content` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `post_title` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `post_excerpt` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `post_status` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'publish',
-  `comment_status` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'open',
-  `ping_status` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'open',
-  `post_password` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
-  `post_name` varchar(200) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
-  `to_ping` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `pinged` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `post_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `post_modified_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `post_content_filtered` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `post_parent` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `guid` varchar(255) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
-  `menu_order` int(11) NOT NULL DEFAULT '0',
-  `post_type` varchar(20) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT 'post',
-  `post_mime_type` varchar(100) COLLATE utf8mb4_unicode_520_ci NOT NULL DEFAULT '',
-  `comment_count` bigint(20) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`),
-  KEY `post_name` (`post_name`(191)),
-  KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`ID`),
-  KEY `post_parent` (`post_parent`),
-  KEY `post_author` (`post_author`)
-) ENGINE=InnoDB AUTO_INCREMENT=3843 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
