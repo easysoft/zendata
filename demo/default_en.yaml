@@ -97,12 +97,12 @@ fields:
     from: system.ip.v1.yaml             # Refer to data/system/ip/v1.yaml.
     use: privateB,privateC              # Use the two instances of privateC and privateB defined in this file.
 
-  - field: field_use_excel                    # Read the data from the data source of excel.
-    from: system.address.v1.china             # Read the book named china in data/system/address/v1.xlsx.
-    select: city                              # Query the field city.
-    where: zipCode>250000 AND zipCode<274001  # Query condition.
+  - field: field_use_excel              # Read the data from the data source of excel.
+    from: system.address.v1.china       # Read the book named china in data/system/address/v1.xlsx.
+    select: city                        # Query the field city.
+    where: cityCode = 852               # Query condition.
 
-  - field: field_with_children                # Embeded field.
+  - field: field_with_children          # Embeded field.
     fields:
       - field: child1
         range: a-z
