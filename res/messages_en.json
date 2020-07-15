@@ -96,6 +96,14 @@
     {
       "id": "excel_data",
       "translation": "Excel Data."
+    },
+    {
+      "id": "excel_data_1",
+      "translation": "Excel that contains below sheet."
+    },
+    {
+      "id": "excel_data_1",
+      "translation": "Excel that contains below data."
     }
   ]
 }

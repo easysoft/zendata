@@ -87,6 +87,14 @@
     {
       "id": "excel_data",
       "translation": "Excel数据源。"
+    },
+    {
+      "id": "excel_data_1",
+      "translation": "Excel数据源，包含以下表格."
+    },
+    {
+      "id": "excel_data_1",
+      "translation": "Excel数据源，包含以下内容."
     }
   ]
 }

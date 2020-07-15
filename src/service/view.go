@@ -2,12 +2,11 @@ package service
 
 import (
 	"fmt"
+	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/src/model"
-	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -15,9 +14,7 @@ import (
 )
 
 func ViewRes(res string) {
-	msg := ""
-
-	resType, resPath := fileUtils.ConvertResPath(res)
+	resType, resPath, sheet := fileUtils.ConvertResPath(res)
 
 	if resType == "yaml" {
 		typ, inst, ranges := readYamlData(resPath)
@@ -27,18 +24,11 @@ func ViewRes(res string) {
 			printRanges(ranges)
 		}
 	} else if resType == "excel" {
+		printExcelSheet(resPath, sheet)
 	}
-
-	logUtils.Screen(msg)
 }
 
 func readYamlData(path string) (typ string, insts model.ResInsts, ranges model.ResRanges) {
-	if strings.Index(path, "system") > -1 {
-		path = vari.ExeDir + "data" + constant.PthSep + path
-	} else {
-		path = vari.ExeDir + constant.PthSep + path
-	}
-
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
 		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -53,42 +43,6 @@ func readYamlData(path string) (typ string, insts model.ResInsts, ranges model.R
 		typ = "range"
 	}
 
-	return
-}
-
-func readExcelSheet(path string) (str string) {
-	//excel, err := excelize.OpenFile(path)
-	//if err != nil {
-	//	logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
-	//	return
-	//}
-	//
-	//for index, sheet := range excel.GetSheetList() {
-	//	if index > 0 {
-	//		title = title + "|"
-	//	}
-	//	title = title + sheet
-	//}
-	//
-	//desc = i118Utils.I118Prt.Sprintf("excel_data")
-	return
-}
-
-func readExcelData(path string) (str string) {
-	//excel, err := excelize.OpenFile(path)
-	//if err != nil {
-	//	logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
-	//	return
-	//}
-	//
-	//for index, sheet := range excel.GetSheetList() {
-	//	if index > 0 {
-	//		title = title + "|"
-	//	}
-	//	title = title + sheet
-	//}
-	//
-	//desc = i118Utils.I118Prt.Sprintf("excel_data")
 	return
 }
 
@@ -107,7 +61,7 @@ func printInst(inst model.ResInsts) {
 	for idx, item := range inst.Instances {
 		if idx > 0 { msg = msg + "\n" }
 		msg = msg + fmt.Sprintf("%d. %s - %s",
-			idx+1, item.Instance + strings.Repeat(" ", width -len(item.Instance)), item.Note)
+			idx+1, item.Instance + strings.Repeat(" ", width - runewidth.StringWidth(item.Instance)), item.Note)
 	}
 
 	logUtils.Screen(msg)
@@ -128,11 +82,86 @@ func printRanges(ranges model.ResRanges) {
 	i := 0
 	for name, item := range ranges.Ranges {
 		if i > 0 { msg = msg + "\n" }
-		msg = msg + fmt.Sprintf("%d. %s - %s", i+1, name + strings.Repeat(" ", width -len(name)), item)
+		msg = msg + fmt.Sprintf("%d. %s - %s", i+1, name + strings.Repeat(" ", width -runewidth.StringWidth(name)), item)
 
 		i++
 	}
 
 	logUtils.Screen(msg)
 
+}
+
+func printExcelSheet(path, sheetName string) {
+	excel, err := excelize.OpenFile(path)
+	if err != nil {
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
+		return
+	}
+
+	msg := i118Utils.I118Prt.Sprintf("excel_data_1") + "\n"
+
+	if sheetName == "" {
+		for index, sheet := range excel.GetSheetList() {
+			msg = msg + fmt.Sprintf("%d. %s", index+1, sheet) + "\n"
+		}
+	}
+
+	logUtils.Screen(msg)
+
+	if sheetName != "" {
+		for _, sheet := range excel.GetSheetList() {
+			if sheet != sheetName {
+				continue
+			}
+
+			widthArr := make([]int, 0)
+			dataArr :=  make([][]string, 0)
+			dataArr = append(dataArr, make([]string, 0))
+			rows, _ := excel.GetRows(sheet)
+
+			colCount := 0
+			for index, row := range rows {
+				if index >= 10 { break }
+
+				if index == 0 { // deal with the title
+					for _, col := range rows[index] {
+						val := strings.TrimSpace(col)
+						if val == "" { break }
+
+						widthArr = append(widthArr, runewidth.StringWidth(val))
+
+						dataArr[0]= append(dataArr[0], val)
+						colCount++
+					}
+				} else {
+					colArr := make([]string, 0)
+					for idx, col := range row {
+						if idx >= colCount { break }
+
+						val := strings.TrimSpace(col)
+
+						lent := runewidth.StringWidth(val)
+						if widthArr[idx] < lent {
+							widthArr[idx] = lent
+						}
+
+						colArr = append(colArr, val)
+
+					}
+					dataArr = append(dataArr, colArr)
+				}
+			}
+
+			for _, row := range dataArr {
+				line := ""
+				for colIdx, col := range row {
+					if colIdx >= colCount { break }
+					space := widthArr[colIdx] - runewidth.StringWidth(col)
+					line = line + col + strings.Repeat(" ", space) + " "
+				}
+
+				logUtils.Screen(line)
+			}
+		}
+	}
 }

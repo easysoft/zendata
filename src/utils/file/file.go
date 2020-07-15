@@ -242,7 +242,7 @@ func GetAbsDir(path string) string {
 	return abs
 }
 
-func ConvertResPath(path string) (resType, resFile string) {
+func ConvertResPath(path string) (resType, resFile, sheet string) {
 	index := strings.LastIndex(path, ".yaml")
 	if index > -1 { // yaml, system.ip.v1.yaml
 		left := path[:index]
@@ -250,15 +250,35 @@ func ConvertResPath(path string) (resType, resFile string) {
 
 		resFile = left + ".yaml"
 		resType = "yaml"
-	} else { // excel, system.address.v1.city
-		index = strings.LastIndex(path, ".")
-
-		left := path[:index]
-		left = strings.ReplaceAll(left, ".", constant.PthSep)
-
-		resFile = left + ".xlsx"
+	} else { // excel, system.address.v1
+		//index = strings.LastIndex(path, ".")
+		//left := path[:index]
+		//left = strings.ReplaceAll(left, ".", constant.PthSep)
+		//resFile = left + ".xlsx"
 		resType = "excel"
+
+		resFile = strings.ReplaceAll(path, ".", constant.PthSep) + ".xlsx"
+	}
+
+	resFile = AddRootPath(resFile)
+
+	// excel file including sheet name like system.address.v1.china
+	if resType == "excel" && !FileExist(resFile) {
+		path = strings.ReplaceAll(path, ".", constant.PthSep)
+		resFile = path[:strings.LastIndex(path, constant.PthSep)] + ".xlsx"
+		resFile = AddRootPath(resFile)
+		sheet = path[strings.LastIndex(path, constant.PthSep)+1:]
 	}
 
 	return
+}
+
+func AddRootPath(path string) string {
+	if strings.Index(path, "system") > -1 {
+		path = vari.ExeDir + "data" + constant.PthSep + path
+	} else {
+		path = vari.ExeDir + constant.PthSep + path
+	}
+
+	return path
 }
