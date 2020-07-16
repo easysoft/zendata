@@ -35,6 +35,10 @@
       "translation": "读取文件%s失败。"
     },
     {
+      "id": "fail_to_write_file",
+      "translation": "写文件%s失败。"
+    },
+    {
       "id": "fail_to_parse_file",
       "translation": "解析文件%s失败。"
     },

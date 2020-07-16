@@ -40,6 +40,10 @@
       "translation": "Fail to read file %s."
     },
     {
+      "id": "fail_to_write_file",
+      "translation": "Fail to write file %s."
+    },
+    {
       "id": "fail_to_parse_file",
       "translation": "Fail to parse the content of file %s."
     },

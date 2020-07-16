@@ -38,6 +38,8 @@ var (
 	listRes bool
 	viewRes string
 	viewDetail string
+	md5 string
+	salt string
 
 	example bool
 	help   bool
@@ -83,6 +85,9 @@ func main() {
 	flagSet.StringVar(&viewRes, "v", "", "")
 	flagSet.StringVar(&viewRes, "view", "", "")
 
+	flagSet.StringVar(&md5, "md5", "", "")
+	flagSet.StringVar(&salt, "salt", "", "")
+
 	flagSet.StringVar(&vari.HeadSep, "H", "", "")
 	flagSet.StringVar(&vari.HeadSep, "human", "", "")
 
@@ -125,6 +130,9 @@ func main() {
 				return
 			} else if viewRes != "" {
 				service.ViewRes(viewRes)
+				return
+			} else if md5 != "" {
+				service.AddMd5(md5, salt)
 				return
 			}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"os"
 	"regexp"
@@ -17,19 +18,27 @@ var (
 )
 
 func PrintExample() {
+	if vari.Config.Language == "en" {
+		exampleFile = strings.Replace(exampleFile, ".yaml", "_en.yaml", -1)
+		usageFile = strings.Replace(usageFile, ".txt", "_en.txt", -1)
+	}
+
 	content := fileUtils.ReadResData(exampleFile)
 	fmt.Printf("%s\n", content)
 }
 
 func PrintUsage() {
-	//PrintToWithColor(i118Utils.I118Prt.Sprintf("usage"), color.FgCyan)
+	if vari.Config.Language == "en" {
+		exampleFile = strings.Replace(exampleFile, ".yaml", "_en.yaml", -1)
+		usageFile = strings.Replace(usageFile, ".txt", "_en.txt", -1)
+	}
 
 	usage := fileUtils.ReadResData(usageFile)
 	exeFile := "zd"
 	if commonUtils.IsWin() {
 		exeFile += ".exe"
 	}
-	usage = fmt.Sprintf(usage, exeFile)
+
 	if !commonUtils.IsWin() {
 		regx, _ := regexp.Compile(`\\`)
 		usage = regx.ReplaceAllString(usage, "/")
