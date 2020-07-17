@@ -4,8 +4,15 @@ author: zentao
 version: 1.0
 
 fields:
+  - field: field_use_instance   # 引用default.xml里的嵌套字段
+    length: 16
 
-  - field: field_common   # 覆盖default.yaml中的定义，使用参数-d demo/default.yaml -c demo/test.yaml执行。
-    #range: a-z           # a,b,c...，不设置默认使用原始配置
-    prefix: "["           # 复写前缀
-    postfix: "]"          # 复写后缀
+  - field: field_with_children
+    prefix: " ["                # 复写前缀
+    postfix: "] "               # 复写后缀
+    length: 40
+
+  - field: field_loop           # 引用default.xml里的自循环的字段
+    prefix: " ["                # 复写前缀
+    postfix: "]"                # 特殊字符加引号，否则无法解析
+    length: 8

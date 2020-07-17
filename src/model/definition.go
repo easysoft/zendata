@@ -34,7 +34,7 @@ type DefData struct {
 type DefField struct {
 	FieldBase   `yaml:",inline"`
 	Fields   []DefField `yaml:"fields,flow"`
-
+	Length int `yaml:"length"`
 	Path string
 }
 
@@ -67,7 +67,6 @@ type FieldSimple struct {
 	Loopfix  string  `yaml:"loopfix"`
 	Format  string  `yaml:"format"`
 }
-
 
 type FieldValue struct {
 	FieldBase   `yaml:",inline"`

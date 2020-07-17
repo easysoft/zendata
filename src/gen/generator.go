@@ -7,6 +7,7 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/mattn/go-runewidth"
 	"strconv"
 	"strings"
 )
@@ -225,6 +226,10 @@ func GenerateFieldValWithFix(field model.DefField, fieldValue model.FieldValue, 
 
 	if withFix {
 		loopStr = prefix + loopStr + postfix
+	}
+
+	if field.Length > runewidth.StringWidth(loopStr) {
+		loopStr = loopStr + strings.Repeat(" ", field.Length - runewidth.StringWidth(loopStr))
 	}
 
 	return loopStr

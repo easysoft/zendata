@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/easysoft/zendata/src/action"
+	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/service"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
@@ -34,6 +35,7 @@ var (
 	output string
 	table  string
 	format = constant.FormatText
+	analyse string
 
 	listRes bool
 	viewRes string
@@ -91,6 +93,9 @@ func main() {
 	flagSet.StringVar(&vari.HeadSep, "H", "", "")
 	flagSet.StringVar(&vari.HeadSep, "human", "", "")
 
+	flagSet.StringVar(&analyse, "a", "", "")
+	flagSet.StringVar(&analyse, "analyse", "", "")
+
 	flagSet.IntVar(&vari.Length, "W", 0, "")
 	flagSet.IntVar(&vari.Length, "width", 0, "")
 	flagSet.StringVar(&vari.LeftPad, "L", "", "")
@@ -133,6 +138,9 @@ func main() {
 				return
 			} else if md5 != "" {
 				service.AddMd5(md5, salt)
+				return
+			} else if analyse != "" {
+				gen.Analyse(output, fields, analyse, defaultFile)
 				return
 			}
 

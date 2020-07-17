@@ -49,12 +49,13 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 		}
 	}
 
-	MergerDefine(&defaultDef, &configDef)
+	mergerDefine(&defaultDef, &configDef)
+	orderFields(&defaultDef, *fieldsToExport)
 
 	return defaultDef
 }
 
-func MergerDefine(defaultDef, configDef *model.DefData) {
+func mergerDefine(defaultDef, configDef *model.DefData) {
 	defaultFieldMap := map[string]*model.DefField{}
 	configFieldMap := map[string]*model.DefField{}
 	sortedKeys := make([]string, 0)
@@ -86,6 +87,20 @@ func MergerDefine(defaultDef, configDef *model.DefData) {
 			defaultDef.Fields = append(defaultDef.Fields, *field)
 		}
 	}
+}
+
+func orderFields(defaultDef *model.DefData, fieldsToExport []string) {
+	mp := map[string]model.DefField{}
+	for _, field := range defaultDef.Fields {
+		mp[field.Field] = field
+	}
+
+	fields := make([]model.DefField, 0)
+	for _, fieldName := range fieldsToExport {
+		fields = append(fields, mp[fieldName])
+	}
+
+	defaultDef.Fields = fields
 }
 
 func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, keys *[]string) {
@@ -148,6 +163,9 @@ func CopyField(child model.DefField, parent *model.DefField) {
 
 	if child.Precision != 0 {
 		(*parent).Precision = child.Precision
+	}
+	if child.Length != 0 {
+		(*parent).Length = child.Length
 	}
 }
 
