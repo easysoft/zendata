@@ -25,10 +25,6 @@ Parameters
 
   -i  --input      Specify a sql schema file and output the YAML config file for each table. 
                    You need to specify an output directory by using -o.
-  -s  --server     Database server type. Support mysql|oracle|sqlite|sqlserver.
-                   The default is mysql. This parameter can be used to parse YAML files or generate SQL.
-  -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
-                   Also you can output the readable format via -H.
 
   -e  --example    Print the data format config file of the example.
   -l  --list       List all supported data formats.
@@ -46,8 +42,11 @@ $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.json  # Output da
 $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.xml   # Output data in XML.
 $>zd.exe -d demo/default.yaml -n 100 -o test.sql -t user -s mysql    # Output the sql inserted into the table user.
 
-$>zd.exe -i db.sql -s mysql -o db  # Generate YAML files for each table by parsing db.sql and store them in the db directory.
-$>zd.exe -c demo/default.yaml -i test.txt --decode  # Parse the file specified by -i according to the config of -d.
+$>zd.exe -i db.sql -o db  # Generate YAML files for each table by parsing db.sql and store them in the db directory.
+
+$>zd.exe -l                         # List all build-in data types.
+$>zd.exe -v system.address.v1       # View data types in build-in Excel file system/address/v1.xlsx.
+$>zd.exe -v system.address.v1.china # View data items in Excel sheet "china".
 
 Service Example
 
