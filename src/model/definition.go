@@ -34,7 +34,9 @@ type DefData struct {
 type DefField struct {
 	FieldBase   `yaml:",inline"`
 	Fields   []DefField `yaml:"fields,flow"`
-	Length int `yaml:"length"`
+	Width int `yaml:"width"`
+	LeftPad string `yaml:"leftPad"`
+	RightPad string `yaml:"rightPad"`
 	Path string
 }
 

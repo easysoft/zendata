@@ -5,8 +5,8 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"strconv"
 	"strings"
@@ -109,20 +109,20 @@ func InArray(need interface{}, arr []string) bool {
 	return false
 }
 
-func AddPad(str string) string {
-	if vari.Length > 0 {
-		gap := vari.Length - len(str)
-		if vari.LeftPad != "" {
-			vari.LeftPad = vari.LeftPad[:1]
-			pads := strings.Repeat(vari.LeftPad, gap)
+func AddPad(str string, field model.DefField) string {
+	if  field.Width > 0 && field.Width > runewidth.StringWidth(str) {
+		gap := field.Width - len(str)
+		if field.LeftPad != "" {
+			field.LeftPad = field.LeftPad[:1]
+			pads := strings.Repeat(field.LeftPad, gap)
 			str = pads + str
-		} else if vari.RightPad != "" {
-			vari.RightPad = vari.RightPad[:1]
-			pads := strings.Repeat(vari.RightPad, gap)
+		} else if field.RightPad != "" {
+			field.RightPad = field.RightPad[:1]
+			pads := strings.Repeat(field.RightPad, gap)
 			str = str + pads
 		} else {
-			vari.LeftPad = " "
-			pads := strings.Repeat(vari.LeftPad, gap)
+			field.LeftPad = " "
+			pads := strings.Repeat(field.LeftPad, gap)
 			str = pads + str
 		}
 	}

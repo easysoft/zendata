@@ -8,7 +8,6 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"strings"
 )
@@ -74,7 +73,7 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 			row.Cols = append(row.Cols, col)
 
 			colVal := col
-			colVal = stringUtils.AddPad(colVal)
+			//colVal = stringUtils.AddPad(colVal, vari.Def.Fields[j])
 			if !colTypes[j] { colVal = "'" + colVal + "'" }
 			valueList = valueList + colVal
 		}

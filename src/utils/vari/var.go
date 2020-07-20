@@ -23,10 +23,6 @@ var (
 	WithHead bool
 	HeadSep string
 
-	Length int
-	LeftPad string
-	RightPad string
-
 	JsonResp string = "[]"
 	Ip string
 	Port int

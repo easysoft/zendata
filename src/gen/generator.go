@@ -228,8 +228,8 @@ func GenerateFieldValWithFix(field model.DefField, fieldValue model.FieldValue, 
 		loopStr = prefix + loopStr + postfix
 	}
 
-	if field.Length > runewidth.StringWidth(loopStr) {
-		loopStr = loopStr + strings.Repeat(" ", field.Length - runewidth.StringWidth(loopStr))
+	if field.Width > runewidth.StringWidth(loopStr) {
+		loopStr = stringUtils.AddPad(loopStr, field)
 	}
 
 	return loopStr

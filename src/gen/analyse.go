@@ -49,8 +49,8 @@ func LinesToMap(str string, fieldsToExport []string) (ret []map[string]string) {
 		for j, field := range vari.Def.Fields {
 			col := "" // TODO: use post/pre fix to seperate
 
-			col = left[:field.Length]
-			left = left[field.Length:]
+			col = left[:field.Width]
+			left = left[field.Width:]
 
 			rowMap[fieldsToExport[j]] = col
 		}

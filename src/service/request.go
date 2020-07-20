@@ -10,7 +10,7 @@ import (
 )
 
 func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile string, count int,
-		fields, human string, width int, leftPad, rightPad, format, table string) {
+		fields, human string, format, table string) {
 	query := req.URL.Query()
 
 	root = GetRequestParams(query,"root", "r")
@@ -24,10 +24,6 @@ func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile string, 
 	table = ""
 
 	human = GetRequestParams(query,"human", "H")
-	widthStr := GetRequestParams(query,"width", "W")
-	width, _ = strconv.Atoi(widthStr)
-	leftPad = GetRequestParams(query,"leftPad", "L")
-	rightPad = GetRequestParams(query,"rightPad", "R")
 
 	req.ParseForm()
 	defaultDefContent := req.FormValue("default")

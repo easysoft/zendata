@@ -14,7 +14,7 @@ const (
 	md5Col = "CW"
 )
 
-func AddMd5(path string, salt string) {
+func AddMd5(path string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -46,7 +46,7 @@ func AddMd5(path string, salt string) {
 				val := strings.TrimSpace(col)
 				str = str + val
 			}
-			md5Str := md5V(str, salt)
+			md5Str := md5V(str)
 			excel.SetCellValue(sheet, md5Col + strconv.Itoa(index + 1), md5Str)
 		}
 	}
@@ -56,9 +56,8 @@ func AddMd5(path string, salt string) {
 	}
 }
 
-func md5V(str, salt string) string  {
+func md5V(str string) string  {
 	h := md5.New()
 	h.Write([]byte(str))
-	h.Write([]byte(salt))
 	return hex.EncodeToString(h.Sum(nil))
 }

@@ -41,7 +41,6 @@ var (
 	viewRes string
 	viewDetail string
 	md5 string
-	salt string
 
 	example bool
 	help   bool
@@ -88,7 +87,6 @@ func main() {
 	flagSet.StringVar(&viewRes, "view", "", "")
 
 	flagSet.StringVar(&md5, "md5", "", "")
-	flagSet.StringVar(&salt, "salt", "", "")
 
 	flagSet.StringVar(&vari.HeadSep, "H", "", "")
 	flagSet.StringVar(&vari.HeadSep, "human", "", "")
@@ -96,18 +94,11 @@ func main() {
 	flagSet.StringVar(&analyse, "a", "", "")
 	flagSet.StringVar(&analyse, "analyse", "", "")
 
-	flagSet.IntVar(&vari.Length, "W", 0, "")
-	flagSet.IntVar(&vari.Length, "width", 0, "")
-	flagSet.StringVar(&vari.LeftPad, "L", "", "")
-	flagSet.StringVar(&vari.LeftPad, "leftPad", "", "")
-	flagSet.StringVar(&vari.RightPad, "R", "", "")
-	flagSet.StringVar(&vari.RightPad, "rightPad", "", "")
-
 	flagSet.StringVar(&vari.Ip, "b", "", "")
 	flagSet.StringVar(&vari.Ip, "bind", "", "")
 	flagSet.IntVar(&vari.Port, "p", 0, "")
 	flagSet.IntVar(&vari.Port, "port", 0, "")
-	flagSet.StringVar(&root, "r", "", "")
+	flagSet.StringVar(&root, "R", "", "")
 	flagSet.StringVar(&root, "root", "", "")
 
 	flagSet.BoolVar(&example, "e", false, "")
@@ -137,7 +128,7 @@ func main() {
 				service.ViewRes(viewRes)
 				return
 			} else if md5 != "" {
-				service.AddMd5(md5, salt)
+				service.AddMd5(md5)
 				return
 			} else if analyse != "" {
 				gen.Analyse(output, fields, analyse, defaultFile)
@@ -203,8 +194,7 @@ func StartServer() {
 }
 
 func DataHandler(w http.ResponseWriter, req *http.Request) {
-	root, defaultFile, configFile, count, fields,
-		vari.HeadSep, vari.Length, vari.LeftPad, vari.RightPad,
+	root, defaultFile, configFile, count, fields, vari.HeadSep,
 		format, table = service.ParseRequestParams(req)
 
 	vari.RunMode = constant.RunModeServerRequest
