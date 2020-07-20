@@ -44,7 +44,7 @@ $>zd.exe -c demo\default.yaml -i test.txt --decode  将-i指定的文件根据-d
 ```
 ## 服务模式举例：
 ```shell
-$zd.exe -p 80 -r d:\zd\config  监听80端口，以d:\zd\config为根目录。
+$zd.exe -p 80 -R d:\zd\config  监听80端口，以d:\zd\config为根目录。
 ```
 
 ## 客户端调用：
