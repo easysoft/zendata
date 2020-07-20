@@ -12,8 +12,6 @@ const (
 )
 
 func Analyse(output, fieldsToExportStr, configFile, defaultFile string) {
-
-
 	fieldsToExport := make([]string, 0)
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
@@ -49,10 +47,12 @@ func LinesToMap(str string, fieldsToExport []string) (ret []map[string]string) {
 		left := line
 
 		for j, field := range vari.Def.Fields {
-			col := left[:field.Length]
-			rowMap[fieldsToExport[j]] = col
+			col := "" // TODO: use post/pre fix to seperate
 
+			col = left[:field.Length]
 			left = left[field.Length:]
+
+			rowMap[fieldsToExport[j]] = col
 		}
 
 		ret = append(ret, rowMap)

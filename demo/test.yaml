@@ -7,6 +7,9 @@ fields:
   - field: field_use_instance   # 引用default.xml里的嵌套字段
     length: 16
 
+  - field: field_use_excel
+    prefix: "==="               # 复写前缀
+
   - field: field_with_children
     prefix: " ["                # 复写前缀
     postfix: "] "               # 复写后缀
