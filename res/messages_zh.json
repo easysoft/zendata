@@ -99,6 +99,10 @@
     {
       "id": "excel_data_1",
       "translation": "Excel数据源，包含以下内容."
+    },
+    {
+      "id": "analyse_success",
+      "translation": "成功解析数据到%s."
     }
   ]
 }

@@ -35,7 +35,7 @@ var (
 	output string
 	table  string
 	format = constant.FormatText
-	analyse string
+	decode bool
 
 	listRes bool
 	viewRes string
@@ -91,8 +91,8 @@ func main() {
 	flagSet.StringVar(&vari.HeadSep, "H", "", "")
 	flagSet.StringVar(&vari.HeadSep, "human", "", "")
 
-	flagSet.StringVar(&analyse, "a", "", "")
-	flagSet.StringVar(&analyse, "analyse", "", "")
+	flagSet.BoolVar(&decode, "D", false, "")
+	flagSet.BoolVar(&decode, "decode", false, "")
 
 	flagSet.StringVar(&vari.Ip, "b", "", "")
 	flagSet.StringVar(&vari.Ip, "bind", "", "")
@@ -130,8 +130,8 @@ func main() {
 			} else if md5 != "" {
 				service.AddMd5(md5)
 				return
-			} else if analyse != "" {
-				gen.Analyse(output, fields, analyse, defaultFile)
+			} else if decode {
+				gen.Decode(defaultFile, configFile, fields, input, output)
 				return
 			}
 

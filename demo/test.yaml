@@ -5,17 +5,17 @@ version: 1.0
 
 fields:
   - field: field_use_instance   # 引用default.xml里的嵌套字段
-    length: 16
+    prefix: "["                 # 复写前缀
+    postfix: "]"                # 特殊字符加引号，否则无法解析
 
   - field: field_use_excel
-    prefix: " ==="               # 复写前缀
+    prefix: " ["                # 复写前缀
+    postfix: "] "               # 特殊字符加引号，否则无法解析
 
   - field: field_with_children
     prefix: " ["                # 复写前缀
-    postfix: "] "               # 复写后缀
-    length: 40
+    postfix: "] "               # 特殊字符加引号，否则无法解析
 
   - field: field_loop           # 引用default.xml里的自循环的字段
-    prefix: " ["                # 复写前缀
+    prefix: "["                 # 复写前缀
     postfix: "]"                # 特殊字符加引号，否则无法解析
-    length: 8

@@ -108,6 +108,10 @@
     {
       "id": "excel_data_1",
       "translation": "Excel that contains below data."
+    },
+    {
+      "id": "analyse_success",
+      "translation": "Success to decode data to %s."
     }
   ]
 }
