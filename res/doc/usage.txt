@@ -41,7 +41,7 @@ $>zd.exe -v system.address.v1.china # 查看內置Excel文件china数据表中�
 
 服务模式举例：
 
-$zd.exe -p 80 -r d:\zd\config  监听80端口，以d:\zd\config为根目录。
+$zd.exe -p 80 -R d:\zd\config  监听80端口，以d:\zd\config为根目录。
 
 客户端调用：
 

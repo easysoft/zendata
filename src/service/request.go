@@ -13,7 +13,7 @@ func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile string, 
 		fields, human string, format, table string) {
 	query := req.URL.Query()
 
-	root = GetRequestParams(query,"root", "r")
+	root = GetRequestParams(query,"root", "R")
 	defaultFile = GetRequestParams(query,"default", "d")
 	yamlFile = GetRequestParams(query,"config", "c")
 	countStr := GetRequestParams(query,"lines", "n")
@@ -25,17 +25,19 @@ func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile string, 
 
 	human = GetRequestParams(query,"human", "H")
 
-	req.ParseForm()
-	defaultDefContent := req.FormValue("default")
-	configDefContent := req.FormValue("config")
+	if req.Method == http.MethodPost {
+		req.ParseForm()
+		defaultDefContent := req.FormValue("default")
+		configDefContent := req.FormValue("config")
 
-	if defaultDefContent != "" {
-		defaultFile = vari.ExeDir + "._default.yaml"
-		fileUtils.WriteFile(defaultFile, defaultDefContent)
-	}
-	if configDefContent != "" {
-		yamlFile = vari.ExeDir + "._config.yaml"
-		fileUtils.WriteFile(yamlFile, configDefContent)
+		if defaultDefContent != "" {
+			defaultFile = vari.ExeDir + "._default.yaml"
+			fileUtils.WriteFile(defaultFile, defaultDefContent)
+		}
+		if configDefContent != "" {
+			yamlFile = vari.ExeDir + "._config.yaml"
+			fileUtils.WriteFile(yamlFile, configDefContent)
+		}
 	}
 
 	return

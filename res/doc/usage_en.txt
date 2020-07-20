@@ -50,7 +50,7 @@ $>zd.exe -v system.address.v1.china # View data items in Excel sheet "china".
 
 Service Example
 
-$zd.exe -p 80 -r d:\zd\config  # Listen port 80. Use d:\zd\config as the root.
+$zd.exe -p 80 -R d:\zd\config  # Listen port 80. Use d:\zd\config as the root.
 
 Client Call
 

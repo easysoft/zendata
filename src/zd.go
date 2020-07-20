@@ -197,6 +197,10 @@ func DataHandler(w http.ResponseWriter, req *http.Request) {
 	root, defaultFile, configFile, count, fields, vari.HeadSep,
 		format, table = service.ParseRequestParams(req)
 
+	if defaultFile == "" && configFile == "" {
+		return
+	}
+
 	vari.RunMode = constant.RunModeServerRequest
 	output = ""
 	toGen()
