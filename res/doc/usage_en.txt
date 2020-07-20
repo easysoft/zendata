@@ -25,7 +25,7 @@ Parameters
 
   -i  --input      Specify a sql schema file and output the YAML config file for each table. 
                    You need to specify an output directory by using -o.
-  -s  --server     Database server type. Support mysql|oracle|sqlite|sqlserver. 
+  -s  --server     Database server type. Support mysql|oracle|sqlite|sqlserver.
                    The default is mysql. This parameter can be used to parse YAML files or generate SQL.
   -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
                    Also you can output the readable format via -H.

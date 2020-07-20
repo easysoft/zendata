@@ -8,7 +8,7 @@ fields:
     length: 16
 
   - field: field_use_excel
-    prefix: "==="               # 复写前缀
+    prefix: " ==="               # 复写前缀
 
   - field: field_with_children
     prefix: " ["                # 复写前缀
