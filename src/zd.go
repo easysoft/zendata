@@ -194,17 +194,17 @@ func StartServer() {
 }
 
 func DataHandler(w http.ResponseWriter, req *http.Request) {
-	root, defaultFile, configFile, count, fields, vari.HeadSep,
-		format, table = service.ParseRequestParams(req)
+	root, defaultFile, configFile, fields, count, vari.HeadSep,
+		format, table, decode, input, output = service.ParseRequestParams(req)
 
-	if defaultFile == "" && configFile == "" {
-		return
+	if decode {
+		gen.Decode(defaultFile, configFile, fields, input, output)
+		fmt.Fprintln(w, vari.JsonResp)
+	} else if defaultFile != "" || configFile != "" {
+		vari.RunMode = constant.RunModeServerRequest
+		toGen()
+		fmt.Fprintln(w, vari.JsonResp)
 	}
-
-	vari.RunMode = constant.RunModeServerRequest
-	output = ""
-	toGen()
-	fmt.Fprintln(w, vari.JsonResp)
 }
 
 func init() {

@@ -9,8 +9,8 @@ import (
 	"strconv"
 )
 
-func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile string, count int,
-		fields, human string, format, table string) {
+func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile, fields string, count int,
+		human string, format, table string, decode bool, input, output string) {
 	query := req.URL.Query()
 
 	root = GetRequestParams(query,"root", "R")
