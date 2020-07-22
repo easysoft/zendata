@@ -49,25 +49,27 @@ func LinesToMap(str string, fieldsToExport []string, ret *[]map[string]interface
 			continue
 		}
 
-		rowMap := decodeOnLevel(line, fieldsToExport, vari.Def.Fields)
+		rowMap := map[string]interface{}{}
+		decodeOneLevel(line, vari.Def.Fields, &rowMap)
 		*ret = append(*ret, rowMap)
 	}
 	return
 }
 
-func decodeOnLevel(line string, fieldsToExport []string, fields []model.DefField) (ret map[string]interface{}) {
-	ret = map[string]interface{}{}
+func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]interface{}) () {
+
 	left := []rune(line)
 
 	for j, field := range fields {
 		col := ""
+
 		if field.Width > 0 {
 			col = string(left[:field.Width])
 			left = left[field.Width:]
 		} else {
 			sepStr := ""
-			if j < len(vari.Def.Fields) - 1 {
-				sepStr = field.Postfix + vari.Def.Fields[j+1].Prefix
+			if j < len(fields) - 1 {
+				sepStr = field.Postfix + fields[j+1].Prefix
 			} else {
 				sepStr = field.Postfix
 			}
@@ -79,10 +81,24 @@ func decodeOnLevel(line string, fieldsToExport []string, fields []model.DefField
 					col = string(left[: index+runewidth.StringWidth(field.Postfix)])
 					left = left[index+runewidth.StringWidth(field.Postfix) :]
 				}
+			} else if j == len(fields) - 1 {
+				col = string(left)
+				left = []rune{}
 			}
 		}
 
-		ret[fieldsToExport[j]] = col
+		(*rowMap)[field.Field] = col
+
+		children := field.Fields
+		if len(children) > 0 {
+			colWithoutFix := col[runewidth.StringWidth(field.Postfix):
+				runewidth.StringWidth(col) - runewidth.StringWidth(field.Postfix)]
+
+			rowMapChild := map[string]interface{}{}
+			decodeOneLevel(colWithoutFix, children, &rowMapChild)
+
+			(*rowMap)[field.Field + ".fields"] = rowMapChild
+		}
 	}
 
 	return
