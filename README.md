@@ -12,6 +12,7 @@ zendata是一款通用的数据生成工具，您可以使用yaml文件来定义
 
 -F  --field      可通过该参数指定要输出的字段列表，用逗号分隔。 默认是所有的字段。
 -t  --table      输出格式为sql时，需通过该参数指定要插入数据的表名。
+-T  --trim       输出数据时去掉前缀和后缀，可用于输出json、xml或者sql格式时。
 -H  --human      输出可读格式，打印字段名，并使用tab键进行分割。
 
 -b  --bind       监听的ip地址，默认监听所有的ip地址。
@@ -38,6 +39,7 @@ $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.txt   输出原�
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  输出json格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.xml   输出xml格式的数据。
 $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user -s mysql    输出插入到user表里面的sql。
+$>zd.exe -d demo\default.yaml -o test.sql -t user -s mysql --trim    输出时去除字段的前缀和后缀。
 
 $>zd.exe -i db.sql -s mysql -o db  根据db.sql的定义生成每个表的yaml文件，存储到db目录里面。
 $>zd.exe -c demo\default.yaml -i test.txt --decode  将-i指定的文件根据-d参数的配置进行解析。
