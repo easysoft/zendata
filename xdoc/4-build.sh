@@ -40,6 +40,6 @@ cp zd.zip zendata/1.1/mac
 rm zd
 rm zd.zip
 
-zip -r zendata-1.1.zip zendata
+# zip -r zendata-1.1.zip zendata
 
 cd ..
