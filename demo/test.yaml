@@ -19,3 +19,9 @@ fields:
   - field: field_loop           # 引用default.xml里的自循环的字段
     prefix: "["                 # 复写前缀
     postfix: "]"                # 特殊字符加引号，否则无法解析
+
+  - field: field_nested_inst     # 引用的instance使用多层嵌套的use定义
+    from: system.ip.private.yaml # 引用data/system/ip/v1.yaml
+    use: all                     # 使用该文件中定义的privateC和privateB两个实例。
+    prefix: "["                  # 复写前缀
+    postfix: "]"                 # 特殊字符加引号，否则无法解析

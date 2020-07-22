@@ -147,23 +147,59 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 	groupedValue := map[string][]string{}
 
 	for _, inst := range insts.Instances {
+		for _, instField := range inst.Fields { // prepare referred parent instances if needed
+			if instField.Use != "" { // refer to another instance
+				parent := getRootInstant(instField)
+				groupedValueParent := map[string][]string{}
+				for _, child := range parent.Instances {
+					field := convertInstantToField(parent, child)
+
+					// gen values
+					group := child.Instance
+					groupedValueParent[group] = GenerateForField(&field, constant.Total, false)
+				}
+				vari.Res[instField.From] = groupedValueParent
+			}
+		}
+
+		field := convertInstantToField(insts, inst)
+
+		// gen values
 		group := inst.Instance
-
-		// convert instant field to standard field
-		tempField := model.DefField{}
-		tempField.Field = insts.Field
-
-		child := model.DefField{}
-		child.Field = inst.Instance
-
-		copier.Copy(&child, inst)
-
-		tempField.Fields = append(tempField.Fields, child)
-
-		groupedValue[group] = GenerateForField(&tempField, constant.Total, false)
+		groupedValue[group] = GenerateForField(&field, constant.Total, false)
 	}
 
 	return groupedValue
+}
+
+func getRootInstant(inst model.DefField) (parentInsts model.ResInsts) {
+	resFile, _ := getResProp(inst.From)
+
+	yamlContent, err := ioutil.ReadFile(resFile)
+	if err != nil {
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
+		return
+	}
+
+	err = yaml.Unmarshal(yamlContent, &parentInsts)
+	if err == nil && parentInsts.Instances != nil && len(parentInsts.Instances) > 0 { // instances
+		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
+	}
+
+	return
+}
+
+func convertInstantToField(insts model.ResInsts, inst model.ResInst) (field model.DefField) {
+	field.Field = insts.Field
+
+	child := model.DefField{}
+	child.Field = inst.Instance
+
+	copier.Copy(&child, inst)
+
+	field.Fields = append(field.Fields, child)
+
+	return field
 }
 
 func getResForRanges(ranges model.ResRanges) map[string][]string {

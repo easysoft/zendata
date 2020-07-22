@@ -1,0 +1,15 @@
+title: 私有IP
+desc:
+author: zentao
+version: 1.0
+
+field: privateIP
+instances:
+
+  - instance: all
+    fields:
+      - field: part
+        from: system.ip.v1.yaml
+        use: privateA, privateB, privateC
+        prefix: ""
+        postfix: "/24"
