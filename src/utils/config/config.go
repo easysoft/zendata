@@ -121,12 +121,12 @@ func InputForSet() {
 
 	enCheck := ""
 	var numb string
-	if conf.Language == "en" {
+	if conf.Language == "zh" {
 		enCheck = "*"
 		numb = "1"
 	}
 	zhCheck := ""
-	if conf.Language == "zh" {
+	if conf.Language == "en" {
 		zhCheck = "*"
 		numb = "2"
 	}
@@ -134,9 +134,9 @@ func InputForSet() {
 	numbSelected := stdinUtils.GetInput("(1|2)", numb, "enter_language", enCheck, zhCheck)
 
 	if numbSelected == "1" {
-		conf.Language = "en"
-	} else {
 		conf.Language = "zh"
+	} else {
+		conf.Language = "en"
 	}
 
 	SaveConfig(conf)

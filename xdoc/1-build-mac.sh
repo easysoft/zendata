@@ -1,7 +1,5 @@
 rm -rf build
 mkdir build
-cp -r data build/
-cp -r demo build/
 
 go-bindata -o=res/res.go -pkg=res res/ res/doc
 
