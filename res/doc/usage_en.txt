@@ -1,4 +1,4 @@
-﻿$zd
+$zd
 
 zendata is a generic data generator. You can use YAML file to define the data format and use zendata to create it.
 
@@ -12,7 +12,7 @@ Parameters
 
   -F  --field      This parameter can be used to specify the fields, separated by commas. The default is all fields.
   -t  --table      If the output format is sql, using it to specify the table name to insert data to.
-  -T  --trim       Remove the prefix and postfix of every field when output data.
+  -T  --trim       Remove the prefix and postfix of every field when outputting data.
   -H  --human      Output a readable format, print the field name, and use the tab key to split.
 
   -r  --recursive  Recursive mode. The default mode is parallel, in which each field loops independently.
