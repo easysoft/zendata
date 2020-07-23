@@ -85,7 +85,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			rand = true
 		}
 
-		if int1 > int2 && step.(int) > 0 {
+		if (int1 > int2 && step.(int) > 0) || (int1 < int2 && step.(int) < 0) {
 			step = -1 * step.(int)
 		}
 		return "int", step, 0, rand
@@ -110,7 +110,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 			precision := getPrecision(float1, step)
 
-			if float1 > float2 && step.(int) > 0 {
+			if (float1 > float2 && step.(int) > 0) || (float1 < float2 && step.(int) < 0) {
 				step = -1 * step.(int)
 			}
 			return "float", step, precision, rand
@@ -126,7 +126,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				rand = true
 			}
 
-			if strings.Compare(startStr,endStr) > 0 && step.(int) > 0 {
+			if (strings.Compare(startStr,endStr) > 0 && step.(int) > 0) ||
+					(strings.Compare(startStr,endStr) < 0 && step.(int) < 0) {
 				step = -1 * step.(int)
 			}
 			return "char", step, 0, rand
