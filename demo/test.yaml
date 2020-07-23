@@ -4,6 +4,9 @@ author: zentao
 version: 1.0
 
 fields:
+  - field: test
+    range: 9-1:2{2}
+
   - field: field_use_instance   # 引用default.xml里的嵌套字段
     prefix: "["                 # 复写前缀
     postfix: "]"                # 特殊字符加引号，否则无法解析

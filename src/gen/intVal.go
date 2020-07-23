@@ -17,17 +17,16 @@ func GenerateIntItemsByStep(start int64, end int64, step int, repeat int) []inte
 	arr := make([]interface{}, 0)
 
 	total := 0
-	for round := 0; round < repeat; round++ {
-		for i := 0; true; {
-			val := start + int64(i*step)
-			if val > end {
-				break
-			}
+	for i := 0; true; {
+		val := start + int64(i*step)
+		if (val > end && step > 0) || (val < end && step < 0)  {
+			break
+		}
 
+		for round := 0; round < repeat; round++ {
 			arr = append(arr, val)
-			i++
-			total++
 
+			total++
 			if total > constant.MaxNumb {
 				break
 			}
@@ -36,6 +35,7 @@ func GenerateIntItemsByStep(start int64, end int64, step int, repeat int) []inte
 		if total >= constant.MaxNumb {
 			break
 		}
+		i++
 	}
 
 	return arr

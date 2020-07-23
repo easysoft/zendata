@@ -1,11 +1,9 @@
 package gen
 
 import (
-	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"math/rand"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -40,10 +38,8 @@ func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldValue) {
 }
 
 func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldValue) {
-	//rang := strings.TrimSpace(field.Range)
 	rang := field.Range
-
-	rangeItems := ParseRange(rang)
+	rangeItems := ParseRange(rang) // 1
 
 	index := 0
 	for _, rangeItem := range rangeItems {
@@ -51,11 +47,11 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 		if rangeItem == "" { continue }
 
 		entry, stepStr, repeat := ParseRangeItem(rangeItem)
-		typ, desc := ParseEntry(entry)
+		typ, desc := ParseEntry(entry) // 2
 
 		items := make([]interface{}, 0)
 		if typ == "literal" {
-			items = GenerateValuesFromLiteral(field, desc, stepStr, repeat)
+			items = GenerateValuesFromLiteral(desc, stepStr, repeat)
 		} else if typ == "interval" {
 			items = GenerateValuesFromInterval(field, desc, stepStr, repeat)
 		}
@@ -72,8 +68,8 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 func CheckRangeType(startStr string, endStr string, stepStr string) (string, interface{}, int, bool) {
 	rand := false
 
-	_, errInt1 := strconv.ParseInt(startStr, 0, 64)
-	_, errInt2 := strconv.ParseInt(endStr, 0, 64)
+	int1, errInt1 := strconv.ParseInt(startStr, 0, 64)
+	int2, errInt2 := strconv.ParseInt(endStr, 0, 64)
 	var errInt3 error
 	if strings.ToLower(stepStr) != "r" {
 		_, errInt3 = strconv.ParseInt(stepStr, 0, 64)
@@ -89,11 +85,14 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			rand = true
 		}
 
+		if int1 > int2 && step.(int) > 0 {
+			step = -1 * step.(int)
+		}
 		return "int", step, 0, rand
 
 	} else {
-		startFloat, errFloat1 := strconv.ParseFloat(startStr, 64)
-		_, errFloat2 := strconv.ParseFloat(endStr, 64)
+		float1, errFloat1 := strconv.ParseFloat(startStr, 64)
+		float2, errFloat2 := strconv.ParseFloat(endStr, 64)
 		var errFloat3 error
 		if strings.ToLower(stepStr) != "r" {
 			_, errFloat3 = strconv.ParseFloat(stepStr, 64)
@@ -109,7 +108,11 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				rand = true
 			}
 
-			precision := getPrecision(startFloat, step)
+			precision := getPrecision(float1, step)
+
+			if float1 > float2 && step.(int) > 0 {
+				step = -1 * step.(int)
+			}
 			return "float", step, precision, rand
 
 		} else if len(startStr) == 1 && len(endStr) == 1 { // is char
@@ -123,6 +126,9 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				rand = true
 			}
 
+			if strings.Compare(startStr,endStr) > 0 && step.(int) > 0 {
+				step = -1 * step.(int)
+			}
 			return "char", step, 0, rand
 		}
 	}
@@ -130,77 +136,15 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 	return "string", 1, 0, false // is string
 }
 
-func ParseRange(rang string) []string {
-	items := make([]string, 0)
-
-	tagOpen := false
-	temp := ""
-
-	runeArr := make([]rune, 0)
-	for _, c := range rang {
-		runeArr = append(runeArr, c)
-	}
-
-	for i := 0; i < len(runeArr); i++ {
-		c := runeArr[i]
-
-		if c == constant.RightChar {
-			tagOpen = false
-		} else if c == constant.LeftChar  {
-			tagOpen = true
-		}
-
-		if i == len(runeArr) - 1 {
-			temp += fmt.Sprintf("%c", c)
-			items = append(items, temp)
-		} else if !tagOpen && c == ',' {
-			items = append(items, temp)
-			temp = ""
-			tagOpen = false
-		} else {
-			temp += fmt.Sprintf("%c", c)
-		}
-	}
-
-	return items
-}
-
-func ParseRangeItem(item string) (string, string, int) {
-	entry := ""
-	step := "1"
-	repeat := 1
-
-	item = strings.TrimSpace(item)
-	if string(item[0]) == string(constant.LeftChar) &&  // It's a whole when meet (xxx)
-			string(item[len(item) - 1]) == string(constant.RightChar) {
-		return item, step, repeat
-	}
-
-	regx := regexp.MustCompile(`\{(.*)\}`)
-	arr := regx.FindStringSubmatch(item)
-	if len(arr) == 2 {
-		repeat, _ = strconv.Atoi(arr[1])
-	}
-	item = regx.ReplaceAllString(item, "")
-
-	sectionArr := strings.Split(item, ":")
-	entry = sectionArr[0]
-	if len(sectionArr) == 2 {
-		step = sectionArr[1]
-	}
-
-	return entry, step, repeat
-}
-
-func GenerateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) []interface{} {
+func GenerateValuesFromLiteral(desc string, stepStr string, repeat int) []interface{} {
 	items := make([]interface{}, 0)
 
 	elemArr := strings.Split(desc, ",")
-	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
 	step, _ := strconv.Atoi(stepStr)
 	total := 0
-	for round := 0; round < repeat; round++ {
-		for i := 0; i < len(elemArr); {
+
+	for i := 0; i < len(elemArr); {
+		for round := 0; round < repeat; round++ {
 			val := ""
 			if stepStr == "r" {
 				val = elemArr[rand.Intn(len(elemArr))]
@@ -255,21 +199,4 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 	}
 
 	return items
-}
-
-func ParseEntry(str string) (string, string) {
-	typ := ""
-	desc := ""
-
-	str = strings.TrimSpace(str)
-	if int32(str[0]) == constant.LeftChar {
-		typ = "literal"
-		desc = strings.ReplaceAll(str, string(constant.LeftChar), "")
-		desc = strings.ReplaceAll(desc,string(constant.RightChar), "")
-	} else {
-		typ = "interval"
-		desc = str
-	}
-
-	return typ, desc
 }
