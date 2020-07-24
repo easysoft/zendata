@@ -4,6 +4,7 @@ rm -rf build/data/system/email
 rm -rf build/data/system/misc
 rm -rf build/data/system/name
 
+cp res/zh/sample.yaml demo/default.yaml
 cp -r demo build/
 rm -rf build/demo/out
 
