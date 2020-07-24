@@ -5,6 +5,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"strings"
@@ -51,6 +52,13 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 
 	mergerDefine(&defaultDef, &configDef)
 	orderFields(&defaultDef, *fieldsToExport)
+
+	for _, field := range defaultDef.Fields {
+		if vari.Trim {
+			field.Prefix = ""
+			field.Postfix = ""
+		}
+	}
 
 	return defaultDef
 }

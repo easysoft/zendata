@@ -22,6 +22,7 @@ var (
 
 	WithHead bool
 	HeadSep string
+	Trim bool
 
 	JsonResp string = "[]"
 	Ip string

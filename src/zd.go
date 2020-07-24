@@ -101,6 +101,9 @@ func main() {
 	flagSet.StringVar(&root, "R", "", "")
 	flagSet.StringVar(&root, "root", "", "")
 
+	flagSet.BoolVar(&vari.Trim, "T", false, "")
+	flagSet.BoolVar(&vari.Trim, "trim", false, "")
+
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")
 

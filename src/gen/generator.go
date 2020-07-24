@@ -228,7 +228,7 @@ func GenerateFieldValWithFix(field model.DefField, fieldValue model.FieldValue, 
 		*indexOfRow++
 	}
 
-	if withFix {
+	if withFix && !vari.Trim {
 		loopStr = prefix + loopStr + postfix
 	}
 
