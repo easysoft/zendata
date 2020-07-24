@@ -4,5 +4,5 @@
 /data/.cache/.data.db-shm
 /data/.cache/.data.db-wal
 /demo/out/
-/data/_test/
+/data/custom/
 /conf/

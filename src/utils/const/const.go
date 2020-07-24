@@ -15,8 +15,8 @@ var (
 	LanguageEN      = "en"
 	LanguageZH      = "zh"
 
-	EnRes = fmt.Sprintf("res%smessages_en.json", string(os.PathSeparator))
-	ZhRes = fmt.Sprintf("res%smessages_zh.json", string(os.PathSeparator))
+	EnRes = fmt.Sprintf("res%sen%smessages.json", string(os.PathSeparator), string(os.PathSeparator))
+	ZhRes = fmt.Sprintf("res%szh%smessages.json", string(os.PathSeparator), string(os.PathSeparator))
 
 	LogDir = fmt.Sprintf("log%s", string(os.PathSeparator))
 

@@ -98,11 +98,11 @@ fields:
     leftpad: 0                          # Using 0 to pad.
   
   - field: field_use_another_file       # Other definition file can be referred.
-    config: number_field.yaml           # Refer to the definition in number_field.yaml of the current directory.
+    config: number.yaml                 # Refer to the definition in number.yaml of the current directory.
     postfix: "\t"
 
-  - field: field_use_ranges_file        # Other definition file can be referred, in which more than one ranges are defined.
-    from: number_ranges.yaml            # Refer to the definition in number_ranges.yaml of the current directory.
+  - field: field_use_ranges             # Other definition file can be referred, in which more than one ranges are defined.
+    from: custom.number.v1.yaml         # Refer to the ranges in data/custom/number/v1.yaml.
     use: medium                         # use medium range.
     postfix: "\t"
 

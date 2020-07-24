@@ -71,9 +71,13 @@ func getResProp(from string) (string, string) { // from resource
 		resPath := resFile
 		if !filepath.IsAbs(resPath) {
 
-			resPath = vari.ExeDir + constant.ResDir + resFile // used res should be in data folder
-			if !fileUtils.FileExist(resPath) {
-				resPath = ""
+			resPath = vari.ConfigDir + resFile
+			if !fileUtils.FileExist(resPath) { // res in the same folder with passed config file
+
+				resPath = vari.ExeDir + constant.ResDir + resFile
+				if !fileUtils.FileExist(resPath) {  // res in res file
+					resPath = ""
+				}
 			}
 		} else {
 			if !fileUtils.FileExist(resPath) {
