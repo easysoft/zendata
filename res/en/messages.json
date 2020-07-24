@@ -95,7 +95,15 @@
     },
     {
       "id": "start_server",
-      "translation": "Success yo start zendata http service, press CTRL+C to exist. \nYou may use http://%s:%s to retrieve the data，for example: \n curl http://%s:%s/?default=demo/default.yaml&config=demo/test.yaml&lines=100."
+      "translation": "Success yo start zendata http service, press CTRL+C to exist. \nYou may use http://%s:%s to retrieve the data，for example: \ncurl http://%s:%s/?config=demo/default.yaml&F=field_common&lines=10."
+    },
+    {
+      "id": "server_request",
+      "translation": "\nGot %s request %s."
+    },
+    {
+      "id": "server_response",
+      "translation": "\nCreate %d records in %d sec."
     },
     {
       "id": "excel_data",

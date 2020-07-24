@@ -194,6 +194,8 @@ func StartServer() {
 }
 
 func DataHandler(w http.ResponseWriter, req *http.Request) {
+
+
 	root, defaultFile, configFile, fields, count, vari.HeadSep,
 		format, table, decode, input, output = service.ParseRequestParams(req)
 
@@ -202,6 +204,7 @@ func DataHandler(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintln(w, vari.JsonResp)
 	} else if defaultFile != "" || configFile != "" {
 		vari.RunMode = constant.RunModeServerRequest
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 		toGen()
 		fmt.Fprintln(w, vari.JsonResp)
 	}

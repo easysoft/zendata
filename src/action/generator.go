@@ -7,13 +7,15 @@ import (
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"strings"
+	"time"
 )
 
 func Generate(defaultFile string, configFile string, total int, fieldsToExportStr string, out string, format string, table string) {
-	//startTime := time.Now().Unix()
+	startTime := time.Now().Unix()
 
 	if defaultFile != "" && configFile == "" {
 		configFile = defaultFile
@@ -35,8 +37,10 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 		WriteToFile(out, content)
 	}
 
-	//entTime := time.Now().Unix()
-	//logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_records", len(rows), out, entTime - startTime ))
+	entTime := time.Now().Unix()
+	if vari.RunMode == constant.RunModeServerRequest {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", len(rows), entTime - startTime))
+	}
 }
 
 func Print(rows [][]string, format string, table string, colTypes []bool, fields []string) (string, string) {
@@ -51,7 +55,9 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 				line += vari.HeadSep
 			}
 		}
-		logUtils.Screen(fmt.Sprintf("%s", line))
+		if vari.RunMode != constant.RunModeServerRequest {
+			logUtils.Screen(fmt.Sprintf("%s", line))
+		}
 		content += line + "\n"
 	}
 
@@ -82,7 +88,9 @@ func Print(rows [][]string, format string, table string, colTypes []bool, fields
 			content = content + line + "\n"
 		}
 
-		logUtils.Screen(fmt.Sprintf("%s", line))
+		if vari.RunMode != constant.RunModeServerRequest {
+			logUtils.Screen(fmt.Sprintf("%s", line))
+		}
 
 		testData.Table.Rows = append(testData.Table.Rows, row)
 
