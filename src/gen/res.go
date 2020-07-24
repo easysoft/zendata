@@ -185,10 +185,10 @@ func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, p
 	}
 
 	err1 := yaml.Unmarshal(yamlContent, &parentRanges)
-	if err1 != nil || parentInsts.Instances == nil || len(parentInsts.Instances) == 0 { // instances
+	if err1 != nil || parentRanges.Ranges == nil || len(parentRanges.Ranges) == 0 { // instances
 
 		err2 := yaml.Unmarshal(yamlContent, &parentInsts)
-		if err2 != nil || parentRanges.Ranges == nil || len(parentRanges.Ranges) == 0 { // ranges
+		if err2 != nil || parentInsts.Instances == nil || len(parentInsts.Instances) == 0 { // ranges
 			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
 			return
 		}
