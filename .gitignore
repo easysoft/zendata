@@ -1,11 +1,8 @@
-/def/
 /log/
 /.idea/
-/bin/
-/xdoc/bak/out/
 /build/
 /data/.cache/.data.db-shm
 /data/.cache/.data.db-wal
 /demo/out/
-/test/output/
 /data/_test/
+/conf/
