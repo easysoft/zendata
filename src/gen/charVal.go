@@ -1,8 +1,8 @@
 package gen
 
 import (
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"math/rand"
 )
 
 func GenerateByteItems(start byte, end byte, step interface{}, rand bool, repeat int) []interface{} {
@@ -17,17 +17,16 @@ func GenerateByteItemsByStep(start byte, end byte, step int, repeat int) []inter
 	arr := make([]interface{}, 0)
 
 	total := 0
-	for round := 0; round < repeat; round++ {
-		for i := 0; true; {
-			val := start + byte(int(i)*step)
-			if val > end {
-				break
-			}
+	for i := 0; true; {
+		val := start + byte(int(i)*step)
+		if (val > end && step > 0) || (val < end && step < 0)  {
+			break
+		}
 
+		for round := 0; round < repeat; round++ {
 			arr = append(arr, val)
-			i++
-			total++
 
+			total++
 			if total > constant.MaxNumb {
 				break
 			}
@@ -36,26 +35,28 @@ func GenerateByteItemsByStep(start byte, end byte, step int, repeat int) []inter
 		if total > constant.MaxNumb {
 			break
 		}
+		i++
 	}
-
 	return arr
 }
 
 func GenerateByteItemsRand(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	countInRound := int(end - start) / step + 1
-
+	countInRound := int(int(end) - int(start)) / step
 	total := 0
-	for round := 0; round < repeat; round++ {
-		for i := 0; i < countInRound; {
-			ran := rand.Intn(countInRound)
-			val := start + byte(ran)
+	for i := 0; i < countInRound; {
+		rand := commonUtils.RandNum(countInRound)
+		if step < 0 {
+			rand = rand * -1
+		}
 
+		val := start + byte(rand)
+
+		for round := 0; round < repeat; round++ {
 			arr = append(arr, val)
-			i++
-			total++
 
+			total++
 			if total > constant.MaxNumb {
 				break
 			}
@@ -64,6 +65,7 @@ func GenerateByteItemsRand(start byte, end byte, step int, repeat int) []interfa
 		if total > constant.MaxNumb {
 			break
 		}
+		i++
 	}
 
 	return arr

@@ -73,6 +73,8 @@ func ParseRangeItem(item string) (entry string, step string, repeat int) {
 		step = strings.ToLower(sectionArr[1])
 	}
 
+	if repeat == 0 { repeat = 1 }
+	if step == "" { step = "1" }
 	return entry, step, repeat
 }
 
@@ -107,7 +109,14 @@ func isBoundaryStr(str string) bool {
 	right := strings.TrimSpace(arr[1])
 
 	if len(left) != 1 || len(right) != 1 {
-		return false
+		leftRune := []rune(string(left[0]))[0]
+		rightRune := []rune(string(right[0]))[0]
+
+		if unicode.IsNumber(leftRune) && unicode.IsNumber(rightRune) {
+			return true
+		} else {
+			return false
+		}
 	} else {
 		leftRune := []rune(string(left[0]))[0]
 		rightRune := []rune(string(right[0]))[0]

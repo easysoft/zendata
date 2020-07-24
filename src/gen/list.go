@@ -2,8 +2,8 @@ package gen
 
 import (
 	"github.com/easysoft/zendata/src/model"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -94,7 +94,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 		float1, errFloat1 := strconv.ParseFloat(startStr, 64)
 		float2, errFloat2 := strconv.ParseFloat(endStr, 64)
 		var errFloat3 error
-		if strings.ToLower(stepStr) != "r" {
+		if strings.ToLower(stepStr) != "" && strings.ToLower(stepStr) != "r" {
 			_, errFloat3 = strconv.ParseFloat(stepStr, 64)
 		}
 		if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
@@ -110,8 +110,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 			precision := getPrecision(float1, step)
 
-			if (float1 > float2 && step.(int) > 0) || (float1 < float2 && step.(int) < 0) {
-				step = -1 * step.(int)
+			if (float1 > float2 && step.(float64) > 0) || (float1 < float2 && step.(float64) < 0) {
+				step = -1 * step.(float64)
 			}
 			return "float", step, precision, rand
 
@@ -145,18 +145,17 @@ func GenerateValuesFromLiteral(desc string, stepStr string, repeat int) []interf
 	total := 0
 
 	for i := 0; i < len(elemArr); {
+		val := ""
+		if stepStr == "r" {
+			val = elemArr[commonUtils.RandNum(len(elemArr))]
+		} else {
+			val = elemArr[i]
+		}
+
 		for round := 0; round < repeat; round++ {
-			val := ""
-			if stepStr == "r" {
-				val = elemArr[rand.Intn(len(elemArr))]
-			} else {
-				val = elemArr[i]
-			}
-
 			items = append(items, val)
-			i += step
-			total++
 
+			total++
 			if total > constant.MaxNumb {
 				break
 			}
@@ -165,6 +164,7 @@ func GenerateValuesFromLiteral(desc string, stepStr string, repeat int) []interf
 		if total >= constant.MaxNumb {
 			break
 		}
+		i += step
 	}
 
 	return items

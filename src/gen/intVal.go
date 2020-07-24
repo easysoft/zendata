@@ -1,8 +1,8 @@
 package gen
 
 import (
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"math/rand"
 )
 
 func GenerateIntItems(start int64, end int64, step interface{}, rand bool, limit int) []interface{} {
@@ -44,15 +44,18 @@ func GenerateIntItemsByStep(start int64, end int64, step int, repeat int) []inte
 func GenerateIntItemsRand(start int64, end int64, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
-	countInRound := (end - start) / int64(step) + 1
-
+	countInRound := (end - start) / int64(step)
 	total := 0
-	for round := 0; round < repeat; round++ {
-		for i := int64(0); i < countInRound; {
-			val := start + rand.Int63n(countInRound)
+	for i := int64(0); i < countInRound; {
+		rand := commonUtils.RandNum64(countInRound)
+		if step < 0 {
+			rand = rand * -1
+		}
 
+		val := start + rand
+		for round := 0; round < repeat; round++ {
 			arr = append(arr, val)
-			i++
+
 			total++
 
 			if total > constant.MaxNumb {
@@ -63,6 +66,7 @@ func GenerateIntItemsRand(start int64, end int64, step int, repeat int) []interf
 		if total > constant.MaxNumb {
 			break
 		}
+		i++
 	}
 
 	return arr

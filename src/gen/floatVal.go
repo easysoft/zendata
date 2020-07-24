@@ -1,8 +1,8 @@
 package gen
 
 import (
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -19,18 +19,17 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, repe
 	arr := make([]interface{}, 0)
 
 	total := 0
-	for round := 0; round < repeat; round++ {
-		for i := 0; true; {
-			gap := float64(i) * step.(float64)
-			val := start + gap
-			if val > end {
-				break
-			}
 
+	for i := 0; true; {
+		val := start + float64(i) * step.(float64)
+		if (val > end && step.(float64) > 0) || (val < end && step.(float64) < 0)  {
+			break
+		}
+
+		for round := 0; round < repeat; round++ {
 			arr = append(arr, val)
-			i++
-			total++
 
+			total++
 			if total > constant.MaxNumb {
 				break
 			}
@@ -38,6 +37,7 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, repe
 		if total > constant.MaxNumb {
 			break
 		}
+		i++
 	}
 
 	return arr
@@ -47,16 +47,19 @@ func GenerateFloatItemsRand(start float64, end float64, step float64, repeat int
 	arr := make([]interface{}, 0)
 
 	countInRound := (end - start) / step
-
 	total := 0
-	for round := 0; round < repeat; round++ {
-		for i := float64(0); i < countInRound; {
-			val := start + float64(rand.Int63n(int64(countInRound)))*step
+	for i := float64(0); i < countInRound; {
+		rand := commonUtils.RandNum64(int64(countInRound))
+		if step < 0 {
+			rand = rand * -1
+		}
 
+		val := start + float64(rand) * step
+
+		for round := 0; round < repeat; round++ {
 			arr = append(arr, val)
-			i++
-			total++
 
+			total++
 			if total > constant.MaxNumb {
 				break
 			}
@@ -65,6 +68,7 @@ func GenerateFloatItemsRand(start float64, end float64, step float64, repeat int
 		if total > constant.MaxNumb {
 			break
 		}
+		i++
 	}
 
 	return arr
