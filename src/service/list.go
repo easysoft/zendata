@@ -25,6 +25,7 @@ func ListRes() {
 	GetFilesAndDirs(path, &res)
 
 	msg := ""
+	names := make([]string, 0)
 	nameWidth := 0
 	titleWidth := 0
 	for key, arr := range res {
@@ -36,23 +37,51 @@ func ListRes() {
 		}
 
 		res[key] = arr
-		lent := runewidth.StringWidth(arr[1])
+		name := pathToName(arr[1])
+		names = append(names, name)
+		lent := runewidth.StringWidth(name)
 		if lent > nameWidth {
 			nameWidth = lent
 		}
-		lent2 := runewidth.StringWidth(arr[2])
-		if lent2 > titleWidth {
-			titleWidth = lent2
+
+		if key == "excel" {
+			sheets := strings.Split(arr[2], "|")
+			for _, sheet := range sheets {
+				lent2 := runewidth.StringWidth(sheet)
+				if lent2 > titleWidth {
+					titleWidth = lent2
+				}
+			}
+		} else {
+			lent2 := runewidth.StringWidth(arr[2])
+			if lent2 > titleWidth {
+				titleWidth = lent2
+			}
 		}
+
 	}
 
+	idx := 0
 	for _, arr := range res {
-		name := arr[1]
-		name = name  + strings.Repeat(" ", nameWidth - runewidth.StringWidth(name))
-		title := arr[2]
-		title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
+		name := names[idx]
 
-		msg = msg + fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
+		titleStr := arr[2]
+		titles := strings.Split(titleStr, "|")
+
+		idx2 := 0
+		for _, title := range titles {
+			if idx2 > 0 {
+				name = ""
+			}
+			name = name + strings.Repeat(" ", nameWidth - runewidth.StringWidth(name))
+
+			title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
+			msg = msg + fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
+
+			idx2++
+		}
+
+		idx++
 	}
 
 	logUtils.Screen(msg)
@@ -70,7 +99,7 @@ func GetFilesAndDirs(path string, res *map[string][size]string)  {
 		} else {
 			name := fi.Name()
 			arr := [size]string{}
-			if strings.HasSuffix(name, ".yaml"){
+			if strings.HasSuffix(name, ".yaml") {
 				arr[0] = path + constant.PthSep + name
 				arr[1] = path[strings.LastIndex(path, "system"):] + constant.PthSep + name
 				(*res)["yaml"] = arr
@@ -118,4 +147,11 @@ func readExcelInfo(path string) (title string, desc string) {
 
 	desc = i118Utils.I118Prt.Sprintf("excel_data")
 	return
+}
+
+func pathToName(path string) string {
+	name := strings.ReplaceAll(path, constant.PthSep,".")
+	name = name[:strings.LastIndex(name, ".")]
+
+	return name
 }
