@@ -71,12 +71,9 @@ func getResProp(from string) (string, string) { // from resource
 		resPath := resFile
 		if !filepath.IsAbs(resPath) {
 
-			resPath = vari.ConfigDir + resFile
+			resPath = vari.ExeDir + constant.ResDir + resFile // used res should be in data folder
 			if !fileUtils.FileExist(resPath) {
-				resPath = vari.DefaultDir + resFile
-				if !fileUtils.FileExist(resPath) {
-					resPath = ""
-				}
+				resPath = ""
 			}
 		} else {
 			if !fileUtils.FileExist(resPath) {
@@ -148,16 +145,22 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 
 	for _, inst := range insts.Instances {
 		for _, instField := range inst.Fields { // prepare referred parent instances if needed
-			if instField.Use != "" { // refer to another instance
-				parent := getRootInstant(instField)
+			if instField.Use != "" { // refer to another def
+				parentRanges, parentInstants  := getRootRangeOrInstant(instField)
 				groupedValueParent := map[string][]string{}
-				for _, child := range parent.Instances {
-					field := convertInstantToField(parent, child)
 
-					// gen values
-					group := child.Instance
-					groupedValueParent[group] = GenerateForField(&field, constant.Total, false)
+				if len(parentInstants.Instances) > 0 {
+					for _, child := range parentInstants.Instances {
+						field := convertInstantToField(parentInstants, child)
+
+						// gen values
+						group := child.Instance
+						groupedValueParent[group] = GenerateForField(&field, constant.Total, false)
+					}
+				} else if len(parentRanges.Ranges) > 0 {
+					groupedValueParent = getResForRanges(parentRanges)
 				}
+
 				vari.Res[instField.From] = groupedValueParent
 			}
 		}
@@ -172,7 +175,7 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 	return groupedValue
 }
 
-func getRootInstant(inst model.DefField) (parentInsts model.ResInsts) {
+func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, parentInsts model.ResInsts) {
 	resFile, _ := getResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
@@ -181,9 +184,14 @@ func getRootInstant(inst model.DefField) (parentInsts model.ResInsts) {
 		return
 	}
 
-	err = yaml.Unmarshal(yamlContent, &parentInsts)
-	if err == nil && parentInsts.Instances != nil && len(parentInsts.Instances) > 0 { // instances
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
+	err1 := yaml.Unmarshal(yamlContent, &parentRanges)
+	if err1 != nil || parentInsts.Instances == nil || len(parentInsts.Instances) == 0 { // instances
+
+		err2 := yaml.Unmarshal(yamlContent, &parentInsts)
+		if err2 != nil || parentRanges.Ranges == nil || len(parentRanges.Ranges) == 0 { // ranges
+			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
+			return
+		}
 	}
 
 	return
