@@ -105,6 +105,9 @@ func main() {
 	flagSet.BoolVar(&vari.Trim, "T", false, "")
 	flagSet.BoolVar(&vari.Trim, "trim", false, "")
 
+	flagSet.BoolVar(&vari.Recursive, "r", false, "")
+	flagSet.BoolVar(&vari.Recursive, "recursive", false, "")
+
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")
 

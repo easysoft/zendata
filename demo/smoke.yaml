@@ -5,11 +5,11 @@ version: 1.0
 
 fields:
   - field: test1
-    range: [1-9]:3{2}
+    range: [1-5]:3{2}
     postfix: "\t"
 
   - field: test2
-    range: Z-A:R{2}
+    range: Z-P:R{2}
     postfix: "\t"
 
   - field: test3
@@ -25,3 +25,15 @@ fields:
     loop: 2-9
     loopfix: "|"
     postfix: "\t"
+
+  - field: field6
+    fields:
+      - field: child1
+        range: a-z
+        prefix: part1_
+        postfix: '|'
+
+      - field:  child2
+        range: 1-9
+        prefix: part2_
+        postfix: '|'

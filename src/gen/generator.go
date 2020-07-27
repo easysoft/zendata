@@ -58,22 +58,13 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 	values := make([]string, 0)
 
 	if len(field.Fields) > 0 { // sub fields
-		arr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 		for _, child := range field.Fields {
 			childValues := GenerateForField(&child, total, withFix)
-			arr = append(arr, childValues)
+			arrOfArr = append(arrOfArr, childValues)
 		}
 
-		for i := 0; i < total; i++ {
-			concat := ""
-			for _, row := range arr {
-				concat = concat + row[i] // get one item from each child, grouped as a1 or b2
-			}
-
-			// should be done by calling LoopSubFields func as below, so disable this line
-			//concat = field.Prefix + concat + field.Postfix
-			values = append(values, concat)
-		}
+		connectChildrenToSingleStr(arrOfArr, total, &values)
 		values = LoopSubFields(field, values, total, true)
 
 	} else if field.From != "" { // refer to res
@@ -264,4 +255,37 @@ func computerLoop(field *model.DefField) {
 	}
 
 	(*field).LoopIndex = (*field).LoopStart
+}
+
+func connectChildrenToSingleStr(arrOfArr [][]string, total int, values *[]string) {
+	indexArr := getModArr(arrOfArr)
+
+	for i := 0; i < total; i++ {
+		concat := ""
+		for idx, row := range arrOfArr {
+			concat = concat + row[indexArr[idx]] // get one item from each child, grouped as a1 or b2
+		}
+
+		*values = append(*values, concat)
+
+
+	}
+}
+
+func getModArr(arrOfArr [][]string) []int {
+	indexArr := make([]int, 0)
+	for _, _ = range arrOfArr {
+		indexArr = append(indexArr, 0)
+	}
+
+	for i := 0; i < len(arrOfArr); i++ {
+		loop := 1
+		for j := i + 1; j < len(arrOfArr); j++ {
+			loop = loop * len(arrOfArr[j])
+		}
+
+		indexArr[i] = loop
+	}
+
+	return indexArr
 }
