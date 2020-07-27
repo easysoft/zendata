@@ -29,11 +29,11 @@ fields:
   - field: field6
     fields:
       - field: child1
-        range: a-z
+        range: a-g
         prefix: part1_
         postfix: '|'
 
       - field:  child2
-        range: 1-9
+        range: 1-3
         prefix: part2_
         postfix: '|'

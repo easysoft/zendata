@@ -261,9 +261,13 @@ func connectChildrenToSingleStr(arrOfArr [][]string, total int, values *[]string
 	indexArr := getModArr(arrOfArr)
 
 	for count := 0; count < total; count++ {
-		str := ""
-		for idx, row := range arrOfArr {
-			str = str + row[count % indexArr[idx]] // get one item from each child, grouped as a1 or b2
+		str := strconv.Itoa(count) + ": "
+		for j := 0; j < len(arrOfArr); j++ {
+			child := arrOfArr[j]
+
+			mod := indexArr[j]
+			remainder := count / mod % len(child)
+			str = str + child[remainder]
 		}
 
 		*values = append(*values, str)
