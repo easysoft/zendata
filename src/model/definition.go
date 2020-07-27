@@ -65,9 +65,13 @@ type FieldSimple struct {
 	Range    string  `yaml:"range"`
 	Prefix   string  `yaml:"prefix"`
 	Postfix  string  `yaml:"postfix"`
-	Loop  int  `yaml:"loop"`
+	Loop  string  `yaml:"loop"`
 	Loopfix  string  `yaml:"loopfix"`
 	Format  string  `yaml:"format"`
+
+	LoopStart  int
+	LoopEnd  int
+	LoopIndex int
 }
 
 type FieldValue struct {

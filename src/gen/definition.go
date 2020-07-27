@@ -146,7 +146,7 @@ func CopyField(child model.DefField, parent *model.DefField) {
 	if child.Postfix != "" {
 		(*parent).Postfix = child.Postfix
 	}
-	if child.Loop != 0 {
+	if child.Loop != "" {
 		(*parent).Loop = child.Loop
 	}
 	if child.Loopfix != "" {

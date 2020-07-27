@@ -113,7 +113,7 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 }
 
 func GenerateFieldItemsFromDefinition(field *model.DefField) []string {
-	if field.Loop == 0 {field.Loop = 1}
+	//if field.Loop == "" {field.Loop = "1"}
 
 	values := make([]string, 0)
 
@@ -123,7 +123,7 @@ func GenerateFieldItemsFromDefinition(field *model.DefField) []string {
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := GenerateFieldValWithFix(*field, fieldValue, &index, true)
+		str := GenerateFieldValWithFix(field, fieldValue, &index, true)
 		values = append(values, str)
 
 		count++
@@ -187,7 +187,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 }
 
 func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix bool) []string {
-	if field.Loop == 0 {field.Loop = 1}
+	//if field.Loop == "" {field.Loop = "1"}
 
 	values := make([]string, 0)
 	fieldValue := model.FieldValue{}
@@ -200,7 +200,7 @@ func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := GenerateFieldValWithFix(*field, fieldValue, &index, withFix)
+		str := GenerateFieldValWithFix(field, fieldValue, &index, withFix)
 		values = append(values, str)
 
 		count++
@@ -212,17 +212,18 @@ func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix
 	return values
 }
 
-func GenerateFieldValWithFix(field model.DefField, fieldValue model.FieldValue, indexOfRow *int, withFix bool) string {
+func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldValue, indexOfRow *int, withFix bool) string {
 	prefix := field.Prefix
 	postfix := field.Postfix
 
+	computerLoop(field)
 	loopStr := ""
-	for j := 0; j < field.Loop; j++ {
+	for j := 0; j < (*field).LoopIndex; j++ {
 		if loopStr != "" {
 			loopStr = loopStr + field.Loopfix
 		}
 
-		str := GenerateFieldVal(field, fieldValue, indexOfRow)
+		str := GenerateFieldVal(*field, fieldValue, indexOfRow)
 		loopStr = loopStr + str
 
 		*indexOfRow++
@@ -233,8 +234,34 @@ func GenerateFieldValWithFix(field model.DefField, fieldValue model.FieldValue, 
 	}
 
 	if field.Width > runewidth.StringWidth(loopStr) {
-		loopStr = stringUtils.AddPad(loopStr, field)
+		loopStr = stringUtils.AddPad(loopStr, *field)
+	}
+
+	(*field).LoopIndex = (*field).LoopIndex + 1
+	if (*field).LoopIndex > (*field).LoopEnd {
+		(*field).LoopIndex = (*field).LoopStart
 	}
 
 	return loopStr
+}
+
+func computerLoop(field *model.DefField) {
+	if (*field).LoopIndex != 0 {
+		return
+	}
+
+	arr := strings.Split(field.Loop, "-")
+	(*field).LoopStart, _ = strconv.Atoi(arr[0])
+	if len(arr) > 1 {
+		field.LoopEnd, _ = strconv.Atoi(arr[1])
+	}
+
+	if (*field).LoopStart == 0 {
+		(*field).LoopStart = 1
+	}
+	if (*field).LoopEnd == 0 {
+		(*field).LoopEnd = 1
+	}
+
+	(*field).LoopIndex = (*field).LoopStart
 }

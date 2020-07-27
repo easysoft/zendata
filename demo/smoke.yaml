@@ -21,5 +21,7 @@ fields:
     postfix: "\t"
 
   - field: test5
-    range: [user-2,user3,user4,user6]:R{2}
+    range: [user-2,user3,user4,user6]{2}
+    loop: 2-9
+    loopfix: "|"
     postfix: "\t"
