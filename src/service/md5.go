@@ -17,7 +17,7 @@ const (
 func AddMd5(path string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
 
@@ -52,7 +52,7 @@ func AddMd5(path string) {
 	}
 
 	if err := excel.SaveAs(path); err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_write_file", path))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_write_file", path))
 	}
 }
 

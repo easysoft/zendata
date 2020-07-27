@@ -9,6 +9,7 @@ import (
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -154,6 +155,9 @@ func main() {
 func toGen() {
 	if vari.RunMode == constant.RunModeServer {
 		StartServer()
+	} else if vari.RunMode == constant.RunModeServerRequest {
+		format = constant.FormatJson
+		action.Generate(defaultFile, configFile, count, fields, output, format, table)
 	} else if vari.RunMode == constant.RunModeParse {
 		action.ParseSql(input, output)
 	} else if vari.RunMode == constant.RunModeGen {
@@ -165,6 +169,10 @@ func toGen() {
 		}
 
 		if output != "" {
+			fileUtils.RemoveExist(output)
+			action.FileWriter, _ = os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+			defer action.FileWriter.Close()
+
 			ext := strings.ToLower(path.Ext(output))
 			if len(ext) > 1 {
 				ext = strings.TrimLeft(ext,".")
@@ -174,8 +182,6 @@ func toGen() {
 			}
 		}
 
-		action.Generate(defaultFile, configFile, count, fields, output, format, table)
-	} else if vari.RunMode == constant.RunModeServerRequest {
 		action.Generate(defaultFile, configFile, count, fields, output, format, table)
 	}
 }
@@ -196,27 +202,25 @@ func StartServer() {
 	http.ListenAndServe(fmt.Sprintf(":%d", vari.Port), nil)
 }
 
-func DataHandler(w http.ResponseWriter, req *http.Request) {
-
+func DataHandler(writer http.ResponseWriter, req *http.Request) {
+	action.HttpWriter = writer
 
 	root, defaultFile, configFile, fields, count, vari.HeadSep,
 		format, table, decode, input, output = service.ParseRequestParams(req)
 
 	if decode {
 		gen.Decode(defaultFile, configFile, fields, input, output)
-		fmt.Fprintln(w, vari.JsonResp)
+		fmt.Fprintln(writer, vari.JsonResp)
 	} else if defaultFile != "" || configFile != "" {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
+
 		toGen()
-		fmt.Fprintln(w, vari.JsonResp)
 	}
 }
 
 func init() {
 	cleanup()
-
-	logUtils.InitLogger()
 	configUtils.InitConfig()
 }
 

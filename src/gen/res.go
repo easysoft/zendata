@@ -116,7 +116,7 @@ func getResForYaml(resFile string) (map[string][]string, string) {
 
 	yamlContent, err := ioutil.ReadFile(resFile)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return valueMap, ""
 	}
 
@@ -184,7 +184,7 @@ func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, p
 
 	yamlContent, err := ioutil.ReadFile(resFile)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return
 	}
 
@@ -193,7 +193,7 @@ func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, p
 
 		err2 := yaml.Unmarshal(yamlContent, &parentInsts)
 		if err2 != nil || parentInsts.Instances == nil || len(parentInsts.Instances) == 0 { // ranges
-			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
 			return
 		}
 	}

@@ -12,7 +12,6 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -40,6 +39,10 @@ func WriteFile(filePath string, content string) {
 	var d1 = []byte(content)
 	err2 := ioutil.WriteFile(filePath, d1, 0666) //写入文件(字节数组)
 	check(err2)
+}
+
+func RemoveExist(path string) {
+	os.Remove(path)
 }
 
 func check(e error) {
@@ -160,50 +163,6 @@ func GetWorkDir() string { // where run command in
 	dir = UpdateDir(dir)
 
 	return dir
-}
-
-func GetLogDir() string {
-	path := vari.ExeDir + constant.LogDir
-
-	dir, _ := ioutil.ReadDir(path)
-
-	regx := `^\d\d\d$`
-
-	numb := 0
-	for _, fi := range dir {
-		if fi.IsDir() {
-			name := fi.Name()
-			pass, _ := regexp.MatchString(regx, name)
-
-			if pass { // 999
-				name = strings.TrimLeft(name, "0")
-				nm, _ := strconv.Atoi(name)
-
-				if nm >= numb {
-					numb = nm
-				}
-			}
-		}
-	}
-
-	if numb >= 9 {
-		numb = 0
-
-		tempDir := path[:len(path)-1] + "-bak" + string(os.PathSeparator) + path[len(path):]
-		childDir := path + "bak" + string(os.PathSeparator) + path[len(path):]
-
-		os.RemoveAll(childDir)
-		os.Rename(path, tempDir)
-
-		MkDirIfNeeded(path)
-
-		err := os.Rename(tempDir, childDir)
-		_ = err
-	}
-
-	ret := getLogNumb(numb + 1)
-
-	return UpdateDir(path + ret)
 }
 
 func getLogNumb(numb int) string {

@@ -32,7 +32,7 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 	jsonObj, _ := json.Marshal(ret)
 	vari.JsonResp = string(jsonObj)
 
-	logUtils.Screen(i118Utils.I118Prt.Sprintf("analyse_success", output ))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("analyse_success", output ))
 	if vari.RunMode != constant.RunModeServerRequest {
 		fileUtils.WriteFile(output, vari.JsonResp)
 	}

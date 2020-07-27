@@ -84,7 +84,7 @@ func ListRes() {
 		idx++
 	}
 
-	logUtils.Screen(msg)
+	logUtils.PrintTo(msg)
 }
 
 func GetFilesAndDirs(path string, res *map[string][size]string)  {
@@ -117,12 +117,12 @@ func readYamlInfo(path string) (title string, desc string) {
 
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
 	err = yaml.Unmarshal(yamlContent, &configDef)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", path))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_file", path))
 		return
 	}
 
@@ -134,7 +134,7 @@ func readYamlInfo(path string) (title string, desc string) {
 func readExcelInfo(path string) (title string, desc string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
 

@@ -57,7 +57,7 @@ func ExeShellWithOutput(cmdStr string) []string {
 		if err2 != nil || io.EOF == err2 {
 			break
 		}
-		logUtils.Screen(strings.TrimRight(line, "\n"))
+		logUtils.PrintTo(strings.TrimRight(line, "\n"))
 		output = append(output, line)
 	}
 

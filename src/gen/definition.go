@@ -20,12 +20,12 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 		defaultContent, err := ioutil.ReadFile(defaultFile)
 		defaultContent = ReplaceSpecialChars(defaultContent)
 		if err != nil {
-			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
 			return defaultDef
 		}
 		err = yaml.Unmarshal(defaultContent, &defaultDef)
 		if err != nil {
-			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
 			return defaultDef
 		}
 	}
@@ -34,12 +34,12 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	yamlContent, err := ioutil.ReadFile(configFile)
 	yamlContent = ReplaceSpecialChars(yamlContent)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", configFile))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", configFile))
 		return configDef
 	}
 	err = yaml.Unmarshal(yamlContent, &configDef)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_file", configFile))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_file", configFile))
 		return configDef
 	}
 

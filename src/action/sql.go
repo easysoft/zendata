@@ -36,12 +36,12 @@ func ParseSql(file string, out string) {
 			outFile := out + tableName + ".yaml"
 			WriteToFile(outFile, content)
 		} else {
-			logUtils.Screen(content)
+			logUtils.PrintTo(content)
 		}
 	}
 
 	entTime := time.Now().Unix()
-	logUtils.Screen(i118Utils.I118Prt.Sprintf("generate_yaml", len(statements), out, entTime - startTime ))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statements), out, entTime - startTime ))
 }
 
 func getCreateStatement(file string) map[string]string {
@@ -49,7 +49,7 @@ func getCreateStatement(file string) map[string]string {
 
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", file))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file))
 		return statements
 	}
 

@@ -31,7 +31,7 @@ func ViewRes(res string) {
 func readYamlData(path string) (typ string, insts model.ResInsts, ranges model.ResRanges) {
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
 
@@ -64,7 +64,7 @@ func printInst(inst model.ResInsts) {
 			idx+1, item.Instance + strings.Repeat(" ", width - runewidth.StringWidth(item.Instance)), item.Note)
 	}
 
-	logUtils.Screen(msg)
+	logUtils.PrintTo(msg)
 }
 
 func printRanges(ranges model.ResRanges) {
@@ -87,14 +87,14 @@ func printRanges(ranges model.ResRanges) {
 		i++
 	}
 
-	logUtils.Screen(msg)
+	logUtils.PrintTo(msg)
 
 }
 
 func printExcelSheet(path, sheetName string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
 
@@ -106,7 +106,7 @@ func printExcelSheet(path, sheetName string) {
 		}
 	}
 
-	logUtils.Screen(msg)
+	logUtils.PrintTo(msg)
 
 	if sheetName != "" {
 		for _, sheet := range excel.GetSheetList() {
@@ -160,7 +160,7 @@ func printExcelSheet(path, sheetName string) {
 					line = line + col + strings.Repeat(" ", space) + " "
 				}
 
-				logUtils.Screen(line)
+				logUtils.PrintTo(line)
 			}
 		}
 	}

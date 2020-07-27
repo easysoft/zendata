@@ -14,10 +14,6 @@ require (
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mattn/go-runewidth v0.0.9
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
-	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
-	github.com/satori/go.uuid v1.2.0
-	github.com/sirupsen/logrus v1.6.0
-	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/stretchr/testify v1.6.0 // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
 	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980 // indirect

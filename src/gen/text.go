@@ -28,7 +28,7 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 	realPath := findFilePath(file)
 	content, err := ioutil.ReadFile(realPath)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_read_file", realPath))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", realPath))
 		fieldValue.Values = append(fieldValue.Values, fmt.Sprintf("FILE_NOT_FOUND: %s", realPath))
 		return
 	}

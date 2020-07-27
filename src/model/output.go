@@ -2,16 +2,17 @@ package model
 
 import "encoding/xml"
 
-type TestData struct {
-	XMLName    xml.Name `xml:"testdata"`
-	Title string `json:"title" xml:"title"`
-	Table  Table `json:"table" xml:"table"`
+type XmlData struct {
+	XMLName xml.Name `xml:"testdata"`
+	Title   string   `xml:"title"`
+	Table   XmlTable `xml:"table"`
 }
 
-type Table struct {
-	Rows  []Row `json:"row" xml:"row"`
+type XmlTable struct {
+	Rows  []XmlRow `xml:"row"`
 }
 
-type Row struct {
-	Cols  []string `json:"col" xml:"col"`
+type XmlRow struct {
+	XMLName xml.Name `xml:"row"`
+	Cols  []string `xml:"col"`
 }

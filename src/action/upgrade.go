@@ -20,14 +20,14 @@ func Upgrade() {
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
 	defer db.Close()
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteSource, err.Error()))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteSource, err.Error()))
 		return
 	}
 
 	sql := "SELECT id, name, state, zipCode, cityCode FROM city"
 	rows, err := db.Query(sql)
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
 		return
 	}
 
@@ -50,7 +50,7 @@ func Upgrade() {
 
 		err = rows.Scan(&id, &name, &state, &zipCode, &cityCode)
 		if err != nil {
-			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
 			return
 		}
 
@@ -77,13 +77,13 @@ func Upgrade() {
 	for _, sql := range sqls {
 		_, err := db.Exec(sql)
 		if err != nil {
-			logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
 		}
 	}
 
 	err = excel.SaveAs("export.excel")
 	if err != nil {
-		logUtils.Screen(i118Utils.I118Prt.Sprintf("fail_to_save_excel", err.Error()))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_save_excel", err.Error()))
 	}
 }
 
