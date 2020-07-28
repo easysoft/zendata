@@ -3,7 +3,6 @@ package gen
 import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
-	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -64,8 +63,12 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 			arrOfArr = append(arrOfArr, childValues)
 		}
 
-		connectChildrenToSingleStr(arrOfArr, total, &values)
-		values = LoopSubFields(field, values, total, true)
+		count := total
+		if strings.Index(field.Path, "") > -1 { // is child, gen x*y records
+			count = getRecordCount(arrOfArr)
+		}
+		connectChildrenToSingleStr(arrOfArr, count, &values)
+		values = LoopSubFields(field, values, count, true)
 
 	} else if field.From != "" { // refer to res
 
@@ -118,7 +121,7 @@ func GenerateFieldItemsFromDefinition(field *model.DefField) []string {
 		values = append(values, str)
 
 		count++
-		if count >= constant.Total {
+		if index >= len(fieldValue.Values) || count >= vari.Total {
 			break
 		}
 	}
@@ -187,15 +190,15 @@ func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix
 		fieldValue.Values = append(fieldValue.Values, val)
 	}
 
-	index := 0
+	indexOfRow := 0
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := GenerateFieldValWithFix(field, fieldValue, &index, withFix)
+		str := GenerateFieldValWithFix(field, fieldValue, &indexOfRow, withFix)
 		values = append(values, str)
 
 		count++
-		if count >= total {
+		if indexOfRow >= len(fieldValue.Values) || count >= total {
 			break
 		}
 	}
@@ -260,18 +263,27 @@ func computerLoop(field *model.DefField) {
 func connectChildrenToSingleStr(arrOfArr [][]string, total int, values *[]string) {
 	indexArr := getModArr(arrOfArr)
 
-	for count := 0; count < total; count++ {
-		str := strconv.Itoa(count) + ": "
+	for i := 0; i < total; i++ {
+		str := ""
 		for j := 0; j < len(arrOfArr); j++ {
 			child := arrOfArr[j]
 
 			mod := indexArr[j]
-			remainder := count / mod % len(child)
+			remainder := i / mod % len(child)
 			str = str + child[remainder]
 		}
 
 		*values = append(*values, str)
 	}
+}
+
+func getRecordCount(arrOfArr [][]string) int {
+	count := 1
+	for i := 0; i < len(arrOfArr); i++ {
+		arr := arrOfArr[i]
+		count = len(arr) * count
+	}
+	return count
 }
 
 func getModArr(arrOfArr [][]string) []int {

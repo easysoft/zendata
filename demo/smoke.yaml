@@ -29,11 +29,21 @@ fields:
   - field: field6
     fields:
       - field: child1
-        range: a-g
-        prefix: part1_
-        postfix: '|'
+        range: X-Z
+        prefix:
+        postfix: "\t"
 
-      - field:  child2
-        range: 1-3
-        prefix: part2_
-        postfix: '|'
+      - field: child2
+        prefix: "["
+        postfix: "]"
+        fields:
+          - field: child2.1
+            range: a-c
+            prefix:
+            postfix: "\t"
+
+          - field: child2.2
+            range: 1-9
+            prefix:
+            loop: 3
+            loopfix: ","

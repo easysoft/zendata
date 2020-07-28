@@ -20,6 +20,7 @@ var (
 	Verbose     bool
 	Interpreter string
 
+	Total int
 	WithHead bool
 	HeadSep string
 	Trim bool

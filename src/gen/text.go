@@ -23,7 +23,7 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldV
 	stepStr := "1"
 	if len(sectionArr) == 2 { stepStr = sectionArr[1] }
 
-	// read from
+	// read from file
 	list := make([]string, 0)
 	realPath := findFilePath(file)
 	content, err := ioutil.ReadFile(realPath)

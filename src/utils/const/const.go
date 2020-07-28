@@ -25,8 +25,7 @@ var (
 	MinHeight = 36
 
 	CmdViewHeight = 10
-
-	Total = 10
+	
 	MaxNumb = 100000 // max number in array
 
 	FormatText = "text"

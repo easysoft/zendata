@@ -34,7 +34,7 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
 
-	constant.Total = total
+	vari.Total = total
 
 	rows, colTypes := gen.GenerateForDefinition(defaultFile, configFile, &fieldsToExport, total)
 	Print(rows, format, out, table, colTypes, fieldsToExport)
