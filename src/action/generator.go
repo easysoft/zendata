@@ -37,8 +37,8 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 
 	vari.Total = total
 
-	rows, colTypes := gen.GenerateForDefinition(defaultFile, configFile, &fieldsToExport, total)
-	Print(rows, format, out, table, colTypes, fieldsToExport)
+	rows, colIsNumArr := gen.GenerateForDefinition(defaultFile, configFile, &fieldsToExport, total)
+	Print(rows, format, table, colIsNumArr, fieldsToExport)
 
 	entTime := time.Now().Unix()
 	if vari.RunMode == constant.RunModeServerRequest {
@@ -46,7 +46,7 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 	}
 }
 
-func Print(rows [][]string, format string, out string, table string, colTypes []bool, fields []string) {
+func Print(rows [][]string, format string, table string, colIsNumArr []bool, fields []string) {
 	if format == constant.FormatText {
 		printTextHeader(fields)
 	} else if format == constant.FormatSql {
@@ -70,7 +70,7 @@ func Print(rows [][]string, format string, out string, table string, colTypes []
 			rowXml.Cols = append(rowXml.Cols, col)
 
 			colVal := stringUtils.ConvertForSql(col)
-			if !colTypes[j] { colVal = "'" + colVal + "'" }
+			if !colIsNumArr[j] { colVal = "'" + colVal + "'" }
 			valuesForSql = append(valuesForSql, colVal)
 		}
 

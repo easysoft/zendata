@@ -20,7 +20,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 
 	fieldNameToValues := map[string][]string{}
 
-	colTypes := make([]bool, 0)
+	colIsNumArr := make([]bool, 0)
 
 	// 为每个field生成值列表
 	for index, field := range vari.Def.Fields {
@@ -32,7 +32,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		vari.Def.Fields[index].Precision = field.Precision
 
 		fieldNameToValues[field.Field] = values
-		colTypes = append(colTypes, field.IsNumb)
+		colIsNumArr = append(colIsNumArr, field.IsNumb)
 	}
 
 	// 生成指定数量行的数据
@@ -50,7 +50,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		}
 	}
 
-	return rows, colTypes
+	return rows, colIsNumArr
 }
 
 func GenerateForField(field *model.DefField, total int, withFix bool) []string {
