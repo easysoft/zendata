@@ -66,6 +66,9 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 		count := total
 		if strings.Index(field.Path, "") > -1 { // is child, gen x*y records
 			count = getRecordCount(arrOfArr)
+			if count > total {
+				count = total
+			}
 		}
 		connectChildrenToSingleStr(arrOfArr, count, &values)
 		values = LoopSubFields(field, values, count, true)
