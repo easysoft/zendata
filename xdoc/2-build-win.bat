@@ -1,7 +1,7 @@
 rd /s/q build
 mkdir build
 
-go-bindata -o=res/res.go -pkg=res res/ res/doc
+go-bindata -o=res/res.go -pkg=res res/ res/en res/zh
 
 SET CGO_ENABLED=1
 SET GOOS=windows
