@@ -26,12 +26,12 @@ fields:
     loopfix: "|"
     postfix: "\t"
 
-  - field: field6
+  - field: test6
     fields:
       - field: child1
         range: X-Z
-        prefix:
-        postfix: "\t"
+        prefix: "a'b"
+        postfix: "\t <:\"(`[]{}"
 
       - field: child2
         prefix: "["

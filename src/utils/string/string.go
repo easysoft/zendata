@@ -129,3 +129,26 @@ func AddPad(str string, field model.DefField) string {
 
 	return str
 }
+
+func ConvertForSql(str string) (ret string) {
+	arr := []rune(str)
+
+	count := 0
+	for _, item := range arr {
+		if count % 2 == 1 && string(item) != "'" {
+			ret = ret + "'"
+		}
+
+		if string(item) != "'" {
+			count = 0
+		}
+
+		ret = ret + string(item)
+
+		if string(item) == "'" {
+			count++
+		}
+	}
+
+	return
+}

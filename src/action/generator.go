@@ -9,6 +9,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"net/http"
 	"os"
@@ -59,27 +60,24 @@ func Print(rows [][]string, format string, out string, table string, colTypes []
 	for i, cols := range rows {
 		row := make([]string, 0)
 		rowXml := model.XmlRow{}
+		valuesForSql := make([]string, 0)
 		lineForText := ""
-		valuesForSql := ""
 
 		for j, col := range cols {
-			if j > 0 && format == constant.FormatSql {
-				valuesForSql = valuesForSql + ", "
-			}
 			lineForText = lineForText + col
 
 			row = append(row, col)
 			rowXml.Cols = append(rowXml.Cols, col)
 
-			colVal := col
+			colVal := stringUtils.ConvertForSql(col)
 			if !colTypes[j] { colVal = "'" + colVal + "'" }
-			valuesForSql = valuesForSql + colVal
+			valuesForSql = append(valuesForSql, colVal)
 		}
 
 		if format == constant.FormatText {
 			printLine(lineForText)
 		} else if format == constant.FormatSql {
-			printLine(genSqlLine(valuesForSql, i, len(rows)))
+			printLine(genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows)))
 		} else if format == constant.FormatJson {
 			printLine(genJsonLine(i, row, len(rows), fields))
 		} else if format == constant.FormatXml {
@@ -132,6 +130,7 @@ func RowToJson(cols []string, fieldsToExport []string) string {
 
 
 func genSqlLine(valuesForSql string, i int, length int) string {
+
 	temp := ""
 	if i == 0 {
 		temp = fmt.Sprintf("  VALUES (%s)", valuesForSql)
