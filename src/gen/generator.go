@@ -73,10 +73,6 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 	} else if field.From != "" { // refer to res
 
 		if field.Use != "" { // refer to instance
-			if field.Use == "privateIP" {
-				fmt.Println("")
-			}
-
 			groupValues := vari.Res[field.From]
 			groups := strings.Split(field.Use, ",")
 			for _, group := range groups {
@@ -109,8 +105,6 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 
 func GenerateFieldItemsFromDefinition(field *model.DefField) []string {
 	values := make([]string, 0)
-	//valuesWithPlaceholder := make([]string, 0)
-	//vari.RandFieldNameToValuesMap[field.Path] = valuesWithPlaceholder
 
 	fieldWithValues := GenerateList(field)
 

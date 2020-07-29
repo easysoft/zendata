@@ -1,19 +1,18 @@
 package gen
 
 import (
-	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"strconv"
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, repeat int) []interface{} {
-	if !rand{
-		return GenerateFloatItemsByStep(start, end, step.(float64), repeat)
-	} else {
-		return GenerateFloatItemsRand(start, end, step.(float64), repeat)
-	}
-}
+//func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, repeat int) []interface{} {
+//	if !rand{
+//		return GenerateFloatItemsByStep(start, end, step.(float64), repeat)
+//	} else {
+//		return GenerateFloatItemsRand(start, end, step.(float64), repeat)
+//	}
+//}
 
 func GenerateFloatItemsByStep(start float64, end float64, step interface{}, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
@@ -43,36 +42,36 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, repe
 	return arr
 }
 
-func GenerateFloatItemsRand(start float64, end float64, step float64, repeat int) []interface{} {
-	arr := make([]interface{}, 0)
-
-	countInRound := (end - start) / step
-	total := 0
-	for i := float64(0); i < countInRound; {
-		rand := commonUtils.RandNum64(int64(countInRound))
-		if step < 0 {
-			rand = rand * -1
-		}
-
-		val := start + float64(rand) * step
-
-		for round := 0; round < repeat; round++ {
-			arr = append(arr, val)
-
-			total++
-			if total > constant.MaxNumb {
-				break
-			}
-		}
-
-		if total > constant.MaxNumb {
-			break
-		}
-		i++
-	}
-
-	return arr
-}
+//func GenerateFloatItemsRand(start float64, end float64, step float64, repeat int) []interface{} {
+//	arr := make([]interface{}, 0)
+//
+//	countInRound := (end - start) / step
+//	total := 0
+//	for i := float64(0); i < countInRound; {
+//		rand := commonUtils.RandNum64(int64(countInRound))
+//		if step < 0 {
+//			rand = rand * -1
+//		}
+//
+//		val := start + float64(rand) * step
+//
+//		for round := 0; round < repeat; round++ {
+//			arr = append(arr, val)
+//
+//			total++
+//			if total > constant.MaxNumb {
+//				break
+//			}
+//		}
+//
+//		if total > constant.MaxNumb {
+//			break
+//		}
+//		i++
+//	}
+//
+//	return arr
+//}
 
 func getPrecision(base float64, step interface{}) int {
 	val := base + step.(float64)

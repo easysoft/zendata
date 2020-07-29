@@ -2,8 +2,8 @@ package gen
 
 import (
 	"github.com/easysoft/zendata/src/model"
-	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"strconv"
 	"strings"
 )
@@ -140,19 +140,20 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 }
 
 func GenerateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
-
 	elemArr := strings.Split(desc, ",")
 	step, _ := strconv.Atoi(stepStr)
 	total := 0
 
-	for i := 0; i < len(elemArr); {
-		val := ""
+	if stepStr == "r" {
+		items = append(items, Placeholder(field.Path))
+		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "")
 
-		if stepStr == "r" {
-			val = elemArr[commonUtils.RandNum(len(elemArr))]
-		} else {
-			val = elemArr[i]
-		}
+		vari.RandFieldNameToValuesMap[field.Path] = mp
+		return
+	}
+
+	for i := 0; i < len(elemArr); {
+		val := elemArr[i]
 
 		for round := 0; round < repeat; round++ {
 			items = append(items, val)
@@ -180,32 +181,31 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
+	if dataType != "string" && rand {
+		items = append(items, Placeholder(field.Path))
+
+		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, "")
+		vari.RandFieldNameToValuesMap[field.Path] = mp
+
+		return
+	}
+
 	if dataType == "int" {
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		if !rand {
-			items = GenerateIntItemsByStep(startInt, endInt, step.(int), repeat)
-		} else{
-			items = append(items, field.Path)
-		}
+		items = GenerateIntItemsByStep(startInt, endInt, step.(int), repeat)
+
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		if !rand{
-			items = GenerateFloatItemsByStep(startFloat, endFloat, step.(int), repeat)
-		} else {
-			items = append(items, field.Path)
-		}
+		items = GenerateFloatItemsByStep(startFloat, endFloat, step.(int), repeat)
 
 	} else if dataType == "char" {
-		if !rand {
-			items = GenerateByteItemsByStep(startStr[0], endStr[0], step.(int), repeat)
-		} else {
-			items = append(items, field.Path)
-		}
+		items = GenerateByteItemsByStep(startStr[0], endStr[0], step.(int), repeat)
+
 	} else if dataType == "string" {
 		if repeat == 0 { repeat = 1 }
 		for i := 0; i < repeat; i++ {
@@ -214,4 +214,23 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 	}
 
 	return
+}
+
+func Placeholder(str string) string {
+	return "${" + str + "}"
+}
+
+func placeholderMapForRandValues(tp string, list []string, start, end, step, precision string) map[string]interface{} {
+	ret := map[string]interface{}{}
+
+	ret["type"] = tp
+
+	ret["list"] = list // for literal values
+
+	ret["start"] = start // for interval values
+	ret["end"] = end
+	ret["step"] = step
+	ret["precision"] = precision
+
+	return ret
 }

@@ -34,8 +34,6 @@ fields:
         postfix: "\t"
 
       - field: child2
-        prefix: "["
-        postfix: "]"
         fields:
           - field: child2.1
             range: a-b
@@ -44,6 +42,7 @@ fields:
 
           - field: child2.2
             range: 1-9:R
-            prefix:
             loop: 3
             loopfix: ","
+            prefix: "["
+            postfix: "]"

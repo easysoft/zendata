@@ -13,6 +13,7 @@ import (
 	"github.com/easysoft/zendata/src/utils/vari"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -64,6 +65,8 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool, fie
 		lineForText := ""
 
 		for j, col := range cols {
+			col = replacePlaceholder(col)
+
 			lineForText = lineForText + col
 
 			row = append(row, col)
@@ -165,6 +168,63 @@ func getXmlLine(i int, rowXml model.XmlRow, length int) string {
 		text = text + "\n</testdata>"
 	}
 	return text
+}
+
+func replacePlaceholder(col string) string {
+	ret := col
+
+	re := regexp.MustCompile("(?siU)\\${(.*)}")
+	arr := re.FindAllStringSubmatch(col, -1)
+
+	strForReplaceMap := map[string][]string{}
+	for _, childArr := range arr {
+		placeholderStr := childArr[1]
+		//if strForReplaceMap[placeholderStr] == nil {
+			strForReplaceMap[placeholderStr] = getValForPlaceholder(placeholderStr, len(childArr))
+		//}
+
+		for _, str := range strForReplaceMap[placeholderStr] {
+			ret = strings.Replace(ret, gen.Placeholder(placeholderStr), str, 1)
+		}
+	}
+
+	return ret
+}
+
+func getValForPlaceholder(placeholderStr string, count int) []string {
+	mp := vari.RandFieldNameToValuesMap[placeholderStr]
+	tp := mp["type"].(string)
+	repeatObj := mp["repeat"]
+	repeat := "1"
+	if repeatObj != nil {
+		repeat = repeatObj.(string)
+	}
+
+	strs := make([]string, 0)
+	if tp == "int" {
+		start := mp["start"].(string)
+		end := mp["end"].(string)
+		precision := mp["precision"].(string)
+
+		strs = gen.GetRandFromRange("int", start, end, "1", repeat, precision, count)
+	} else if tp == "float" {
+		start := mp["start"].(string)
+		end := mp["end"].(string)
+		precision := mp["precision"].(string)
+
+		strs = gen.GetRandFromRange("float", start, end, "1", repeat, precision, count)
+	} else if tp == "char" {
+		start := mp["start"].(string)
+		end := mp["end"].(string)
+		precision := mp["precision"].(string)
+
+		strs = gen.GetRandFromRange("char", start, end, "1", repeat, precision, count)
+	} else if tp == "list" {
+		list := mp["list"].([]interface{})
+		strs = gen.GetRandFromList(list, repeat, count)
+	}
+
+	return strs
 }
 
 func printLine(line string) {
