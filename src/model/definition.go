@@ -74,10 +74,11 @@ type FieldSimple struct {
 	LoopIndex int
 }
 
-type FieldValue struct {
+type FieldWithValues struct {
 	FieldBase   `yaml:",inline"`
 	Field     string  `yaml:"field"`
 	Values   []interface{}
+	ValuesWithPlaceholder []string
 }
 
 func (def *DefSimple) Init(tableName, author, desc, version string) {

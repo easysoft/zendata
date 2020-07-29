@@ -8,20 +8,20 @@ import (
 	"strings"
 )
 
-func GenerateList(field *model.DefField) model.FieldValue {
-	fieldValue := model.FieldValue{}
+func GenerateList(field *model.DefField) model.FieldWithValues {
+	fieldValue := model.FieldWithValues{}
 	GenerateListField(field, &fieldValue)
 
 	return fieldValue
 }
 
-func GenerateListField(field *model.DefField, fieldValue *model.FieldValue) {
+func GenerateListField(field *model.DefField, fieldValue *model.FieldWithValues) {
 	fieldValue.Field = field.Field
 	fieldValue.Precision = field.Precision
 
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
-			childValue := model.FieldValue{}
+			childValue := model.FieldWithValues{}
 			GenerateListField(&child, &childValue)
 		}
 	} else {
@@ -29,7 +29,7 @@ func GenerateListField(field *model.DefField, fieldValue *model.FieldValue) {
 	}
 }
 
-func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldValue) {
+func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldWithValues) {
 	if strings.Index(field.Range, ".txt") > -1 {
 		GenerateFieldValuesFromText(field, fieldValue)
 	} else {
@@ -37,7 +37,7 @@ func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldValue) {
 	}
 }
 
-func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldValue) {
+func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
 	rang := field.Range
 	rangeItems := ParseRange(rang) // 1
 
@@ -50,13 +50,15 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldV
 		typ, desc := ParseEntry(entry) // 2
 
 		items := make([]interface{}, 0)
+		itemsWithPlaceholder := make([]string, 0)
 		if typ == "literal" {
-			items = GenerateValuesFromLiteral(desc, stepStr, repeat)
+			items = GenerateValuesFromLiteral(field, desc, stepStr, repeat)
 		} else if typ == "interval" {
 			items = GenerateValuesFromInterval(field, desc, stepStr, repeat)
 		}
 
 		fieldValue.Values = append(fieldValue.Values, items...)
+		fieldValue.ValuesWithPlaceholder = append(fieldValue.ValuesWithPlaceholder, itemsWithPlaceholder...)
 		index = index + len(items)
 	}
 
@@ -137,8 +139,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 	return "string", 1, 0, false // is string
 }
 
-func GenerateValuesFromLiteral(desc string, stepStr string, repeat int) []interface{} {
-	items := make([]interface{}, 0)
+func GenerateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
 
 	elemArr := strings.Split(desc, ",")
 	step, _ := strconv.Atoi(stepStr)
@@ -146,6 +147,7 @@ func GenerateValuesFromLiteral(desc string, stepStr string, repeat int) []interf
 
 	for i := 0; i < len(elemArr); {
 		val := ""
+
 		if stepStr == "r" {
 			val = elemArr[commonUtils.RandNum(len(elemArr))]
 		} else {
@@ -167,31 +169,43 @@ func GenerateValuesFromLiteral(desc string, stepStr string, repeat int) []interf
 		i += step
 	}
 
-	return items
+	return
 }
 
-func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr string, repeat int) []interface{} {
+func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr
 	if len(elemArr) > 1 { endStr = elemArr[1] }
 
-	items := make([]interface{}, 0)
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
 	if dataType == "int" {
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = GenerateIntItems(startInt, endInt, step, rand, repeat)
+		if !rand {
+			items = GenerateIntItemsByStep(startInt, endInt, step.(int), repeat)
+		} else{
+			items = append(items, field.Path)
+		}
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItems(startFloat, endFloat, step.(float64), rand, repeat)
+		if !rand{
+			items = GenerateFloatItemsByStep(startFloat, endFloat, step.(int), repeat)
+		} else {
+			items = append(items, field.Path)
+		}
+
 	} else if dataType == "char" {
-		items = GenerateByteItems(byte(startStr[0]), byte(endStr[0]), step, rand, repeat)
+		if !rand {
+			items = GenerateByteItemsByStep(startStr[0], endStr[0], step.(int), repeat)
+		} else {
+			items = append(items, field.Path)
+		}
 	} else if dataType == "string" {
 		if repeat == 0 { repeat = 1 }
 		for i := 0; i < repeat; i++ {
@@ -199,5 +213,5 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 		}
 	}
 
-	return items
+	return
 }

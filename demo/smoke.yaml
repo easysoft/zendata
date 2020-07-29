@@ -30,20 +30,20 @@ fields:
     fields:
       - field: child1
         range: X-Z
-        prefix: "a'b"
-        postfix: "\t <:\"(`[]{}"
+        prefix: ""
+        postfix: "\t"
 
       - field: child2
         prefix: "["
         postfix: "]"
         fields:
           - field: child2.1
-            range: a-c
+            range: a-b
             prefix:
             postfix: "\t"
 
           - field: child2.2
-            range: 1-9
+            range: 1-9:R
             prefix:
             loop: 3
             loopfix: ","

@@ -18,8 +18,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 	vari.Def = LoadConfigDef(defaultFile, configFile, fieldsToExport)
 	vari.Res = LoadResDef(*fieldsToExport)
 
-	fieldNameToValues := map[string][]string{}
-
+	topFieldNameToValuesMap := map[string][]string{}
 	colIsNumArr := make([]bool, 0)
 
 	// 为每个field生成值列表
@@ -31,7 +30,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		values := GenerateForField(&field, total, true)
 		vari.Def.Fields[index].Precision = field.Precision
 
-		fieldNameToValues[field.Field] = values
+		topFieldNameToValuesMap[field.Field] = values
 		colIsNumArr = append(colIsNumArr, field.IsNumb)
 	}
 
@@ -43,7 +42,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 				continue
 			}
 
-			values := fieldNameToValues[field.Field]
+			values := topFieldNameToValuesMap[field.Field]
 			fieldVal := values[i % len(values)]
 			if len(rows) == i { rows = append(rows, make([]string, 0)) }
 			rows[i] = append(rows[i], fieldVal)
@@ -53,9 +52,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 	return rows, colIsNumArr
 }
 
-func GenerateForField(field *model.DefField, total int, withFix bool) []string {
-	values := make([]string, 0)
-
+func GenerateForField(field *model.DefField, total int, withFix bool) (values []string) {
 	if len(field.Fields) > 0 { // sub fields
 		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 		for _, child := range field.Fields {
@@ -64,7 +61,7 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 		}
 
 		count := total
-		if strings.Index(field.Path, "") > -1 { // is child, gen x*y records
+		if strings.Index(field.Path, "") > -1 { // is child, gen num = x * y records
 			count = getRecordCount(arrOfArr)
 			if count > total {
 				count = total
@@ -102,7 +99,8 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 	} else if field.Config != "" { // refer to another define
 		groupValues := vari.Res[field.Config]
 		values = append(values, groupValues["all"]...)
-	} else { // basic field
+
+	} else { // leaf field
 		values = GenerateFieldItemsFromDefinition(field)
 	}
 
@@ -110,37 +108,26 @@ func GenerateForField(field *model.DefField, total int, withFix bool) []string {
 }
 
 func GenerateFieldItemsFromDefinition(field *model.DefField) []string {
-	//if field.Loop == "" {field.Loop = "1"}
-
 	values := make([]string, 0)
+	//valuesWithPlaceholder := make([]string, 0)
+	//vari.RandFieldNameToValuesMap[field.Path] = valuesWithPlaceholder
 
-	fieldValue := GenerateList(field)
+	fieldWithValues := GenerateList(field)
 
 	index := 0
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := GenerateFieldValWithFix(field, fieldValue, &index, true)
-		values = append(values, str)
+		val := GenerateFieldValWithFix(field, fieldWithValues, &index, true)
+		values = append(values, val)
 
 		count++
-		if index >= len(fieldValue.Values) || count >= vari.Total {
+		if index >= len(fieldWithValues.Values) || count >= vari.Total {
 			break
 		}
 	}
 
 	return values
-}
-
-func GenerateFieldVal(field model.DefField, fieldValue model.FieldValue, index *int) string {
-	str := ""
-
-	// 叶节点
-	idx := *index % len(fieldValue.Values)
-	val := fieldValue.Values[idx]
-	str = GetFieldValStr(field, val)
-
-	return str
 }
 
 func GetFieldValStr(field model.DefField, val interface{}) string {
@@ -183,11 +170,9 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	return str
 }
 
-func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix bool) []string {
-	//if field.Loop == "" {field.Loop = "1"}
+func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix bool) (values []string) {
 
-	values := make([]string, 0)
-	fieldValue := model.FieldValue{}
+	fieldValue := model.FieldWithValues{}
 
 	for _, val := range oldValues {
 		fieldValue.Values = append(fieldValue.Values, val)
@@ -206,15 +191,16 @@ func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix
 		}
 	}
 
-	return values
+	return
 }
 
-func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldValue, indexOfRow *int, withFix bool) string {
+func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
+		indexOfRow *int, withFix bool) (loopStr string) {
 	prefix := field.Prefix
 	postfix := field.Postfix
 
 	computerLoop(field)
-	loopStr := ""
+
 	for j := 0; j < (*field).LoopIndex; j++ {
 		if loopStr != "" {
 			loopStr = loopStr + field.Loopfix
@@ -239,7 +225,16 @@ func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldValue,
 		(*field).LoopIndex = (*field).LoopStart
 	}
 
-	return loopStr
+	return
+}
+
+func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string) {
+	// 叶节点
+	idx := *index % len(fieldValue.Values)
+	str := fieldValue.Values[idx]
+	val = GetFieldValStr(field, str)
+
+	return
 }
 
 func computerLoop(field *model.DefField) {
