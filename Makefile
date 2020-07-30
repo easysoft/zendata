@@ -52,4 +52,4 @@ package:
 	@echo 'start package'
 	@find . -name .DS_Store -print0 | xargs -0 rm -f
 	@cd ${BIN_DIR} && zip -r ${PACKAGE}.zip ${PROJECT}
-	@cd ${BIN_DIR} && rm -rf ${PROJECT}
+	#@cd ${BIN_DIR} && rm -rf ${PROJECT}

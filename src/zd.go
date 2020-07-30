@@ -121,14 +121,16 @@ func main() {
 	}
 
 	switch os.Args[1] {
-	case "-e", "-example":
-		logUtils.PrintExample()
-	case "-h", "-help":
-		logUtils.PrintUsage()
 	default:
 		flagSet.SetOutput(ioutil.Discard)
 		if err := flagSet.Parse(os.Args[1:]); err == nil {
-			if listRes {
+			if example {
+				logUtils.PrintExample()
+				return
+			} else if help {
+				logUtils.PrintUsage()
+				return
+			} else if listRes {
 				service.ListRes()
 				return
 			} else if viewRes != "" {

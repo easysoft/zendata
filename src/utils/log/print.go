@@ -12,14 +12,14 @@ import (
 )
 
 var (
-	exampleFile  = fmt.Sprintf("res%sdoc%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
-	usageFile  = fmt.Sprintf("res%sdoc%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
+	exampleFile  = fmt.Sprintf("res%sen%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
+	usageFile  = fmt.Sprintf("res%sen%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
 )
 
 func PrintExample() {
-	if vari.Config.Language == "en" {
-		exampleFile = strings.Replace(exampleFile, ".yaml", "_en.yaml", -1)
-		usageFile = strings.Replace(usageFile, ".txt", "_en.txt", -1)
+	if vari.Config.Language == "zh" {
+		exampleFile = strings.Replace(exampleFile, "en", "zh", 1)
+		usageFile = strings.Replace(usageFile, "en", "zh", 1)
 	}
 
 	content := fileUtils.ReadResData(exampleFile)
@@ -27,9 +27,9 @@ func PrintExample() {
 }
 
 func PrintUsage() {
-	if vari.Config.Language == "en" {
-		exampleFile = strings.Replace(exampleFile, ".yaml", "_en.yaml", -1)
-		usageFile = strings.Replace(usageFile, ".txt", "_en.txt", -1)
+	if vari.Config.Language == "zh" {
+		exampleFile = strings.Replace(exampleFile, "en", "zh", 1)
+		usageFile = strings.Replace(usageFile, "en", "zh", 1)
 	}
 
 	usage := fileUtils.ReadResData(usageFile)
