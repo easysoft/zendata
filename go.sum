@@ -63,6 +63,8 @@ github.com/stretchr/testify v1.5.1 h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.6.0 h1:jlIyCplCJFULU/01vCkhKuTyc3OorI3bJFuw6obfgho=
 github.com/stretchr/testify v1.6.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/t-tomalak/logrus-easy-formatter v0.0.0-20190827215021-c074f06c5816 h1:J6v8awz+me+xeb/cUTotKgceAYouhIB3pjzgRd6IlGk=
+github.com/t-tomalak/logrus-easy-formatter v0.0.0-20190827215021-c074f06c5816/go.mod h1:tzym/CEb5jnFI+Q0k4Qq3+LvRF4gO3E2pxS8fHP8jcA=
 github.com/xuri/efp v0.0.0-20191019043341-b7dc4fe9aa91 h1:gp02YctZuIPTk0t7qI+wvg3VQwTPyNmSGG6ZqOsjSL8=
 github.com/xuri/efp v0.0.0-20191019043341-b7dc4fe9aa91/go.mod h1:uBiSUepVYMhGTfDeBKKasV4GpgBlzJ46gXUBAqV8qLk=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

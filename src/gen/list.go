@@ -184,7 +184,7 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 	if dataType != "string" && rand {
 		items = append(items, Placeholder(field.Path))
 
-		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, "")
+		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision))
 		vari.RandFieldNameToValuesMap[field.Path] = mp
 
 		return
@@ -201,7 +201,7 @@ func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr stri
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItemsByStep(startFloat, endFloat, step.(int), repeat)
+		items = GenerateFloatItemsByStep(startFloat, endFloat, step.(float64), repeat)
 
 	} else if dataType == "char" {
 		items = GenerateByteItemsByStep(startStr[0], endStr[0], step.(int), repeat)

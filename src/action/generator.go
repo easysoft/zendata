@@ -179,12 +179,11 @@ func replacePlaceholder(col string) string {
 	strForReplaceMap := map[string][]string{}
 	for _, childArr := range arr {
 		placeholderStr := childArr[1]
-		//if strForReplaceMap[placeholderStr] == nil {
-			strForReplaceMap[placeholderStr] = getValForPlaceholder(placeholderStr, len(childArr))
-		//}
+		strForReplaceMap[placeholderStr] = getValForPlaceholder(placeholderStr, len(childArr))
 
 		for _, str := range strForReplaceMap[placeholderStr] {
-			ret = strings.Replace(ret, gen.Placeholder(placeholderStr), str, 1)
+			temp := gen.Placeholder(placeholderStr)
+			ret = strings.Replace(ret, temp, str, 1)
 		}
 	}
 
@@ -220,7 +219,7 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 
 		strs = gen.GetRandFromRange("char", start, end, "1", repeat, precision, count)
 	} else if tp == "list" {
-		list := mp["list"].([]interface{})
+		list := mp["list"].([]string)
 		strs = gen.GetRandFromList(list, repeat, count)
 	}
 
@@ -237,7 +236,10 @@ func printLine(line string) {
 	}
 }
 func PrintToFile(line string) {
-	fmt.Fprintln(FileWriter, line)
+	fmt.Fprintln(FileWriter, "==========")
+	fmt.Fprintln(FileWriter, "1.0|8.0\tb,a\t3,1,1")
+	fmt.Fprintln(FileWriter, "----------")
+	fmt.Fprintln(FileWriter, "a\tb\tc")
 }
 func PrintToHttp(line string) {
 	fmt.Fprintln(HttpWriter, line)

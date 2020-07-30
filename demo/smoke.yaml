@@ -29,20 +29,23 @@ fields:
   - field: test6
     fields:
       - field: child1
-        range: X-Z
+        range: 1.0-9.9:R
+        loop: 2
+        loopfix: "|"
         prefix: ""
         postfix: "\t"
 
       - field: child2
         fields:
           - field: child2.1
-            range: a-b
-            prefix:
+            range: a-c:R
+            loop: 2
+            loopfix: ","
+            prefix: ""
             postfix: "\t"
 
           - field: child2.2
             range: 1-9:R
             loop: 3
             loopfix: ","
-            prefix: "["
-            postfix: "]"
+            prefix: ""

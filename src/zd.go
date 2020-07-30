@@ -173,7 +173,7 @@ func toGen() {
 
 		if output != "" {
 			fileUtils.RemoveExist(output)
-			action.FileWriter, _ = os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+			action.FileWriter, _ = os.OpenFile(output, os.O_RDWR | os.O_CREATE, 0777)
 			defer action.FileWriter.Close()
 
 			ext := strings.ToLower(path.Ext(output))

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func GetRandFromList(list []interface{}, repeatStr string, count int) []string {
+func GetRandFromList(list []string, repeatStr string, count int) []string {
 	ret := make([]string, 0)
 
 	for i := 0; i < count; i++ {
@@ -16,7 +16,7 @@ func GetRandFromList(list []interface{}, repeatStr string, count int) []string {
 		repeat, _ := strconv.Atoi(repeatStr)
 		items := make([]string, 0)
 		for round := 0; round < repeat; round++ {
-			items = append(items, val.(string))
+			items = append(items, val)
 		}
 
 		ret = append(ret, strings.Join(items, ""))
@@ -79,7 +79,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 		endFloat, _ := strconv.ParseFloat(end, 64)
 		stepFloat, _ := strconv.ParseFloat(step, 64)
 
-		countInRound := (startFloat - endFloat) / stepFloat
+		countInRound := (endFloat - startFloat) / stepFloat
 
 		for i := 0; i < count; i++ {
 			rand := commonUtils.RandNum64(int64(countInRound))
