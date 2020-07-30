@@ -1,18 +1,15 @@
 package fileUtils
 
 import (
-	"fmt"
 	"github.com/easysoft/zendata/res"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
 
@@ -81,7 +78,7 @@ func AbosutePath(pth string) string {
 		pth, _ = filepath.Abs(pth)
 	}
 
-	pth = UpdateDir(pth)
+	pth = AddSepIfNeeded(pth)
 
 	return pth
 }
@@ -91,35 +88,13 @@ func IsAbosutePath(pth string) bool {
 		strings.Index(pth, ":") == 1 // windows
 }
 
-func UpdateDir(pth string) string {
+func AddSepIfNeeded(pth string) string {
 	sepa := string(os.PathSeparator)
 
 	if strings.LastIndex(pth, sepa) < len(pth)-1 {
 		pth += sepa
 	}
 	return pth
-}
-
-func GetFilesFromParams(arguments []string) []string {
-	ret := make([]string, 0)
-
-	for _, arg := range arguments {
-		if strings.Index(arg, "-") != 0 {
-			if arg == "." {
-				arg = AbosutePath(".")
-			} else if strings.Index(arg, "."+string(os.PathSeparator)) == 0 {
-				arg = AbosutePath(".") + arg[2:]
-			} else if !IsAbosutePath(arg) {
-				arg = AbosutePath(".") + arg
-			}
-
-			ret = append(ret, arg)
-		} else {
-			break
-		}
-	}
-
-	return ret
 }
 
 func ReadResData(path string) string {
@@ -151,53 +126,20 @@ func GetExeDir() string { // where zd.exe file in
 	}
 
 	dir, _ = filepath.Abs(dir)
-	dir = UpdateDir(dir)
+	dir = AddSepIfNeeded(dir)
 
 	//fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
 	return dir
 }
 
-func GetWorkDir() string { // where run command in
-	dir, _ := os.Getwd()
-	dir, _ = filepath.Abs(dir)
-	dir = UpdateDir(dir)
-
-	return dir
-}
-
-func getLogNumb(numb int) string {
-	return fmt.Sprintf("%03s", strconv.Itoa(numb))
-}
-
-func CopyFile(src, dst string) (int64, error) {
-	sourceFileStat, err := os.Stat(src)
-	if err != nil {
-		return 0, err
-	}
-
-	if !sourceFileStat.Mode().IsRegular() {
-		return 0, fmt.Errorf("%s is not a regular file", src)
-	}
-
-	source, err := os.Open(src)
-	if err != nil {
-		return 0, err
-	}
-	defer source.Close()
-
-	destination, err := os.Create(dst)
-	if err != nil {
-		return 0, err
-	}
-	defer destination.Close()
-	nBytes, err := io.Copy(destination, source)
-	return nBytes, err
-}
-
 func GetAbsDir(path string) string {
-	abs, _ := filepath.Abs(filepath.Dir(path))
-	abs = UpdateDir(abs)
+	abs := ""
+	if !IsAbosutePath(path) {
+		path = vari.ExeDir + path
+	}
 
+	abs, _ = filepath.Abs(filepath.Dir(path))
+	abs = AddSepIfNeeded(abs)
 	return abs
 }
 

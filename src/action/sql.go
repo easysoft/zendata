@@ -32,7 +32,7 @@ func ParseSql(file string, out string) {
 		content := string(bytes)
 
 		if out != "" {
-			out = fileUtils.UpdateDir(out)
+			out = fileUtils.AddSepIfNeeded(out)
 			outFile := out + tableName + ".yaml"
 			WriteToFile(outFile, content)
 		} else {

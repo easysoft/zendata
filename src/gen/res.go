@@ -11,7 +11,6 @@ import (
 	"github.com/jinzhu/copier"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -46,12 +45,10 @@ func getResProp(from string) (string, string) { // from resource
 	resFile := ""
 	resType := ""
 
-	sep := string(os.PathSeparator)
-
 	index := strings.LastIndex(from, ".yaml")
 	if index > -1 { // yaml, system.ip.v1.yaml
 		left := from[:index]
-		left = strings.ReplaceAll(left, ".", sep)
+		left = strings.ReplaceAll(left, ".", constant.PthSep)
 
 		resFile = left + ".yaml"
 		resType = "yaml"
@@ -59,7 +56,7 @@ func getResProp(from string) (string, string) { // from resource
 		index = strings.LastIndex(from, ".")
 
 		left := from[:index]
-		left = strings.ReplaceAll(left, ".", sep)
+		left = strings.ReplaceAll(left, ".", constant.PthSep)
 
 		resFile = left + ".xlsx"
 		resType = "excel"
@@ -72,10 +69,10 @@ func getResProp(from string) (string, string) { // from resource
 		if !filepath.IsAbs(resPath) {
 
 			resPath = vari.ConfigDir + resFile
-			if !fileUtils.FileExist(resPath) { // res in the same folder with passed config file
+			if !fileUtils.FileExist(resPath) { // in same folder with passed config file
 
 				resPath = vari.ExeDir + constant.ResDir + resFile
-				if !fileUtils.FileExist(resPath) {  // res in res file
+				if !fileUtils.FileExist(resPath) {  // in res file
 					resPath = ""
 				}
 			}

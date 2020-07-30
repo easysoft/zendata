@@ -120,6 +120,14 @@
     {
       "id": "analyse_success",
       "translation": "Success to decode data to %s."
+    },
+    {
+      "id": "miss_table_name",
+      "translation": "Parameter 'table' is needed to generate sql format output."
+    },
+    {
+      "id": "fail_to_generate_field",
+      "translation": "Fail to generate data for filed '%s'."
     }
   ]
 }

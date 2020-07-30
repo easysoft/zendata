@@ -6,6 +6,7 @@ import (
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/fatih/color"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"strings"
@@ -16,30 +17,32 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	configDef := model.DefData{}
 
 	// load defaultDef
+	path := vari.ExeDir + defaultFile
 	if defaultFile != "" {
-		defaultContent, err := ioutil.ReadFile(defaultFile)
+		defaultContent, err := ioutil.ReadFile(path)
 		defaultContent = ReplaceSpecialChars(defaultContent)
 		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", path), color.FgCyan)
 			return defaultDef
 		}
 		err = yaml.Unmarshal(defaultContent, &defaultDef)
 		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", defaultFile))
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", path), color.FgCyan)
 			return defaultDef
 		}
 	}
 
 	// load configDef
-	yamlContent, err := ioutil.ReadFile(configFile)
+	path = vari.ExeDir + configFile
+	yamlContent, err := ioutil.ReadFile(path)
 	yamlContent = ReplaceSpecialChars(yamlContent)
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", configFile))
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", path), color.FgCyan)
 		return configDef
 	}
 	err = yaml.Unmarshal(yamlContent, &configDef)
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_file", configFile))
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", path), color.FgCyan)
 		return configDef
 	}
 
