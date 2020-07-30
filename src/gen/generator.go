@@ -34,21 +34,18 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		colIsNumArr = append(colIsNumArr, field.IsNumb)
 	}
 
-	// 生成指定数量行的数据
-	rows := make([][]string, 0)
-	for i := 0; i < total; i++ {
-		for _, field := range vari.Def.Fields {
-			if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
-				continue
-			}
-
-			values := topFieldNameToValuesMap[field.Field]
-			fieldVal := values[i % len(values)]
-			if len(rows) == i { rows = append(rows, make([]string, 0)) }
-			rows[i] = append(rows[i], fieldVal)
+	// 处理数据
+	arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+	for _, child := range vari.Def.Fields {
+		if !stringUtils.FindInArr(child.Field, *fieldsToExport) {
+			continue
 		}
+
+		childValues := topFieldNameToValuesMap[child.Field]
+		arrOfArr = append(arrOfArr, childValues)
 	}
 
+	rows := putChildrenToArr(arrOfArr, total)
 	return rows, colIsNumArr
 }
 
@@ -61,13 +58,11 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 		}
 
 		count := total
-		if strings.Index(field.Path, "") > -1 { // is child, gen num = x * y records
-			count = getRecordCount(arrOfArr)
-			if count > total {
-				count = total
-			}
+		count = getRecordCount(arrOfArr)
+		if count > total {
+			count = total
 		}
-		connectChildrenToSingleStr(arrOfArr, count, &values)
+		values = connectChildrenToSingleStr(arrOfArr, count)
 		values = LoopSubFields(field, values, count, true)
 
 	} else if field.From != "" { // refer to res
@@ -252,21 +247,41 @@ func computerLoop(field *model.DefField) {
 	(*field).LoopIndex = (*field).LoopStart
 }
 
-func connectChildrenToSingleStr(arrOfArr [][]string, total int, values *[]string) {
-	indexArr := getModArr(arrOfArr)
+func putChildrenToArr(arrOfArr [][]string, total int) (values [][]string) {
+	indexArr := make([]int, 0)
+	if vari.Recursive {
+		indexArr = getModArr(arrOfArr)
+	}
 
 	for i := 0; i < total; i++ {
-		str := ""
+		strArr := make([]string, 0)
 		for j := 0; j < len(arrOfArr); j++ {
 			child := arrOfArr[j]
 
-			mod := indexArr[j]
-			remainder := i / mod % len(child)
-			str = str + child[remainder]
+			var index int
+			if vari.Recursive {
+				mod := indexArr[j]
+				index = i / mod % len(child)
+			} else {
+				index = i % len(child)
+			}
+
+			strArr = append(strArr, child[index])
 		}
 
-		*values = append(*values, str)
+		values = append(values, strArr)
 	}
+
+	return
+}
+
+func connectChildrenToSingleStr(arrOfArr [][]string, total int) (ret []string)  {
+	valueArr := putChildrenToArr(arrOfArr, total)
+
+	for _, arr := range valueArr {
+		ret = append(ret, strings.Join(arr, ""))
+	}
+	return
 }
 
 func getRecordCount(arrOfArr [][]string) int {
