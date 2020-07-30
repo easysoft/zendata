@@ -236,10 +236,7 @@ func printLine(line string) {
 	}
 }
 func PrintToFile(line string) {
-	fmt.Fprintln(FileWriter, "==========")
-	fmt.Fprintln(FileWriter, "1.0|8.0\tb,a\t3,1,1")
-	fmt.Fprintln(FileWriter, "----------")
-	fmt.Fprintln(FileWriter, "a\tb\tc")
+	fmt.Fprintln(FileWriter, line)
 }
 func PrintToHttp(line string) {
 	fmt.Fprintln(HttpWriter, line)

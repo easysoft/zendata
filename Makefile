@@ -26,13 +26,11 @@ compile_all: compile_win64 compile_win32 compile_linux compile_mac
 
 compile_win64:
 	@echo 'start compile win64'
-	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64
-	@go build -x -v -ldflags "-s -w" -o ${BIN_WIN64}zd.exe src/zd.go
+	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -ldflags "-s -w" -o ${BIN_WIN64}zd.exe src/zd.go
 
 compile_win32:
 	@echo 'start compile win32'
-	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386
-	@go build -x -v -ldflags "-s -w" -o ${BIN_WIN32}zd.exe src/zd.go
+	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -x -v -ldflags "-s -w" -o ${BIN_WIN32}zd.exe src/zd.go
 
 compile_linux:
 	@echo 'start compile linux'
