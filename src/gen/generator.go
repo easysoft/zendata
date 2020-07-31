@@ -53,8 +53,8 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		childValues := topFieldNameToValuesMap[child.Field]
 		arrOfArr = append(arrOfArr, childValues)
 	}
-
 	rows = putChildrenToArr(arrOfArr, total)
+
 	return
 }
 
@@ -96,9 +96,11 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 
 		values = LoopSubFields(field, values, total, true)
 
-	} else if field.Config != "" { // refer to another define
+	} else if field.Config != "" { // refer to config
 		groupValues := vari.Res[field.Config]
 		values = append(values, groupValues["all"]...)
+
+		values = LoopSubFields(field, values, total, true)
 
 	} else { // leaf field
 		values = GenerateFieldItemsFromDefinition(field)

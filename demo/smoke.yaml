@@ -71,4 +71,8 @@ fields:
   - field: field_use_instance           # 引用其他的定义文件，该文件定义了多个实例。
     from: system.ip.v1.yaml             # 引用data/system/ip/v1.yaml
     use: privateC                       # 使用该文件中定义的privateC和privateB两个实例。
-    postfix: "\t"
+    postfix: "==="
+
+  - field: field_use_another_file       # 可以引用其他的定义文件。
+    config: number.yaml                 # 引用当前目录下面的number.yaml文件里面的定义。
+    postfix: "==="

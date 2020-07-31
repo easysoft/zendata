@@ -6,7 +6,7 @@ version: 1.0
 field: number
 note: 数值类型数据
 range: 100-199
-prefix: "'"
-postfix: "'"
 loop: 2
 loopfix: ","
+prefix: "'"
+postfix: "'"
