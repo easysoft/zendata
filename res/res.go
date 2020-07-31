@@ -158,24 +158,18 @@ type _bintree_t struct {
 	Children map[string]*_bintree_t
 }
 var _bintree = &_bintree_t{nil, map[string]*_bintree_t{
-	"res": &_bintree_t{nil, map[string]*_bintree_t{
-		"en": &_bintree_t{nil, map[string]*_bintree_t{
-			"messages.json": &_bintree_t{res_en_messages_json, map[string]*_bintree_t{
-			}},
-			"sample.yaml": &_bintree_t{res_en_sample_yaml, map[string]*_bintree_t{
-			}},
-			"usage.txt": &_bintree_t{res_en_usage_txt, map[string]*_bintree_t{
-			}},
-		}},
-		"res.go": &_bintree_t{res_res_go, map[string]*_bintree_t{
-		}},
-		"zh": &_bintree_t{nil, map[string]*_bintree_t{
-			"messages.json": &_bintree_t{res_zh_messages_json, map[string]*_bintree_t{
-			}},
-			"sample.yaml": &_bintree_t{res_zh_sample_yaml, map[string]*_bintree_t{
-			}},
-			"usage.txt": &_bintree_t{res_zh_usage_txt, map[string]*_bintree_t{
-			}},
-		}},
+	"res/en/messages.json": &_bintree_t{res_en_messages_json, map[string]*_bintree_t{
+	}},
+	"res/en/sample.yaml": &_bintree_t{res_en_sample_yaml, map[string]*_bintree_t{
+	}},
+	"res/en/usage.txt": &_bintree_t{res_en_usage_txt, map[string]*_bintree_t{
+	}},
+	"res/res.go": &_bintree_t{res_res_go, map[string]*_bintree_t{
+	}},
+	"res/zh/messages.json": &_bintree_t{res_zh_messages_json, map[string]*_bintree_t{
+	}},
+	"res/zh/sample.yaml": &_bintree_t{res_zh_sample_yaml, map[string]*_bintree_t{
+	}},
+	"res/zh/usage.txt": &_bintree_t{res_zh_usage_txt, map[string]*_bintree_t{
 	}},
 }}
