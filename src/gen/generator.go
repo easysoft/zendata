@@ -1,25 +1,34 @@
 package gen
 
 import (
+	"errors"
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/fatih/color"
 	"github.com/mattn/go-runewidth"
 	"strconv"
 	"strings"
 )
 
-func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]string, total int) ([][]string, []bool) {
+func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]string,
+		total int) (rows [][]string, colIsNumArr []bool, err error) {
+
 	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
 	vari.ConfigDir = fileUtils.GetAbsDir(configFile)
 
 	vari.Def = LoadConfigDef(defaultFile, configFile, fieldsToExport)
+	if len(vari.Def.Fields) == 0 {
+		err = errors.New("")
+		return
+	}
 	vari.Res = LoadResDef(*fieldsToExport)
 
 	topFieldNameToValuesMap := map[string][]string{}
-	colIsNumArr := make([]bool, 0)
 
 	// 为每个field生成值列表
 	for index, field := range vari.Def.Fields {
@@ -44,9 +53,9 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		childValues := topFieldNameToValuesMap[child.Field]
 		arrOfArr = append(arrOfArr, childValues)
 	}
+	rows = putChildrenToArr(arrOfArr, total)
 
-	rows := putChildrenToArr(arrOfArr, total)
-	return rows, colIsNumArr
+	return
 }
 
 func GenerateForField(field *model.DefField, total int, withFix bool) (values []string) {
@@ -87,9 +96,11 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 
 		values = LoopSubFields(field, values, total, true)
 
-	} else if field.Config != "" { // refer to another define
+	} else if field.Config != "" { // refer to config
 		groupValues := vari.Res[field.Config]
 		values = append(values, groupValues["all"]...)
+
+		values = LoopSubFields(field, values, total, true)
 
 	} else { // leaf field
 		values = GenerateFieldItemsFromDefinition(field)
@@ -195,7 +206,10 @@ func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldWithVa
 			loopStr = loopStr + field.Loopfix
 		}
 
-		str := GenerateFieldVal(*field, fieldValue, indexOfRow)
+		str, err := GenerateFieldVal(*field, fieldValue, indexOfRow)
+		if err != nil {
+			str = "N/A"
+		}
 		loopStr = loopStr + str
 
 		*indexOfRow++
@@ -217,8 +231,14 @@ func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldWithVa
 	return
 }
 
-func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string) {
+func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {
 	// 叶节点
+	if len(fieldValue.Values) == 0 {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
+		err = errors.New("")
+		return
+	}
+
 	idx := *index % len(fieldValue.Values)
 	str := fieldValue.Values[idx]
 	val = GetFieldValStr(field, str)

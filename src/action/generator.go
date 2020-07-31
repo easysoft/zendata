@@ -11,6 +11,7 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/fatih/color"
 	"net/http"
 	"os"
 	"regexp"
@@ -38,13 +39,16 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 
 	vari.Total = total
 
-	rows, colIsNumArr := gen.GenerateForDefinition(defaultFile, configFile, &fieldsToExport, total)
+	rows, colIsNumArr, err := gen.GenerateForDefinition(defaultFile, configFile, &fieldsToExport, total)
+	if err != nil {
+		return
+	}
 	Print(rows, format, table, colIsNumArr, fieldsToExport)
 
 	entTime := time.Now().Unix()
-	if vari.RunMode == constant.RunModeServerRequest {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", len(rows), entTime - startTime))
-	}
+	//if vari.RunMode == constant.RunModeServerRequest {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("server_response", len(rows), entTime - startTime), color.FgCyan)
+	//}
 }
 
 func Print(rows [][]string, format string, table string, colIsNumArr []bool, fields []string) {
@@ -129,8 +133,6 @@ func RowToJson(cols []string, fieldsToExport []string) string {
 
 	return respJson
 }
-
-
 
 func genSqlLine(valuesForSql string, i int, length int) string {
 
@@ -224,6 +226,18 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 	}
 
 	return strs
+}
+
+func PrintErrMsg(msg string) {
+	//if vari.RunMode == constant.RunModeServerRequest {
+	//	mp := map[string]string{}
+	//	mp["msg"] = msg
+	//
+	//	json, _ := json.Marshal(mp)
+	//	PrintToHttp(string(json))
+	//} else {
+		logUtils.PrintToWithColor(msg, color.FgCyan)
+	//}
 }
 
 func printLine(line string) {

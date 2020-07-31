@@ -68,6 +68,10 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 	for _, sheet := range excel.GetSheetList() {
 		rows, err := excel.GetRows(sheet)
 
+		if len(rows) == 0 {
+			continue
+		}
+
 		dropTemplate := `DROP TABLE IF EXISTS %s;`
 		ddlTemplate := `CREATE TABLE %s (
 						%s

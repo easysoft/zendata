@@ -78,8 +78,8 @@ func main() {
 	flagSet.StringVar(&output, "o", "", "")
 	flagSet.StringVar(&output, "output", "", "")
 
-	flagSet.StringVar(&table, "t", "table_name", "")
-	flagSet.StringVar(&table, "table", "table_name", "")
+	flagSet.StringVar(&table, "t", "", "")
+	flagSet.StringVar(&table, "table", "", "")
 
 	flagSet.BoolVar(&listRes, "l", false, "")
 	flagSet.BoolVar(&listRes, "list", false, "")
@@ -159,6 +159,16 @@ func main() {
 
 func toGen() {
 	if vari.RunMode == constant.RunModeServer {
+		if root != "" {
+			if fileUtils.IsAbosutePath(root) {
+				vari.ExeDir = root
+			} else {
+				vari.ExeDir = vari.ExeDir + root
+			}
+			vari.ExeDir = fileUtils.AddSepIfNeeded(vari.ExeDir)
+		}
+		constant.SqliteSource = strings.Replace(constant.SqliteSource, "file:", "file:" + vari.ExeDir, 1)
+
 		StartServer()
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		format = constant.FormatJson
@@ -166,9 +176,6 @@ func toGen() {
 	} else if vari.RunMode == constant.RunModeParse {
 		action.ParseSql(input, output)
 	} else if vari.RunMode == constant.RunModeGen {
-		if root != "" {
-			vari.ExeDir = root
-		}
 		if vari.HeadSep != "" {
 			vari.WithHead = true
 		}
@@ -185,6 +192,11 @@ func toGen() {
 			if stringUtils.InArray(ext, constant.Formats) {
 				format = ext
 			}
+		}
+
+		if format == constant.FormatSql && table == "" {
+			action.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
+			return
 		}
 
 		action.Generate(defaultFile, configFile, count, fields, output, format, table)
@@ -210,7 +222,7 @@ func StartServer() {
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	action.HttpWriter = writer
 
-	root, defaultFile, configFile, fields, count, vari.HeadSep,
+	defaultFile, configFile, fields, count, vari.HeadSep,
 		format, table, decode, input, output = service.ParseRequestParams(req)
 
 	if decode {

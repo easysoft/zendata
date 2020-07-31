@@ -102,7 +102,7 @@ fields:
     postfix: "\t"
 
   - field: field_use_ranges             # Other definition file can be referred, in which more than one ranges are defined.
-    from: custom.number.v1.yaml         # Refer to the ranges in data/custom/number/v1.yaml.
+    from: custom.test.number.v1.yaml    # Refer to the ranges in data/custom/number/v1.yaml.
     use: medium                         # use medium range.
     postfix: "\t"
 

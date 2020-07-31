@@ -11,7 +11,6 @@ import (
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"os"
 	"strings"
 )
 
@@ -20,74 +19,83 @@ const (
 )
 
 func ListRes() {
-	res := map[string][size]string{}
-	path := vari.ExeDir + "data" + string(os.PathSeparator) + "system"
+	res := map[string][][size]string{}
+	path := vari.ExeDir + "data"
 	GetFilesAndDirs(path, &res)
 
-	msg := ""
 	names := make([]string, 0)
 	nameWidth := 0
 	titleWidth := 0
-	for key, arr := range res {
-		path := arr[0]
-		if key == "yaml" {
-			arr[2], arr[3] = readYamlInfo(path)
-		} else if key == "excel" {
-			arr[2], arr[3] = readExcelInfo(path)
-		}
+	for key, arrOfArr := range res {
+		for index, arr := range arrOfArr {
+			path := arr[0]
+			if key == "yaml" {
+				arr[2], arr[3] = readYamlInfo(path)
+			} else if key == "excel" {
+				arr[2], arr[3] = readExcelInfo(path)
+			}
 
-		res[key] = arr
-		name := pathToName(arr[1])
-		names = append(names, name)
-		lent := runewidth.StringWidth(name)
-		if lent > nameWidth {
-			nameWidth = lent
-		}
+			res[key][index] = arr
+			name := pathToName(arr[1])
+			names = append(names, name)
+			lent := runewidth.StringWidth(name)
+			if lent > nameWidth {
+				nameWidth = lent
+			}
 
-		if key == "excel" {
-			sheets := strings.Split(arr[2], "|")
-			for _, sheet := range sheets {
-				lent2 := runewidth.StringWidth(sheet)
+			if key == "excel" {
+				sheets := strings.Split(arr[2], "|")
+				for _, sheet := range sheets {
+					lent2 := runewidth.StringWidth(sheet)
+					if lent2 > titleWidth {
+						titleWidth = lent2
+					}
+				}
+			} else {
+				lent2 := runewidth.StringWidth(arr[2])
 				if lent2 > titleWidth {
 					titleWidth = lent2
 				}
 			}
-		} else {
-			lent2 := runewidth.StringWidth(arr[2])
-			if lent2 > titleWidth {
-				titleWidth = lent2
-			}
 		}
-
 	}
 
+	sysMsg := ""
+	customMsg := ""
 	idx := 0
-	for _, arr := range res {
-		name := names[idx]
+	for _, arrOfArr := range res {
+		for _, arr := range arrOfArr {
+			name := names[idx]
 
-		titleStr := arr[2]
-		titles := strings.Split(titleStr, "|")
+			titleStr := arr[2]
+			titles := strings.Split(titleStr, "|")
 
-		idx2 := 0
-		for _, title := range titles {
-			if idx2 > 0 {
-				name = ""
+			idx2 := 0
+			for _, title := range titles {
+				if idx2 > 0 {
+					name = ""
+				}
+				name = name + strings.Repeat(" ", nameWidth - runewidth.StringWidth(name))
+
+				title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
+				msg := fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
+				if strings.Index(name, "system") > -1 {
+					sysMsg = sysMsg + msg
+				} else {
+					customMsg = sysMsg + msg
+				}
+
+				idx2++
 			}
-			name = name + strings.Repeat(" ", nameWidth - runewidth.StringWidth(name))
 
-			title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
-			msg = msg + fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
-
-			idx2++
+			idx++
 		}
-
-		idx++
 	}
 
-	logUtils.PrintTo(msg)
+	logUtils.PrintTo(sysMsg + "\n" + customMsg)
 }
 
-func GetFilesAndDirs(path string, res *map[string][size]string)  {
+func GetFilesAndDirs(path string, res *map[string][][size]string)  {
 	dir, err := ioutil.ReadDir(path)
 	if err != nil {
 		return
@@ -101,12 +109,16 @@ func GetFilesAndDirs(path string, res *map[string][size]string)  {
 			arr := [size]string{}
 			if strings.HasSuffix(name, ".yaml") {
 				arr[0] = path + constant.PthSep + name
-				arr[1] = path[strings.LastIndex(path, "system"):] + constant.PthSep + name
-				(*res)["yaml"] = arr
+				arr[1] = path[strings.LastIndex(path, "data"):] + constant.PthSep + name
+				arr[1] = strings.Trim(arr[1], "data"+constant.PthSep)
+
+				(*res)["yaml"] = append((*res)["yaml"], arr)
 			} else if strings.HasSuffix(name, ".xlsx") {
 				arr[0] = path + constant.PthSep + name
-				arr[1] = path[strings.LastIndex(path, "system"):] + constant.PthSep + name
-				(*res)["excel"] = arr
+				arr[1] = path[strings.LastIndex(path, "data"):] + constant.PthSep + name
+				arr[1] = strings.Trim(arr[1], "data"+constant.PthSep)
+
+				(*res)["excel"] = append((*res)["excel"], arr)
 			}
 		}
 	}

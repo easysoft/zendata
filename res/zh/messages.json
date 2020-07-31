@@ -86,7 +86,7 @@
     },
     {
       "id": "start_server",
-      "translation": "zendata http服务已经成功运行，按CTRL+C键推出。\n您可以通过http://%s:%s地址来调用，比如：\ncurl http://%s:%s/?config=demo/default.yaml&F=field_common&lines=10。"
+      "translation": "zendata http服务已经成功运行，按CTRL+C键退出。\n您可以通过http://%s:%s地址来调用，比如：\ncurl http://%s:%s/?config=demo/default.yaml&F=field_common&lines=10。"
     },
     {
       "id": "server_request",
@@ -111,6 +111,14 @@
     {
       "id": "analyse_success",
       "translation": "成功解析数据到%s."
+    },
+    {
+      "id": "miss_table_name",
+      "translation": "以sql格式输出时，需要指定table参数。"
+    },
+    {
+      "id": "fail_to_generate_field",
+      "translation": "为Field %s生成数据失败。"
     }
   ]
 }

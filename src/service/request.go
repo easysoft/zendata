@@ -9,14 +9,16 @@ import (
 	"strconv"
 )
 
-func ParseRequestParams(req *http.Request) (root, defaultFile, yamlFile, fields string, count int,
+func ParseRequestParams(req *http.Request) (defaultFile, yamlFile, fields string, count int,
 		human string, format, table string, decode bool, input, output string) {
 	query := req.URL.Query()
 
-	root = GetRequestParams(query,"root", "R")
 	defaultFile = GetRequestParams(query,"default", "d")
 	yamlFile = GetRequestParams(query,"config", "c")
 	countStr := GetRequestParams(query,"lines", "n")
+	if countStr == "" {
+		countStr = "10"
+	}
 	count, _ = strconv.Atoi(countStr)
 	fields = GetRequestParams(query,"field", "F")
 
