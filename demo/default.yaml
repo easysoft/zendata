@@ -105,7 +105,7 @@ fields:
     use: privateC,privateC              # 使用该文件中定义的privateC和privateB两个实例。
     postfix: "\t"
 
-  - field: field_nested_instant         # 引用其他的定义文件，且该文件引用了其他示例。
+  - field: field_nested_instant         # 引用其他的定义文件，且该文件引用了其他实例。
     from: custom.ip.private.yaml        # 引用data/custom/ip/private.yaml
     use: all                            # 使用该文件中的所有实例。
     prefix: "{"
