@@ -46,6 +46,7 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 		return configDef
 	}
 
+	isSetFieldsToExport := false
 	// use all fields from default
 	if len(*fieldsToExport) == 0 {
 		if len(defaultDef.Fields) >0 {
@@ -59,9 +60,17 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 				*fieldsToExport = append(*fieldsToExport, field.Field)
 			}
 		}
+	} else {
+		isSetFieldsToExport = true
 	}
 
-	mergerDefine(&defaultDef, &configDef, fieldsToExport)
+	mergerDefine(&defaultDef, &configDef)
+	if !isSetFieldsToExport {
+		for _, field := range configDef.Fields {
+			*fieldsToExport = append(*fieldsToExport, field.Field)
+		}
+	}
+
 	orderFields(&defaultDef, *fieldsToExport)
 
 	for _, field := range defaultDef.Fields {
@@ -74,7 +83,7 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	return defaultDef
 }
 
-func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string) {
+func mergerDefine(defaultDef, configDef *model.DefData) {
 	defaultFieldMap := map[string]*model.DefField{}
 	configFieldMap := map[string]*model.DefField{}
 	sortedKeys := make([]string, 0)
@@ -92,8 +101,6 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 		if exist {
 			CopyField(*field, parent)
 			defaultFieldMap[path] = parent
-		} else {
-			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 	}
 
