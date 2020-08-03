@@ -48,8 +48,14 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 
 	// use all fields from default
 	if len(*fieldsToExport) == 0 {
-		for _, field := range defaultDef.Fields {
-			*fieldsToExport = append(*fieldsToExport, field.Field)
+		if len(defaultDef.Fields) >0 {
+			for _, field := range defaultDef.Fields {
+				*fieldsToExport = append(*fieldsToExport, field.Field)
+			}
+		} else {
+			for _, field := range configDef.Fields {
+				*fieldsToExport = append(*fieldsToExport, field.Field)
+			}
 		}
 	}
 
@@ -72,10 +78,10 @@ func mergerDefine(defaultDef, configDef *model.DefData) {
 	sortedKeys := make([]string, 0)
 
 	for i := range defaultDef.Fields {
-		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, &sortedKeys)
+		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 	for i := range configDef.Fields {
-		CreatePathToFieldMap(&configDef.Fields[i], configFieldMap, nil)
+		CreatePathToFieldMap(&configDef.Fields[i], configFieldMap, &sortedKeys)
 	}
 
 	// overwrite

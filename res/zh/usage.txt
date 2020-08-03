@@ -42,6 +42,7 @@ $>zd.exe -c demo\default.yaml -i test.txt --decode  将-i指定的文件根据-d
 $>zd.exe -l                         # 列出所有內置数据。
 $>zd.exe -v system.address.v1       # 查看內置Excel文件system/address/v1.xlsx中的数据表。
 $>zd.exe -v system.address.v1.china # 查看內置Excel文件china数据表中的数据。
+$>zd.exe -v system.ip.v1.yaml       # 查看內置名为IP的Instances数据。
 
 服务模式举例：
 

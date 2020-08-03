@@ -1,11 +1,11 @@
-title: 测试文件
+title: 冒烟测试文件
 desc:
 author: zentao
 version: 1.0
 
 fields:
   - field: test1
-    range: [1-5]:3{2}
+    range: 1-5:3{2}
     postfix: "\t"
 
   - field: test2

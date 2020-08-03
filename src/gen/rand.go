@@ -58,6 +58,9 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 		endChar := end[0]
 		stepInt, _ := strconv.ParseInt(step, 10, 64)
 		countInRound := int64(int64(endChar) - int64(startChar)) / stepInt
+		if countInRound <0 {
+			countInRound = countInRound * -1
+		}
 
 		for i := 0; i < count; i++ {
 			rand := commonUtils.RandNum64(countInRound)
