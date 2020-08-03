@@ -1,4 +1,4 @@
-zendata是一款通用的数据生成工具，您可以使用yaml文件来定义您的数据格式，然后交由zendata生成。
+ZenData是一款通用的数据生成工具，您可以使用yaml文件来定义您的数据格式，然后交由zendata生成。
 
 参数：
 
@@ -39,10 +39,10 @@ $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user -s mysql    输出插�
 $>zd.exe -i db.sql -o db  根据db.sql的定义生成每个表的yaml文件，存储到db目录里面。
 $>zd.exe -c demo\default.yaml -i test.txt --decode  将-i指定的文件根据-d参数的配置进行解析。
 
-$>zd.exe -l                         # 列出所有內置数据。
-$>zd.exe -v system.address.v1       # 查看內置Excel文件system/address/v1.xlsx中的数据表。
-$>zd.exe -v system.address.v1.china # 查看內置Excel文件china数据表中的数据。
-$>zd.exe -v system.ip.v1.yaml       # 查看內置名为IP的Instances数据。
+$>zd.exe -l                         列出所有內置数据。
+$>zd.exe -v system.address.v1       查看內置Excel文件system/address/v1.xlsx中的数据表。
+$>zd.exe -v system.address.v1.china 查看內置Excel文件china数据表中的数据。
+$>zd.exe -v system.ip.v1.yaml       查看內置名为IP的Instances数据。
 
 服务模式举例：
 
@@ -51,5 +51,5 @@ $zd.exe -p 80 -R d:\zd\config  监听80端口，以d:\zd\config为根目录。
 客户端调用：
 
 $curl http://loclahost/?d=default.yaml&c=config.yaml&n=100&o=test.sql&t=user  通过GET方式指定服务器端配置文件。
-$curl http://loclahost/?default=default.yamloutput=test.sql&table=user        参数名可以用全拼。
+$curl http://loclahost/?default=default.yaml&output=test.sql&table=user       参数名可以用全拼。
 $curl -d "default=...&config=...&lines=10" http://localhost/                  可以通过POST方式上传配置。
