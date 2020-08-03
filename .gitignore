@@ -4,7 +4,6 @@
 /data/.cache/.data.db-shm
 /data/.cache/.data.db-wal
 /demo/out/
-/data/custom/
 /conf/
 /demo/default.yaml
 /test/
