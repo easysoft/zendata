@@ -8,36 +8,36 @@ import (
 	"strings"
 )
 
-func GenerateList(field *model.DefField) model.FieldWithValues {
-	fieldValue := model.FieldWithValues{}
-	GenerateListField(field, &fieldValue)
+func CreateList(field *model.DefField) model.FieldWithValues {
+	fieldWithValue := model.FieldWithValues{}
+	CreateListField(field, &fieldWithValue)
 
-	return fieldValue
+	return fieldWithValue
 }
 
-func GenerateListField(field *model.DefField, fieldValue *model.FieldWithValues) {
-	fieldValue.Field = field.Field
-	fieldValue.Precision = field.Precision
+func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+	fieldWithValue.Field = field.Field
+	fieldWithValue.Precision = field.Precision
 
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
-			childValue := model.FieldWithValues{}
-			GenerateListField(&child, &childValue)
+			childFieldWithValue := model.FieldWithValues{}
+			CreateListField(&child, &childFieldWithValue)
 		}
 	} else {
-		GenerateFieldValues(field, fieldValue)
+		CreateFieldValues(field, fieldWithValue)
 	}
 }
 
-func GenerateFieldValues(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateFieldValues(field *model.DefField, fieldValue *model.FieldWithValues) {
 	if strings.Index(field.Range, ".txt") > -1 {
-		GenerateFieldValuesFromText(field, fieldValue)
+		CreateFieldValuesFromText(field, fieldValue)
 	} else {
-		GenerateFieldValuesFromList(field, fieldValue)
+		CreateFieldValuesFromList(field, fieldValue)
 	}
 }
 
-func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
 	rang := field.Range
 	rangeItems := ParseRange(rang) // 1
 
@@ -50,15 +50,13 @@ func GenerateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldW
 		typ, desc := ParseEntry(entry) // 2
 
 		items := make([]interface{}, 0)
-		itemsWithPlaceholder := make([]string, 0)
 		if typ == "literal" {
-			items = GenerateValuesFromLiteral(field, desc, stepStr, repeat)
+			items = CreateValuesFromLiteral(field, desc, stepStr, repeat)
 		} else if typ == "interval" {
-			items = GenerateValuesFromInterval(field, desc, stepStr, repeat)
+			items = CreateValuesFromInterval(field, desc, stepStr, repeat)
 		}
 
 		fieldValue.Values = append(fieldValue.Values, items...)
-		fieldValue.ValuesWithPlaceholder = append(fieldValue.ValuesWithPlaceholder, itemsWithPlaceholder...)
 		index = index + len(items)
 	}
 
@@ -139,7 +137,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 	return "string", 1, 0, false // is string
 }
 
-func GenerateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
+func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
 	elemArr := strings.Split(desc, ",")
 	step, _ := strconv.Atoi(stepStr)
 	total := 0
@@ -173,7 +171,7 @@ func GenerateValuesFromLiteral(field *model.DefField, desc string, stepStr strin
 	return
 }
 
-func GenerateValuesFromInterval(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
+func CreateValuesFromInterval(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr

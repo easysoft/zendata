@@ -71,8 +71,8 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 		if count > total {
 			count = total
 		}
-		values = connectChildrenToSingleStr(arrOfArr, count)
-		values = LoopSubFields(field, values, count, true)
+		values = combineChildrenValues(arrOfArr, count)
+		values = loopFieldValues(field, values, count, true)
 
 	} else if field.From != "" { // refer to res
 
@@ -94,36 +94,44 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 			values = append(values, groupValues[slct]...)
 		}
 
-		values = LoopSubFields(field, values, total, true)
+		values = loopFieldValues(field, values, total, true)
 
 	} else if field.Config != "" { // refer to config
 		groupValues := vari.Res[field.Config]
 		values = append(values, groupValues["all"]...)
 
-		values = LoopSubFields(field, values, total, true)
+		values = loopFieldValues(field, values, total, true)
 
 	} else { // leaf field
-		values = GenerateFieldItemsFromDefinition(field)
+		values = GenerateFieldValuesForDef(field)
 	}
 
 	return values
 }
 
-func GenerateFieldItemsFromDefinition(field *model.DefField) []string {
+func GenerateFieldValuesForDef(field *model.DefField) []string {
 	values := make([]string, 0)
 
-	fieldWithValues := GenerateList(field)
+	fieldWithValues := CreateList(field)
 
-	index := 0
+	computerLoop(field)
+	indexOfRow := 0
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		val := GenerateFieldValWithFix(field, fieldWithValues, &index, true)
+		val := loopFieldValWithFix(field, fieldWithValues, &indexOfRow, true)
 		values = append(values, val)
 
 		count++
-		if index >= len(fieldWithValues.Values) || count >= vari.Total {
+		isRandomAndLoopEnd := (*field).IsLoop && (*field).LoopIndex == (*field).LoopEnd
+		isNotRandomAndValOver := !(*field).IsLoop && indexOfRow >= len(fieldWithValues.Values)
+		if count >= vari.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
 			break
+		}
+
+		(*field).LoopIndex = (*field).LoopIndex + 1
+		if (*field).LoopIndex > (*field).LoopEnd {
+			(*field).LoopIndex = (*field).LoopStart
 		}
 	}
 
@@ -170,36 +178,41 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	return str
 }
 
-func LoopSubFields(field *model.DefField, oldValues []string, total int, withFix bool) (values []string) {
-
+func loopFieldValues(field *model.DefField, oldValues []string, total int, withFix bool) (values []string) {
 	fieldValue := model.FieldWithValues{}
 
 	for _, val := range oldValues {
 		fieldValue.Values = append(fieldValue.Values, val)
 	}
 
+	computerLoop(field)
 	indexOfRow := 0
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := GenerateFieldValWithFix(field, fieldValue, &indexOfRow, withFix)
+		str := loopFieldValWithFix(field, fieldValue, &indexOfRow, withFix)
 		values = append(values, str)
 
 		count++
-		if indexOfRow >= len(fieldValue.Values) || count >= total {
+		isRandomAndLoopEnd := (*field).IsLoop && (*field).LoopIndex == (*field).LoopEnd
+		isNotRandomAndValOver := !(*field).IsLoop && indexOfRow >= len(fieldValue.Values)
+		if count >= vari.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
 			break
+		}
+
+		(*field).LoopIndex = (*field).LoopIndex + 1
+		if (*field).LoopIndex > (*field).LoopEnd {
+			(*field).LoopIndex = (*field).LoopStart
 		}
 	}
 
 	return
 }
 
-func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
+func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
 		indexOfRow *int, withFix bool) (loopStr string) {
 	prefix := field.Prefix
 	postfix := field.Postfix
-
-	computerLoop(field)
 
 	for j := 0; j < (*field).LoopIndex; j++ {
 		if loopStr != "" {
@@ -221,11 +234,6 @@ func GenerateFieldValWithFix(field *model.DefField, fieldValue model.FieldWithVa
 
 	if field.Width > runewidth.StringWidth(loopStr) {
 		loopStr = stringUtils.AddPad(loopStr, *field)
-	}
-
-	(*field).LoopIndex = (*field).LoopIndex + 1
-	if (*field).LoopIndex > (*field).LoopEnd {
-		(*field).LoopIndex = (*field).LoopStart
 	}
 
 	return
@@ -264,6 +272,10 @@ func computerLoop(field *model.DefField) {
 		(*field).LoopEnd = 1
 	}
 
+	if (*field).LoopStart > 0 || (*field).LoopEnd > 0 {
+		(*field).IsLoop = false
+	}
+
 	(*field).LoopIndex = (*field).LoopStart
 }
 
@@ -295,7 +307,7 @@ func putChildrenToArr(arrOfArr [][]string, total int) (values [][]string) {
 	return
 }
 
-func connectChildrenToSingleStr(arrOfArr [][]string, total int) (ret []string)  {
+func combineChildrenValues(arrOfArr [][]string, total int) (ret []string)  {
 	valueArr := putChildrenToArr(arrOfArr, total)
 
 	for _, arr := range valueArr {
