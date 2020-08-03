@@ -36,6 +36,10 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 		endInt, _ := strconv.ParseInt(end, 0, 64)
 		stepInt, _ := strconv.ParseInt(step, 0, 64)
 
+		if endInt < startInt && stepInt > 0 {
+			stepInt = stepInt * -1
+		}
+
 		countInRound := (endInt - startInt) / stepInt
 
 		for i := 0; i < count; i++ {
@@ -57,10 +61,12 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 		startChar := start[0]
 		endChar := end[0]
 		stepInt, _ := strconv.ParseInt(step, 10, 64)
-		countInRound := int64(int64(endChar) - int64(startChar)) / stepInt
-		if countInRound <0 {
-			countInRound = countInRound * -1
+
+		if int64(endChar) < int64(startChar) && stepInt > 0 {
+			stepInt = stepInt * -1
 		}
+
+		countInRound := (int64(endChar) - int64(startChar)) / stepInt
 
 		for i := 0; i < count; i++ {
 			rand := commonUtils.RandNum64(countInRound)
@@ -81,6 +87,10 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 		startFloat, _ := strconv.ParseFloat(start, 64)
 		endFloat, _ := strconv.ParseFloat(end, 64)
 		stepFloat, _ := strconv.ParseFloat(step, 64)
+
+		if endFloat < startFloat && stepFloat > 0 {
+			stepFloat = stepFloat * -1
+		}
 
 		countInRound := (endFloat - startFloat) / stepFloat
 

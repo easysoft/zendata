@@ -5,11 +5,11 @@ version: 1.0
 
 fields:
   - field: test1
-    range: 1-5:3{2}
+    range: 9-5:R{2}
     postfix: "\t"
 
   - field: test2
-    range: Z-P:R{2}
+    range: z-a:R{2}
     postfix: "\t"
 
   - field: test3

@@ -41,13 +41,16 @@ func GenerateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldW
 	// get step and rand
 	rand := false
 	step := 1
-	if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
+	if strings.ToLower(strings.TrimSpace(stepStr)) == "r" {
+		rand = true
+	} else {
 		stepInt, err := strconv.Atoi(stepStr)
 		if err == nil {
 			step = stepInt
+			if step < 0 {
+				step = step * -1
+			}
 		}
-	} else {
-		rand = true
 	}
 
 	// get index for data retrieve

@@ -29,12 +29,8 @@ func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[strin
 	ConvertExcelToSQLiteIfNeeded(dbName, path)
 
 	list, selectCol = ReadDataFromSQLite(*field, dbName, tableName)
-
-	// get step and rand
-	rand := false
-	step := 1
 	// get index for data retrieve
-	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1)
+	numbs := GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1)
 	// get data by index
 	index := 0
 	for _, numb := range numbs {
