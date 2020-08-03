@@ -26,7 +26,7 @@ fields:
     prefix: "["
     postfix: "]"
 
-  - field: field_nested_refer
+  - field: field_nested_instant
     from: custom.ip.private.yaml
     use: all
     prefix: "["

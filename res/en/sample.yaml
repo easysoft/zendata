@@ -111,6 +111,12 @@ fields:
     use: privateB,privateC              # Use the two instances of privateC and privateB defined in this file.
     postfix: "\t"
 
+  - field: field_nested_instant         # Refer to other definition file which refer another instances definition.
+    from: custom.ip.private.yaml        # Refer to data/custom/ip/private.yaml
+    use: all                            # Use all instances defined in this file.
+    prefix: "{"
+    postfix: "}"
+
   - field: field_use_excel              # Read the data from the data source of excel.
     from: system.address.v1.china       # Read the book named china in data/system/address/v1.xlsx.
     select: city                        # Query the field city.
