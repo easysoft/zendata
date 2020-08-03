@@ -1,0 +1,17 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: test1
+    range: 9-5:R{2}
+    postfix: "\t"
+    width: 2
+
+  - field: test2
+    range: [user-2,user3,user4,user5,user6]:R
+    loop: 2-3
+    loopfix: "|"
+    postfix: "\t"
+    width: 25

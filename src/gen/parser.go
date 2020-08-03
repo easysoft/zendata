@@ -57,6 +57,9 @@ func ParseRangeItem(item string) (entry string, step string, repeat int) {
 	item = strings.TrimSpace(item)
 	if string(item[0]) == string(constant.LeftChar) &&  // It's a whole when meet (xxx)
 			string(item[len(item) - 1]) == string(constant.RightChar) {
+
+		if repeat == 0 { repeat = 1 }
+		if step == "" { step = "1" }
 		return item, step, repeat
 	}
 

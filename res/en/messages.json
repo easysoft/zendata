@@ -127,7 +127,7 @@
     },
     {
       "id": "fail_to_generate_field",
-      "translation": "Fail to generate data for filed '%s'."
+      "translation": "Fail to generate data for field '%s'."
     }
   ]
 }
