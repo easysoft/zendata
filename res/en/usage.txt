@@ -27,10 +27,10 @@ Parameters
   -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
                    Also you can output the readable format via -H.
 
-  -e  --example    Print the data format config file of the example.
   -l  --list       List all supported data formats.
   -v  --view       View the detailed definition of a data format.
   -h  --help       Print help.
+  -e  --example    Print the data format config file of the example.
 
 Command Line Examples
 
