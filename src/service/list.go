@@ -71,7 +71,13 @@ func ListRes() {
 			titles := strings.Split(titleStr, "|")
 
 			idx2 := 0
+			isBuildin := false
 			for _, title := range titles {
+				if strings.Index(name, "system") > -1 {
+					isBuildin = true
+				} else {
+					isBuildin = false
+				}
 				if idx2 > 0 {
 					name = ""
 				}
@@ -79,10 +85,10 @@ func ListRes() {
 
 				title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
 				msg := fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
-				if strings.Index(name, "system") > -1 {
+				if isBuildin {
 					sysMsg = sysMsg + msg
 				} else {
-					customMsg = sysMsg + msg
+					customMsg = customMsg + msg
 				}
 
 				idx2++
