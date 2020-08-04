@@ -46,9 +46,9 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 	Print(rows, format, table, colIsNumArr, fieldsToExport)
 
 	entTime := time.Now().Unix()
-	//if vari.RunMode == constant.RunModeServerRequest {
+	if vari.RunMode == constant.RunModeServerRequest {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("server_response", len(rows), entTime - startTime), color.FgCyan)
-	//}
+	}
 }
 
 func Print(rows [][]string, format string, table string, colIsNumArr []bool, fields []string) {
@@ -229,15 +229,7 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 }
 
 func PrintErrMsg(msg string) {
-	//if vari.RunMode == constant.RunModeServerRequest {
-	//	mp := map[string]string{}
-	//	mp["msg"] = msg
-	//
-	//	json, _ := json.Marshal(mp)
-	//	PrintToHttp(string(json))
-	//} else {
-		logUtils.PrintToWithColor(msg, color.FgCyan)
-	//}
+	logUtils.PrintToWithColor(msg, color.FgCyan)
 }
 
 func printLine(line string) {
