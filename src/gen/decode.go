@@ -79,7 +79,7 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 				index := searchRune(left, sep)
 				if index > -1 {
 					col = string(left[: index+runewidth.StringWidth(field.Postfix)])
-					left = left[index+runewidth.StringWidth(field.Postfix) :]
+					left = left[index+runewidth.StringWidth(field.Prefix)+1:]
 				}
 			} else if j == len(fields) - 1 {
 				col = string(left)
@@ -91,11 +91,11 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 
 		children := field.Fields
 		if len(children) > 0 {
-			colWithoutFix := col[runewidth.StringWidth(field.Postfix):
-				runewidth.StringWidth(col) - runewidth.StringWidth(field.Postfix)]
+			//colWithoutFix := col[runewidth.StringWidth(field.Postfix):
+			//	runewidth.StringWidth(col) - runewidth.StringWidth(field.Postfix)]
 
 			rowMapChild := map[string]interface{}{}
-			decodeOneLevel(colWithoutFix, children, &rowMapChild)
+			decodeOneLevel(col, children, &rowMapChild)
 
 			(*rowMap)[field.Field + ".fields"] = rowMapChild
 		}

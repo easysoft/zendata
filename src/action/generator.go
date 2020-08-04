@@ -47,7 +47,7 @@ func Generate(defaultFile string, configFile string, total int, fieldsToExportSt
 	Print(rows, format, table, colIsNumArr, fieldsToExport)
 
 	entTime := time.Now().Unix()
-	if vari.RunMode == constant.RunModeServerRequest {
+	if vari.RunMode == constant.RunModeServerRequest || out != "" {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("server_response", len(rows), entTime - startTime), color.FgCyan)
 	}
 }

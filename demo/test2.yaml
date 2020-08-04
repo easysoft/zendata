@@ -8,17 +8,41 @@ fields:
     range: 1-3{3}
     loop: 2-3
     loopfix: "|"
-    postfix: "\t"
-    width: 10
+    prefix: "["
+    postfix: "]\t"
+#    width: 10
 
   - field: test1
     range: 9-5:R{2}
-    postfix: "\t"
-    width: 5
+    prefix: "["
+    postfix: "]\t"
+#    width: 5
 
   - field: test2
     range: [user-2,user3,user4,user5,user6]:R
     loop: 2-3
     loopfix: "|"
-    postfix: "\t"
-    width: 25
+    prefix: "["
+    postfix: "]\t"
+#    width: 25
+
+  - field: field_with_children
+    fields:
+      - field: child1
+        range: a-z
+        prefix: part1_
+        postfix: '|'
+
+      - field:  child2
+        range: A-Z
+        prefix: part2_
+        postfix: '|'
+
+      - field: child_with_child
+        prefix: part3_
+        postfix:
+        fields:
+          - field: field_grandson
+            prefix: int_
+            range: 10-20
+            postfix:
