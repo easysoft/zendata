@@ -72,7 +72,7 @@ type FieldSimple struct {
 	LoopStart  int
 	LoopEnd  int
 	LoopIndex int
-	IsLoop bool
+	IsRand bool
 }
 
 type FieldWithValues struct {

@@ -47,6 +47,10 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 		if rangeItem == "" { continue }
 
 		entry, stepStr, repeat := ParseRangeItem(rangeItem)
+		if strings.ToLower(stepStr) == "r" {
+			(*field).IsRand = true
+		}
+
 		typ, desc := ParseEntry(entry) // 2
 
 		items := make([]interface{}, 0)

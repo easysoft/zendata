@@ -123,8 +123,8 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		values = append(values, val)
 
 		count++
-		isRandomAndLoopEnd := (*field).IsLoop && (*field).LoopIndex == (*field).LoopEnd
-		isNotRandomAndValOver := !(*field).IsLoop && indexOfRow >= len(fieldWithValues.Values)
+		isRandomAndLoopEnd := (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
+		isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
 			break
 		}
@@ -194,8 +194,8 @@ func loopFieldValues(field *model.DefField, oldValues []string, total int, withF
 		values = append(values, str)
 
 		count++
-		isRandomAndLoopEnd := (*field).IsLoop && (*field).LoopIndex == (*field).LoopEnd
-		isNotRandomAndValOver := !(*field).IsLoop && indexOfRow >= len(fieldValue.Values)
+		isRandomAndLoopEnd := (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
+		isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldValue.Values)
 		if count >= vari.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
 			break
 		}
@@ -270,10 +270,6 @@ func computerLoop(field *model.DefField) {
 	}
 	if (*field).LoopEnd == 0 {
 		(*field).LoopEnd = 1
-	}
-
-	if (*field).LoopStart > 0 || (*field).LoopEnd > 0 {
-		(*field).IsLoop = false
 	}
 
 	(*field).LoopIndex = (*field).LoopStart
