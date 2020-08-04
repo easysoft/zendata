@@ -28,6 +28,7 @@ func ParseRequestParams(req *http.Request) (defaultFile, yamlFile, fields string
 	human = GetRequestParams(query,"human", "H")
 
 	if req.Method == http.MethodPost {
+		// save to files
 		req.ParseForm()
 		defaultDefContent := req.FormValue("default")
 		configDefContent := req.FormValue("config")

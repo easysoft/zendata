@@ -41,7 +41,7 @@ $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100  # Using the parameter of
 $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.txt   # Output data in original format.
 $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.json  # Output data in JSON.
 $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.xml   # Output data in XML.
-$>zd.exe -d demo/default.yaml -n 100 -o test.sql -t user -s mysql    # Output the sql inserted into the table user.
+$>zd.exe -d demo/default.yaml -n 100 -o test.sql -t user             # Output the sql inserted into the table user.
 $>zd.exe -d demo/default.yaml -o test.sql -t user -s mysql --trim    # Remove the prefix and postfix of every field.
 
 $>zd.exe -i db.sql -o db  # Generate YAML files for each table by parsing db.sql and store them in the db directory.

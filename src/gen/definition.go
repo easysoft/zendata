@@ -3,6 +3,7 @@ package gen
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -17,32 +18,40 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	configDef := model.DefData{}
 
 	// load defaultDef
-	path := vari.ExeDir + defaultFile
 	if defaultFile != "" {
-		defaultContent, err := ioutil.ReadFile(path)
+		pathDefaultFile := defaultFile
+		if !fileUtils.IsAbosutePath(pathDefaultFile) {
+			pathDefaultFile = vari.ExeDir + pathDefaultFile
+		}
+
+		defaultContent, err := ioutil.ReadFile(pathDefaultFile)
 		defaultContent = ReplaceSpecialChars(defaultContent)
 		if err != nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", path), color.FgCyan)
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
 			return defaultDef
 		}
 		err = yaml.Unmarshal(defaultContent, &defaultDef)
 		if err != nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", path), color.FgCyan)
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
 			return defaultDef
 		}
 	}
 
 	// load configDef
-	path = vari.ExeDir + configFile
-	yamlContent, err := ioutil.ReadFile(path)
+	pathConfigFile := configFile
+	if !fileUtils.IsAbosutePath(pathConfigFile) {
+		pathConfigFile = vari.ExeDir + pathConfigFile
+	}
+
+	yamlContent, err := ioutil.ReadFile(pathConfigFile)
 	yamlContent = ReplaceSpecialChars(yamlContent)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", path), color.FgCyan)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathConfigFile), color.FgCyan)
 		return configDef
 	}
 	err = yaml.Unmarshal(yamlContent, &configDef)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", path), color.FgCyan)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", pathConfigFile), color.FgCyan)
 		return configDef
 	}
 

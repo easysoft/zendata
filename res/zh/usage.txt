@@ -35,7 +35,7 @@ $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100  -c和-d两个文件的�
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.txt   输出原始格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  输出json格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.xml   输出xml格式的数据。
-$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user -s mysql    输出插入到user表里面的sql。
+$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             输出插入到user表里面的sql。
 
 $>zd.exe -i db.sql -o db  根据db.sql的定义生成每个表的yaml文件，存储到db目录里面。
 $>zd.exe -c demo\default.yaml -i test.txt --decode  将-i指定的文件根据-d参数的配置进行解析。

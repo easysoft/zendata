@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 func PostForm(urlStr string, data url.Values) (interface{}, bool) {
@@ -33,15 +32,7 @@ func PostForm(urlStr string, data url.Values) (interface{}, bool) {
 	return body, true
 }
 
-func GenUrl(server string, path string) string {
-	server = UpdateUrl(server)
-	url := fmt.Sprintf("%s%s", server, path)
-	return url
-}
-
-func UpdateUrl(url string) string {
-	if strings.LastIndex(url, "/") < len(url)-1 {
-		url += "/"
-	}
+func GenUrl(server string, port int, path string) string {
+	url := fmt.Sprintf("http://%s:%d/%s", server, port, path)
 	return url
 }
