@@ -77,6 +77,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 	for i, field := range configDef.Fields {
+		vari.TopFiledMap[field.Field] = field
 		if !isSetFieldsToExport {
 			_, exist := defaultFieldMap[field.Path]
 			if !exist {
@@ -105,6 +106,10 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 		if !exist {
 			defaultDef.Fields = append(defaultDef.Fields, *field)
 		}
+	}
+
+	for _, field := range defaultDef.Fields {
+		vari.TopFiledMap[field.Field] = field
 	}
 }
 

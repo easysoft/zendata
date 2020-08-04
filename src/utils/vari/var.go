@@ -33,6 +33,7 @@ var (
 	Def = model.DefData{}
 	Res = map[string]map[string][]string{}
 	RandFieldNameToValuesMap = map[string]map[string]interface{}{}
+	TopFiledMap  = map[string]model.DefField{}
 
 	DefaultDir string
 	ConfigDir string

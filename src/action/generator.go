@@ -12,6 +12,7 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"github.com/mattn/go-runewidth"
 	"net/http"
 	"os"
 	"regexp"
@@ -70,6 +71,10 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool, fie
 
 		for j, col := range cols {
 			col = replacePlaceholder(col)
+			field := vari.TopFiledMap[fields[j]]
+			if field.Width > runewidth.StringWidth(col) {
+				col = stringUtils.AddPad(col, field)
+			}
 
 			lineForText = lineForText + col
 
@@ -194,8 +199,10 @@ func replacePlaceholder(col string) string {
 
 func getValForPlaceholder(placeholderStr string, count int) []string {
 	mp := vari.RandFieldNameToValuesMap[placeholderStr]
+
 	tp := mp["type"].(string)
 	repeatObj := mp["repeat"]
+
 	repeat := "1"
 	if repeatObj != nil {
 		repeat = repeatObj.(string)

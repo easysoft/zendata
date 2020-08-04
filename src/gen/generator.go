@@ -10,7 +10,6 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
-	"github.com/mattn/go-runewidth"
 	"strconv"
 	"strings"
 )
@@ -230,10 +229,6 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 
 	if withFix && !vari.Trim {
 		loopStr = prefix + loopStr + postfix
-	}
-
-	if field.Width > runewidth.StringWidth(loopStr) {
-		loopStr = stringUtils.AddPad(loopStr, *field)
 	}
 
 	return
