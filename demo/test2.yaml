@@ -9,12 +9,12 @@ fields:
     loop: 2-3
     loopfix: "|"
     postfix: "\t"
-    width: 2
+    width: 10
 
   - field: test1
     range: 9-5:R{2}
     postfix: "\t"
-    width: 2
+    width: 5
 
   - field: test2
     range: [user-2,user3,user4,user5,user6]:R
