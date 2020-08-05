@@ -5,5 +5,5 @@
 /data/.cache/.data.db-wal
 /demo/out/
 /conf/
-/test/
 /bin/
+/test/ztf/output/
