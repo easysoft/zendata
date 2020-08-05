@@ -15,16 +15,6 @@ class zendata
         $this->workDir = $config['zd']['workDir'];
     }
 
-    public function cmd($params)
-    {
-        $cmdStr = sprintf("%s %s", $this->cmdPath, $params);
-        print("$cmdStr\n");
-
-        $output = [];
-        exec($cmdStr, $output);
-        return $output;
-    }
-
     public function create($default, $conf, $lines, $output, $options = array())
     {
         $cmdStr = sprintf("%s -c %s/%s -n %d -F %s",
@@ -38,5 +28,30 @@ class zendata
 
     public function parse($config, $input)
     {
+    }
+
+    public function cmd($params)
+    {
+        $cmdStr = sprintf("%s %s", $this->cmdPath, $params);
+        print("$cmdStr\n");
+
+        $output = [];
+        exec($cmdStr, $output);
+        return $output;
+    }
+
+    public function changeLang($lang)
+    {
+        $filename = '';
+
+        $filename = sprintf("conf/zdata.conf");
+        $content = file_get_contents($filename);
+        $fp = fopen($filename, "w");
+
+        $content = str_replace("en", $lang, $content);
+        $content = str_replace("zh", $lang, $content);
+
+        fwrite($fp, $content);
+        fclose($fp);
     }
 }

@@ -10,6 +10,9 @@ pid=0
  >>
  >>
  >>
+ >>
+ >>
+ >>
 
 [esac]
 */
@@ -18,11 +21,20 @@ include_once __DIR__ . DIRECTORY_SEPARATOR . '../common/zd.php';
 
 $zd = new zendata();
 
+$zd->changeLang("en");
+
 $output = $zd->cmd("");
 print(">> $output[0]\n");
-
 $output = $zd->cmd("-h");
 print(">> $output[0]\n");
+$output = $zd->cmd("-help");
+print(">> $output[0]\n");
 
+$zd->changeLang("zh");
+
+$output = $zd->cmd("");
+print(">> $output[0]\n");
+$output = $zd->cmd("-h");
+print(">> $output[0]\n");
 $output = $zd->cmd("-help");
 print(">> $output[0]\n");
