@@ -1,0 +1,19 @@
+title: 私有IP
+desc: 引用系统IP定义
+author: zentao
+version: 1.0
+
+field: privateIP
+instances:
+
+  - instance: all
+    fields:
+      - field: part1
+        from: system.ip.v1.yaml
+        use: privateA, privateB, privateC
+        prefix: ""
+        postfix: "/"
+
+      - field: part2
+        from: custom.test.number.v1.yaml
+        use: netmask
