@@ -9,6 +9,8 @@ pid=0
 [group]
  >>
  >>
+ >>
+ >>
 
 [esac]
 */
@@ -19,7 +21,16 @@ $zd = new zendata();
 
 $zd->changeLang("en");
 
-$output = $zd->cmd("-e");
+$output = $zd->cmd("-help");
 print(">> $output[0]\n");
 $output = $zd->cmd("-example");
 print(">> $output[0]\n");
+
+$zd->changeLang("zh");
+
+$output = $zd->cmd("-help");
+print(">> $output[0]\n");
+$output = $zd->cmd("-example");
+print(">> $output[0]\n");
+
+$zd->changeLang("en");
