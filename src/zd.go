@@ -44,6 +44,7 @@ var (
 
 	example bool
 	help   bool
+	set   bool
 
 	flagSet *flag.FlagSet
 )
@@ -113,6 +114,9 @@ func main() {
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")
 
+	flagSet.BoolVar(&set, "s", false, "")
+    flagSet.BoolVar(&set, "set", false, "")
+
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
 	if len(os.Args) == 1 {
@@ -129,7 +133,10 @@ func main() {
 			} else if help {
 				logUtils.PrintUsage()
 				return
-			} else if listRes {
+			} else if set {
+                service.Set()
+                return
+            } else if listRes {
 				service.ListRes()
 				return
 			} else if viewRes != "" {
