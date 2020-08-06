@@ -13,7 +13,7 @@ pid=0
 [esac]
 */
 
-include_once __DIR__ . DIRECTORY_SEPARATOR . '../common/zd.php';
+include_once __DIR__ . DIRECTORY_SEPARATOR . '../lib/zd.php';
 
 $zd = new zendata();
 $output = $zd->create("", "default.yaml", 3, "", array("fields"=>"field_common"));

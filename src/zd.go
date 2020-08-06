@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"syscall"
@@ -187,6 +188,7 @@ func toGen() {
 		}
 
 		if output != "" {
+			fileUtils.MkDirIfNeeded(filepath.Dir(output))
 			fileUtils.RemoveExist(output)
 			action.FileWriter, _ = os.OpenFile(output, os.O_RDWR | os.O_CREATE, 0777)
 			defer action.FileWriter.Close()
