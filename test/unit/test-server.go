@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	urlStr := httpUtils.GenUrl("10.8.0.134", 8848, "?config=&F=field_common&lines=10")
+	urlStr := httpUtils.GenUrl("10.8.0.134", 8848, "?F=field_common&lines=10")
 	data := url.Values{}
 
 	defaultContent := fileUtils.ReadFile("demo/default.yaml")

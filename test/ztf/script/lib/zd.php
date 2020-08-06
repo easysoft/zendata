@@ -132,6 +132,33 @@ class zendata
 
         return $resp;
     }
+    public function httpPost($port, $default, $config, $lines, $options = array())
+    {
+        $url = sprintf("http://127.0.0.1:%d/?lines=%d", $port, $lines);
+
+        if (array_key_exists("fields", $options)) {
+            $url .= "&F=" .   $options["fields"];
+        }
+
+        print("$url\n");
+
+        $defaultContent = file_get_contents($this->workDir . "/" . $default);
+        $configContent = file_get_contents($this->workDir . "/" . $config);
+
+        $postData = http_build_query(array("default"=>$defaultContent, "config"=>$configContent));
+        $options = array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => 'Content-type:application/x-www-form-urlencoded',
+                'content' => $postData,
+                'timeout' => 15 * 60
+            )
+        );
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+
+        return $result;
+    }
 
     public function cmd($params)
     {
