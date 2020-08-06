@@ -20,7 +20,7 @@ $zd = new zendata();
 $port = 8848;
 $zd->startService($port);
 
-$resp = $zd->httpGet($port, "default.yaml", "test.yaml", 10);
+$resp = $zd->httpGet($port, "default.yaml", "test.yaml", 10, array("fields"=>"field_common"));
 
 $jsonArr = json_decode($resp,TRUE);
 

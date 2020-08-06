@@ -90,7 +90,7 @@ class zendata
         exec($cmdStr, $output);
     }
 
-    public function startService($port, $root)
+    public function startService($port, $root="")
     {
         $this->stopService($port);
 
@@ -121,8 +121,8 @@ class zendata
         $url = sprintf("http://127.0.0.1:%d/?d=%s/%s&c=%s/%s&lines=%d",
             $port, $this->workDir, $default, $this->workDir, $conf, $lines);
 
-        if (array_key_exists("root", $options)) {
-            $url .= "&root=" . $options["root"];
+        if (array_key_exists("fields", $options)) {
+            $url .= "&F=" .   $options["fields"];
         }
 
         print("$url\n");

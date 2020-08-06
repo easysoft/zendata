@@ -21,7 +21,7 @@ $port = 8848;
 $root = dirname(dirname(dirname(__FILE__)));
 $zd->startService($port, $root);
 
-$resp = $zd->httpGet($port, "default.yaml", "test.yaml", 10);
+$resp = $zd->httpGet($port, "default.yaml", "test.yaml", 10, array("fields"=>"field_common"));
 
 $jsonArr = json_decode($resp,TRUE);
 
