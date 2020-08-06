@@ -19,12 +19,25 @@ class zendata
     {
         $cmdStr = sprintf("%s -c %s/%s -n %d",
             $this->cmdPath, $this->workDir, $conf, $lines);
-        if (count($options) > 0 && $options["fields"]) {
+
+        if ($default) {
+            $cmdStr = str_replace(" -c ", " -d " . $this->workDir . "/" .  $default . " -c ", $cmdStr);
+        }
+
+        if (array_key_exists("fields", $options)) {
             $cmdStr .= " -F " .  $options["fields"];
         }
+        if (array_key_exists("table", $options)) {
+            $cmdStr .= " -table " .  $options["table"];
+        }
+        if (array_key_exists("trim", $options)) {
+            $cmdStr .= " -T ";
+        }
+
         if ($output) {
             $cmdStr .= " -o " . $this->workDir . "/" . $output;
         }
+
         print("$cmdStr\n");
 
         $output = [];
@@ -48,12 +61,19 @@ class zendata
         print("$filePath\n");
 
         $content = file_get_contents($filePath);
+        $arr = explode("\n", $content);
         if (count($lines) == 0) {
-            return $content;
+            $ret = array();
+            foreach ($arr as $item) {
+                $item = trim($item);
+                if ($item) {
+                    array_push($ret, $item);
+                }
+            }
+            return $ret;
         }
 
         $ret = array();
-        $arr = explode("\n", $content);
         foreach ($lines as $num) {
             array_push($ret, $arr[$num - 1]);
         }
@@ -63,7 +83,7 @@ class zendata
 
     public function decode($config, $input, $out)
     {
-        $cmdStr = sprintf("-D -c %s/%s -i %s/%s -o %s/%s",
+        $cmdStr = sprintf("%s -D -c %s/%s -i %s/%s -o %s/%s",
             $this->cmdPath, $this->workDir, $config, $this->workDir, $input, $this->workDir, $out);
         print("$cmdStr\n");
 

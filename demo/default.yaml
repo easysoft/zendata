@@ -109,7 +109,7 @@ fields:
     from: custom.ip.private.yaml        # 引用data/custom/ip/private.yaml
     use: all                            # 使用该文件中的所有实例。
     prefix: "{"
-    postfix: "}"
+    postfix: "}\t"
 
   - field: field_use_excel              # 从excel数据源里面取数据。
     from: system.address.v1.china       # 从data/system/address/v1.xlsx文件中读取名为china的工作簿。

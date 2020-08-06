@@ -20,6 +20,11 @@ $output = $zd->create("", "test2.yaml", 3, "output/test2.txt");
 
 $zd->decode("test2.yaml", "output/test2.txt", "output/test2.json");
 
-$lineArr = $zd->readOutput("output/zt_action.yaml", array(6));
-$lines = join("\n", $lineArr);
-print(">> $lines\n");
+$arr = $zd->readOutput("output/test2.json");
+$content = join($arr, "");
+if (strpos($content, 'part1_a') > 0) {
+    print(">> found part1_a\n");
+}
+if (strpos($content, 'part3_int_10') > 0) {
+    print(">> found part3_int_10\n");
+}

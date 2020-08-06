@@ -16,8 +16,9 @@ pid=0
 include_once __DIR__ . DIRECTORY_SEPARATOR . '../lib/zd.php';
 
 $zd = new zendata();
-$output = $zd->create("", "default.yaml", 30, "", array("fields"=>"field_common"));
+$output = $zd->create("default.yaml", "test.yaml", 10, "");
 
 $count = sprintf("%d", count($output));
 print(">> $count\n");
-print(">> $output[12]\n");
+
+print(">> $output[2]\n");
