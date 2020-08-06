@@ -94,7 +94,7 @@ class zendata
     {
         $this->stopService($port);
 
-        $cmdStr = sprintf("nohup %s -p %d  >%s/log.txt 2>&1 &", $this->cmdPath, $port, $this->workDir);
+        $cmdStr = sprintf("nohup %s -p %d  >%s/output/log.txt 2>&1 &", $this->cmdPath, $port, $this->workDir);
         if ($root) {
             $cmdStr = str_replace(" -p ", " -R " . $root . " -p ", $cmdStr);
         }
