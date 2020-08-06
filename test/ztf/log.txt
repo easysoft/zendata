@@ -1,0 +1,7 @@
+Success yo start zendata http service, press CTRL+C to exist. 
+You may use http://10.8.0.134:8848 to retrieve the data，for example: 
+curl http://10.8.0.134:8848/?config=demo/default.yaml&F=field_common&lines=10.
+
+Got GET request /?d=../../demo/default.yaml&c=../../demo/test.yaml&lines=10.
+
+Create 10 records in 0 sec.
