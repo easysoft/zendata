@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=反向解析数据
+cid=1368
+pid=7
 
 [group]
- >>
- >>
+ 找到特定字符窜1 >>
+ 找到特定字符窜2 >>
 
 [esac]
 */

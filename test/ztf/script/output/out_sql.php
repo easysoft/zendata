@@ -2,13 +2,12 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=输出为SQL格式
+cid=1356
+pid=7
 
 [group]
- >>
- >>
+ 找到预期的SQL插入语句字段 >>
 
 [esac]
 */

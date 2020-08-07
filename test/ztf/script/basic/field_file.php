@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=文件内容随机
+cid=1342
+pid=7
 
 [group]
- >>
- >>
+ 显示10行生成的数据    >>
+ 验证数据在预定的数组中 >>
 
 [esac]
 */

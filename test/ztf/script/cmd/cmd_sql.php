@@ -2,13 +2,12 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=从SQL生成配置
+cid=1367
+pid=7
 
 [group]
- >>
- >>
+ 找到预期的id字段 >>
 
 [esac]
 */

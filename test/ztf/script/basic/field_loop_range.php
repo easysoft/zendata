@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=Loop使用区间
+cid=1374
+pid=7
 
 [group]
- >>
- >>
+ 显示10行生成的数据 >>
+ 验证第3行数据    >>
 
 [esac]
 */

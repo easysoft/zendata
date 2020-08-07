@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=格式化字符串
+cid=1345
+pid=7
 
 [group]
- >>
- >>
+ 显示10行生成的数据 >>
+ 验证第3行数据    >>
 
 [esac]
 */

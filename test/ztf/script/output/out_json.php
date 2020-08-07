@@ -2,13 +2,12 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=输出为JSON格式
+cid=1357
+pid=7
 
 [group]
- >>
- >>
+ 找到预期的JSON字段 >>
 
 [esac]
 */

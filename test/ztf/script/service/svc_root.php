@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=服务指定工作目录
+cid=1360
+pid=7
 
 [group]
- >>
- >>
+ 检验json数组大小 >>
+ 找到json元素的值 >>
 
 [esac]
 */

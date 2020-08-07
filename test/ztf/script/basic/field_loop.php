@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=自循环Loop
+cid=1343
+pid=7
 
 [group]
- >>
- >>
+ 显示10行生成的数据 >>
+ 验证第3行数据    >>
 
 [esac]
 */

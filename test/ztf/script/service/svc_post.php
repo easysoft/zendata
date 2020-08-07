@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=POST方式上传配置
+cid=1371
+pid=7
 
 [group]
- >>
- >>
+ 检验json数组大小 >>
+ 找到json元素的值 >>
 
 [esac]
 */

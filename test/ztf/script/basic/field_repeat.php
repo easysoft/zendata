@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=重复字符{}
+cid=1344
+pid=7
 
 [group]
- >>
- >>
+ 显示10行生成的数据 >>
+ 验证第4行数据    >>
 
 [esac]
 */

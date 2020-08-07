@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=多层嵌套字段
+cid=1350
+pid=7
 
 [group]
- >>
- >>
+ 显示10行生成的数据 >>
+ 验证第3行数据     >>
 
 [esac]
 */

@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=服务模式下-default和-config搭配
+cid=1353
+pid=7
 
 [group]
- >>
- >>
+ 检验json数组大小 >>
+ 找到json元素的值 >>
 
 [esac]
 */

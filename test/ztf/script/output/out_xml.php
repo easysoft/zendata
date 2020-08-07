@@ -2,13 +2,12 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=输出为XML格式
+cid=1358
+pid=7
 
 [group]
- >>
- >>
+ 找到预期的row元素 >>
 
 [esac]
 */

@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=指定随机
+cid=1341
+pid=7
 
 [group]
- >>
- >>
+ 显示10行生成的数据 >>
+ 验证顺序为随机     >>
 
 [esac]
 */

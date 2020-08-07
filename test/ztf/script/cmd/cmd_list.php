@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=
-cid=0
-pid=0
+title=列出內置数据定义
+cid=1365
+pid=7
 
 [group]
- >>
- >>
+ 找到预期文本1 >>
+ 找到预期文本2 >>
 
 [esac]
 */
