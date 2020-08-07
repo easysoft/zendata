@@ -11,6 +11,7 @@ import (
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"sort"
 	"strings"
 )
 
@@ -19,6 +20,7 @@ const (
 )
 
 func ListRes() {
+	orderedKeys := [2]string{"yaml", "excel"}
 	res := map[string][][size]string{}
 	path := vari.ExeDir + "data"
 	GetFilesAndDirs(path, &res)
@@ -26,7 +28,9 @@ func ListRes() {
 	names := make([]string, 0)
 	nameWidth := 0
 	titleWidth := 0
-	for key, arrOfArr := range res {
+	for _, key := range orderedKeys {
+		arrOfArr := res[key]
+
 		for index, arr := range arrOfArr {
 			path := arr[0]
 			if key == "yaml" {
@@ -63,7 +67,10 @@ func ListRes() {
 	sysMsg := ""
 	customMsg := ""
 	idx := 0
-	for _, arrOfArr := range res {
+	for _, key := range orderedKeys {
+		arrOfArr := res[key]
+		arrOfArr = sortByName(arrOfArr)
+
 		for _, arr := range arrOfArr {
 			name := names[idx]
 
@@ -85,6 +92,7 @@ func ListRes() {
 
 				title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
 				msg := fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
+
 				if isBuildin {
 					sysMsg = sysMsg + msg
 				} else {
@@ -127,6 +135,7 @@ func GetFilesAndDirs(path string, res *map[string][][size]string)  {
 				(*res)["excel"] = append((*res)["excel"], arr)
 			}
 		}
+
 	}
 }
 
@@ -172,4 +181,15 @@ func pathToName(path string) string {
 	name = name[:strings.LastIndex(name, ".")]
 
 	return name
+}
+
+func sortByName(pl [][4]string) [][4]string {
+	sort.Slice(pl, func(i, j int) bool {
+		flag := false
+		if pl[i][0] > (pl[j][0]) {
+			flag = true
+		}
+		return flag
+	})
+	return pl
 }
