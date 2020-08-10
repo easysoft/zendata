@@ -49,6 +49,7 @@ $>zd.exe -v system.ip.v1.yaml                                        # 查看內
 
 服务模式举例：
 
+$zd.exe -p 80                                                        # 监听80端口，以zd.exe文件所在目录为根目录。
 $zd.exe -p 80 -R d:\zd\config                                        # 监听80端口，以d:\zd\config为根目录。
 
 客户端调用：
