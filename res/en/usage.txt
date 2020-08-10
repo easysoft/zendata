@@ -34,8 +34,9 @@ Parameters:
 
 Command Line Examples:
 
-$>zd.exe -d demo/default.yaml # Generate 10 lines of data according to the config file specified by -d.
-$>zd.exe -c demo/default.yaml # Generate 10 lines of data according to the config file specified by -c.
+$>zd.exe -d demo/default.yaml    # Generate 10 lines of data according to the config file specified by -d.
+$>zd.exe -c demo/default.yaml    # Generate 10 lines of data according to the config file specified by -c.
+$>zd.exe -c demo/default.yaml -r # Generate 10 lines of data according to the config file specified by -c recursively.
 $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100  # Using the parameter of -c and -d at the same time.
 
 $>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.txt   # Output data in original format.
