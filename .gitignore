@@ -10,3 +10,7 @@
 /test/ztf/.idea/
 /nohup.out
 /test/ztf/conf/
+/test/ztf/log/
+/demo/output/
+/test/ztf/._config.yaml
+/test/ztf/._default.yaml
