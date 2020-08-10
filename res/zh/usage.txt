@@ -28,14 +28,16 @@ ZenData是一款通用的数据生成工具，您可以使用yaml文件来定义
 
 命令行模式举例：
 
-$>zd.exe -d demo\default.yaml 根据-d参数指定的配置文件生成10条记录。
-$>zd.exe -c demo\default.yaml 根据-c参数指定的配置文件生成10条记录。
+$>zd.exe -d demo\default.yaml    根据-d参数指定的配置文件生成10条记录。
+$>zd.exe -c demo\default.yaml    根据-c参数指定的配置文件生成10条记录。
+$>zd.exe -c demo\default.yaml -r 根据-c参数指定的配置文件，采用递归的方式生成10条记录。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100  -c和-d两个文件的配置合并，输出100条记录。
 
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.txt   输出原始格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  输出json格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.xml   输出xml格式的数据。
 $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             输出插入到user表里面的sql。
+$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user --trim      输出插入到user表里面的sql，去掉前缀和后缀。
 
 $>zd.exe -i db.sql -o db  根据db.sql的定义生成每个表的yaml文件，存储到db目录里面。
 $>zd.exe -c demo\default.yaml -i test.txt --decode  将-i指定的文件根据-d参数的配置进行解析。
