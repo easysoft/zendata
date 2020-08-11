@@ -108,7 +108,7 @@ fields:
 
   - field: field_use_instance           # 引用其他的定义文件，该文件定义了多个实例。
     from: system.ip.v1.yaml             # 引用data/system/ip/v1.yaml
-    use: privateC,privateC              # 使用该文件中定义的privateC和privateB两个实例。
+    use: privateC,privateB              # 使用该文件中定义的privateC和privateB两个实例。
     postfix: "\t"
 
   - field: field_nested_instant         # 引用其他的定义文件，且该文件引用了其他实例。
