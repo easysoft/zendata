@@ -22,7 +22,7 @@ var (
 
 	Total int
 	WithHead bool
-	HeadSep string
+	Human bool
 	Trim bool
 	Recursive bool
 

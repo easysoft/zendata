@@ -76,7 +76,14 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool, fie
 				col = stringUtils.AddPad(col, field)
 			}
 
-			lineForText = lineForText + col
+			if j > 0 && vari.Human {
+				lineForText = strings.TrimRight(lineForText, "\t")
+				col = strings.TrimLeft(col, "\t")
+
+				lineForText = lineForText + "\t" + col
+			} else {
+				lineForText = lineForText + col
+			}
 
 			row = append(row, col)
 			rowXml.Cols = append(rowXml.Cols, col)
@@ -106,7 +113,7 @@ func printTextHeader(fields []string) {
 	for idx, field := range fields {
 		headerLine += field
 		if idx < len(fields)-1 {
-			headerLine += vari.HeadSep
+			headerLine += "\t"
 		}
 	}
 

@@ -90,8 +90,8 @@ func main() {
 
 	flagSet.StringVar(&md5, "md5", "", "")
 
-	flagSet.StringVar(&vari.HeadSep, "H", "", "")
-	flagSet.StringVar(&vari.HeadSep, "human", "", "")
+	flagSet.BoolVar(&vari.Human, "H", false, "")
+	flagSet.BoolVar(&vari.Human, "human", false, "")
 
 	flagSet.BoolVar(&decode, "D", false, "")
 	flagSet.BoolVar(&decode, "decode", false, "")
@@ -183,7 +183,7 @@ func toGen() {
 	} else if vari.RunMode == constant.RunModeParse {
 		action.ParseSql(input, output)
 	} else if vari.RunMode == constant.RunModeGen {
-		if vari.HeadSep != "" {
+		if vari.Human {
 			vari.WithHead = true
 		}
 
@@ -230,7 +230,7 @@ func StartServer() {
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	action.HttpWriter = writer
 
-	defaultFile, configFile, fields, count, vari.HeadSep,
+	defaultFile, configFile, fields, count,
 		format, table, decode, input, output = service.ParseRequestParams(req)
 
 	if decode {

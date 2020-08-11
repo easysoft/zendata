@@ -10,7 +10,7 @@ import (
 )
 
 func ParseRequestParams(req *http.Request) (defaultFile, yamlFile, fields string, count int,
-		human string, format, table string, decode bool, input, output string) {
+		format, table string, decode bool, input, output string) {
 	query := req.URL.Query()
 
 	defaultFile = GetRequestParams(query,"default", "d")
@@ -24,8 +24,6 @@ func ParseRequestParams(req *http.Request) (defaultFile, yamlFile, fields string
 
 	format = constant.FormatJson
 	table = ""
-
-	human = GetRequestParams(query,"human", "H")
 
 	if req.Method == http.MethodPost {
 		// save to files
