@@ -5,11 +5,9 @@ version: 1.0
 
 fields:
   - field: test0
-    range: 1-3{3}
+    range: "''"
     loop: 2-3
     loopfix: "|"
-    prefix: "["
-    postfix: "]\t"
 #    width: 10
 
   - field: test1

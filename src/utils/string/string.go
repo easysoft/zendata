@@ -134,9 +134,11 @@ func ConvertForSql(str string) (ret string) {
 	arr := []rune(str)
 
 	count := 0
-	for _, item := range arr {
+	for i, item := range arr {
 		if count % 2 == 1 && string(item) != "'" {
-			ret = ret + "'"
+				ret = ret + "'"
+		} else if i == len(arr) - 1 && count % 2 == 0 && string(item) == "'" {
+				ret = ret + "'"
 		}
 
 		if string(item) != "'" {
