@@ -9,25 +9,27 @@ import (
 	"strconv"
 )
 
-func ParseRequestParams(req *http.Request) (defaultFile, yamlFile, fields string, count int,
+func ParseRequestParams(req *http.Request) (defaultFile, configFile, fields string, count int,
 		format, table string, decode bool, input, output string) {
 	query := req.URL.Query()
 
 	defaultFile = GetRequestParams(query,"default", "d")
-	yamlFile = GetRequestParams(query,"config", "c")
+	configFile = GetRequestParams(query,"config", "c")
 	countStr := GetRequestParams(query,"lines", "n")
 	if countStr == "" {
 		countStr = "10"
 	}
-	count, _ = strconv.Atoi(countStr)
+
 	fields = GetRequestParams(query,"field", "F")
 
 	format = constant.FormatJson
 	table = ""
 
 	if req.Method == http.MethodPost {
-		// save to files
 		req.ParseForm()
+
+		countStr = GetPostParams(req, "lines", "n", countStr)
+
 		defaultDefContent := req.FormValue("default")
 		configDefContent := req.FormValue("config")
 
@@ -36,9 +38,14 @@ func ParseRequestParams(req *http.Request) (defaultFile, yamlFile, fields string
 			fileUtils.WriteFile(defaultFile, defaultDefContent)
 		}
 		if configDefContent != "" {
-			yamlFile = vari.ExeDir + "._config.yaml"
-			fileUtils.WriteFile(yamlFile, configDefContent)
+			configFile = vari.ExeDir + "._config.yaml"
+			fileUtils.WriteFile(configFile, configDefContent)
 		}
+	}
+
+	countFromPForm, err := strconv.Atoi(countStr)
+	if err == nil {
+		count = countFromPForm
 	}
 
 	return
@@ -51,4 +58,17 @@ func GetRequestParams(values url.Values, name, short string) (val string) {
 		}
 	}
 	return val
+}
+
+func GetPostParams(req *http.Request, paramName1, paramName2 string, dft string) (val string) {
+	ret := dft
+
+	if paramName2 != "" &&  req.FormValue(paramName2) != "" {
+		ret = req.FormValue(paramName2)
+	}
+	if paramName1 != "" && req.FormValue(paramName1) != "" { // high priority than paramName2
+		ret = req.FormValue(paramName1)
+	}
+
+	return ret
 }
