@@ -2,10 +2,8 @@ package action
 
 import (
 	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"github.com/easysoft/zendata/src/gen"
-	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -65,7 +63,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool, fie
 
 	for i, cols := range rows {
 		row := make([]string, 0)
-		rowXml := model.XmlRow{}
+		rowMap := map[string]string{}
 		valuesForSql := make([]string, 0)
 		lineForText := ""
 
@@ -86,7 +84,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool, fie
 			}
 
 			row = append(row, col)
-			rowXml.Cols = append(rowXml.Cols, col)
+			rowMap[field.Field] = col
 
 			colVal := stringUtils.ConvertForSql(col)
 			if !colIsNumArr[j] { colVal = "'" + colVal + "'" }
@@ -100,7 +98,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool, fie
 		} else if format == constant.FormatJson {
 			printLine(genJsonLine(i, row, len(rows), fields))
 		} else if format == constant.FormatXml {
-			printLine(getXmlLine(i, rowXml, len(rows)))
+			printLine(getXmlLine(i, rowMap, len(rows)))
 		}
 	}
 }
@@ -175,9 +173,19 @@ func genJsonLine(i int, row []string,  length int, fields []string) string {
 	return temp
 }
 
-func getXmlLine(i int, rowXml model.XmlRow, length int) string {
-	rowXmlStr, _ := xml.Marshal(rowXml)
-	text := "  " + string(rowXmlStr)
+func getXmlLine(i int, mp map[string]string, length int) string {
+	str := ""
+	j := 0
+	for key, val := range mp {
+		str += fmt.Sprintf("    <%s>%s</%s>", key, val, key)
+		if j != len(mp) - 1 {
+			str = str + "\n"
+		}
+
+		j++
+	}
+
+	text := fmt.Sprintf("  <row>\n%s\n  </row>", str)
 	if i == length - 1 {
 		text = text + "\n</testdata>"
 	}

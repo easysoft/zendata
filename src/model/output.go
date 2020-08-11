@@ -14,5 +14,5 @@ type XmlTable struct {
 
 type XmlRow struct {
 	XMLName xml.Name `xml:"row"`
-	Cols  []string `xml:"col"`
+	Cols map[string]string `xml:"col"`
 }
