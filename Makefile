@@ -34,7 +34,7 @@ compile_win32:
 
 compile_linux:
 	@echo 'start compile linux'
-	@GO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o ${BIN_LINUX}zd src/zd.go
+	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ go build -o ${BIN_LINUX}zd src/zd.go
 
 compile_mac:
 	@echo 'start compile mac'
@@ -42,7 +42,7 @@ compile_mac:
 
 copy_files:
 	@echo 'start copy files'
-	@cp -r {data,demo} bin && rm -rf ${BIN_DIR}/demo/out
+	@cp -r {data,demo} bin && rm -rf ${BIN_DIR}/demo/output
 
 	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/demo} "${BIN_OUT}$${subdir}"; done
 

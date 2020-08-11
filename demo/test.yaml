@@ -37,8 +37,3 @@ fields:
     from: custom.ip.private.yaml
     use: all
     prefix: "["
-
-  - field: field_nested_instant
-    from: custom.ip.private.yaml
-    use: all
-    prefix: "["
