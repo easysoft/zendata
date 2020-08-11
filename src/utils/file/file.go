@@ -1,7 +1,6 @@
 package fileUtils
 
 import (
-	"fmt"
 	"github.com/easysoft/zendata/res"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
@@ -129,7 +128,7 @@ func GetExeDir() string { // where zd.exe file in
 	dir, _ = filepath.Abs(dir)
 	dir = AddSepIfNeeded(dir)
 
-	fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
+	//fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
 	return dir
 }
 

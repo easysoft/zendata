@@ -8,7 +8,7 @@ import (
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"github.com/mattn/go-runewidth"
+	"log"
 	"strings"
 )
 
@@ -17,6 +17,11 @@ const (
 )
 
 func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
+	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
+	vari.ConfigDir = fileUtils.GetAbsDir(configFile)
+
+	vari.Total = 10
+
 	fieldsToExport := make([]string, 0)
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
@@ -27,7 +32,7 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 
 	data := fileUtils.ReadFile(input)
 
-	ret := []map[string]interface{}{}
+	var ret  []map[string]interface{}
 	LinesToMap(data, fieldsToExport, &ret)
 	jsonObj, _ := json.Marshal(ret)
 	vari.JsonResp = string(jsonObj)
@@ -78,8 +83,9 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 			if len(sep) > 0 {
 				index := searchRune(left, sep)
 				if index > -1 {
-					col = string(left[: index+runewidth.StringWidth(field.Postfix)])
-					left = left[index+runewidth.StringWidth(field.Prefix)+1:]
+					col = string(left[: index + len(field.Postfix)])
+					left = left[index + len(field.Postfix):]
+					log.Println(left)
 				}
 			} else if j == len(fields) - 1 {
 				col = string(left)
