@@ -48,15 +48,16 @@ $>zd.exe -d demo/default.yaml -o test.sql -t user -s mysql --trim    # Remove th
 $>zd.exe -i demo/zentao.sql -o db                   # Generate YAML files for each table by parsing zentao.sql.
 $>zd.exe -c demo/default.yaml -i test.txt --decode  # Parse the file specified by -i according to the config of -d.
 
-$>zd.exe -l                         # List all build-in data types.
-$>zd.exe -v system.address.v1       # View data types in build-in Excel file system/address/v1.xlsx.
-$>zd.exe -v system.address.v1.china # View data items in Excel sheet "china".
-$>zd.exe -v system.ip.v1.yaml       # View data items in build-in instances。
+$>zd.exe -l                             # List all build-in data types.
+$>zd.exe -v system.address.v1           # View data types in build-in Excel file system/address/v1.xlsx.
+$>zd.exe -v system.address.v1.china     # View data items in Excel sheet "china".
+$>zd.exe -v system.ip.v1.yaml           # View data items in build-in instances。
 
 Service Example:
 
-$zd.exe -p 80                       # Listen port 80. Use the directory of zd.exe as the root.
-$zd.exe -p 80 -R d:\zd\config       # Listen port 80. Use d:\zd\config as the root.
+$zd.exe -p 80                           # Listen port 80. Use the directory of zd.exe as the root.
+$zd.exe -p 80 -R d:\zd\config           # Listen port 80. Use d:\zd\config as the root.
+                 /home/user/zd/config
 
 Client Call:
 

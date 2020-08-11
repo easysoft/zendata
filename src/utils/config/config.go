@@ -20,19 +20,19 @@ import (
 func InitConfig() {
 	vari.ExeDir = fileUtils.GetExeDir()
 	CheckConfigPermission()
+	constant.ConfigFile = vari.ExeDir + constant.ConfigFile
 
 	if commonUtils.IsWin() {
 		shellUtils.ExeShell("chcp 65001")
 	}
 
-	constant.ConfigFile = vari.ExeDir + constant.ConfigFile
 	vari.Config = getInst()
 
 	i118Utils.InitI118(vari.Config.Language)
 }
 
 func SaveConfig(conf model.Config) error {
-	fileUtils.MkDirIfNeeded(fileUtils.GetExeDir() + "conf")
+	fileUtils.MkDirIfNeeded(vari.ExeDir + "conf")
 
 	conf.Version = constant.ConfigVer
 
@@ -74,7 +74,7 @@ func ReadCurrConfig() model.Config {
 		return config
 	}
 
-	ini.MapTo(&config, constant.ConfigFile)
+	ini.MapTo(&config, configPath)
 
 	return config
 }
