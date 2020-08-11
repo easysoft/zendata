@@ -57,7 +57,6 @@ Service Example:
 
 $zd.exe -p 80                           # Listen port 80. Use the directory of zd.exe as the root.
 $zd.exe -p 80 -R d:\zd\config           # Listen port 80. Use d:\zd\config as the root.
-                 /home/user/zd/config
 
 Client Call:
 
