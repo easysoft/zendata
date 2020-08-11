@@ -69,10 +69,10 @@ type FieldSimple struct {
 	Loopfix  string  `yaml:"loopfix"`
 	Format  string  `yaml:"format"`
 
-	LoopStart  int
-	LoopEnd  int
-	LoopIndex int
-	IsRand bool
+	LoopStart  int  `yaml:"-"`
+	LoopEnd  int  `yaml:"-"`
+	LoopIndex int  `yaml:"-"`
+	IsRand bool  `yaml:"-"`
 }
 
 type FieldWithValues struct {

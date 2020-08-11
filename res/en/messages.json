@@ -95,7 +95,7 @@
     },
     {
       "id": "start_server",
-      "translation": "Success yo start zendata http service, press CTRL+C to exist. \nYou may use http://%s:%s to retrieve the data, for example: \ncurl http://%s:%s/?config=demo/default.yaml&F=field_common&lines=10."
+      "translation": "Success to start zendata http service, press CTRL+C to exist. \nYou may use http://%s:%s to retrieve the data, for example: \ncurl http://%s:%s/?config=demo/default.yaml&F=field_common&lines=10."
     },
     {
       "id": "server_request",
