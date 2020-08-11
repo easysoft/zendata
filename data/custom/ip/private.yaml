@@ -7,6 +7,7 @@ field: privateIP
 instances:
 
   - instance: all
+    note: 引用所有內置IP
     fields:
       - field: part1
         from: system.ip.v1.yaml
