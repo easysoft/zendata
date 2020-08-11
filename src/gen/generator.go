@@ -123,8 +123,8 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 
 		count++
 		isRandomAndLoopEnd := (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
-		isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
-		if count >= vari.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
+		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
+		if count >= vari.Total || isRandomAndLoopEnd {
 			break
 		}
 
