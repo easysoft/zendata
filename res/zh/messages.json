@@ -86,7 +86,11 @@
     },
     {
       "id": "start_server",
-      "translation": "zendata http服务已经成功运行，按CTRL+C键退出。\n您可以通过http://%s:%s地址来调用，比如：\ncurl http://%s:%s/?config=demo/default.yaml&F=field_common&lines=10。"
+      "translation": "正在启动ZenData HTTP服务，按CTRL+C键退出。\n您可以通过http://%s:%s地址来调用，比如：\ncurl http://%s:%s/?config=demo/default.yaml&lines=10。"
+    },
+    {
+      "id": "start_server_fail",
+      "translation": "ZenData HTTP服务启动失败，请确认端口%s有效。"
     },
     {
       "id": "server_request",

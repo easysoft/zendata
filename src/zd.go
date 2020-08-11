@@ -219,12 +219,16 @@ func StartServer() {
 		vari.Port = constant.DefaultPort
 	}
 
-	port := strconv.Itoa(vari.Port)
-	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server", vari.Ip, port, vari.Ip, port),
-		color.FgCyan)
-
 	http.HandleFunc("/", DataHandler)
-	http.ListenAndServe(fmt.Sprintf(":%d", vari.Port), nil)
+
+	port := strconv.Itoa(vari.Port)
+
+	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server", vari.Ip, port, vari.Ip, port), color.FgCyan)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", vari.Port), nil)
+
+	if err != nil {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server_fail", port), color.FgRed)
+	}
 }
 
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
