@@ -55,6 +55,10 @@ func PrintTo(str string) {
 	output := color.Output
 	fmt.Fprint(output, str+"\n")
 }
+func PrintToWithoutNewLine(str string) {
+	output := color.Output
+	fmt.Fprint(output, str)
+}
 
 func PrintToWithColor(msg string, attr color.Attribute) {
 	output := color.Output

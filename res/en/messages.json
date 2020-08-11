@@ -103,11 +103,11 @@
     },
     {
       "id": "server_request",
-      "translation": "\nGot %s request %s."
+      "translation": "\nGot %s request %s. "
     },
     {
       "id": "server_response",
-      "translation": "\nCreate %d records in %d sec."
+      "translation": "Create %d records in %d sec."
     },
     {
       "id": "excel_data",

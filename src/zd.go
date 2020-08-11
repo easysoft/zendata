@@ -242,7 +242,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		fmt.Fprintln(writer, vari.JsonResp)
 	} else if defaultFile != "" || configFile != "" {
 		vari.RunMode = constant.RunModeServerRequest
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
+		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
 		toGen()
 	}
