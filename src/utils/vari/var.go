@@ -11,6 +11,7 @@ var (
 	RunMode      constant.RunMode
 
 	ExeDir       string
+	WorkDir       string
 
 	LogDir       string
 	ScreenWidth  int

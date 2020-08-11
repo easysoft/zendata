@@ -174,7 +174,7 @@ class zendata
     {
         $filename = '';
 
-        $filename = sprintf("conf/zdata.conf");
+        $filename = sprintf("%s/conf/zdata.conf", dirname($this->cmdPath));
         $content = file_get_contents($filename);
         $fp = fopen($filename, "w");
 

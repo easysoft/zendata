@@ -10,7 +10,7 @@ fields:
 
   - field: field_use_excel
     prefix: " ["
-    postfix: "]==== "
+    postfix: "]"
 
   - field: field_with_children
     prefix: " ["

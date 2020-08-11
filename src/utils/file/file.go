@@ -132,10 +132,20 @@ func GetExeDir() string { // where zd.exe file in
 	return dir
 }
 
+func GetWorkDir() string { // where we run file in
+	dir, _ := os.Getwd()
+
+	dir, _ = filepath.Abs(dir)
+	dir = AddSepIfNeeded(dir)
+
+	//fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
+	return dir
+}
+
 func GetAbsDir(path string) string {
 	abs := ""
 	if !IsAbosutePath(path) {
-		path = vari.ExeDir + path
+		path = vari.WorkDir + path
 	}
 
 	abs, _ = filepath.Abs(filepath.Dir(path))
@@ -169,7 +179,7 @@ func ConvertResPath(path string) (resType, resFile, sheet string) {
 }
 
 func AddRootPath(path string) string {
-	path = vari.ExeDir + "data" + constant.PthSep + path
+	path = vari.WorkDir + "data" + constant.PthSep + path
 
 	return path
 }

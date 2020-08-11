@@ -19,6 +19,8 @@ import (
 
 func InitConfig() {
 	vari.ExeDir = fileUtils.GetExeDir()
+	vari.WorkDir = fileUtils.GetWorkDir()
+
 	CheckConfigPermission()
 	constant.ConfigFile = vari.ExeDir + constant.ConfigFile
 

@@ -22,7 +22,7 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	if defaultFile != "" {
 		pathDefaultFile := defaultFile
 		if !fileUtils.IsAbosutePath(pathDefaultFile) {
-			pathDefaultFile = vari.ExeDir + pathDefaultFile
+			pathDefaultFile = vari.WorkDir + pathDefaultFile
 		}
 
 		defaultContent, err := ioutil.ReadFile(pathDefaultFile)
@@ -41,7 +41,7 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	// load configDef
 	pathConfigFile := configFile
 	if !fileUtils.IsAbosutePath(pathConfigFile) {
-		pathConfigFile = vari.ExeDir + pathConfigFile
+		pathConfigFile = vari.WorkDir + pathConfigFile
 	}
 
 	yamlContent, err := ioutil.ReadFile(pathConfigFile)

@@ -2,8 +2,8 @@
 <?php
 /**
 [case]
-title=內置Ranges一层引用
-cid=1369
+title=內置Instances一层引用
+cid=1370
 pid=7
 
 [group]
@@ -16,7 +16,7 @@ pid=7
 include_once __DIR__ . DIRECTORY_SEPARATOR . '../lib/zd.php';
 
 $zd = new zendata();
-$output = $zd->create("", "test.yaml", 10, "", array("fields"=>"field_nested_range"));
+$output = $zd->create("", "advanced.yaml", 10, "", array("fields"=>"field_nested_instant"));
 
 $count = sprintf("%d", count($output));
 print(">> $count\n");

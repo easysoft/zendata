@@ -168,13 +168,13 @@ func toGen() {
 	if vari.RunMode == constant.RunModeServer {
 		if root != "" {
 			if fileUtils.IsAbosutePath(root) {
-				vari.ExeDir = root
+				vari.WorkDir = root
 			} else {
-				vari.ExeDir = vari.ExeDir + root
+				vari.WorkDir = vari.WorkDir + root
 			}
-			vari.ExeDir = fileUtils.AddSepIfNeeded(vari.ExeDir)
+			vari.WorkDir = fileUtils.AddSepIfNeeded(vari.WorkDir)
 		}
-		constant.SqliteSource = strings.Replace(constant.SqliteSource, "file:", "file:" + vari.ExeDir, 1)
+		constant.SqliteSource = strings.Replace(constant.SqliteSource, "file:", "file:" + vari.WorkDir, 1)
 
 		StartServer()
 	} else if vari.RunMode == constant.RunModeServerRequest {

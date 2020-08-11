@@ -63,7 +63,7 @@ func getResProp(from string) (string, string) { // from resource
 	}
 
 	if strings.Index(resFile, "system") > -1 { // system resource
-		resFile = vari.ExeDir + constant.ResDir + resFile
+		resFile = vari.WorkDir + constant.ResDir + resFile
 	} else {
 		resPath := resFile
 		if !filepath.IsAbs(resPath) {
@@ -71,7 +71,7 @@ func getResProp(from string) (string, string) { // from resource
 			resPath = vari.ConfigDir + resFile
 			if !fileUtils.FileExist(resPath) { // in same folder with passed config file
 
-				resPath = vari.ExeDir + constant.ResDir + resFile
+				resPath = vari.WorkDir + constant.ResDir + resFile
 				if !fileUtils.FileExist(resPath) {  // in res file
 					resPath = ""
 				}

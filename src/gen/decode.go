@@ -8,7 +8,6 @@ import (
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"log"
 	"strings"
 )
 
@@ -85,7 +84,6 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 				if index > -1 {
 					col = string(left[: index + len(field.Postfix)])
 					left = left[index + len(field.Postfix):]
-					log.Println(left)
 				}
 			} else if j == len(fields) - 1 {
 				col = string(left)

@@ -15,9 +15,9 @@ pid=7
 include_once __DIR__ . DIRECTORY_SEPARATOR . '../lib/zd.php';
 
 $zd = new zendata();
-$output = $zd->create("", "test2.yaml", 10, "output/test2.sql",
-    array("fields"=>"test0", "table"=>"tlb_table", "trim"=>"true"));
+$output = $zd->create("", "default.yaml", 10, "output/default.sql",
+    array("fields"=>"field_common", "table"=>"tlb_table", "trim"=>"true"));
 
-$lineArr = $zd->readOutput("output/test2.sql");
+$lineArr = $zd->readOutput("output/field_common.sql");
 
 print(">> $lineArr[2]\n");

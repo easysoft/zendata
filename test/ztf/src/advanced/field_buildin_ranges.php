@@ -2,13 +2,13 @@
 <?php
 /**
 [case]
-title=Loop使用区间
-cid=1374
+title=內置Ranges一层引用
+cid=1369
 pid=7
 
 [group]
  显示10行生成的数据 >>
- 验证第3行数据    >>
+ 验证第3行数据     >>
 
 [esac]
 */
@@ -16,7 +16,7 @@ pid=7
 include_once __DIR__ . DIRECTORY_SEPARATOR . '../lib/zd.php';
 
 $zd = new zendata();
-$output = $zd->create("", "test.yaml", 10, "", array("fields"=>"field_loop_range"));
+$output = $zd->create("", "advanced.yaml", 10, "", array("fields"=>"field_nested_range"));
 
 $count = sprintf("%d", count($output));
 print(">> $count\n");

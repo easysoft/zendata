@@ -19,4 +19,4 @@ $output = $zd->create("", "default.yaml", 10, "output/default.xml", array("field
 
 $lineArr = $zd->readOutput("output/default.xml");
 
-print(">> $lineArr[3]\n");
+print(">> $lineArr[4]\n");

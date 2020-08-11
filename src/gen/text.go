@@ -82,7 +82,7 @@ func findFilePath(file string) string {
 			resPath = vari.DefaultDir + file
 			if !fileUtils.FileExist(resPath) {
 
-				resPath = vari.ExeDir + constant.ResDir + file
+				resPath = vari.WorkDir + constant.ResDir + file
 				if !fileUtils.FileExist(resPath) {
 					resPath = ""
 				}

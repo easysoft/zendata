@@ -22,7 +22,7 @@ const (
 func ListRes() {
 	orderedKeys := [2]string{"yaml", "excel"}
 	res := map[string][][size]string{}
-	path := vari.ExeDir + "data"
+	path := vari.WorkDir + "data"
 	GetFilesAndDirs(path, &res)
 
 	names := make([]string, 0)
