@@ -6,6 +6,7 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"gopkg.in/yaml.v3"
@@ -88,8 +89,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	for i, field := range configDef.Fields {
 		vari.TopFiledMap[field.Field] = field
 		if !isSetFieldsToExport {
-			_, exist := defaultFieldMap[field.Path]
-			if !exist {
+			if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
 				*fieldsToExport = append(*fieldsToExport, field.Field)
 			}
 		}
