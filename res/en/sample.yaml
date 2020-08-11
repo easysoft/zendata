@@ -1,4 +1,4 @@
-﻿title: zendata config syntax
+title: zendata config syntax
 desc: 
 
   # File composition
@@ -42,6 +42,11 @@ desc:
     # use:      Use instances defined in the referred file. 
     # select:   If refer to an excel table, you can query a field in it.
     # where:    If refer to an excel table, you can use query conditions.
+  
+  # Loop Definition
+  
+    # Define the loop times of a field with a number, e.g. loop:2.
+    # Define the loop times of a field with an interval, e.g. loop:2-10.
   
   # range definition
 
