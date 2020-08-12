@@ -3,11 +3,13 @@ PROJECT=zendata
 PACKAGE=${PROJECT}-${VERSION}
 BINARY=zd
 BIN_DIR=bin
+BIN_ZIP_DIR=${BIN_DIR}/zip/
+BIN_ZIP_RELAT=../../../zip/
 BIN_OUT=${BIN_DIR}/${PROJECT}/${VERSION}/
-BIN_WIN64=${BIN_OUT}win64/
-BIN_WIN32=${BIN_OUT}win32/
-BIN_LINUX=${BIN_OUT}linux/
-BIN_MAC=${BIN_OUT}mac/
+BIN_WIN64=${BIN_OUT}win64/zd/
+BIN_WIN32=${BIN_OUT}win32/zd/
+BIN_LINUX=${BIN_OUT}linux/zd/
+BIN_MAC=${BIN_OUT}mac/zd/
 
 default: prepare_res compile_all copy_files package
 
@@ -44,10 +46,14 @@ copy_files:
 	@echo 'start copy files'
 	@cp -r {data,demo} bin && rm -rf ${BIN_DIR}/demo/output
 
-	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/demo} "${BIN_OUT}$${subdir}"; done
+	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/demo} "${BIN_OUT}$${subdir}/zd"; done
 
 package:
 	@echo 'start package'
+	@mkdir ${BIN_DIR}/zip
 	@find . -name .DS_Store -print0 | xargs -0 rm -f
-	@cd ${BIN_DIR} && zip -r ${PACKAGE}.zip ${PROJECT}
+
+	cd ${BIN_OUT} && \
+		for subdir in `ls ./`; do cd $${subdir} && zip -r ${BIN_ZIP_RELAT}${BINARY}-$${subdir}.zip "${BINARY}" && cd ..; done
+	cd ${BIN_ZIP_DIR} && zip -r ${PACKAGE}.zip ./
 	#@cd ${BIN_DIR} && rm -rf ${PROJECT}
