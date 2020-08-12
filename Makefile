@@ -50,10 +50,10 @@ copy_files:
 
 package:
 	@echo 'start package'
-	@mkdir ${BIN_DIR}/zip
 	@find . -name .DS_Store -print0 | xargs -0 rm -f
+	@for subdir in `ls ${BIN_OUT}`; do mkdir -p ${BIN_DIR}/zip/$${subdir}; done
 
-	cd ${BIN_OUT} && \
-		for subdir in `ls ./`; do cd $${subdir} && zip -r ${BIN_ZIP_RELAT}${BINARY}-$${subdir}.zip "${BINARY}" && cd ..; done
-	cd ${BIN_ZIP_DIR} && zip -r ${PACKAGE}.zip ./
+	@cd ${BIN_OUT} && \
+		for subdir in `ls ./`; do cd $${subdir} && zip -r ${BIN_ZIP_RELAT}$${subdir}/${BINARY}.zip "${BINARY}" && cd ..; done
+	#@cd ${BIN_ZIP_DIR} && zip -r ${PACKAGE}.zip ./
 	#@cd ${BIN_DIR} && rm -rf ${PROJECT}
