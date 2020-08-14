@@ -36,10 +36,10 @@ $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100               # -c和-d�
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.txt   # 输出原始格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  # 输出json格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.xml   # 输出xml格式的数据。
-$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # 输出插入到user表里面的sql。
-$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user --trim      # 输出插入到user表里面的sql，去掉前缀和后缀。
+$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # 输出针对user表的insert语句。
+$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user --trim      # 输出针对user表的insert语句，去掉前缀和后缀。
 
-$>zd.exe -i demo\zentao.sql -o db                                    # 根据sql的定义生成每个表的yaml文件，存储到db目录里面。
+$>zd.exe -i demo\zentao.sql -o db                                    # 根据sql的定义生成各表的yaml文件，存储到db目录里面。
 $>zd.exe -c demo\default.yaml -i test.txt --decode                   # 将-i指定的文件根据-d参数的配置进行解析。
 
 $>zd.exe -l                                                          # 列出所有內置数据。
