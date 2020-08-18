@@ -47,19 +47,17 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 			loadResField(&child, res)
 		}
 	} else if field.From != "" {
-		resFile, resType := getResProp(field.From)
-		values, _ := getResValue(resFile, resType, field)
+		resFile, resType, sheet := getResProp(field.From)
+		values, _ := getResValue(resFile, resType, sheet, field)
 		(*res)[field.From] = values
 	} else if field.Config != "" {
-		resFile, resType := getResProp(field.Config)
-		values, _ := getResValue(resFile, resType, field)
+		resFile, resType, _ := getResProp(field.Config)
+		values, _ := getResValue(resFile, resType, "", field)
 		(*res)[field.Config] = values
 	}
 }
 
-func getResProp(from string) (string, string) { // from resource
-	resFile := ""
-	resType := ""
+func getResProp(from string) (resFile, resType, sheet string) { // from resource
 
 	index := strings.LastIndex(from, ".yaml")
 	if index > -1 { // yaml, system.ip.v1.yaml
@@ -68,13 +66,8 @@ func getResProp(from string) (string, string) { // from resource
 
 		resFile = left + ".yaml"
 		resType = "yaml"
-	} else { // excel, system.address.v1.city
-		index = strings.LastIndex(from, ".")
-
-		left := from[:index]
-		left = strings.ReplaceAll(left, ".", constant.PthSep)
-
-		resFile = left + ".xlsx"
+	} else { // excel, like address.cn.v1.china
+		resFile, sheet = convertExcelPath(from)
 		resType = "excel"
 	}
 
@@ -101,24 +94,60 @@ func getResProp(from string) (string, string) { // from resource
 		resFile = resPath
 	}
 
-	return resFile, resType
+	return
 }
 
-func getResValue(resFile string, resType string, field *model.DefField) (map[string][]string, string) {
+func convertExcelPath(from string) (ret, sheet string) {
+	path1 := from // address.cn.v1
+	index := strings.LastIndex(from, ".")
+	path2 := from[:index] // address.cn.v1.china
+
+	paths := [2]string{path1, path2}
+	for index, path := range paths {
+
+		arr := strings.Split(path, ".")
+		for i := 0; i < len(arr); i++ {
+			dir := ""
+			if i > 0 {
+				dir = strings.Join(arr[:i], constant.PthSep)
+			}
+			file := strings.Join(arr[i:], ".") + ".xlsx"
+
+			if dir != "" {
+				ret = dir + constant.PthSep + file
+			} else {
+				ret = file
+			}
+
+			realPth := vari.WorkDir + constant.ResDir + ret
+			if fileUtils.FileExist(realPth) {
+				if index == 1 {
+					sheet = from[strings.LastIndex(from, ".")+1:]
+				}
+				ret = realPth
+				return
+			}
+		}
+	}
+
+	return
+}
+
+func getResValue(resFile, resType, sheet string, field *model.DefField) (map[string][]string, string) {
 	resName := ""
 	groupedValues := map[string][]string{}
 
 	if resType == "yaml" {
 		groupedValues, resName = getResForYaml(resFile)
 	} else if resType == "excel" {
-		groupedValues, resName = getResForExcel(resFile, field)
+		groupedValues, resName = getResForExcel(resFile, sheet, field)
 	}
 
 	return groupedValues, resName
 }
 
-func getResForExcel(resFile string, field *model.DefField) (map[string][]string, string) {
-	valueMap, resName := GenerateFieldValuesFromExcel(resFile, field)
+func getResForExcel(resFile, sheet string, field *model.DefField) (map[string][]string, string) {
+	valueMap, resName := GenerateFieldValuesFromExcel(resFile, sheet, field)
 
 	return valueMap, resName
 }
@@ -199,7 +228,7 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 }
 
 func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, parentInsts model.ResInsts) {
-	resFile, _ := getResProp(inst.From)
+	resFile, _, _ := getResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
 	if err != nil {

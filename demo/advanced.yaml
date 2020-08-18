@@ -37,3 +37,6 @@ fields:
       postfix: "\t"
     - from: custom.test.number.v1.yaml
       use: large{3}
+
+  - field: field_blank
+    range: [user-1,]

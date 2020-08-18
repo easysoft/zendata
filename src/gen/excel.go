@@ -15,20 +15,19 @@ import (
 	"time"
 )
 
-func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[string][]string, string) {
+func GenerateFieldValuesFromExcel(path, sheet string, field *model.DefField) (map[string][]string, string) {
 	values := map[string][]string{}
 
-	idx := strings.LastIndex(field.From, ".")
-	tableName := field.From[idx + 1:]
-
-	arr := strings.Split(field.From, ".")
-	dbName := arr[len(arr) - 3] + "_" + arr[len(arr) - 2]
+	dbName := getDbName(path)
 
 	list := make([]string, 0)
 	selectCol := ""
-	ConvertExcelToSQLiteIfNeeded(dbName, path)
+	firstSheet := ConvertExcelToSQLiteIfNeeded(dbName, path)
+	if sheet == "" {
+		sheet = firstSheet
+	}
 
-	list, selectCol = ReadDataFromSQLite(*field, dbName, tableName)
+	list, selectCol = ReadDataFromSQLite(*field, dbName, sheet)
 	// get index for data retrieve
 	numbs := GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1)
 	// get data by index
@@ -50,13 +49,22 @@ func GenerateFieldValuesFromExcel(path string, field *model.DefField) (map[strin
 	return values, dbName
 }
 
-func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
+func getDbName(path string) (dbName string) {
+	dbName = strings.Replace(path, vari.WorkDir + constant.ResDir, "", -1)
+	dbName = strings.Replace(dbName, constant.PthSep, "_", -1)
+	dbName = strings.Replace(dbName, ".", "_", -1)
+
+	return
+}
+
+func ConvertExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
 
+	firstSheet = excel.GetSheetList()[0]
 	if !isExcelChanged(path) {
 		return
 	}
@@ -148,6 +156,8 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) {
 			return
 		}
 	}
+
+	return
 }
 
 func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) ([]string, string) {

@@ -118,7 +118,7 @@ fields:
     postfix: "}"
 
   - field: field_use_excel              # 从excel数据源里面取数据。
-    from: system.address.v1.china       # 从data/system/address/v1.xlsx文件中读取名为china的工作簿。
+    from: address.cn.v1.china           # 从data/address/cn.v1.xlsx文件中读取名为china的工作表。
     select: city                        # 查询city字段。
     where: state like '%山东%'          # 条件是省份包含山东。
     limit: 10
