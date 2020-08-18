@@ -3,9 +3,10 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"testing"
 )
 
-func main() {
+func TestMod(t *testing.T) {
 	arrOfArr := [3][]string{}
 	arrOfArr[0] = []string{"a","b","c","d","e"}
 	arrOfArr[1] = []string{"1","2"}

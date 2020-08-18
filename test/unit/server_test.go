@@ -4,9 +4,10 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	httpUtils "github.com/easysoft/zendata/src/utils/http"
 	"net/url"
+	"testing"
 )
 
-func main() {
+func TestServer(t *testing.T) {
 	urlStr := httpUtils.GenUrl("10.8.0.134", 8848, "?F=field_common&lines=10")
 	data := url.Values{}
 

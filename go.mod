@@ -6,6 +6,7 @@ require golang.org/x/text v0.3.3
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.2.0
+	github.com/Chain-Zhang/pinyin v0.1.3
 	github.com/akavel/rsrc v0.9.0 // indirect
 	github.com/emirpasic/gods v1.12.0
 	github.com/fatih/color v1.9.0
