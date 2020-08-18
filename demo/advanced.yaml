@@ -29,3 +29,11 @@ fields:
     use: all
     prefix: "["
     postfix: "]\t"
+
+  - field: field_from_muti
+    froms:
+    - from: custom.test.number.v1.yaml
+      use: small{2}
+      postfix: "\t"
+    - from: custom.test.number.v1.yaml
+      use: large{3}

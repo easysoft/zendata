@@ -41,6 +41,8 @@ type DefField struct {
 	LeftPad string `yaml:"leftPad"`
 	RightPad string `yaml:"rightPad"`
 	Path string
+
+	Froms []DefField `yaml:"froms,flow"`
 }
 
 // base struct

@@ -32,7 +32,15 @@ func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
-			if child.Use != "" && field.From == "" {
+			if child.Use != "" && child.From == "" {
+				child.From = field.From
+			}
+
+			loadResField(&child, res)
+		}
+	} else if len(field.Froms) > 0 {
+		for _, child := range field.Froms {
+			if child.Use != "" && child.From == "" {
 				child.From = field.From
 			}
 

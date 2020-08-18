@@ -81,6 +81,25 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 		values = combineChildrenValues(arrOfArr, count)
 		values = loopFieldValues(field, values, count, true)
 
+	} else if len(field.Froms) > 0 { // from muti items
+		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+		for _, child := range field.Froms {
+			if child.From == "" {
+				child.From = field.From
+			}
+
+			childValues := GenerateForField(&child, total, withFix)
+			arrOfArr = append(arrOfArr, childValues)
+		}
+
+		count := total
+		count = getRecordCount(arrOfArr)
+		if count > total {
+			count = total
+		}
+		values = combineChildrenValues(arrOfArr, count)
+		values = loopFieldValues(field, values, count, true)
+
 	} else if field.From != "" { // refer to res
 
 		if field.Use != "" { // refer to instance
