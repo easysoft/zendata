@@ -79,6 +79,10 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	configFieldMap := map[string]*model.DefField{}
 	sortedKeys := make([]string, 0)
 
+	if configDef.From != "" && defaultDef.From == "" {
+		defaultDef.From = configDef.From
+	}
+
 	for i, field := range defaultDef.Fields {
 		if !isSetFieldsToExport {
 			*fieldsToExport = append(*fieldsToExport, field.Field)
@@ -192,6 +196,9 @@ func CopyField(child model.DefField, parent *model.DefField) {
 	}
 	if child.Use != "" {
 		(*parent).Use = child.Use
+	}
+	if child.From != "" {
+		(*parent).From = child.From
 	}
 
 	if child.Precision != 0 {

@@ -20,6 +20,10 @@ func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 
 	for _, field := range vari.Def.Fields {
 		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
+
+		if field.Use != "" && field.From == "" {
+			field.From = vari.Def.From
+		}
 		loadResField(&field, &res)
 	}
 	return res
@@ -28,6 +32,10 @@ func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
+			if child.Use != "" && field.From == "" {
+				child.From = field.From
+			}
+
 			loadResField(&child, res)
 		}
 	} else if field.From != "" {
@@ -147,6 +155,15 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 	for _, inst := range insts.Instances {
 		for _, instField := range inst.Fields { // prepare referred parent instances if needed
 			if instField.Use != "" { // refer to another def
+				if instField.From == "" {
+					if insts.From != "" {
+						instField.From = insts.From
+					}
+					if inst.From != "" {
+						instField.From = inst.From
+					}
+				}
+
 				parentRanges, parentInstants  := getRootRangeOrInstant(instField)
 				groupedValueParent := map[string][]string{}
 
@@ -200,9 +217,16 @@ func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, p
 
 func convertInstantToField(insts model.ResInsts, inst model.ResInst) (field model.DefField) {
 	field.Field = insts.Field
+	field.From = insts.From
 
 	child := model.DefField{}
 	child.Field = inst.Instance
+
+	if child.From == "" && inst.From != "" {
+		child.From = inst.From
+	} else if child.From == "" && insts.From != "" {
+		child.From = insts.From
+	}
 
 	copier.Copy(&child, inst)
 

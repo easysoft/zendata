@@ -35,6 +35,9 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 			continue
 		}
 
+		if field.Use != "" && field.From == "" {
+			field.From = vari.Def.From
+		}
 		values := GenerateForField(&field, total, true)
 		vari.Def.Fields[index].Precision = field.Precision
 
@@ -61,6 +64,10 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 	if len(field.Fields) > 0 { // sub fields
 		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 		for _, child := range field.Fields {
+			if child.From == "" {
+				child.From = field.From
+			}
+
 			childValues := GenerateForField(&child, total, withFix)
 			arrOfArr = append(arrOfArr, childValues)
 		}

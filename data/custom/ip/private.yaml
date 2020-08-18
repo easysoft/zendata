@@ -3,11 +3,15 @@ desc: 引用系统IP定义
 author: zentao
 version: 1.0
 
+# from: system.ip.v1.yaml
+
 field: privateIP
 instances:
-
   - instance: all
     note: 引用所有內置IP
+
+    # from: system.ip.v1.yaml
+
     fields:
       - field: part1
         from: system.ip.v1.yaml

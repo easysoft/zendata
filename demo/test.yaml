@@ -3,6 +3,8 @@ desc:
 author: zentao
 version: 1.0
 
+from: custom.ip.private.yaml
+
 fields:
   - field: field_use_instance
     prefix: ""
@@ -34,6 +36,5 @@ fields:
     postfix: "]"
 
   - field: field_nested_instant
-    from: custom.ip.private.yaml
     use: all
     prefix: "["
