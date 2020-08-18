@@ -8,9 +8,9 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -164,7 +164,11 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	from := dbName + "_" + tableName
 	where := field.Where
 	if !strings.Contains(where, "LIMIT") {
-		where = where + " LIMIT " + strconv.Itoa(constant.MaxNumb)
+		total := vari.Total
+		if total > constant.MaxNumb { total = constant.MaxNumb }
+		if total > field.Limit { total = field.Limit }
+
+		where = where + fmt.Sprintf(" LIMIT %d", total)
 	}
 
 	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", selectCol, from, where)

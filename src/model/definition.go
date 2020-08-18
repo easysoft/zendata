@@ -48,6 +48,7 @@ type FieldBase struct {
 	From	string  `yaml:"from"`
 	Select	string  `yaml:"select"`
 	Where	string  `yaml:"where"`
+	Limit	int  `yaml:"limit"`
 	Use	string  `yaml:"use"`
 
 	IsNumb  bool  `yaml:"isNumb"`

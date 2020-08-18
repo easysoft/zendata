@@ -121,6 +121,7 @@ fields:
     from: system.address.v1.china       # 从data/system/address/v1.xlsx文件中读取名为china的工作簿。
     select: city                        # 查询city字段。
     where: state like '%山东%'          # 条件是省份包含山东。
+    limit: 3
     postfix: "\t"
 
   - field: field_with_children          # 嵌套字段
