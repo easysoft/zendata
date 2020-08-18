@@ -1,0 +1,22 @@
+title: zendata数据配置语法说明
+desc: 
+author: zentao
+version: 1.0
+type: lines    # lines|media|binary|article
+
+fields:
+
+  - field: subject
+    from: chinese.words.v1.cn
+    select: word
+    where: ming='y' and dong="n"
+
+  - field: verb
+    from: chinese.words.v1.cn
+    select: word
+    where: dong='y'
+
+  - field: object
+    from: chinese.words.v1.cn
+    select: word
+    where: ming='y'

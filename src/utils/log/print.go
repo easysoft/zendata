@@ -3,9 +3,11 @@ package logUtils
 import (
 	"fmt"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"net/http"
 	"os"
 	"regexp"
 	"strings"
@@ -14,6 +16,9 @@ import (
 var (
 	exampleFile  = fmt.Sprintf("res%sen%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
 	usageFile  = fmt.Sprintf("res%sen%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
+
+	FileWriter *os.File
+	HttpWriter http.ResponseWriter
 )
 
 func PrintExample() {
@@ -68,4 +73,27 @@ func PrintToWithColor(msg string, attr color.Attribute) {
 	} else {
 		color.New(attr).Fprintf(output, msg+"\n")
 	}
+}
+
+func PrintErrMsg(msg string) {
+	PrintToWithColor(msg, color.FgCyan)
+}
+
+func PrintLine(line string) {
+	if FileWriter != nil {
+		PrintToFile(line)
+	} else if vari.RunMode == constant.RunModeServerRequest {
+		PrintToHttp(line)
+	} else {
+		PrintToScreen(line)
+	}
+}
+func PrintToFile(line string) {
+	fmt.Fprintln(FileWriter, line)
+}
+func PrintToHttp(line string) {
+	fmt.Fprintln(HttpWriter, line)
+}
+func PrintToScreen(line string) {
+	fmt.Println(line)
 }

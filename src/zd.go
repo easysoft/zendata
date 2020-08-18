@@ -190,8 +190,8 @@ func toGen() {
 		if output != "" {
 			fileUtils.MkDirIfNeeded(filepath.Dir(output))
 			fileUtils.RemoveExist(output)
-			action.FileWriter, _ = os.OpenFile(output, os.O_RDWR | os.O_CREATE, 0777)
-			defer action.FileWriter.Close()
+			logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR | os.O_CREATE, 0777)
+			defer logUtils.FileWriter.Close()
 
 			ext := strings.ToLower(path.Ext(output))
 			if len(ext) > 1 {
@@ -203,7 +203,7 @@ func toGen() {
 		}
 
 		if format == constant.FormatSql && table == "" {
-			action.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
+			logUtils.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
 			return
 		}
 
@@ -232,14 +232,13 @@ func StartServer() {
 }
 
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
-	action.HttpWriter = writer
+	logUtils.HttpWriter = writer
 
 	defaultFile, configFile, fields, count,
 		format, table, decode, input, output = service.ParseRequestParams(req)
 
 	if decode {
 		gen.Decode(defaultFile, configFile, fields, input, output)
-		fmt.Fprintln(writer, vari.JsonResp)
 	} else if defaultFile != "" || configFile != "" {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))

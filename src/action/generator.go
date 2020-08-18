@@ -9,18 +9,10 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"github.com/fatih/color"
 	"github.com/mattn/go-runewidth"
-	"net/http"
-	"os"
 	"regexp"
 	"strings"
 	"time"
-)
-
-var (
-	FileWriter *os.File
-	HttpWriter http.ResponseWriter
 )
 
 func Generate(defaultFile string, configFile string, total int, fieldsToExportStr string, out string, format string, table string) {
@@ -92,13 +84,13 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool, fie
 		}
 
 		if format == constant.FormatText {
-			printLine(lineForText)
+			logUtils.PrintLine(lineForText)
 		} else if format == constant.FormatSql {
-			printLine(genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows)))
+			logUtils.PrintLine(genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows)))
 		} else if format == constant.FormatJson {
-			printLine(genJsonLine(i, row, len(rows), fields))
+			logUtils.PrintLine(genJsonLine(i, row, len(rows), fields))
 		} else if format == constant.FormatXml {
-			printLine(getXmlLine(i, rowMap, len(rows)))
+			logUtils.PrintLine(getXmlLine(i, rowMap, len(rows)))
 		}
 	}
 }
@@ -115,21 +107,21 @@ func printTextHeader(fields []string) {
 		}
 	}
 
-	printLine(headerLine)
+	logUtils.PrintLine(headerLine)
 }
 
 func printSqlHeader(fields []string, table string) {
 	fieldNames := make([]string, 0)
 	for _, f := range fields { fieldNames = append(fieldNames, "`" + f + "`") }
-	printLine(fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", ")))
+	logUtils.PrintLine(fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", ")))
 }
 
 func printJsonHeader() {
-	printLine("[")
+	logUtils.PrintLine("[")
 }
 
 func printXmlHeader(fields []string, table string) {
-	printLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<testdata>\n  <title>Test Data</title>")
+	logUtils.PrintLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<testdata>\n  <title>Test Data</title>")
 }
 
 func RowToJson(cols []string, fieldsToExport []string) string {
@@ -248,27 +240,4 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 	}
 
 	return strs
-}
-
-func PrintErrMsg(msg string) {
-	logUtils.PrintToWithColor(msg, color.FgCyan)
-}
-
-func printLine(line string) {
-	if FileWriter != nil {
-		PrintToFile(line)
-	} else if vari.RunMode == constant.RunModeServerRequest {
-		PrintToHttp(line)
-	} else {
-		PrintToScreen(line)
-	}
-}
-func PrintToFile(line string) {
-	fmt.Fprintln(FileWriter, line)
-}
-func PrintToHttp(line string) {
-	fmt.Fprintln(HttpWriter, line)
-}
-func PrintToScreen(line string) {
-	fmt.Println(line)
 }
