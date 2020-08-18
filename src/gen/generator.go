@@ -10,6 +10,7 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -86,12 +87,29 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 			groupValues := vari.Res[field.From]
 			groups := strings.Split(field.Use, ",")
 			for _, group := range groups {
+				regx := regexp.MustCompile(`\{(.*)\}`)
+				arr := regx.FindStringSubmatch(group)
+				group = regx.ReplaceAllString(group, "")
+				num := 0
+				if len(arr) == 2 {
+					num, _ = strconv.Atoi(arr[1])
+				}
+
+				i := num
 				if group == "all" {
 					for _, arr := range groupValues { // add all
-						values = append(values, arr...)
+						valuesFromGroup := arr[:num]
+						values = append(values, valuesFromGroup...)
+
+						i = i - len(valuesFromGroup)
+						if i <= 0 { break }
 					}
 				} else {
-					values = append(values, groupValues[group]...)
+					valuesFromGroup := groupValues[group][:num]
+					values = append(values, valuesFromGroup...)
+
+					i = i - len(valuesFromGroup)
+					if i <= 0 { break }
 				}
 			}
 		} else if field.Select != "" { // refer to excel

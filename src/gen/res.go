@@ -115,14 +115,11 @@ func getResForExcel(resFile string, field *model.DefField) (map[string][]string,
 	return valueMap, resName
 }
 
-func getResForYaml(resFile string) (map[string][]string, string) {
-	resName := ""
-	valueMap := map[string][]string{}
-
+func getResForYaml(resFile string) (valueMap map[string][]string, resName string) {
 	yamlContent, err := ioutil.ReadFile(resFile)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
-		return valueMap, ""
+		return
 	}
 
 	insts := model.ResInsts{}
@@ -146,7 +143,7 @@ func getResForYaml(resFile string) (map[string][]string, string) {
 		}
 	}
 
-	return valueMap, resName
+	return
 }
 
 func getResForInstances(insts model.ResInsts) map[string][]string {

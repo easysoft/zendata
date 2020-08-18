@@ -31,7 +31,7 @@ fields:
 
   - field: field_nested_range
     from: custom.test.number.v1.yaml
-    use: medium
+    use: all{3}
     prefix: "["
     postfix: "]"
 
