@@ -14,8 +14,10 @@ import (
 	"github.com/fatih/color"
 	"gopkg.in/ini.v1"
 	"os"
+	"os/user"
 	"path/filepath"
 	"reflect"
+	"strings"
 )
 
 func InitConfig() {
@@ -133,14 +135,52 @@ func InputForSet() {
 		numb = "2"
 	}
 
-	numbSelected := stdinUtils.GetInput("(1|2)", numb, "enter_language", enCheck, zhCheck)
-
-	if numbSelected == "1" {
+	// set lang
+	langNo := stdinUtils.GetInput("(1|2)", numb, "enter_language", enCheck, zhCheck)
+	if langNo == "1" {
 		conf.Language = "zh"
 	} else {
 		conf.Language = "en"
 	}
 
+	// set PATH environment vari
+	var addToPath bool
+	stdinUtils.InputForBool(&addToPath, true, "add_to_path")
+	if addToPath {
+		AddZdToPath()
+	}
+
 	SaveConfig(conf)
 	PrintCurrConfig()
 }
+
+func AddZdToPath() {
+	userProfile, _ := user.Current()
+	home := userProfile.HomeDir
+
+	if commonUtils.IsWin() {
+
+	} else {
+		path := fmt.Sprintf("%s%s%s", home, constant.PthSep, ".bash_profile")
+
+		content := fileUtils.ReadFile(path)
+		if strings.Contains(content, vari.ExeDir) { return }
+
+		cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ExeDir, path)
+		out, err := shellUtils.ExeShell(cmd)
+
+		if err == nil {
+			msg := ""
+			if commonUtils.IsWin() {
+				msg = i118Utils.I118Prt.Sprintf("add_to_path_success_win")
+			} else {
+				msg = i118Utils.I118Prt.Sprintf("add_to_path_success_linux", path)
+			}
+			logUtils.PrintToWithColor(msg, color.FgRed)
+		} else {
+			logUtils.PrintToWithColor(
+				i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
+		}
+	}
+}
+

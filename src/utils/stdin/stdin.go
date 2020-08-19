@@ -60,6 +60,29 @@ func GetInput(regx string, defaultVal string, fmtStr string, params ...interface
 	}
 }
 
+func InputForBool(in *bool, defaultVal bool, fmtStr string, fmtParam ...interface{}) {
+	str := GetInput("(yes|no|y|n|)", "", fmtStr, fmtParam...)
+
+	if str == "" {
+		*in = defaultVal
+
+		msg := ""
+		if *in {
+			msg = "yes"
+		} else {
+			msg = "no"
+		}
+		logUtils.PrintTo(msg)
+		return
+	}
+
+	if str == "y" && str != "yes" {
+		*in = true
+	} else {
+		*in = false
+	}
+}
+
 func Scanf(a *string) {
 	reader := bufio.NewReader(os.Stdin)
 	data, _, _ := reader.ReadLine()

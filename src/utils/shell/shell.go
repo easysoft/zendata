@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"io"
 	"os/exec"
 	"strings"
@@ -57,7 +56,7 @@ func ExeShellWithOutput(cmdStr string) []string {
 		if err2 != nil || io.EOF == err2 {
 			break
 		}
-		logUtils.PrintTo(strings.TrimRight(line, "\n"))
+		fmt.Println(strings.TrimRight(line, "\n"))
 		output = append(output, line)
 	}
 

@@ -22,6 +22,18 @@
       "translation": "1) 请选择您要使用的语言，中文请输入数字1。\n2) Please select the language. Input 2 for English."
     },
     {
+      "id": "add_to_path",
+      "translation": "是否将ZenData加入Path环境变量，以方便在任何目录中执行？（y/n, 默认Yes）"
+    },
+    {
+      "id": "add_to_path_success_win",
+      "translation": "成功设置PATH环境变量，请重新打开命令行窗口。"
+    },
+    {
+      "id": "add_to_path_success_linux",
+      "translation": "成功设置PATH环境变量，请执行source %s使其生效。"
+    },
+    {
       "id": "current_config",
       "translation": "当前配置："
     },
@@ -123,6 +135,10 @@
     {
       "id": "fail_to_generate_field",
       "translation": "为Field %s生成数据失败。"
+    },
+    {
+      "id": "fail_to_exec_cmd",
+      "translation": "执行命令'%s'失败，错误消息为'%s'。"
     }
   ]
 }
