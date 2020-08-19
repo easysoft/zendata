@@ -27,16 +27,20 @@
       "translation": "1) 请选择您要使用的语言，中文请输入数字1。\n2) Please select the language. Input 2 for English."
     },
     {
-      "id": "add_to_path",
-      "translation": "Would you like to add ZenData to PATH environment variable? (y/n, default is Yes)"
+      "id": "add_to_path_win",
+      "translation": "Would you like to add zd.exe to $PATH environment variable? (y/n, default is Yes)"
+    },
+    {
+      "id": "add_to_path_linux",
+      "translation": "Would you like to add zd command to $PATH environment variable? (y/n, default is Yes)"
     },
     {
       "id": "add_to_path_success_win",
-      "translation": "Success to add PATH environment variable, please reopen the command window."
+      "translation": "Success to add $PATH environment variable, please reopen the command window."
     },
     {
       "id": "add_to_path_success_linux",
-      "translation": "Success to add PATH environment variable, please execute 'source %s' to make it effective."
+      "translation": "Success to add $PATH environment variable, please execute 'source %s' to make it effective."
     },
     {
       "id": "current_config",

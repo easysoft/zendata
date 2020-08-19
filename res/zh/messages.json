@@ -22,16 +22,20 @@
       "translation": "1) 请选择您要使用的语言，中文请输入数字1。\n2) Please select the language. Input 2 for English."
     },
     {
-      "id": "add_to_path",
-      "translation": "是否将ZenData加入Path环境变量，以方便在任何目录中执行？（y/n, 默认Yes）"
+      "id": "add_to_path_win",
+      "translation": "是否将zd.exe加入$Path环境变量，以方便在任何目录中执行？（y/n, 默认Yes）"
+    },
+    {
+      "id": "add_to_path_linux",
+      "translation": "是否将zd命令加入$Path环境变量，以方便在任何目录中执行？（y/n, 默认Yes）"
     },
     {
       "id": "add_to_path_success_win",
-      "translation": "成功设置PATH环境变量，请重新打开命令行窗口。"
+      "translation": "成功加入$PATH环境变量，请重新打开命令行窗口。"
     },
     {
       "id": "add_to_path_success_linux",
-      "translation": "成功设置PATH环境变量，请执行source %s使其生效。"
+      "translation": "成功加入$PATH环境变量，请执行source %s使其生效。"
     },
     {
       "id": "current_config",

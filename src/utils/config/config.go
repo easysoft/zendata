@@ -145,7 +145,12 @@ func InputForSet() {
 
 	// set PATH environment vari
 	var addToPath bool
-	stdinUtils.InputForBool(&addToPath, true, "add_to_path")
+	if commonUtils.IsWin() {
+		stdinUtils.InputForBool(&addToPath, true, "add_to_path_win")
+	} else {
+		stdinUtils.InputForBool(&addToPath, true, "add_to_path_linux")
+	}
+
 	if addToPath {
 		AddZdToPath()
 	}
@@ -159,22 +164,44 @@ func AddZdToPath() {
 	home := userProfile.HomeDir
 
 	if commonUtils.IsWin() {
-
+		addZdToPathWin(home)
 	} else {
-		path := fmt.Sprintf("%s%s%s", home, constant.PthSep, ".bash_profile")
+		addZdToPathLinux(home)
+	}
+}
 
-		content := fileUtils.ReadFile(path)
-		if strings.Contains(content, vari.ExeDir) { return }
+func addZdToPathWin(home string) {
+	pathVar := os.Getenv("PATH")
 
-		cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ExeDir, path)
-		out, err := shellUtils.ExeShell(cmd)
+	if strings.Contains(pathVar, vari.ExeDir) { return }
 
-		if err == nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("add_to_path_success_linux", path), color.FgRed)
-		} else {
-			logUtils.PrintToWithColor(
-				i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
-		}
+	cmd := fmt.Sprintf("setx PATH \"%%PATH%%;%s\"  /m", vari.ExeDir)
+	out, err := shellUtils.ExeShell(cmd)
+
+	if err == nil {
+		msg := i118Utils.I118Prt.Sprintf("add_to_path_success_win")
+		logUtils.PrintToWithColor(msg, color.FgRed)
+	} else {
+		logUtils.PrintToWithColor(
+			i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
+	}
+}
+
+func addZdToPathLinux(home string) {
+	path := fmt.Sprintf("%s%s%s", home, constant.PthSep, ".bash_profile")
+
+	content := fileUtils.ReadFile(path)
+	if strings.Contains(content, vari.ExeDir) { return }
+
+	cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ExeDir, path)
+	out, err := shellUtils.ExeShell(cmd)
+
+	if err == nil {
+		msg := i118Utils.I118Prt.Sprintf("add_to_path_success_linux", path)
+		logUtils.PrintToWithColor(msg, color.FgRed)
+	} else {
+		logUtils.PrintToWithColor(
+			i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
 	}
 }
 
