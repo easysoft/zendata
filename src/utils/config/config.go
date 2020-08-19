@@ -14,6 +14,7 @@ import (
 	"github.com/fatih/color"
 	"gopkg.in/ini.v1"
 	"os"
+	"path/filepath"
 	"reflect"
 )
 
@@ -22,7 +23,6 @@ func InitConfig() {
 	vari.WorkDir = fileUtils.GetWorkDir()
 
 	CheckConfigPermission()
-	constant.ConfigFile = vari.ExeDir + constant.ConfigFile
 
 	if commonUtils.IsWin() {
 		shellUtils.ExeShell("chcp 65001")
@@ -34,7 +34,7 @@ func InitConfig() {
 }
 
 func SaveConfig(conf model.Config) error {
-	fileUtils.MkDirIfNeeded(vari.ExeDir + "conf")
+	fileUtils.MkDirIfNeeded(filepath.Dir(constant.ConfigFile))
 
 	conf.Version = constant.ConfigVer
 
@@ -102,7 +102,7 @@ func getInst() model.Config {
 
 func CheckConfigPermission() {
 	//err := syscall.Access(vari.ExeDir, syscall.O_RDWR)
-	err := fileUtils.MkDirIfNeeded(vari.ExeDir + "conf")
+	err := fileUtils.MkDirIfNeeded(filepath.Dir(constant.ConfigFile))
 	if err != nil {
 		logUtils.PrintToWithColor(
 			fmt.Sprintf("Permission denied, please change the dir %s.", vari.ExeDir), color.FgRed)

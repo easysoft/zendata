@@ -176,7 +176,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	if !strings.Contains(where, "LIMIT") {
 		total := vari.Total
 		if total > constant.MaxNumb { total = constant.MaxNumb }
-		if total > field.Limit { total = field.Limit }
+		if field.Limit > 0 && total > field.Limit { total = field.Limit }
 
 		where = where + fmt.Sprintf(" LIMIT %d", total)
 	}

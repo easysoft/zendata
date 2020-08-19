@@ -26,6 +26,7 @@ var (
 	Human bool
 	Trim bool
 	Recursive bool
+	Type string
 
 	JsonResp string = "[]"
 	Ip string

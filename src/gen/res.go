@@ -71,8 +71,8 @@ func getResProp(from string) (resFile, resType, sheet string) { // from resource
 		resType = "excel"
 	}
 
-	if strings.Index(resFile, "system") > -1 { // system resource
-		resFile = vari.WorkDir + constant.ResDir + resFile
+	if strings.Index(resFile, "yaml") == 0 || strings.Index(resFile, "users") == 0 { // build-in resource
+		resFile = vari.WorkDir + resFile
 	} else {
 		resPath := resFile
 		if !filepath.IsAbs(resPath) {
@@ -80,7 +80,7 @@ func getResProp(from string) (resFile, resType, sheet string) { // from resource
 			resPath = vari.ConfigDir + resFile
 			if !fileUtils.FileExist(resPath) { // in same folder with passed config file
 
-				resPath = vari.WorkDir + constant.ResDir + resFile
+				resPath = vari.WorkDir + resFile
 				if !fileUtils.FileExist(resPath) {  // in res file
 					resPath = ""
 				}

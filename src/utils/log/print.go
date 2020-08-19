@@ -80,6 +80,10 @@ func PrintErrMsg(msg string) {
 }
 
 func PrintLine(line string) {
+	if vari.Type == constant.TypeText {
+		line += "\n"
+	}
+
 	if FileWriter != nil {
 		PrintToFile(line)
 	} else if vari.RunMode == constant.RunModeServerRequest {
@@ -89,11 +93,11 @@ func PrintLine(line string) {
 	}
 }
 func PrintToFile(line string) {
-	fmt.Fprintln(FileWriter, line)
+	fmt.Fprint(FileWriter, line)
 }
 func PrintToHttp(line string) {
-	fmt.Fprintln(HttpWriter, line)
+	fmt.Fprint(HttpWriter, line)
 }
 func PrintToScreen(line string) {
-	fmt.Println(line)
+	fmt.Print(line)
 }

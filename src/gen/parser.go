@@ -17,7 +17,8 @@ import (
 func ParseRange(rang string) []string {
 	items := make([]string, 0)
 
-	tagOpen := false
+	bracketsOpen := false
+	backtickOpen := false
 	temp := ""
 
 	rang = strings.Trim(rang, ",")
@@ -26,25 +27,50 @@ func ParseRange(rang string) []string {
 	for i := 0; i < len(runeArr); i++ {
 		c := runeArr[i]
 
-		if c == constant.RightChar {
-			tagOpen = false
-		} else if c == constant.LeftChar  {
-			tagOpen = true
+		if c == constant.RightBrackets {
+			bracketsOpen = false
+		} else if c == constant.LeftBrackets {
+			bracketsOpen = true
+		} else if !backtickOpen && c == constant.Backtick {
+			backtickOpen = true
+		} else if backtickOpen && c == constant.Backtick {
+			backtickOpen = false
 		}
 
 		if i == len(runeArr) - 1 {
 			temp += fmt.Sprintf("%c", c)
 			items = append(items, temp)
-		} else if !tagOpen && c == ',' {
+		} else if !bracketsOpen && !backtickOpen && c == ',' {
 			items = append(items, temp)
 			temp = ""
-			tagOpen = false
+			bracketsOpen = false
+			backtickOpen = false
 		} else {
 			temp += fmt.Sprintf("%c", c)
 		}
 	}
 
 	return items
+}
+
+func ParseDesc(desc string) (items []string) {
+	desc = strings.TrimSpace(desc)
+	desc = strings.Trim(desc, ",")
+	runeArr := []rune(desc)
+
+	if runeArr[0] == constant.Backtick &&  runeArr[len(runeArr) - 1] == constant.Backtick { 	// `xxx`
+		desc = string(runeArr[1 : len(desc) - 1])
+		items = append(items, desc)
+
+	} else if runeArr[0] == constant.LeftBrackets &&  runeArr[len(runeArr) - 1] == constant.RightBrackets { // [abc,123]
+		desc = string(runeArr[1 : len(desc) - 1])
+		items = strings.Split(desc, ",")
+
+	} else {
+		items = append(items, desc)
+	}
+
+	return
 }
 
 /**
@@ -55,12 +81,15 @@ func ParseRange(rang string) []string {
 */
 func ParseRangeItem(item string) (entry string, step string, repeat int) {
 	item = strings.TrimSpace(item)
-	if string(item[0]) == string(constant.LeftChar) &&  // It's a whole when meet (xxx)
-			string(item[len(item) - 1]) == string(constant.RightChar) {
+	runeArr := []rune(item)
+	if (runeArr[0] == constant.Backtick &&  runeArr[len(runeArr) - 1] == constant.Backtick) || // `xxx`
+		(string(item[0]) == string(constant.LeftBrackets) && // (xxx)
+			string(item[len(item) - 1]) == string(constant.RightBrackets)) {
 
+		entry = item
 		if repeat == 0 { repeat = 1 }
 		if step == "" { step = "1" }
-		return item, step, repeat
+		return
 	}
 
 	regx := regexp.MustCompile(`\{(.*)\}`)
@@ -89,17 +118,19 @@ func ParseRangeItem(item string) (entry string, step string, repeat int) {
                      desc => user2,user3
 */
 func ParseEntry(str string) (typ string, desc string) {
-	str = strings.TrimSpace(str)
-	desc = strings.ReplaceAll(str, string(constant.LeftChar), "")
-	desc = strings.ReplaceAll(desc,string(constant.RightChar), "")
+	desc = strings.TrimSpace(str)
 
-	if strings.Contains(desc, ",") || !strings.Contains(desc, "-") {
+	if strings.Contains(desc, ",") || strings.Contains(desc, "`") || !strings.Contains(desc, "-") {
 		typ = "literal"
 	} else  {
-		if !isBoundaryStr(desc) {
-			typ = "literal"
-		} else {
+		temp := strings.ReplaceAll(desc, string(constant.LeftBrackets), "")
+		temp = strings.ReplaceAll(temp,string(constant.RightBrackets), "")
+
+		if isBoundaryStr(temp) {
 			typ = "interval"
+			desc = temp
+		} else {
+			typ = "literal"
 		}
 	}
 

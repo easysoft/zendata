@@ -79,6 +79,15 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	configFieldMap := map[string]*model.DefField{}
 	sortedKeys := make([]string, 0)
 
+
+	if configDef.Type != "" {
+		vari.Type = configDef.Type
+	} else if defaultDef.Type != "" {
+		vari.Type = defaultDef.Type
+	} else {
+		vari.Type = constant.TypeText
+	}
+
 	if configDef.From != "" && defaultDef.From == "" {
 		defaultDef.From = configDef.From
 	}
@@ -215,8 +224,8 @@ func ReplaceSpecialChars(bytes []byte) []byte {
 	ret := ""
 	for _, line := range strings.Split(str, "\n") {
 		if strings.Index(strings.TrimSpace(line), "range") == 0 {
-			line = strings.ReplaceAll(line,"[", string(constant.LeftChar))
-			line = strings.ReplaceAll(line,"]", string(constant.RightChar))
+			line = strings.ReplaceAll(line,"[", string(constant.LeftBrackets))
+			line = strings.ReplaceAll(line,"]", string(constant.RightBrackets))
 		}
 
 		ret += line + "\n"

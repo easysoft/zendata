@@ -7,6 +7,7 @@ type ClsBase struct {
 	Version string `yaml:"version"`
 
 	From string        `yaml:"from"`
+	Type  string  `yaml:"type"`
 }
 
 // instance res

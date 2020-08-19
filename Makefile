@@ -44,9 +44,9 @@ compile_mac:
 
 copy_files:
 	@echo 'start copy files'
-	@cp -r {data,demo} bin && rm -rf ${BIN_DIR}/demo/output
+	@cp -r {data,yaml,users,demo,tmp} bin && rm -rf ${BIN_DIR}/demo/output
 
-	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/demo} "${BIN_OUT}$${subdir}/zd"; done
+	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${subdir}/zd"; done
 
 package:
 	@echo 'start package'

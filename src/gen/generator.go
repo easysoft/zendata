@@ -117,14 +117,26 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 				i := num
 				if group == "all" {
 					for _, arr := range groupValues { // add all
-						valuesFromGroup := arr[:num]
+						valuesFromGroup := make([]string, 0)
+						if num == 0 {
+							valuesFromGroup = arr
+						} else {
+							valuesFromGroup = arr[:num]
+						}
+
 						values = append(values, valuesFromGroup...)
 
 						i = i - len(valuesFromGroup)
 						if i <= 0 { break }
 					}
 				} else {
-					valuesFromGroup := groupValues[group][:num]
+					valuesFromGroup := make([]string, 0)
+					if num == 0 {
+						valuesFromGroup = groupValues[group]
+					} else {
+						valuesFromGroup = groupValues[group][:num]
+					}
+
 					values = append(values, valuesFromGroup...)
 
 					i = i - len(valuesFromGroup)

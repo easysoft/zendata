@@ -1,8 +1,8 @@
 /log/
 /.idea/
 /build/
-/data/.cache/.data.db-shm
-/data/.cache/.data.db-wal
+/tmp/cache/.data.db-shm
+/tmp/cache/.data.db-wal
 /demo/out/
 /conf/
 /bin/

@@ -46,12 +46,12 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 		if index >= constant.MaxNumb { break }
 		if rangeItem == "" { continue }
 
-		entry, stepStr, repeat := ParseRangeItem(rangeItem)
+		descStr, stepStr, repeat := ParseRangeItem(rangeItem) // 2
 		if strings.ToLower(stepStr) == "r" {
 			(*field).IsRand = true
 		}
 
-		typ, desc := ParseEntry(entry) // 2
+		typ, desc := ParseEntry(descStr) // 3
 
 		items := make([]interface{}, 0)
 		if typ == "literal" {
@@ -142,7 +142,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 }
 
 func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
-	elemArr := strings.Split(desc, ",")
+	elemArr := ParseDesc(desc)
 	step, _ := strconv.Atoi(stepStr)
 	total := 0
 

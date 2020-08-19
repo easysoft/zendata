@@ -3,13 +3,16 @@ package constant
 import (
 	"fmt"
 	"os"
+	"os/user"
 )
 
 var (
 	PthSep = string(os.PathSeparator)
 
 	ConfigVer  = 1
-	ConfigFile = fmt.Sprintf("conf%szdata.conf", string(os.PathSeparator))
+	userProfile, _ = user.Current()
+
+	ConfigFile = fmt.Sprintf("%s%s.zd.conf", userProfile.HomeDir, PthSep)
 
 	LanguageDefault = "en"
 	LanguageEN      = "en"
@@ -34,16 +37,24 @@ var (
 	FormatSql = "sql"
 	Formats = []string{FormatText, FormatJson, FormatXml, FormatSql}
 
-	LeftChar rune = '('
-	RightChar rune = ')'
+	TypeText = "text"
+	TypeImage = "image"
+	TypeVoice = "voice"
+	TypeVideo = "video"
+	TypeArticle = "article"
+
+	LeftBrackets  rune = '('
+	RightBrackets rune = ')'
+	Backtick rune = '`'
 
 	DefaultPort = 8848
 	DefaultRoot = "./"
 
 	ResDir  = "data/"
+	TmpDir  = "tmp/"
 
 	SqliteDriver  = "sqlite3"
-	SqliteSource  = "file:" + ResDir + ".cache/.data.db"
+	SqliteSource  = "file:" + TmpDir + "cache/.data.db"
 	SqliteTrackTable  = "excel_update"
 
 	ExcelBorder  = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
