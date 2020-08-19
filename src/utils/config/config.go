@@ -170,13 +170,7 @@ func AddZdToPath() {
 		out, err := shellUtils.ExeShell(cmd)
 
 		if err == nil {
-			msg := ""
-			if commonUtils.IsWin() {
-				msg = i118Utils.I118Prt.Sprintf("add_to_path_success_win")
-			} else {
-				msg = i118Utils.I118Prt.Sprintf("add_to_path_success_linux", path)
-			}
-			logUtils.PrintToWithColor(msg, color.FgRed)
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("add_to_path_success_linux", path), color.FgRed)
 		} else {
 			logUtils.PrintToWithColor(
 				i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
