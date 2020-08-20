@@ -146,7 +146,8 @@ func InputForSet() {
 	// set PATH environment vari
 	var addToPath bool
 	if commonUtils.IsWin() {
-		stdinUtils.InputForBool(&addToPath, true, "add_to_path_win")
+		addToPath = true
+		// stdinUtils.InputForBool(&addToPath, true, "add_to_path_win")
 	} else {
 		stdinUtils.InputForBool(&addToPath, true, "add_to_path_linux")
 	}
@@ -174,8 +175,8 @@ func addZdToPathWin(home string) {
 	pathVar := os.Getenv("PATH")
 	if strings.Contains(pathVar, vari.ExeDir) { return }
 
-	cmd := fmt.Sprintf(`setx Path "%%Path%%;%s"`, vari.ExeDir)
-	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
+	cmd := `setx Path "%%Path%%;` + vari.ExeDir + `"`
+	logUtils.PrintToWithColor("\n" + i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
 
 	// TODO: fix the space issue
 	//out, err := shellUtils.ExeShell(cmd)
