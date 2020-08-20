@@ -22,8 +22,10 @@ const (
 func ListRes() {
 	orderedKeys := [2]string{"yaml", "excel"}
 	res := map[string][][size]string{}
-	path := vari.WorkDir + "data"
-	GetFilesAndDirs(path, &res)
+
+	GetFilesAndDirs(constant.ResDirData, &res)
+	GetFilesAndDirs(constant.ResDirYaml, &res)
+	GetFilesAndDirs(constant.ResDirUsers, &res)
 
 	names := make([]string, 0)
 	nameWidth := 0
@@ -110,7 +112,7 @@ func ListRes() {
 }
 
 func GetFilesAndDirs(path string, res *map[string][][size]string)  {
-	dir, err := ioutil.ReadDir(path)
+	dir, err := ioutil.ReadDir(vari.WorkDir + path)
 	if err != nil {
 		return
 	}
@@ -123,7 +125,7 @@ func GetFilesAndDirs(path string, res *map[string][][size]string)  {
 			arr := [size]string{}
 			if strings.HasSuffix(name, ".yaml") {
 				arr[0] = path + constant.PthSep + name
-				arr[1] = path[strings.LastIndex(path, "data"):] + constant.PthSep + name
+				arr[1] = path[strings.LastIndex(path, path):] + constant.PthSep + name
 				arr[1] = strings.Trim(arr[1], "data"+constant.PthSep)
 
 				(*res)["yaml"] = append((*res)["yaml"], arr)

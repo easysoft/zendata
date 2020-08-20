@@ -50,7 +50,10 @@ var (
 	DefaultPort = 8848
 	DefaultRoot = "./"
 
-	ResDir  = "data/"
+	ResDirData  = "data/"
+	ResDirYaml  = "yaml/"
+	ResDirUsers  = "users/"
+
 	TmpDir  = "tmp/"
 
 	SqliteDriver  = "sqlite3"

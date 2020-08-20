@@ -11,7 +11,6 @@ import (
 	"github.com/jinzhu/copier"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"path/filepath"
 	"strings"
 )
 
@@ -50,6 +49,7 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 		resFile, resType, sheet := getResProp(field.From)
 		values, _ := getResValue(resFile, resType, sheet, field)
 		(*res)[field.From] = values
+
 	} else if field.Config != "" {
 		resFile, resType, _ := getResProp(field.Config)
 		values, _ := getResValue(resFile, resType, "", field)
@@ -60,38 +60,53 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 func getResProp(from string) (resFile, resType, sheet string) { // from resource
 
 	index := strings.LastIndex(from, ".yaml")
-	if index > -1 { // yaml, system.ip.v1.yaml
-		left := from[:index]
-		left = strings.ReplaceAll(left, ".", constant.PthSep)
-
-		resFile = left + ".yaml"
+	if index > -1 { // yaml, ip.v1.yaml
+		resFile = convertYamlPath(from)
 		resType = "yaml"
 	} else { // excel, like address.cn.v1.china
 		resFile, sheet = convertExcelPath(from)
 		resType = "excel"
 	}
 
-	if strings.Index(resFile, "yaml") == 0 || strings.Index(resFile, "users") == 0 { // build-in resource
-		resFile = vari.WorkDir + resFile
-	} else {
-		resPath := resFile
-		if !filepath.IsAbs(resPath) {
+	if resFile == "" {
+		resPath := vari.ConfigDir + resFile
+		if !fileUtils.FileExist(resPath) { // in same folder with passed config file
 
-			resPath = vari.ConfigDir + resFile
-			if !fileUtils.FileExist(resPath) { // in same folder with passed config file
-
-				resPath = vari.WorkDir + resFile
-				if !fileUtils.FileExist(resPath) {  // in res file
-					resPath = ""
-				}
-			}
-		} else {
-			if !fileUtils.FileExist(resPath) {
+			resPath = vari.WorkDir + resFile
+			if !fileUtils.FileExist(resPath) {  // in res file
 				resPath = ""
 			}
 		}
-
 		resFile = resPath
+	}
+
+	return
+}
+
+func convertYamlPath(from string) (ret string) {
+	arr := strings.Split(from, ".")
+	for i := 0; i < len(arr); i++ {
+		dir := ""
+		if i > 0 {
+			dir = strings.Join(arr[:i], constant.PthSep)
+		}
+		file := strings.Join(arr[i:], ".")
+
+		if dir != "" {
+			ret = dir + constant.PthSep + file
+		} else {
+			ret = file
+		}
+
+		realPth1 := vari.WorkDir + constant.ResDirYaml + ret
+		realPth2 := vari.WorkDir + constant.ResDirUsers + ret
+		if fileUtils.FileExist(realPth1) {
+			ret = realPth1
+			break
+		} else if fileUtils.FileExist(realPth2) {
+			ret = realPth2
+			break
+		}
 	}
 
 	return
@@ -119,7 +134,7 @@ func convertExcelPath(from string) (ret, sheet string) {
 				ret = file
 			}
 
-			realPth := vari.WorkDir + constant.ResDir + ret
+			realPth := vari.WorkDir + constant.ResDirData + ret
 			if fileUtils.FileExist(realPth) {
 				if index == 1 {
 					sheet = from[strings.LastIndex(from, ".")+1:]
