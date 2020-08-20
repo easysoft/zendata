@@ -23,7 +23,7 @@
     },
     {
       "id": "add_to_path_tips_win",
-      "translation": "您可运行%s将zd.exe加入$PATH环境变量，以方便在任何目录中执行。"
+      "translation": "您可运行 %s 将zd.exe加入$PATH环境变量，以方便在任何目录中执行。"
     },
     {
       "id": "add_to_path_win",
