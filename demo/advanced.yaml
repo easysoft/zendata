@@ -39,7 +39,7 @@ fields:
       use: large{3}
 
   - field: field_use_yaml
-    range: test.yaml{2},1-9
+    range: test.yaml{2},1-9:R{3}
     postfix: "\t"
 
   - field: field_literal
