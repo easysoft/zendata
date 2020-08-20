@@ -130,6 +130,13 @@ func AddPad(str string, field model.DefField) string {
 	return str
 }
 
+func StartWith(str, sub string) bool {
+	return strings.Index(str, sub) == 0
+}
+func EndWith(str, sub string) bool {
+	return strings.LastIndex(str, sub) == len(str) -len(sub)
+}
+
 func ConvertForSql(str string) (ret string) {
 	arr := []rune(str)
 

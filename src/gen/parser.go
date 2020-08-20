@@ -3,18 +3,14 @@ package gen
 import (
 	"fmt"
 	"github.com/easysoft/zendata/src/utils/const"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
 )
 
-/**
-	split field range string with comma to a array, ignore the comma in []
-	1-2:R,[user1,user2]{2} -> 1-2:R
-                              [user1,user2]{2}
- */
-func ParseRange(rang string) []string {
+func ParseRangeProperty(rang string) []string {
 	items := make([]string, 0)
 
 	bracketsOpen := false
@@ -79,7 +75,7 @@ func ParseDesc(desc string) (items []string) {
                         step   =>1
                         repeat =>2
 */
-func ParseRangeItem(item string) (entry string, step string, repeat int) {
+func ParseRangeSection(item string) (entry string, step string, repeat int) {
 	item = strings.TrimSpace(item)
 	runeArr := []rune(item)
 	if (runeArr[0] == constant.Backtick &&  runeArr[len(runeArr) - 1] == constant.Backtick) || // `xxx`
@@ -117,8 +113,13 @@ func ParseRangeItem(item string) (entry string, step string, repeat int) {
 	[user1,user2] -> type => literal
                      desc => user2,user3
 */
-func ParseEntry(str string) (typ string, desc string) {
+func ParseRangeSectionDesc(str string) (typ string, desc string) {
 	desc = strings.TrimSpace(str)
+
+	if stringUtils.EndWith(desc, ".yaml") { // refer to another yaml file
+		typ = "yaml"
+		return
+	}
 
 	if strings.Contains(desc, ",") || strings.Contains(desc, "`") || !strings.Contains(desc, "-") {
 		typ = "literal"

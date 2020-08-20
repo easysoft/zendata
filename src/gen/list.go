@@ -39,19 +39,19 @@ func CreateFieldValues(field *model.DefField, fieldValue *model.FieldWithValues)
 
 func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
 	rang := field.Range
-	rangeItems := ParseRange(rang) // 1
+	rangeSections := ParseRangeProperty(rang) // 1
 
 	index := 0
-	for _, rangeItem := range rangeItems {
+	for _, rangeSection := range rangeSections {
 		if index >= constant.MaxNumb { break }
-		if rangeItem == "" { continue }
+		if rangeSection == "" { continue }
 
-		descStr, stepStr, repeat := ParseRangeItem(rangeItem) // 2
+		descStr, stepStr, repeat := ParseRangeSection(rangeSection) // 2
 		if strings.ToLower(stepStr) == "r" {
 			(*field).IsRand = true
 		}
 
-		typ, desc := ParseEntry(descStr) // 3
+		typ, desc := ParseRangeSectionDesc(descStr) // 3
 
 		items := make([]interface{}, 0)
 		if typ == "literal" {

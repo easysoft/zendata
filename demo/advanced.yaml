@@ -38,6 +38,11 @@ fields:
     - from: custom.test.number.v1.yaml
       use: large{3}
 
+  - field: field_use_yaml
+    range: test.yaml{2},1-9
+    postfix: "\t"
+
   - field: field_literal
     range: "`0000-00`,`AA[2,a-z]`,[1-3]:2{3},`[1-3]:2{3}`"
     type: text
+
