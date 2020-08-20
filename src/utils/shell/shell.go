@@ -13,7 +13,7 @@ import (
 func ExeShell(cmdStr string) (string, error) {
 	var cmd *exec.Cmd
 	if commonUtils.IsWin() {
-		cmd = exec.Command(cmdStr)
+		cmd = exec.Command("cmd", "/C", cmdStr)
 	} else {
 		cmd = exec.Command("/bin/bash", "-c", cmdStr)
 	}
