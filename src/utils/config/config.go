@@ -175,7 +175,7 @@ func addZdToPathWin(home string) {
 
 	if strings.Contains(pathVar, vari.ExeDir) { return }
 
-	cmd := fmt.Sprintf("setx PATH \"%%PATH%%;%s\"  /m", vari.ExeDir)
+	cmd := fmt.Sprintf("setx Path \"%%Path%%;%s\"", vari.ExeDir)
 	out, err := shellUtils.ExeShell(cmd)
 
 	if err == nil {

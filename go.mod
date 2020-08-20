@@ -5,7 +5,7 @@ go 1.12
 require golang.org/x/text v0.3.3
 
 require (
-	github.com/360EntSecGroup-Skylar/excelize/v2 v2.2.0
+	github.com/360EntSecGroup-Skylar/excelize/v2 v2.3.0
 	github.com/Chain-Zhang/pinyin v0.1.3
 	github.com/akavel/rsrc v0.9.0 // indirect
 	github.com/emirpasic/gods v1.12.0
@@ -21,8 +21,8 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/xuri/efp v0.0.0-20200605144744-ba689101faaf // indirect
 	golang.org/x/image v0.0.0-20200801110659-972c09e46d76 // indirect
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
-	golang.org/x/sys v0.0.0-20200805065543-0cf7623e9dbd // indirect
-	gopkg.in/ini.v1 v1.57.0
+	golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc // indirect
+	golang.org/x/sys v0.0.0-20200819171115-d785dc25833f // indirect
+	gopkg.in/ini.v1 v1.60.0
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 )
