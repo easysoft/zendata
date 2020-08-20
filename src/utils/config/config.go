@@ -172,19 +172,21 @@ func AddZdToPath() {
 
 func addZdToPathWin(home string) {
 	pathVar := os.Getenv("PATH")
-
 	if strings.Contains(pathVar, vari.ExeDir) { return }
 
-	cmd := fmt.Sprintf("setx Path \"%%Path%%;%s\"", vari.ExeDir)
-	out, err := shellUtils.ExeShell(cmd)
+	cmd := fmt.Sprintf(`setx Path "%%Path%%;%s"`, vari.ExeDir)
 
-	if err == nil {
-		msg := i118Utils.I118Prt.Sprintf("add_to_path_success_win")
-		logUtils.PrintToWithColor(msg, color.FgRed)
-	} else {
-		logUtils.PrintToWithColor(
-			i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
-	}
+
+	// TODO: fix the space issue
+	//out, err := shellUtils.ExeShell(cmd)
+	//
+	//if err == nil {
+	//	msg := i118Utils.I118Prt.Sprintf("add_to_path_success_win")
+	//	logUtils.PrintToWithColor(msg, color.FgRed)
+	//} else {
+	//	logUtils.PrintToWithColor(
+	//		i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
+	//}
 }
 
 func addZdToPathLinux(home string) {

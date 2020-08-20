@@ -27,6 +27,10 @@
       "translation": "1) 请选择您要使用的语言，中文请输入数字1。\n2) Please select the language. Input 2 for English."
     },
     {
+      "id": "add_to_path_tips_win",
+      "translation": "You may execute '%s' to add zd.exe to $PATH environment variable."
+    },
+    {
       "id": "add_to_path_win",
       "translation": "Would you like to add zd.exe to $PATH environment variable? (y/n, default is Yes)"
     },
