@@ -175,7 +175,7 @@ func addZdToPathWin(home string) {
 	if strings.Contains(pathVar, vari.ExeDir) { return }
 
 	cmd := fmt.Sprintf(`setx Path "%%Path%%;%s"`, vari.ExeDir)
-
+	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
 
 	// TODO: fix the space issue
 	//out, err := shellUtils.ExeShell(cmd)
