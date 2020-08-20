@@ -50,9 +50,9 @@ var (
 	DefaultPort = 8848
 	DefaultRoot = "./"
 
-	ResDirData  = "data/"
-	ResDirYaml  = "yaml/"
-	ResDirUsers  = "users/"
+	ResDirData  = "data"
+	ResDirYaml  = "yaml"
+	ResDirUsers  = "users"
 
 	TmpDir  = "tmp/"
 

@@ -2,7 +2,6 @@ package gen
 
 import (
 	"github.com/easysoft/zendata/src/model"
-	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -11,7 +10,6 @@ import (
 	"github.com/jinzhu/copier"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"strings"
 )
 
 func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
@@ -46,106 +44,15 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 			loadResField(&child, res)
 		}
 	} else if field.From != "" {
-		resFile, resType, sheet := getResProp(field.From)
+		resFile, resType, sheet := fileUtils.GetResProp(field.From)
 		values, _ := getResValue(resFile, resType, sheet, field)
 		(*res)[field.From] = values
 
 	} else if field.Config != "" {
-		resFile, resType, _ := getResProp(field.Config)
+		resFile, resType, _ := fileUtils.GetResProp(field.Config)
 		values, _ := getResValue(resFile, resType, "", field)
 		(*res)[field.Config] = values
 	}
-}
-
-func getResProp(from string) (resFile, resType, sheet string) { // from resource
-
-	index := strings.LastIndex(from, ".yaml")
-	if index > -1 { // yaml, ip.v1.yaml
-		resFile = convertYamlPath(from)
-		resType = "yaml"
-	} else { // excel, like address.cn.v1.china
-		resFile, sheet = convertExcelPath(from)
-		resType = "excel"
-	}
-
-	if resFile == "" {
-		resPath := vari.ConfigDir + resFile
-		if !fileUtils.FileExist(resPath) { // in same folder with passed config file
-
-			resPath = vari.WorkDir + resFile
-			if !fileUtils.FileExist(resPath) {  // in res file
-				resPath = ""
-			}
-		}
-		resFile = resPath
-	}
-
-	return
-}
-
-func convertYamlPath(from string) (ret string) {
-	arr := strings.Split(from, ".")
-	for i := 0; i < len(arr); i++ {
-		dir := ""
-		if i > 0 {
-			dir = strings.Join(arr[:i], constant.PthSep)
-		}
-		file := strings.Join(arr[i:], ".")
-
-		if dir != "" {
-			ret = dir + constant.PthSep + file
-		} else {
-			ret = file
-		}
-
-		realPth1 := vari.WorkDir + constant.ResDirYaml + ret
-		realPth2 := vari.WorkDir + constant.ResDirUsers + ret
-		if fileUtils.FileExist(realPth1) {
-			ret = realPth1
-			break
-		} else if fileUtils.FileExist(realPth2) {
-			ret = realPth2
-			break
-		}
-	}
-
-	return
-}
-
-func convertExcelPath(from string) (ret, sheet string) {
-	path1 := from // address.cn.v1
-	index := strings.LastIndex(from, ".")
-	path2 := from[:index] // address.cn.v1.china
-
-	paths := [2]string{path1, path2}
-	for index, path := range paths {
-
-		arr := strings.Split(path, ".")
-		for i := 0; i < len(arr); i++ {
-			dir := ""
-			if i > 0 {
-				dir = strings.Join(arr[:i], constant.PthSep)
-			}
-			file := strings.Join(arr[i:], ".") + ".xlsx"
-
-			if dir != "" {
-				ret = dir + constant.PthSep + file
-			} else {
-				ret = file
-			}
-
-			realPth := vari.WorkDir + constant.ResDirData + ret
-			if fileUtils.FileExist(realPth) {
-				if index == 1 {
-					sheet = from[strings.LastIndex(from, ".")+1:]
-				}
-				ret = realPth
-				return
-			}
-		}
-	}
-
-	return
 }
 
 func getResValue(resFile, resType, sheet string, field *model.DefField) (map[string][]string, string) {
@@ -243,7 +150,7 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 }
 
 func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, parentInsts model.ResInsts) {
-	resFile, _, _ := getResProp(inst.From)
+	resFile, _, _ := fileUtils.GetResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
 	if err != nil {

@@ -153,33 +153,93 @@ func GetAbsDir(path string) string {
 	return abs
 }
 
-func ConvertResPath(path string) (resType, resFile, sheet string) {
-	resName := strings.ReplaceAll(path, ".", constant.PthSep)
+func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 
-	resPath := AddRootPath(resName) + ".yaml"
-	if FileExist(resPath) {
+	index := strings.LastIndex(from, ".yaml")
+	if index > -1 { // yaml, ip.v1.yaml
+		resFile = convertYamlPath(from)
 		resType = "yaml"
-		resFile = resPath
-
-	} else {
+	} else { // excel, like address.cn.v1.china
+		resFile, sheet = convertExcelPath(from)
 		resType = "excel"
+	}
 
-		resFile = resName + ".xlsx"
-		resFile = AddRootPath(resFile)
-		if FileExist(AddRootPath(resName + ".xlsx")) { // no sheet name
-			sheet = ""
+	if resFile == "" {
+		resPath := vari.ConfigDir + resFile
+		if !FileExist(resPath) { // in same folder with passed config file
+
+			resPath = vari.WorkDir + resFile
+			if !FileExist(resPath) {  // in res file
+				resPath = ""
+			}
+		}
+		resFile = resPath
+	}
+
+	return
+}
+
+func convertYamlPath(from string) (ret string) {
+	arr := strings.Split(from, ".")
+	for i := 0; i < len(arr); i++ {
+		dir := ""
+		if i > 0 {
+			dir = strings.Join(arr[:i], constant.PthSep)
+		}
+		file := strings.Join(arr[i:], ".")
+
+		if dir != "" {
+			ret = dir + constant.PthSep + file
 		} else {
-			resFile = resName[:strings.LastIndex(resName, constant.PthSep)] + ".xlsx"
-			resFile = AddRootPath(resFile)
-			sheet = path[strings.LastIndex(resName, constant.PthSep)+1:]
+			ret = file
+		}
+
+		realPth1 := vari.WorkDir + constant.ResDirYaml + constant.PthSep + ret
+		realPth2 := vari.WorkDir + constant.ResDirUsers + constant.PthSep + ret
+		if FileExist(realPth1) {
+			ret = realPth1
+			break
+		} else if FileExist(realPth2) {
+			ret = realPth2
+			break
 		}
 	}
 
 	return
 }
 
-func AddRootPath(path string) string {
-	path = vari.WorkDir + "data" + constant.PthSep + path
+func convertExcelPath(from string) (ret, sheet string) {
+	path1 := from // address.cn.v1
+	index := strings.LastIndex(from, ".")
+	path2 := from[:index] // address.cn.v1.china
 
-	return path
+	paths := [2]string{path1, path2}
+	for index, path := range paths {
+
+		arr := strings.Split(path, ".")
+		for i := 0; i < len(arr); i++ {
+			dir := ""
+			if i > 0 {
+				dir = strings.Join(arr[:i], constant.PthSep)
+			}
+			file := strings.Join(arr[i:], ".") + ".xlsx"
+
+			if dir != "" {
+				ret = dir + constant.PthSep + file
+			} else {
+				ret = file
+			}
+
+			realPth := vari.WorkDir + constant.ResDirData + constant.PthSep + ret
+			if FileExist(realPth) {
+				if index == 1 {
+					sheet = from[strings.LastIndex(from, ".")+1:]
+				}
+				ret = realPth
+				return
+			}
+		}
+	}
+
+	return
 }

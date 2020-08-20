@@ -5,6 +5,7 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -20,14 +21,14 @@ const (
 )
 
 func ListRes() {
-	orderedKeys := [2]string{"yaml", "excel"}
+	orderedKeys := [3]string{constant.ResDirData, constant.ResDirYaml, constant.ResDirUsers}
 	res := map[string][][size]string{}
 
-	GetFilesAndDirs(constant.ResDirData, &res)
-	GetFilesAndDirs(constant.ResDirYaml, &res)
-	GetFilesAndDirs(constant.ResDirUsers, &res)
+	for _, key := range orderedKeys {
+		GetFilesAndDirs(key, key, &res)
+	}
 
-	names := make([]string, 0)
+	//names := make([]string, 0)
 	nameWidth := 0
 	titleWidth := 0
 	for _, key := range orderedKeys {
@@ -35,21 +36,21 @@ func ListRes() {
 
 		for index, arr := range arrOfArr {
 			path := arr[0]
-			if key == "yaml" {
+			if key == constant.ResDirYaml || key == constant.ResDirUsers {
 				arr[2], arr[3] = readYamlInfo(path)
-			} else if key == "excel" {
+			} else if key == constant.ResDirData {
 				arr[2], arr[3] = readExcelInfo(path)
 			}
 
 			res[key][index] = arr
-			name := pathToName(arr[1])
-			names = append(names, name)
+			name := pathToName(arr[1], key)
+			//names = append(names, name)
 			lent := runewidth.StringWidth(name)
 			if lent > nameWidth {
 				nameWidth = lent
 			}
 
-			if key == "excel" {
+			if key == constant.ResDirData {
 				sheets := strings.Split(arr[2], "|")
 				for _, sheet := range sheets {
 					lent2 := runewidth.StringWidth(sheet)
@@ -66,27 +67,22 @@ func ListRes() {
 		}
 	}
 
-	sysMsg := ""
-	customMsg := ""
+	dataMsg := ""
+	yamlMsg := ""
+	usersMsg := ""
 	idx := 0
 	for _, key := range orderedKeys {
 		arrOfArr := res[key]
 		arrOfArr = sortByName(arrOfArr)
 
 		for _, arr := range arrOfArr {
-			name := names[idx]
+			name := pathToName(arr[1], key)
 
 			titleStr := arr[2]
 			titles := strings.Split(titleStr, "|")
 
 			idx2 := 0
-			isBuildin := false
 			for _, title := range titles {
-				if strings.Index(name, "system") > -1 {
-					isBuildin = true
-				} else {
-					isBuildin = false
-				}
 				if idx2 > 0 {
 					name = ""
 				}
@@ -95,10 +91,12 @@ func ListRes() {
 				title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
 				msg := fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
 
-				if isBuildin {
-					sysMsg = sysMsg + msg
-				} else {
-					customMsg = customMsg + msg
+				if key == constant.ResDirData {
+					dataMsg = dataMsg + msg
+				} else if key == constant.ResDirYaml {
+					yamlMsg = yamlMsg + msg
+				} else if key == constant.ResDirUsers {
+					usersMsg = usersMsg + msg
 				}
 
 				idx2++
@@ -108,33 +106,35 @@ func ListRes() {
 		}
 	}
 
-	logUtils.PrintTo(sysMsg + "\n" + customMsg)
+	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
 }
 
-func GetFilesAndDirs(path string, res *map[string][][size]string)  {
-	dir, err := ioutil.ReadDir(vari.WorkDir + path)
+func GetFilesAndDirs(path, typ string, res *map[string][][size]string)  {
+	if !fileUtils.IsAbosutePath(path) {
+		path = vari.WorkDir + path
+	}
+
+	dir, err := ioutil.ReadDir(path)
 	if err != nil {
 		return
 	}
 
 	for _, fi := range dir {
 		if fi.IsDir() {
-			GetFilesAndDirs(path + constant.PthSep + fi.Name(), res)
+			GetFilesAndDirs(path + constant.PthSep + fi.Name(), typ, res)
 		} else {
 			name := fi.Name()
 			arr := [size]string{}
 			if strings.HasSuffix(name, ".yaml") {
 				arr[0] = path + constant.PthSep + name
-				arr[1] = path[strings.LastIndex(path, path):] + constant.PthSep + name
-				arr[1] = strings.Trim(arr[1], "data"+constant.PthSep)
+				arr[1] = arr[0]
 
-				(*res)["yaml"] = append((*res)["yaml"], arr)
+				(*res)[typ] = append((*res)[typ], arr)
 			} else if strings.HasSuffix(name, ".xlsx") {
 				arr[0] = path + constant.PthSep + name
-				arr[1] = path[strings.LastIndex(path, "data"):] + constant.PthSep + name
-				arr[1] = strings.Trim(arr[1], "data"+constant.PthSep)
+				arr[1] = arr[0]
 
-				(*res)["excel"] = append((*res)["excel"], arr)
+				(*res)[typ] = append((*res)[typ], arr)
 			}
 		}
 
@@ -178,9 +178,12 @@ func readExcelInfo(path string) (title string, desc string) {
 	return
 }
 
-func pathToName(path string) string {
+func pathToName(path, key string) string {
 	name := strings.ReplaceAll(path, constant.PthSep,".")
-	name = name[:strings.LastIndex(name, ".")]
+	name = strings.Split(name, "." + key + ".")[1]
+	if key == constant.ResDirData {
+		name = name[:strings.LastIndex(name, ".")]
+	}
 
 	return name
 }
