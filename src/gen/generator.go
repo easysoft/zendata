@@ -41,9 +41,6 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 			field.From = vari.Def.From
 		}
 		values := GenerateForField(&field, true)
-		if field.Rand {
-			rows = randomValues(rows)
-		}
 
 		vari.Def.Fields[index].Precision = field.Precision
 
@@ -164,6 +161,10 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 
 	} else { // leaf field
 		values = GenerateFieldValuesForDef(field)
+	}
+
+	if field.Rand {
+		values = randomValues(values)
 	}
 
 	return values
@@ -359,7 +360,16 @@ func putChildrenToArr(arrOfArr [][]string) (values [][]string) {
 	return
 }
 
-func randomValues(values [][]string) (ret [][]string) {
+func randomValuesArr(values [][]string) (ret [][]string) {
+	length := len(values)
+	for i := 0; i < length; i++ {
+		val := commonUtils.RandNum(length)
+		ret = append(ret, values[val])
+	}
+
+	return
+}
+func randomValues(values []string) (ret []string) {
 	length := len(values)
 	for i := 0; i < length; i++ {
 		val := commonUtils.RandNum(length)
