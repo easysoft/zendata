@@ -24,12 +24,6 @@ fields:
     postfix: "\t"
 #    width: 25
 
-  - field: test3
-    range: test/test.yaml{2},a-z:R{3}
-    prefix: "---"
-    postfix: "---\t"
-    #    width: 25
-
   - field: field_with_children
     fields:
       - field: child1
