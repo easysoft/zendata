@@ -75,11 +75,13 @@ type FieldSimple struct {
 	Loop  string  `yaml:"loop"`
 	Loopfix  string  `yaml:"loopfix"`
 	Format  string  `yaml:"format"`
+	Rand  bool  `yaml:"rand"`
 
 	LoopStart  int  `yaml:"-"`
 	LoopEnd  int  `yaml:"-"`
 	LoopIndex int  `yaml:"-"`
 	IsRand bool  `yaml:"-"`
+	IsReferYaml bool  `yaml:"-"`
 }
 
 type FieldWithValues struct {

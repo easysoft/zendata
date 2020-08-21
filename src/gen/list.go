@@ -59,7 +59,8 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 		} else if typ == "interval" {
 			items = CreateValuesFromInterval(field, desc, stepStr, repeat)
 		} else if typ == "yaml" {
-			items = CreateValuesFromYaml(field, desc, repeat)
+			items = CreateValuesFromYaml(field, desc, stepStr, repeat)
+			field.IsReferYaml = true
 		}
 
 		fieldValue.Values = append(fieldValue.Values, items...)
@@ -177,7 +178,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	return
 }
 
-func CreateValuesFromInterval(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
+func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repeat int) (items []interface{}) {
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr
@@ -220,7 +221,7 @@ func CreateValuesFromInterval(field *model.DefField, desc string, stepStr string
 	return
 }
 
-func CreateValuesFromYaml(field *model.DefField, yamlFile string, repeat int) (items []interface{}) {
+func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int) (items []interface{}) {
 	// keep root def, since vari.Def will be overwrite by refer yaml file
 	rootDef := vari.Def
 
@@ -228,6 +229,13 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile string, repeat int) (i
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
 	rows, colIsNumArr, _ := GenerateForDefinition("", configFile, &fieldsToExport)
 	items = Print(rows, constant.FormatData, "", colIsNumArr, fieldsToExport)
+
+	if repeat > 0 {
+		if repeat > len(items) - 1 {
+			repeat = len(items) - 1
+		}
+		items = items[:repeat]
+	}
 
 	// rollback root def when finish to deal with refer yaml file
 	vari.Def = rootDef

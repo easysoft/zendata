@@ -5,24 +5,30 @@ version: 1.0
 
 fields:
   - field: test0
-    range: "''"
+    range: 1-9
     loop: 2-3
     loopfix: "|"
 #    width: 10
 
   - field: test1
     range: 9-5:R{2}
-    prefix: "["
-    postfix: "]\t"
+    prefix: ""
+    postfix: "\t"
 #    width: 5
 
   - field: test2
     range: [user-2,user3,user4,user5,user6]:R
     loop: 2-3
     loopfix: "|"
-    prefix: "["
-    postfix: "]\t"
+    prefix: ""
+    postfix: "\t"
 #    width: 25
+
+  - field: test3
+    range: test/test.yaml{2},a-z:R{3}
+    prefix: "---"
+    postfix: "---\t"
+    #    width: 25
 
   - field: field_with_children
     fields:

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -40,6 +41,10 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 			field.From = vari.Def.From
 		}
 		values := GenerateForField(&field, true)
+		if field.Rand {
+			rows = randomValues(rows)
+		}
+
 		vari.Def.Fields[index].Precision = field.Precision
 
 		topFieldNameToValuesMap[field.Field] = values
@@ -178,7 +183,7 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		values = append(values, val)
 
 		count++
-		isRandomAndLoopEnd := (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
+		isRandomAndLoopEnd := !(*field).IsReferYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || isRandomAndLoopEnd {
 			break
@@ -349,6 +354,16 @@ func putChildrenToArr(arrOfArr [][]string) (values [][]string) {
 		}
 
 		values = append(values, strArr)
+	}
+
+	return
+}
+
+func randomValues(values [][]string) (ret [][]string) {
+	length := len(values)
+	for i := 0; i < length; i++ {
+		val := commonUtils.RandNum(length)
+		ret = append(ret, values[val])
 	}
 
 	return

@@ -1,0 +1,11 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: test0
+    range: 1-9
+    loop: 2-3
+    loopfix: "|"
+    postfix: ",\t"
