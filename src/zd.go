@@ -28,7 +28,7 @@ import (
 var (
 	defaultFile string
 	configFile  string
-	count       int
+	//count       int
 	fields      string
 
 	root string
@@ -70,8 +70,8 @@ func main() {
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
 
-	flagSet.IntVar(&count, "n", 10, "")
-	flagSet.IntVar(&count, "lines", 10, "")
+	flagSet.IntVar(&vari.Total, "n", 10, "")
+	flagSet.IntVar(&vari.Total, "lines", 10, "")
 
 	flagSet.StringVar(&fields, "F", "", "")
 	flagSet.StringVar(&fields, "field", "", "")
@@ -179,7 +179,7 @@ func toGen() {
 		StartServer()
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		format = constant.FormatJson
-		action.Generate(defaultFile, configFile, count, fields, output, format, table)
+		action.Generate(defaultFile, configFile, fields, format, table)
 	} else if vari.RunMode == constant.RunModeParse {
 		action.ParseSql(input, output)
 	} else if vari.RunMode == constant.RunModeGen {
@@ -207,7 +207,7 @@ func toGen() {
 			return
 		}
 
-		action.Generate(defaultFile, configFile, count, fields, output, format, table)
+		action.Generate(defaultFile, configFile, fields, format, table)
 	}
 }
 
@@ -234,7 +234,7 @@ func StartServer() {
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
-	defaultFile, configFile, fields, count,
+	defaultFile, configFile, fields, vari.Total,
 		format, table, decode, input, output = service.ParseRequestParams(req)
 
 	if decode {

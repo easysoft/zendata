@@ -35,6 +35,7 @@ var (
 	FormatJson = "json"
 	FormatXml = "xml"
 	FormatSql = "sql"
+	FormatData = "data"
 	Formats = []string{FormatText, FormatJson, FormatXml, FormatSql}
 
 	TypeText = "text"

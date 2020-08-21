@@ -129,7 +129,7 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 
 						// gen values
 						group := child.Instance
-						groupedValueParent[group] = GenerateForField(&field, vari.Total, false)
+						groupedValueParent[group] = GenerateForField(&field, false)
 					}
 				} else if len(parentRanges.Ranges) > 0 {
 					groupedValueParent = getResForRanges(parentRanges)
@@ -143,7 +143,7 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 
 		// gen values
 		group := inst.Instance
-		groupedValue[group] = GenerateForField(&field, vari.Total, false)
+		groupedValue[group] = GenerateForField(&field, false)
 	}
 
 	return groupedValue
@@ -201,7 +201,7 @@ func getResForRanges(ranges model.ResRanges) map[string][]string {
 		tempField.Field = ranges.Field
 		tempField.Range = exp
 
-		groupedValue[group] = GenerateForField(&tempField, vari.Total, false)
+		groupedValue[group] = GenerateForField(&tempField, false)
 	}
 
 	return groupedValue
@@ -211,7 +211,7 @@ func getResForConfig(configRes model.DefField) map[string][]string {
 	groupedValue := map[string][]string{}
 
 	// config field is a standard field
-	groupedValue["all"] = GenerateForField(&configRes, vari.Total, false)
+	groupedValue["all"] = GenerateForField(&configRes, false)
 
 	return groupedValue
 }

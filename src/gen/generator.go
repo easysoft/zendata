@@ -16,7 +16,7 @@ import (
 )
 
 func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]string,
-		total int) (rows [][]string, colIsNumArr []bool, err error) {
+		) (rows [][]string, colIsNumArr []bool, err error) {
 
 	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
 	vari.ConfigDir = fileUtils.GetAbsDir(configFile)
@@ -39,7 +39,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		if field.Use != "" && field.From == "" {
 			field.From = vari.Def.From
 		}
-		values := GenerateForField(&field, total, true)
+		values := GenerateForField(&field, true)
 		vari.Def.Fields[index].Precision = field.Precision
 
 		topFieldNameToValuesMap[field.Field] = values
@@ -56,12 +56,12 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		childValues := topFieldNameToValuesMap[child.Field]
 		arrOfArr = append(arrOfArr, childValues)
 	}
-	rows = putChildrenToArr(arrOfArr, total)
+	rows = putChildrenToArr(arrOfArr)
 
 	return
 }
 
-func GenerateForField(field *model.DefField, total int, withFix bool) (values []string) {
+func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 	if len(field.Fields) > 0 { // sub fields
 		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 		for _, child := range field.Fields {
@@ -69,14 +69,14 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 				child.From = field.From
 			}
 
-			childValues := GenerateForField(&child, total, withFix)
+			childValues := GenerateForField(&child, withFix)
 			arrOfArr = append(arrOfArr, childValues)
 		}
 
-		count := total
+		count := vari.Total
 		count = getRecordCount(arrOfArr)
-		if count > total {
-			count = total
+		if count > vari.Total {
+			count = vari.Total
 		}
 		values = combineChildrenValues(arrOfArr, count)
 		values = loopFieldValues(field, values, count, true)
@@ -88,14 +88,14 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 				child.From = field.From
 			}
 
-			childValues := GenerateForField(&child, total, withFix)
+			childValues := GenerateForField(&child, withFix)
 			arrOfArr = append(arrOfArr, childValues)
 		}
 
-		count := total
+		count := vari.Total
 		count = getRecordCount(arrOfArr)
-		if count > total {
-			count = total
+		if count > vari.Total {
+			count = vari.Total
 		}
 		values = combineChildrenValues(arrOfArr, count)
 		values = loopFieldValues(field, values, count, true)
@@ -149,13 +149,13 @@ func GenerateForField(field *model.DefField, total int, withFix bool) (values []
 			values = append(values, groupValues[slct]...)
 		}
 
-		values = loopFieldValues(field, values, total, true)
+		values = loopFieldValues(field, values, vari.Total, true)
 
 	} else if field.Config != "" { // refer to config
 		groupValues := vari.Res[field.Config]
 		values = append(values, groupValues["all"]...)
 
-		values = loopFieldValues(field, values, total, true)
+		values = loopFieldValues(field, values, vari.Total, true)
 
 	} else { // leaf field
 		values = GenerateFieldValuesForDef(field)
@@ -251,7 +251,7 @@ func loopFieldValues(field *model.DefField, oldValues []string, total int, withF
 		count++
 		isRandomAndLoopEnd := (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldValue.Values)
-		if count >= vari.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
+		if count >= total || isRandomAndLoopEnd || isNotRandomAndValOver {
 			break
 		}
 
@@ -326,13 +326,13 @@ func computerLoop(field *model.DefField) {
 	(*field).LoopIndex = (*field).LoopStart
 }
 
-func putChildrenToArr(arrOfArr [][]string, total int) (values [][]string) {
+func putChildrenToArr(arrOfArr [][]string) (values [][]string) {
 	indexArr := make([]int, 0)
 	if vari.Recursive {
 		indexArr = getModArr(arrOfArr)
 	}
 
-	for i := 0; i < total; i++ {
+	for i := 0; i < vari.Total; i++ {
 		strArr := make([]string, 0)
 		for j := 0; j < len(arrOfArr); j++ {
 			child := arrOfArr[j]
@@ -355,7 +355,7 @@ func putChildrenToArr(arrOfArr [][]string, total int) (values [][]string) {
 }
 
 func combineChildrenValues(arrOfArr [][]string, total int) (ret []string)  {
-	valueArr := putChildrenToArr(arrOfArr, total)
+	valueArr := putChildrenToArr(arrOfArr)
 
 	for _, arr := range valueArr {
 		ret = append(ret, strings.Join(arr, ""))

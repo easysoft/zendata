@@ -91,6 +91,8 @@ func PrintLine(line string) {
 	} else {
 		PrintToScreen(line)
 	}
+
+	return
 }
 func PrintToFile(line string) {
 	fmt.Fprint(FileWriter, line)

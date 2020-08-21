@@ -157,10 +157,10 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 
 	index := strings.LastIndex(from, ".yaml")
 	if index > -1 { // yaml, ip.v1.yaml
-		resFile = convertYamlPath(from)
+		resFile = ConvertResYamlPath(from)
 		resType = "yaml"
 	} else { // excel, like address.cn.v1.china
-		resFile, sheet = convertExcelPath(from)
+		resFile, sheet = convertResExcelPath(from)
 		resType = "excel"
 	}
 
@@ -179,7 +179,7 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 	return
 }
 
-func convertYamlPath(from string) (ret string) {
+func ConvertResYamlPath(from string) (ret string) {
 	arr := strings.Split(from, ".")
 	for i := 0; i < len(arr); i++ {
 		dir := ""
@@ -208,7 +208,7 @@ func convertYamlPath(from string) (ret string) {
 	return
 }
 
-func convertExcelPath(from string) (ret, sheet string) {
+func convertResExcelPath(from string) (ret, sheet string) {
 	path1 := from // address.cn.v1
 	index := strings.LastIndex(from, ".")
 	path2 := from[:index] // address.cn.v1.china
