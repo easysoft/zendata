@@ -10,5 +10,6 @@ fields:
 
   - field: test1
     range: a-c,nested2.yaml{2}
+#    rand: true
     prefix: "==="
     postfix: "===\t"
