@@ -1,0 +1,15 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: test1
+    from: base.name.letters.v1.yaml
+    use: letters
+    postfix: "\t"
+
+  - field: test2
+    from: base.name.numbers.v1.yaml
+    use: numbers
+    postfix: "\t"

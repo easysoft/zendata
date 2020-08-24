@@ -66,6 +66,10 @@
       "id": "fail_to_parse_ranges",
       "translation": "%s不是ResRanges格式，尝试解析为ResInsts对象。"
     },
+    {
+      "id": "fail_to_find_res",
+      "translation": "加载资源%s失败."
+    },
 
     {
       "id": "generate_records",

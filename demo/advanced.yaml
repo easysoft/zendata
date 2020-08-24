@@ -43,7 +43,7 @@ fields:
       use: large{3}
 
   - field: field_use_yaml
-    range: 9-7,test/nested1.yaml{5}
+    range: 测试,测,9-7,test/nested1.yaml{5}
 #    rand: true
     prefix: "***"
     postfix: "***\t"

@@ -71,6 +71,10 @@
       "id": "fail_to_parse_ranges",
       "translation": "%s is not ResRanges format, try to parse as ResInsts."
     },
+    {
+      "id": "fail_to_find_res",
+      "translation": "Fail to load resource from %s."
+    },
 
     {
       "id": "generate_records",

@@ -1,0 +1,46 @@
+title: 数字账号
+desc:
+author: zentao
+version: 1.0
+
+field: account_numbers
+instances:
+  - instance: 1_number
+    note: 单个数字
+    prefix:
+    fields:
+      - field: part1
+        range: 0-9
+
+  - instance: 2_numbers
+    note: 两个数字
+    prefix:
+    fields:
+      - field: part1
+        range: 0-9
+        loop: 2
+
+  - instance: 3_numbers
+    note: 三个数字
+    prefix:
+    fields:
+      - field: part1
+        range: 0-9
+        loop: 3
+
+  - instance: 4_numbers
+    note: 四个数字
+    prefix:
+    fields:
+      - field: part1
+        range: 0-9
+        loop: 4
+
+  - instance: numbers
+    note: 多个数字
+    prefix:
+    fields:
+      - field: part1
+        range: 0-9
+        loop: 5-100
+        rand: true

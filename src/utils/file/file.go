@@ -4,7 +4,9 @@ import (
 	"github.com/easysoft/zendata/res"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -188,14 +190,15 @@ func ConvertResYamlPath(from string) (ret string) {
 		}
 		file := strings.Join(arr[i:], ".")
 
+		relatPath := ""
 		if dir != "" {
-			ret = dir + constant.PthSep + file
+			relatPath = dir + constant.PthSep + file
 		} else {
-			ret = file
+			relatPath = file
 		}
 
-		realPth1 := vari.WorkDir + constant.ResDirYaml + constant.PthSep + ret
-		realPth2 := vari.WorkDir + constant.ResDirUsers + constant.PthSep + ret
+		realPth1 := vari.WorkDir + constant.ResDirYaml + constant.PthSep + relatPath
+		realPth2 := vari.WorkDir + constant.ResDirUsers + constant.PthSep + relatPath
 		if FileExist(realPth1) {
 			ret = realPth1
 			break
@@ -203,6 +206,10 @@ func ConvertResYamlPath(from string) (ret string) {
 			ret = realPth2
 			break
 		}
+	}
+
+	if ret == "" {
+		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from) + "\n")
 	}
 
 	return
@@ -224,13 +231,14 @@ func convertResExcelPath(from string) (ret, sheet string) {
 			}
 			file := strings.Join(arr[i:], ".") + ".xlsx"
 
+			relatPath := ""
 			if dir != "" {
-				ret = dir + constant.PthSep + file
+				relatPath = dir + constant.PthSep + file
 			} else {
-				ret = file
+				relatPath = file
 			}
 
-			realPth := vari.WorkDir + constant.ResDirData + constant.PthSep + ret
+			realPth := vari.WorkDir + constant.ResDirData + constant.PthSep + relatPath
 			if FileExist(realPth) {
 				if index == 1 {
 					sheet = from[strings.LastIndex(from, ".")+1:]
@@ -239,6 +247,10 @@ func convertResExcelPath(from string) (ret, sheet string) {
 				return
 			}
 		}
+	}
+
+	if ret == "" {
+		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from) + "\n")
 	}
 
 	return
