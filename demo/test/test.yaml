@@ -13,3 +13,15 @@ fields:
     from: base.name.numbers.v1.yaml
     use: numbers
     postfix: "\t"
+
+  - field: test3
+    from: name.en.given.v1
+    select: name
+    where: "`index`='b'"
+    postfix: "\t"
+
+  - field: test4
+    from: name.en.family.v1
+    select: name
+    where: "`index`='c'"
+    postfix: "\t"

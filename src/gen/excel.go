@@ -101,9 +101,9 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet string
 			} else {
 				colProp = "VARCHAR"
 			}
-			colDefine = "    " + colDefine + val + " " + colProp
+			colDefine = "    " + colDefine + "`" + val + "` " + colProp
 
-			colList = colList + val
+			colList = colList + "`" + val + "`"
 			index++
 		}
 
@@ -173,6 +173,10 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	selectCol := field.Select
 	from := dbName + "_" + tableName
 	where := field.Where
+	if where == "" {
+		where = "true"
+	}
+
 	if !strings.Contains(where, "LIMIT") {
 		total := vari.Total
 		if total > constant.MaxNumb { total = constant.MaxNumb }
