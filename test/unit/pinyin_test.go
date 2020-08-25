@@ -12,8 +12,9 @@ import (
 )
 
 func TestPinYin(t *testing.T) {
-	path := "../../data/name/cn.family.v1.xlsx"
+	//path := "../../data/name/cn.family.v1.xlsx"
 	//path := "../../data/name/cn.given.v1.xlsx"
+	path := "../../data/words/v1.xlsx"
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -32,7 +33,7 @@ func TestPinYin(t *testing.T) {
 				break
 			}
 
-			name := strings.TrimSpace(row[1])
+			name := strings.TrimSpace(row[2])
 			pinyin, err := pinyin.New(name).Split(" ").Mode(pinyin.WithoutTone).Convert()
 			if err == nil {
 				t.Log(pinyin)
@@ -41,14 +42,14 @@ func TestPinYin(t *testing.T) {
 			}
 
 			pinyin = strings.Replace(pinyin," ", "", -1)
-			excel.SetCellValue(sheet, "C" + strconv.Itoa(index + 1), pinyin)
+			excel.SetCellValue(sheet, "D" + strconv.Itoa(index + 1), pinyin)
 
-			doub := "false"
-			lent := ChineseCount(name)
-			if lent > 1 {
-				doub = "true"
-			}
-			excel.SetCellValue(sheet, "E" + strconv.Itoa(index + 1), doub)
+			//doub := "false"
+			//lent := ChineseCount(name)
+			//if lent > 1 {
+			//	doub = "true"
+			//}
+			//excel.SetCellValue(sheet, "E" + strconv.Itoa(index + 1), doub)
 
 		}
 	}

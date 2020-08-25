@@ -1,0 +1,125 @@
+title: 域名
+desc:
+author: zentao
+version: 1.0
+
+field: domain
+instances:
+  - instance: number_with_esp
+    note: 数字加服务商域名
+    fields:
+      - field: part1
+        from: base.name.numbers.v1.yaml
+        use: numbers
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: esp
+  - instance: number_with_self
+    note: 数字加自有域名
+    prefix:
+    fields:
+      - field: part1
+        from: base.name.numbers.v1.yaml
+        use: numbers
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: self
+
+  - instance: letter_with_esp
+    note: 字母加服务商域名
+    prefix:
+    fields:
+      - field: part1
+        from: base.name.letters.v1.yaml
+        select: letters
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: esp
+  - instance: letter_with_self
+    note: 字母加自有域名
+    prefix:
+    fields:
+      - field: part1
+        from: base.name.letters.v1.yaml
+        select: letters
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: self
+
+  - instance: western_with_esp
+    note: 单词加服务商域名
+    prefix:
+    fields:
+      - field: part1
+        from: words.v1
+        select: en
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: esp
+  - instance: western_with_self
+    note: 单词加自有域名
+    prefix:
+    fields:
+      - field: part1
+        from: words.v1
+        select: en
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: self
+
+  - instance: pinyin_with_esp
+    note: 拼音加服务商域名
+    prefix:
+    fields:
+      - field: part1
+        from: words.v1
+        select: pinyin
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: esp
+  - instance: pinyin_with_self
+    note: 拼音加自有域名
+    prefix:
+    fields:
+      - field: part1
+        from: words.v1
+        select: pinyin
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: self
+
+  - instance: pinyin_with_self
+    note: 拼音加自有域名
+    prefix:
+    fields:
+      - field: part1
+        from: words.v1
+        select: pinyin
+        postfix: "."
+      - field: part2
+        from: base.domain.domain.v1.yaml
+        use: self
+
+  - instance: western_with_custom
+    note: 单词加后缀生成域名
+    prefix:
+    fields:
+      - field: part1
+        from: base.name.letters.v1.yaml
+        select: letters
+        postfix: "."
+      - field: part2
+        from: words.v1
+        select: en
+        postfix: "."
+      - field: part3
+        from: base.domain.postfix.v1.yaml
+        use: common

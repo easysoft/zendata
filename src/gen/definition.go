@@ -221,9 +221,16 @@ func CopyField(child model.DefField, parent *model.DefField) {
 func ReplaceSpecialChars(bytes []byte) []byte {
 	str := string(bytes)
 
+	inRanges := false // for ranges yaml only
 	ret := ""
 	for _, line := range strings.Split(str, "\n") {
-		if strings.Index(strings.TrimSpace(line), "range") == 0 {
+		if strings.Index(strings.TrimSpace(line), "ranges") == 0 {
+			inRanges = true
+		} else if len(line) > 0 && string(line[0]) != " " { // not begin with space, ranges end
+			inRanges = false
+		}
+
+		if strings.Index(strings.TrimSpace(line), "range") == 0 || inRanges {
 			line = strings.ReplaceAll(line,"[", string(constant.LeftBrackets))
 			line = strings.ReplaceAll(line,"]", string(constant.RightBrackets))
 		}

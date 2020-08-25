@@ -157,6 +157,7 @@ func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, p
 	resFile, _, _ := fileUtils.GetResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
+	yamlContent = ReplaceSpecialChars(yamlContent)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return

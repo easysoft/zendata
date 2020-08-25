@@ -1,0 +1,18 @@
+title: 域名
+desc:
+author: zentao
+version: 1.0
+
+field: domain
+instances:
+  - instance: esp
+    note: 服务商域名
+    fields:
+      - field: part1
+        range: [qq.com,163.com,263.net,aliyun.com,126.com,gmail.com,outlook.com,hotmail.com]
+  - instance: self
+    note: 自定义域名
+    prefix:
+    fields:
+      - field: part1
+        range: [zentao.com,easycorp.cn,ztf.im,zd.im]

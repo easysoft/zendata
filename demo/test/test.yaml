@@ -113,3 +113,53 @@ fields:
     use: given
     prefix: "["
     postfix: "]\t"
+
+  - field: test20
+    from: base.domain.domain.name.v1.yaml
+    use: number_with_esp
+    prefix: ""
+    postfix: "\t"
+  - field: test21
+    from: base.domain.domain.name.v1.yaml
+    use: number_with_self
+    prefix: ""
+    postfix: "\t"
+
+  - field: test22
+    from: base.domain.domain.name.v1.yaml
+    use: letter_with_esp
+    prefix: ""
+    postfix: "\t"
+  - field: test23
+    from: base.domain.domain.name.v1.yaml
+    use: letter_with_self
+    prefix: ""
+    postfix: "\t"
+
+  - field: test24
+    from: base.domain.domain.name.v1.yaml
+    use: western_with_esp
+    prefix: ""
+    postfix: "\t"
+  - field: test25
+    from: base.domain.domain.name.v1.yaml
+    use: western_with_self
+    prefix: ""
+    postfix: "\t"
+
+  - field: test26
+    from: base.domain.domain.name.v1.yaml
+    use: pinyin_with_esp
+    prefix: ""
+    postfix: "\t"
+  - field: test27
+    from: base.domain.domain.name.v1.yaml
+    use: pinyin_with_self
+    prefix: ""
+    postfix: "\t"
+
+  - field: test28
+    from: base.domain.domain.name.v1.yaml
+    use: western_with_custom
+    prefix: ""
+    postfix: "\t"
