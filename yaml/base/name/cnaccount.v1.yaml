@@ -1,0 +1,66 @@
+title: 中文账号
+desc:
+author: zentao
+version: 1.0
+
+field: chinese_account
+instances:
+  - instance: common
+    note: 中文账号
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: pinyin
+      - field: part2
+        from: name.cn.given.v1
+        select: pinyin
+  - instance: common_underline
+    note: 划线分隔中文账号
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: pinyin
+        postfix: "_"
+      - field: part2
+        from: name.cn.given.v1
+        select: pinyin
+  - instance: common_dot
+    note: 点分隔中文账号
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: pinyin
+        postfix: "."
+      - field: part2
+        from: name.cn.given.v1
+        select: pinyin
+
+  - instance: reverse
+    note: 姓在前中文账号
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.given.v1
+        select: pinyin
+        postfix: ""
+      - field: part2
+        from: name.cn.family.v1
+        select: pinyin
+
+  - instance: family
+    note: 单姓
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: pinyin
+
+  - instance: given
+    note: 单名
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.given.v1
+        select: pinyin

@@ -61,3 +61,55 @@ fields:
     use: female_four
     prefix: "["
     postfix: "]\t"
+
+  - field: test10
+    from: base.name.enaccount.v1.yaml
+    use: common
+    prefix: "["
+    postfix: "]\t"
+  - field: test11
+    from: base.name.enaccount.v1.yaml
+    use: common_underline
+    prefix: "["
+    postfix: "]\t"
+  - field: test12
+    from: base.name.enaccount.v1.yaml
+    use: common_dot
+    prefix: "["
+    postfix: "]\t"
+  - field: test13
+    from: base.name.enaccount.v1.yaml
+    use: reverse
+    prefix: "["
+    postfix: "]\t"
+
+  - field: test14
+    from: base.name.cnaccount.v1.yaml
+    use: common
+    prefix: "["
+    postfix: "]\t"
+  - field: test15
+    from: base.name.cnaccount.v1.yaml
+    use: common_underline
+    prefix: "["
+    postfix: "]\t"
+  - field: test16
+    from: base.name.cnaccount.v1.yaml
+    use: common_dot
+    prefix: "["
+    postfix: "]\t"
+  - field: test17
+    from: base.name.cnaccount.v1.yaml
+    use: reverse
+    prefix: "["
+    postfix: "]\t"
+  - field: test18
+    from: base.name.cnaccount.v1.yaml
+    use: family
+    prefix: "["
+    postfix: "]\t"
+  - field: test19
+    from: base.name.cnaccount.v1.yaml
+    use: given
+    prefix: "["
+    postfix: "]\t"

@@ -1,0 +1,50 @@
+title: 英文账号
+desc:
+author: zentao
+version: 1.0
+
+field: english_account
+instances:
+  - instance: common
+    note: 英文账号
+    fields:
+      - field: part1
+        from: name.en.given.v1
+        select: name
+      - field: part2
+        from: name.en.family.v1
+        select: name
+  - instance: common_underline
+    note: 划线分隔英文账号
+    prefix:
+    fields:
+      - field: part1
+        from: name.en.given.v1
+        select: name
+        postfix: "_"
+      - field: part2
+        from: name.en.family.v1
+        select: name
+  - instance: common_dot
+    note: 点分隔英文账号
+    prefix:
+    fields:
+      - field: part1
+        from: name.en.given.v1
+        select: name
+        postfix: "."
+      - field: part2
+        from: name.en.family.v1
+        select: name
+
+  - instance: reverse
+    note: 姓在前英文账号
+    prefix:
+    fields:
+      - field: part1
+        from: name.en.family.v1
+        select: name
+        postfix: ""
+      - field: part2
+        from: name.en.given.v1
+        select: name
