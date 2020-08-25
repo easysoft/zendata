@@ -75,15 +75,17 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 func CheckRangeType(startStr string, endStr string, stepStr string) (string, interface{}, int, bool) {
 	rand := false
 
+	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
+
 	int1, errInt1 := strconv.ParseInt(startStr, 0, 64)
 	int2, errInt2 := strconv.ParseInt(endStr, 0, 64)
 	var errInt3 error
-	if strings.ToLower(stepStr) != "r" {
+	if stepStr != "" && stepStr != "r" {
 		_, errInt3 = strconv.ParseInt(stepStr, 0, 64)
 	}
 	if errInt1 == nil && errInt2 == nil && errInt3 == nil { // is int
 		var step interface{} = 1
-		if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
+		if stepStr != "" && stepStr != "r" {
 			stepInt, errInt3 := strconv.Atoi(stepStr)
 			if errInt3 == nil {
 				step = stepInt
@@ -101,12 +103,13 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 		float1, errFloat1 := strconv.ParseFloat(startStr, 64)
 		float2, errFloat2 := strconv.ParseFloat(endStr, 64)
 		var errFloat3 error
-		if strings.ToLower(stepStr) != "" && strings.ToLower(stepStr) != "r" {
+		if stepStr != "" && stepStr != "r" {
 			_, errFloat3 = strconv.ParseFloat(stepStr, 64)
 		}
 		if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
-			var step interface{} = 0.1
-			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
+			var step interface{} = nil
+
+			if stepStr != "" && stepStr != "r" {
 				stepFloat, errFloat3 := strconv.ParseFloat(stepStr, 64)
 				if errFloat3 == nil {
 					step = stepFloat
@@ -115,7 +118,16 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				rand = true
 			}
 
-			precision := GetPrecision(float1, step)
+			precision1, step1 := GetPrecision(float1, step)
+			precision2, step2 := GetPrecision(float2, step)
+			precision := 0
+			if precision1 < precision2 {
+				precision = precision2
+				step = step2
+			} else {
+				precision = precision1
+				step = step1
+			}
 
 			if (float1 > float2 && step.(float64) > 0) || (float1 < float2 && step.(float64) < 0) {
 				step = -1 * step.(float64)

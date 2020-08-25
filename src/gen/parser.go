@@ -85,7 +85,6 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 
 		entry = item
 		if repeat == 0 { repeat = 1 }
-		if step == "" { step = "1" }
 		return
 	}
 
@@ -103,7 +102,6 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 	}
 
 	if repeat == 0 { repeat = 1 }
-	if step == "" { step = "1" }
 	return entry, step, repeat
 }
 
@@ -130,9 +128,9 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 
 		temp := ""
 		for _, item := range arr {
-			if isBoundaryStr(item) {
+			if isScopeStr(item) && isCharOrNumberScope(item) { // only support a-z and 0-9 in []
 				tempField := model.DefField{}
-				values := CreateValuesFromInterval(&tempField, item, "1", 1)
+				values := CreateValuesFromInterval(&tempField, item, "", 1)
 
 				for _, val := range values {
 					temp += InterfaceToStr(val) + ","
@@ -154,7 +152,7 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 	} else  {
 		temp := removeBoundary(desc)
 
-		if isBoundaryStr(temp) {
+		if isScopeStr(temp) {
 			typ = "interval"
 			desc = temp
 		} else {
@@ -172,7 +170,7 @@ func removeBoundary(str string) string {
 	return str
 }
 
-func isBoundaryStr(str string) bool {
+func isScopeStr(str string) bool {
 	arr := strings.Split(str, "-")
 	if len(arr) < 2 {
 		return false
@@ -202,3 +200,20 @@ func isBoundaryStr(str string) bool {
 		}
 	}
 }
+
+func isCharOrNumberScope(str string) bool {
+	arr := strings.Split(str, "-")
+	if len(arr) < 2 {
+		return false
+	}
+
+	left := strings.TrimSpace(arr[0])
+	right := strings.TrimSpace(arr[1])
+
+	if len(left) == 1 && len(right) == 1 {
+		return true
+	}
+
+	return false
+}
+

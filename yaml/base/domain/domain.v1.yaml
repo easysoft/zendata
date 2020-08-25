@@ -140,8 +140,9 @@ instances:
     prefix:
     fields:
       - field: part1
-        range: [a-z,0-9]:R
+        range: [1-2.01,a-c,0-3]
         loop: 5-8
+        loopfix: "|"
         postfix: "."
       - field: part2
         from: base.domain.postfix.v1.yaml
@@ -151,7 +152,7 @@ instances:
 #    prefix:
 #    fields:
 #      - field: part1
-#        range: a-z,0-9
+#        range: [a-z,0-9]:R
 #        loop: 5-8
 #        postfix: "."
 #      - field: part2
@@ -162,7 +163,7 @@ instances:
 #    prefix:
 #    fields:
 #      - field: part1
-#        range: a-z,0-9
+#        range: [a-z,0-9]:R
 #        loop: 5-8
 #        postfix: "."
 #      - field: part2
