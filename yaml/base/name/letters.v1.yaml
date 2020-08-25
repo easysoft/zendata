@@ -1,0 +1,46 @@
+title: 字母账号
+desc:
+author: zentao
+version: 1.0
+
+field: account_letters
+instances:
+  - instance: 1_letter
+    note: 单个字母
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+
+  - instance: 2_letters
+    note: 两个字母
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 2
+
+  - instance: 3_letters
+    note: 三个字母
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 3
+
+  - instance: 4_letters
+    note: 四个字母
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 4
+
+  - instance: letters
+    note: 多个字母
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 5-100
+        rand: true
