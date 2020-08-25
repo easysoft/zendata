@@ -177,6 +177,10 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 		where = "true"
 	}
 
+	if field.Rand {
+		where += " ORDER BY RANDOM() "
+	}
+
 	if !strings.Contains(where, "LIMIT") {
 		total := vari.Total
 		if total > constant.MaxNumb { total = constant.MaxNumb }

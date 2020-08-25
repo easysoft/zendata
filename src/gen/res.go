@@ -110,20 +110,20 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 
 	for _, inst := range insts.Instances {
 		for _, instField := range inst.Fields { // prepare referred parent instances if needed
-			if instField.Use != "" { // refer to another def
-				if instField.From == "" {
-					if insts.From != "" {
-						instField.From = insts.From
-					}
-					if inst.From != "" {
-						instField.From = inst.From
-					}
+			if instField.From == "" {
+				if insts.From != "" {
+					instField.From = insts.From
 				}
+				if inst.From != "" {
+					instField.From = inst.From
+				}
+			}
 
+			if instField.Use != "" { // refer to another instances or ranges
 				parentRanges, parentInstants  := getRootRangeOrInstant(instField)
 				groupedValueParent := map[string][]string{}
 
-				if len(parentInstants.Instances) > 0 {
+				if len(parentInstants.Instances) > 0 { // refer to instances
 					for _, child := range parentInstants.Instances {
 						field := convertInstantToField(parentInstants, child)
 
@@ -131,11 +131,15 @@ func getResForInstances(insts model.ResInsts) map[string][]string {
 						group := child.Instance
 						groupedValueParent[group] = GenerateForField(&field, false)
 					}
-				} else if len(parentRanges.Ranges) > 0 {
+				} else if len(parentRanges.Ranges) > 0 { // refer to ranges
 					groupedValueParent = getResForRanges(parentRanges)
 				}
 
 				vari.Res[instField.From] = groupedValueParent
+			} else if instField.Select != "" { // refer to another excel
+				resFile, resType, sheet := fileUtils.GetResProp(instField.From)
+				values, _ := getResValue(resFile, resType, sheet, &instField)
+				vari.Res[instField.From] = values
 			}
 		}
 

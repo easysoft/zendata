@@ -1,0 +1,125 @@
+title: 中文文人名
+desc:
+author: zentao
+version: 1.0
+
+field: chinese_name
+instances:
+  - instance: two
+    note: 2字人名
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='false'"
+        postfix:
+        rand: true
+      - field: part2
+        from: name.cn.given.v1
+        select: name
+        where: "double='false'"
+        rand: true
+  - instance: male_two
+    note: 男性2字人名
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='false'"
+        postfix: ""
+      - field: part2
+        from: name.cn.given.v1
+        select: name
+        where: "sex='male' AND double='false'"
+  - instance: female_two
+    note: 女性2字人名
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='false'"
+        postfix: ""
+      - field: part2
+        from: name.cn.given.v1
+        select: name
+        where: "sex='female' AND double='false'"
+
+  - instance: three
+    note: 3字人名
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='false'"
+        postfix:
+      - field: part2
+        from: name.cn.given.v1
+        where: "double='true'"
+        select: name
+  - instance: male_three
+    note: 男性3字人名
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='false'"
+        postfix: ""
+      - field: part2
+        from: name.cn.given.v1
+        select: name
+        where: "sex='male' AND double='true'"
+  - instance: female_three
+    note: 女性3字人名
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='false'"
+        postfix: ""
+      - field: part2
+        from: name.cn.given.v1
+        select: name
+        where: "sex='female' AND double='true'"
+
+  - instance: four
+    note: 4字人名
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='true'"
+        postfix:
+      - field: part2
+        from: name.cn.given.v1
+        where: "double='true'"
+        select: name
+  - instance: male_four
+    note: 男性4字人名
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='true'"
+        postfix: ""
+      - field: part2
+        from: name.cn.given.v1
+        select: name
+        where: "sex='male' AND double='true'"
+  - instance: female_four
+    note: 女性4字人名
+    prefix:
+    fields:
+      - field: part1
+        from: name.cn.family.v1
+        select: name
+        where: "double='true'"
+        postfix: ""
+      - field: part2
+        from: name.cn.given.v1
+        select: name
+        where: "sex='female' AND double='true'"

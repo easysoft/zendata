@@ -25,3 +25,39 @@ fields:
     select: name
     where: "`index`='c'"
     postfix: "\t"
+
+  - field: test5
+    from: base.name.enreal.v1.yaml
+    use: common
+    prefix: "["
+    postfix: "]\t"
+
+  - field: test6
+    from: base.name.enreal.v1.yaml
+    use: male_common
+    prefix: "["
+    postfix: "]\t"
+
+  - field: test7
+    from: base.name.enreal.v1.yaml
+    use: female_with_middle
+    prefix: "["
+    postfix: "]\t"
+
+  - field: test8
+    from: base.name.cnreal.v1.yaml
+    use: two
+    prefix: "["
+    postfix: "]\t"
+
+  - field: test9
+    from: base.name.cnreal.v1.yaml
+    use: male_three
+    prefix: "["
+    postfix: "]\t"
+
+  - field: test10
+    from: base.name.cnreal.v1.yaml
+    use: female_four
+    prefix: "["
+    postfix: "]\t"
