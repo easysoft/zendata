@@ -2,6 +2,7 @@ package gen
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/utils/const"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"regexp"
@@ -121,11 +122,37 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		return
 	}
 
+	if string(desc[0]) == string(constant.LeftBrackets) && // [a-z,1-9,userA,UserB]
+		string(desc[len(desc)-1]) == string(constant.RightBrackets) {
+
+		desc = removeBoundary(desc)
+		arr := strings.Split(desc, ",")
+
+		temp := ""
+		for _, item := range arr {
+			if isBoundaryStr(item) {
+				tempField := model.DefField{}
+				values := CreateValuesFromInterval(&tempField, item, "1", 1)
+
+				for _, val := range values {
+					temp += InterfaceToStr(val) + ","
+				}
+			} else {
+				temp += item + ","
+			}
+		}
+
+		temp = strings.TrimSuffix(temp, ",")
+		desc = string(constant.LeftBrackets) + temp + string(constant.RightBrackets)
+		typ = "literal"
+
+		return
+	}
+
 	if strings.Contains(desc, ",") || strings.Contains(desc, "`") || !strings.Contains(desc, "-") {
 		typ = "literal"
 	} else  {
-		temp := strings.ReplaceAll(desc, string(constant.LeftBrackets), "")
-		temp = strings.ReplaceAll(temp,string(constant.RightBrackets), "")
+		temp := removeBoundary(desc)
 
 		if isBoundaryStr(temp) {
 			typ = "interval"
@@ -138,8 +165,19 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 	return
 }
 
+func removeBoundary(str string) string {
+	str = strings.TrimLeft(str, string(constant.LeftBrackets))
+	str = strings.TrimRight(str, string(constant.RightBrackets))
+
+	return str
+}
+
 func isBoundaryStr(str string) bool {
 	arr := strings.Split(str, "-")
+	if len(arr) < 2 {
+		return false
+	}
+
 	left := strings.TrimSpace(arr[0])
 	right := strings.TrimSpace(arr[1])
 

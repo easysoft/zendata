@@ -115,7 +115,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				rand = true
 			}
 
-			precision := getPrecision(float1, step)
+			precision := GetPrecision(float1, step)
 
 			if (float1 > float2 && step.(float64) > 0) || (float1 < float2 && step.(float64) < 0) {
 				step = -1 * step.(float64)
@@ -147,6 +147,9 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
 	elemArr := ParseDesc(desc)
 	step, _ := strconv.Atoi(stepStr)
+	if step == 0 {
+		step = 1
+	}
 	total := 0
 
 	if field.Path != "" && stepStr == "r" {

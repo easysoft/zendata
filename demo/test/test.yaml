@@ -114,72 +114,72 @@ fields:
     prefix: "["
     postfix: "]\t"
 
-#  - field: test20
-#    from: base.domain.domain.v1.yaml
-#    use: one_number_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test21
-#    from: base.domain.domain.v1.yaml
-#    use: one_number_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test22
-#    from: base.domain.domain.v1.yaml
-#    use: one_number_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: test23
-#    from: base.domain.domain.v1.yaml
-#    use: one_letter_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test24
-#    from: base.domain.domain.v1.yaml
-#    use: one_letter_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test25
-#    from: base.domain.domain.v1.yaml
-#    use: one_letter_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: test26
-#    from: base.domain.domain.v1.yaml
-#    use: numbers_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test27
-#    from: base.domain.domain.v1.yaml
-#    use: numbers_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test28
-#    from: base.domain.domain.v1.yaml
-#    use: numbers_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: test29
-#    from: base.domain.domain.v1.yaml
-#    use: mixed_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test30
-#    from: base.domain.domain.v1.yaml
-#    use: mixed_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: test31
-#    from: base.domain.domain.v1.yaml
-#    use: mixed_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: test32
-#    from: base.domain.esp.v1.yaml
-#    use: esp
-#    prefix: ""
-#    postfix: "\t"
+  - field: test20
+    from: base.domain.domain.v1.yaml
+    use: one_number_at_common
+    prefix: ""
+    postfix: "\t"
+  - field: test21
+    from: base.domain.domain.v1.yaml
+    use: one_number_at_cn
+    prefix: ""
+    postfix: "\t"
+  - field: test22
+    from: base.domain.domain.v1.yaml
+    use: one_number_at_new
+    prefix: ""
+    postfix: "\t"
+
+  - field: test23
+    from: base.domain.domain.v1.yaml
+    use: one_letter_at_common
+    prefix: ""
+    postfix: "\t"
+  - field: test24
+    from: base.domain.domain.v1.yaml
+    use: one_letter_at_cn
+    prefix: ""
+    postfix: "\t"
+  - field: test25
+    from: base.domain.domain.v1.yaml
+    use: one_letter_at_new
+    prefix: ""
+    postfix: "\t"
+
+  - field: test26
+    from: base.domain.domain.v1.yaml
+    use: numbers_at_common
+    prefix: ""
+    postfix: "\t"
+  - field: test27
+    from: base.domain.domain.v1.yaml
+    use: numbers_at_cn
+    prefix: ""
+    postfix: "\t"
+  - field: test28
+    from: base.domain.domain.v1.yaml
+    use: numbers_at_new
+    prefix: ""
+    postfix: "\t"
+
+  - field: test29
+    from: base.domain.domain.v1.yaml
+    use: mixed_at_common
+    prefix: ""
+    postfix: "\t"
+  - field: test30
+    from: base.domain.domain.v1.yaml
+    use: mixed_at_cn
+    prefix: ""
+    postfix: "\t"
+  - field: test31
+    from: base.domain.domain.v1.yaml
+    use: mixed_at_new
+    prefix: ""
+    postfix: "\t"
+
+  - field: test32
+    from: base.domain.esp.v1.yaml
+    use: esp
+    prefix: ""
+    postfix: "\t"

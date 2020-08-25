@@ -73,7 +73,7 @@ func GenerateFloatItemsByStep(start float64, end float64, step interface{}, repe
 //	return arr
 //}
 
-func getPrecision(base float64, step interface{}) int {
+func GetPrecision(base float64, step interface{}) int {
 	val := base + step.(float64)
 
 	str1 := strconv.FormatFloat(base, 'f', -1, 64)
@@ -87,4 +87,22 @@ func getPrecision(base float64, step interface{}) int {
 	} else {
 		return len(str2) - index2 - 1
 	}
+}
+
+func InterfaceToStr(val interface{}) string {
+	str := "n/a"
+
+	switch val.(type) {
+		case int64:
+			str = strconv.FormatInt(val.(int64), 10)
+		case float64:
+			precision := GetPrecision(val.(float64), 0)
+			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+		case byte:
+			str = string(val.(byte))
+		case string:
+			str = val.(string)
+		default:
+	}
+	return str
 }

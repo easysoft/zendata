@@ -24,6 +24,13 @@ fields:
     postfix: "\t"
 #    width: 25
 
+  - field: test3
+    range: [a,b,c]
+    postfix: "\t"
+
+  - field: test4
+    range: [a-z,0-9]:R
+
   - field: field_with_children
     fields:
       - field: child1
