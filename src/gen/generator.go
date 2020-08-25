@@ -369,6 +369,15 @@ func randomValuesArr(values [][]string) (ret [][]string) {
 
 	return
 }
+func randomInterfaces(values []interface{}) (ret []interface{}) {
+	length := len(values)
+	for i := 0; i < length; i++ {
+		val := commonUtils.RandNum(length)
+		ret = append(ret, values[val])
+	}
+
+	return
+}
 func randomValues(values []string) (ret []string) {
 	length := len(values)
 	for i := 0; i < length; i++ {

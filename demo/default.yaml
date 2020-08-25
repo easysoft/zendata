@@ -140,5 +140,5 @@ fields:
         fields: 
           - field: field_grandson
             prefix: int_
-            range: 10-20
+            range: 10-20:R
             postfix: 

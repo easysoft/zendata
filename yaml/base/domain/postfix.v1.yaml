@@ -6,7 +6,7 @@ version: 1.0
 field: domain_postfix
 note: 域名后缀
 ranges:
-  common: [com,net,org,cn,cc,co,im,io]
+  common: [com,net,org,cn,cc,co,im,io]:R
   cn: [cn,org.cn,net.cn,com.cn,gov.cn]
   new: [app,ai,site,xyz,ltd,ren,wang,vip,top]
   country: [cn,im,tv,cc,io,la]

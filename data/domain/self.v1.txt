@@ -1,2 +1,0 @@
-ngtesting.com
-testfarm.net

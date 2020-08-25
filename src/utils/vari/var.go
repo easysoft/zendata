@@ -37,6 +37,9 @@ var (
 	RandFieldNameToValuesMap = map[string]map[string]interface{}{}
 	TopFiledMap  = map[string]model.DefField{}
 
+	CacheResFileToMap  = map[string] map[string][]string {}
+	CacheResFileToName  = map[string]string{}
+
 	DefaultDir string
 	ConfigDir string
 )

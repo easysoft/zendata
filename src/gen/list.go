@@ -149,7 +149,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	step, _ := strconv.Atoi(stepStr)
 	total := 0
 
-	if stepStr == "r" {
+	if field.Path != "" && stepStr == "r" {
 		items = append(items, Placeholder(field.Path))
 		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "")
 
@@ -175,6 +175,10 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 		i += step
 	}
 
+	if field.Path == "" && stepStr == "r" { // for ranges and instances, random
+		items = randomInterfaces(items)
+	}
+
 	return
 }
 
@@ -186,7 +190,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
-	if dataType != "string" && rand {
+	if field.Path != "" && dataType != "string" && rand {
 		items = append(items, Placeholder(field.Path))
 
 		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision))
@@ -216,6 +220,10 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		for i := 0; i < repeat; i++ {
 			items = append(items, desc)
 		}
+	}
+
+	if field.Path == "" && stepStr == "r" { // for ranges and instances, random
+		items = randomInterfaces(items)
 	}
 
 	return
