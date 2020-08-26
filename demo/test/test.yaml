@@ -5,237 +5,237 @@ version: 1.0
 
 fields:
   #account
-#  - field: test1
+#  - field: letters
 #    from: base.name.letters.v1.yaml
 #    use: letters
 #    postfix: "\t"
 #
-#  - field: test2
+#  - field: numbers
 #    from: base.name.numbers.v1.yaml
 #    use: numbers
 #    postfix: "\t"
 #
-#  - field: test3
+#  - field: given
 #    from: name.en.given.v1
 #    select: name
 #    where: "`index`='b'"
 #    postfix: "\t"
 #
-#  - field: test4
+#  - field: family
 #    from: name.en.family.v1
 #    select: name
 #    where: "`index`='c'"
 #    postfix: "\t"
 #
-#  - field: test5
+#  - field: enreal
 #    from: base.name.enreal.v1.yaml
 #    use: common
 #    prefix: "["
 #    postfix: "]\t"
 #
-#  - field: test6
+#  - field: enreal_male
 #    from: base.name.enreal.v1.yaml
 #    use: male_common
 #    prefix: "["
 #    postfix: "]\t"
 #
-#  - field: test7
+#  - field: enreal_female
 #    from: base.name.enreal.v1.yaml
 #    use: female_with_middle
 #    prefix: "["
 #    postfix: "]\t"
 #
-#  - field: test8
+#  - field: cnreal
 #    from: base.name.cnreal.v1.yaml
 #    use: two
 #    prefix: "["
 #    postfix: "]\t"
 #
-#  - field: test9
+#  - field: cnreal_male
 #    from: base.name.cnreal.v1.yaml
 #    use: male_three
 #    prefix: "["
 #    postfix: "]\t"
 #
-#  - field: test10
+#  - field: cnreal_female
 #    from: base.name.cnreal.v1.yaml
 #    use: female_four
 #    prefix: "["
 #    postfix: "]\t"
 #
-#  - field: test10
+#  - field: enaccount_common
 #    from: base.name.enaccount.v1.yaml
 #    use: common
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test11
+#  - field: enaccount_underline
 #    from: base.name.enaccount.v1.yaml
 #    use: common_underline
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test12
+#  - field: enaccount_dot
 #    from: base.name.enaccount.v1.yaml
 #    use: common_dot
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test13
+#  - field: enaccount_reverse
 #    from: base.name.enaccount.v1.yaml
 #    use: reverse
 #    prefix: "["
 #    postfix: "]\t"
 #
-#  - field: test14
+#  - field: cnaccount_common
 #    from: base.name.cnaccount.v1.yaml
 #    use: common
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test15
+#  - field: cnaccount_underline
 #    from: base.name.cnaccount.v1.yaml
 #    use: common_underline
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test16
+#  - field: cnaccount_dot
 #    from: base.name.cnaccount.v1.yaml
 #    use: common_dot
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test17
+#  - field: cnaccount_reverse
 #    from: base.name.cnaccount.v1.yaml
 #    use: reverse
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test18
+#  - field: cnaccount_family
 #    from: base.name.cnaccount.v1.yaml
 #    use: family
 #    prefix: "["
 #    postfix: "]\t"
-#  - field: test19
+#  - field: cnaccount_given
 #    from: base.name.cnaccount.v1.yaml
 #    use: given
 #    prefix: "["
 #    postfix: "]\t"
 
   # domain
-#  - field: test20
+#  - field: one_number_at_common
 #    from: base.domain.domain.v1.yaml
 #    use: one_number_at_common
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test21
+#  - field: one_number_at_cn
 #    from: base.domain.domain.v1.yaml
 #    use: one_number_at_cn
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test22
+#  - field: one_number_at_new
 #    from: base.domain.domain.v1.yaml
 #    use: one_number_at_new
 #    prefix: ""
 #    postfix: "\t"
 #
-#  - field: test23
+#  - field: one_letter_at_common
 #    from: base.domain.domain.v1.yaml
 #    use: one_letter_at_common
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test24
+#  - field: one_letter_at_cn
 #    from: base.domain.domain.v1.yaml
 #    use: one_letter_at_cn
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test25
+#  - field: one_letter_at_new
 #    from: base.domain.domain.v1.yaml
 #    use: one_letter_at_new
 #    prefix: ""
 #    postfix: "\t"
 #
-#  - field: test26
+#  - field: numbers_at_common
 #    from: base.domain.domain.v1.yaml
 #    use: numbers_at_common
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test27
+#  - field: numbers_at_cn
 #    from: base.domain.domain.v1.yaml
 #    use: numbers_at_cn
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test28
+#  - field: numbers_at_new
 #    from: base.domain.domain.v1.yaml
 #    use: numbers_at_new
 #    prefix: ""
 #    postfix: "\t"
 #
-#  - field: test29
+#  - field: letters_at_common
 #    from: base.domain.domain.v1.yaml
 #    use: letters_at_common
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test30
+#  - field: letters_at_cn
 #    from: base.domain.domain.v1.yaml
 #    use: letters_at_cn
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test31
+#  - field: letters_at_new
 #    from: base.domain.domain.v1.yaml
 #    use: letters_at_new
 #    prefix: ""
 #    postfix: "\t"
 #
-#  - field: test32
+#  - field: mixed_at_common
 #    from: base.domain.domain.v1.yaml
 #    use: mixed_at_common
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test33
+#  - field: mixed_at_cn
 #    from: base.domain.domain.v1.yaml
 #    use: mixed_at_cn
 #    prefix: ""
 #    postfix: "\t"
-#  - field: test34
+#  - field: mixed_at_new
 #    from: base.domain.domain.v1.yaml
 #    use: mixed_at_new
 #    prefix: ""
 #    postfix: "\t"
 
   #email
-  - field: test35
+  - field: number_with_esp
     from: base.email.email.v1.yaml
     use: number_with_esp
     prefix: ""
     postfix: "\t"
-  - field: test36
+  - field: number_with_self
     from: base.email.email.v1.yaml
     use: number_with_self
     prefix: ""
     postfix: "\t"
 
-  - field: test37
+  - field: letter_with_esp
     from: base.email.email.v1.yaml
     use: letter_with_esp
     prefix: ""
     postfix: "\t"
-  - field: test38
+  - field: letter_with_self
     from: base.email.email.v1.yaml
     use: letter_with_self
     prefix: ""
     postfix: "\t"
 
-  - field: test39
+  - field: western_with_esp
     from: base.email.email.v1.yaml
     use: western_with_esp
     prefix: ""
     postfix: "\t"
-  - field: test40
+  - field: western_with_self
     from: base.email.email.v1.yaml
     use: western_with_self
     prefix: ""
     postfix: "\t"
 
-  - field: test41
+  - field: pinyin_with_esp
     from: base.email.email.v1.yaml
     use: pinyin_with_esp
     prefix: ""
     postfix: "\t"
-  - field: test42
+  - field: pinyin_with_self
     from: base.email.email.v1.yaml
     use: pinyin_with_self
     prefix: ""

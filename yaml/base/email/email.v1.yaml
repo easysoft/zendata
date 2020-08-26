@@ -13,8 +13,7 @@ instances:
         use: numbers
         postfix: "."
       - field: part2
-        from: base.domain.domain.v1.yaml
-        use: mixed_at_common
+        range: "qq.com"
   - instance: number_with_self
     note: 数字加自有域名
     prefix:
@@ -36,8 +35,7 @@ instances:
         select: letters
         postfix: "."
       - field: part2
-        from: base.domain.domain.v1.yaml
-        use: mixed_at_cn
+        range: "qq.com"
   - instance: letter_with_self
     note: 字母加自有域名
     prefix:
@@ -59,8 +57,7 @@ instances:
         select: en
         postfix: "."
       - field: part2
-        from: base.domain.domain.v1.yaml
-        use: mixed_at_new
+        range: "qq.com"
   - instance: western_with_self
     note: 单词加自有域名
     prefix:
@@ -82,8 +79,7 @@ instances:
         select: pinyin
         postfix: "."
       - field: part2
-        from: base.domain.domain.v1.yaml
-        use: mixed_at_common
+        range: "qq.com"
   - instance: pinyin_with_self
     note: 拼音加自有域名
     prefix:
