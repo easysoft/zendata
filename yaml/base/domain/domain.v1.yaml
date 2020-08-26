@@ -5,167 +5,166 @@ version: 1.0
 
 field: domain
 instances:
-#  - instance: one_number_at_common
-#    note: 单数字域名
-#    fields:
-#      - field: part1
-#        range: 1-9
-#        rand: true
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: all
-#  - instance: one_number_at_cn
-#    note: 单数字CN域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: 1-9
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: cn
-#  - instance: one_number_at_new
-#    note: 单数字新域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: 1-9
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: new
-#
-#  - instance: one_letter_at_common
-#    note: 单字母域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: a-z
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: all
-#  - instance: one_letter_at_cn
-#    note: 单字母CN域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: a-z
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: cn
-#  - instance: one_letter_at_new
-#    note: 单字母新域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: a-z
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: new
-#
-#  - instance: numbers_at_common
-#    note: 纯数字域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: 0-9
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: all
-#  - instance: numbers_at_cn
-#    note: 纯数字CN域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: 0-9
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: cn
-#  - instance: numbers_at_new
-#    note: 纯数字新域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: a-z
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: new
-#
-#  - instance: letters_at_common
-#    note: 纯字母域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: a-z
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: all
-#  - instance: letters_at_cn
-#    note: 纯字母CN域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: a-z
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: cn
-#  - instance: letters_at_new
-#    note: 纯字母新域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: a-z
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: new
+  - instance: one_number_at_common
+    note: 单数字域名
+    fields:
+      - field: part1
+        range: 1-9
+        rand: true
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: all
+  - instance: one_number_at_cn
+    note: 单数字CN域名
+    prefix:
+    fields:
+      - field: part1
+        range: 1-9
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: cn
+  - instance: one_number_at_new
+    note: 单数字新域名
+    prefix:
+    fields:
+      - field: part1
+        range: 1-9
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: new
+
+  - instance: one_letter_at_common
+    note: 单字母域名
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: all
+  - instance: one_letter_at_cn
+    note: 单字母CN域名
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: cn
+  - instance: one_letter_at_new
+    note: 单字母新域名
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: new
+
+  - instance: numbers_at_common
+    note: 纯数字域名
+    prefix:
+    fields:
+      - field: part1
+        range: 0-9
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: all
+  - instance: numbers_at_cn
+    note: 纯数字CN域名
+    prefix:
+    fields:
+      - field: part1
+        range: 0-9
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: cn
+  - instance: numbers_at_new
+    note: 纯数字新域名
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: new
+
+  - instance: letters_at_common
+    note: 纯字母域名
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: all
+  - instance: letters_at_cn
+    note: 纯字母CN域名
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: cn
+  - instance: letters_at_new
+    note: 纯字母新域名
+    prefix:
+    fields:
+      - field: part1
+        range: a-z
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: new
 
   - instance: mixed_at_common
     note: 字母和数字域名
     prefix:
     fields:
       - field: part1
-        range: [1-2.01,a-c,0-3]
+        range: [a-z,0-9]:R
         loop: 5-8
-        loopfix: "|"
         postfix: "."
       - field: part2
         from: base.domain.postfix.v1.yaml
         use: all
-#  - instance: mixed_at_cn
-#    note: 字母和数字CN域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: [a-z,0-9]:R
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: cn
-#  - instance: mixed_at_new
-#    note: 字母和数字新域名
-#    prefix:
-#    fields:
-#      - field: part1
-#        range: [a-z,0-9]:R
-#        loop: 5-8
-#        postfix: "."
-#      - field: part2
-#        from: base.domain.postfix.v1.yaml
-#        use: new
+  - instance: mixed_at_cn
+    note: 字母和数字CN域名
+    prefix:
+    fields:
+      - field: part1
+        range: [a-z,0-9]:R
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: cn
+  - instance: mixed_at_new
+    note: 字母和数字新域名
+    prefix:
+    fields:
+      - field: part1
+        range: [a-z,0-9]:R
+        loop: 5-8
+        postfix: "."
+      - field: part2
+        from: base.domain.postfix.v1.yaml
+        use: new
