@@ -21,6 +21,8 @@ type ResInst struct {
 	FieldBase   `yaml:",inline"`
 	Instance string  `yaml:"instance"`
 	Fields  []DefField `yaml:"fields,flow"`
+
+	Froms []DefField `yaml:"froms,flow"`
 }
 
 // range res

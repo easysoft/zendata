@@ -60,21 +60,21 @@ func getResValue(resFile, resType, sheet string, field *model.DefField) (map[str
 	groupedValues := map[string][]string{}
 
 	if resType == "yaml" {
-		groupedValues, resName = getResForYaml(resFile)
+		groupedValues, resName = getResFromYaml(resFile)
 	} else if resType == "excel" {
-		groupedValues, resName = getResForExcel(resFile, sheet, field)
+		groupedValues, resName = getResFromExcel(resFile, sheet, field)
 	}
 
 	return groupedValues, resName
 }
 
-func getResForExcel(resFile, sheet string, field *model.DefField) (map[string][]string, string) {
+func getResFromExcel(resFile, sheet string, field *model.DefField) (map[string][]string, string) {
 	valueMap, resName := GenerateFieldValuesFromExcel(resFile, sheet, field)
 
 	return valueMap, resName
 }
 
-func getResForYaml(resFile string) (valueMap map[string][]string, resName string) {
+func getResFromYaml(resFile string) (valueMap map[string][]string, resName string) {
 	if vari.CacheResFileToMap[resFile] != nil {
 		valueMap = vari.CacheResFileToMap[resFile]
 		resName = vari.CacheResFileToName[resFile]
@@ -92,13 +92,13 @@ func getResForYaml(resFile string) (valueMap map[string][]string, resName string
 	insts := model.ResInsts{}
 	err = yaml.Unmarshal(yamlContent, &insts)
 	if err == nil && insts.Instances != nil && len(insts.Instances) > 0 { // instances
-		valueMap = getResForInstances(insts)
+		valueMap = getResFromInstances(insts)
 		resName = insts.Field
 	} else {
 		ranges := model.ResRanges{}
 		err = yaml.Unmarshal(yamlContent, &ranges)
 		if err == nil && ranges.Ranges != nil && len(ranges.Ranges) > 0 { // ranges
-			valueMap = getResForRanges(ranges)
+			valueMap = getResFromRanges(ranges)
 			resName = ranges.Field
 		} else {
 			configRes := model.DefField{}
@@ -116,56 +116,70 @@ func getResForYaml(resFile string) (valueMap map[string][]string, resName string
 	return
 }
 
-func getResForInstances(insts model.ResInsts) map[string][]string {
-	groupedValue := map[string][]string{}
+func getResFromInstances(insts model.ResInsts) (groupedValue map[string][]string) {
+	groupedValue = map[string][]string{}
 
 	for _, inst := range insts.Instances {
 
-		// prepare referred parent instances res if needed, support only 1 level
 		for _, instField := range inst.Fields {
-			// set "from" val from parent if needed
-			if instField.From == "" {
-				if insts.From != "" {
-					instField.From = insts.From
-				}
-				if inst.From != "" {
-					instField.From = inst.From
-				}
-			}
-
-			if instField.Use != "" { // refer to another instances or ranges
-				parentRanges, parentInstants  := getRootRangeOrInstant(instField)
-				groupedValueParent := map[string][]string{}
-
-				if len(parentRanges.Ranges) > 0 { // refer to ranges
-					groupedValueParent = getResForRanges(parentRanges)
-
-				} else if len(parentInstants.Instances) > 0 { // refer to instances
-					for _, child := range parentInstants.Instances {
-						field := convertInstantToField(parentInstants, child)
-
-						// gen values
-						group := child.Instance
-						groupedValueParent[group] = GenerateForField(&field, false)
-					}
-				}
-
-				vari.Res[instField.From] = groupedValueParent
-			} else if instField.Select != "" { // refer to excel
-				resFile, resType, sheet := fileUtils.GetResProp(instField.From)
-				values, _ := getResValue(resFile, resType, sheet, &instField)
-				vari.Res[instField.From] = values
-			}
+			prepareNestedInstanceRes(insts, inst, instField)
 		}
 
-		field := convertInstantToField(insts, inst)
-
 		// gen values
+		field := convertInstantToField(insts, inst)
 		group := inst.Instance
 		groupedValue[group] = GenerateForField(&field, false)
 	}
 
 	return groupedValue
+}
+
+func getResFromRanges(ranges model.ResRanges) map[string][]string {
+	groupedValue := map[string][]string{}
+
+	for group, expression := range ranges.Ranges {
+		field := convertRangesToField(ranges, expression)
+
+		groupedValue[group] = GenerateForField(&field, false)
+	}
+
+	return groupedValue
+}
+
+func prepareNestedInstanceRes(insts model.ResInsts, inst model.ResInst, instField model.DefField) {
+	// set "from" val from parent if needed
+	if instField.From == "" {
+		if insts.From != "" { instField.From = insts.From }
+		if inst.From != "" { instField.From = inst.From }
+	}
+
+	if instField.Use != "" { // refer to another instances or ranges
+		parentRanges, parentInstants  := getRootRangeOrInstant(instField)
+		groupedValueParent := map[string][]string{}
+
+		if len(parentRanges.Ranges) > 0 { // refer to ranges
+			groupedValueParent = getResFromRanges(parentRanges)
+
+		} else if len(parentInstants.Instances) > 0 { // refer to instances
+			for _, parentInst := range parentInstants.Instances {
+				for _, parentInstField := range parentInst.Fields {
+					prepareNestedInstanceRes(parentInstants, parentInst, parentInstField)
+				}
+
+				field := convertInstantToField(parentInstants, parentInst)
+
+				// gen values
+				group := parentInst.Instance
+				groupedValueParent[group] = GenerateForField(&field, false)
+			}
+		}
+
+		vari.Res[instField.From] = groupedValueParent
+	} else if instField.Select != "" { // refer to excel
+		resFile, resType, sheet := fileUtils.GetResProp(instField.From)
+		values, _ := getResValue(resFile, resType, sheet, &instField)
+		vari.Res[instField.From] = values
+	}
 }
 
 func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, parentInsts model.ResInsts) {
@@ -189,18 +203,6 @@ func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, p
 	}
 
 	return
-}
-
-func getResForRanges(ranges model.ResRanges) map[string][]string {
-	groupedValue := map[string][]string{}
-
-	for group, expression := range ranges.Ranges {
-		field := convertRangesToField(ranges, expression)
-
-		groupedValue[group] = GenerateForField(&field, false)
-	}
-
-	return groupedValue
 }
 
 func convertInstantToField(insts model.ResInsts, inst model.ResInst) (field model.DefField) {
