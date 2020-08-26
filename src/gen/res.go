@@ -154,27 +154,29 @@ func prepareNestedInstanceRes(insts model.ResInsts, inst model.ResInst, instFiel
 	}
 
 	if instField.Use != "" { // refer to another instances or ranges
-		parentRanges, parentInstants  := getRootRangeOrInstant(instField)
-		groupedValueParent := map[string][]string{}
+		if vari.Res[instField.From] == nil {
+			referencedRanges, referencedInstants := getRootRangeOrInstant(instField)
+			groupedValueReferenced := map[string][]string{}
 
-		if len(parentRanges.Ranges) > 0 { // refer to ranges
-			groupedValueParent = getResFromRanges(parentRanges)
+			if len(referencedRanges.Ranges) > 0 { // refer to ranges
+				groupedValueReferenced = getResFromRanges(referencedRanges)
 
-		} else if len(parentInstants.Instances) > 0 { // refer to instances
-			for _, parentInst := range parentInstants.Instances {
-				for _, parentInstField := range parentInst.Fields {
-					prepareNestedInstanceRes(parentInstants, parentInst, parentInstField)
+			} else if len(referencedInstants.Instances) > 0 { // refer to instances
+				for _, referencedInst := range referencedInstants.Instances {
+					for _, referencedInstField := range referencedInst.Fields {
+						prepareNestedInstanceRes(referencedInstants, referencedInst, referencedInstField)
+					}
+
+					field := convertInstantToField(referencedInstants, referencedInst)
+
+					// gen values
+					group := referencedInst.Instance
+					groupedValueReferenced[group] = GenerateForField(&field, false)
 				}
-
-				field := convertInstantToField(parentInstants, parentInst)
-
-				// gen values
-				group := parentInst.Instance
-				groupedValueParent[group] = GenerateForField(&field, false)
 			}
-		}
 
-		vari.Res[instField.From] = groupedValueParent
+			vari.Res[instField.From] = groupedValueReferenced
+		}
 	} else if instField.Select != "" { // refer to excel
 		resFile, resType, sheet := fileUtils.GetResProp(instField.From)
 		values, _ := getResValue(resFile, resType, sheet, &instField)
@@ -182,7 +184,7 @@ func prepareNestedInstanceRes(insts model.ResInsts, inst model.ResInst, instFiel
 	}
 }
 
-func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, parentInsts model.ResInsts) {
+func getRootRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInsts) {
 	resFile, _, _ := fileUtils.GetResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
@@ -192,11 +194,11 @@ func getRootRangeOrInstant(inst model.DefField) (parentRanges model.ResRanges, p
 		return
 	}
 
-	err1 := yaml.Unmarshal(yamlContent, &parentRanges)
-	if err1 != nil || parentRanges.Ranges == nil || len(parentRanges.Ranges) == 0 { // instances
+	err1 := yaml.Unmarshal(yamlContent, &referencedRanges)
+	if err1 != nil || referencedRanges.Ranges == nil || len(referencedRanges.Ranges) == 0 { // instances
 
-		err2 := yaml.Unmarshal(yamlContent, &parentInsts)
-		if err2 != nil || parentInsts.Instances == nil || len(parentInsts.Instances) == 0 { // ranges
+		err2 := yaml.Unmarshal(yamlContent, &referencedInsts)
+		if err2 != nil || referencedInsts.Instances == nil || len(referencedInsts.Instances) == 0 { // ranges
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
 			return
 		}
