@@ -53,8 +53,8 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: words.v1
-        select: en
+        from: base.name.enaccount.v1.yaml
+        use: common_underline
         postfix: "."
       - field: part2
         range: "qq.com"
@@ -63,8 +63,8 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: words.v1
-        select: en
+        from: base.name.enaccount.v1.yaml
+        use: common_dot
         postfix: "."
       - field: part2
         from: base.domain.domain.v1.yaml
@@ -75,8 +75,8 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: words.v1
-        select: pinyin
+        from: base.name.cnaccount.v1.yaml
+        use: common_underline
         postfix: "."
       - field: part2
         range: "qq.com"
@@ -85,8 +85,8 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: words.v1
-        select: pinyin
+        from: base.name.cnaccount.v1.yaml
+        use: common_dot
         postfix: "."
       - field: part2
         from: base.domain.domain.v1.yaml

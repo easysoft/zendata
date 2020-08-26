@@ -102,23 +102,23 @@ instances:
         use: new
 
   - instance: letters_at_common
-    note: 纯字母域名
+    note: 使用英文账号的域名
     prefix:
     fields:
       - field: part1
-        range: a-z
-        loop: 5-8
+        from: base.name.enaccount.v1.yaml
+        use: common_underline
         postfix: "."
       - field: part2
         from: base.domain.postfix.v1.yaml
         use: all
   - instance: letters_at_cn
-    note: 纯字母CN域名
+    note: 使用中文账号的域名
     prefix:
     fields:
       - field: part1
-        range: a-z
-        loop: 5-8
+        from: base.name.cnaccount.v1.yaml
+        use: common_underline
         postfix: "."
       - field: part2
         from: base.domain.postfix.v1.yaml

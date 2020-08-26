@@ -116,127 +116,127 @@ fields:
 #    postfix: "]\t"
 
   # domain
-#  - field: one_number_at_common
-#    from: base.domain.domain.v1.yaml
-#    use: one_number_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: one_number_at_cn
-#    from: base.domain.domain.v1.yaml
-#    use: one_number_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: one_number_at_new
-#    from: base.domain.domain.v1.yaml
-#    use: one_number_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: one_letter_at_common
-#    from: base.domain.domain.v1.yaml
-#    use: one_letter_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: one_letter_at_cn
-#    from: base.domain.domain.v1.yaml
-#    use: one_letter_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: one_letter_at_new
-#    from: base.domain.domain.v1.yaml
-#    use: one_letter_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: numbers_at_common
-#    from: base.domain.domain.v1.yaml
-#    use: numbers_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: numbers_at_cn
-#    from: base.domain.domain.v1.yaml
-#    use: numbers_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: numbers_at_new
-#    from: base.domain.domain.v1.yaml
-#    use: numbers_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: letters_at_common
-#    from: base.domain.domain.v1.yaml
-#    use: letters_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: letters_at_cn
-#    from: base.domain.domain.v1.yaml
-#    use: letters_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: letters_at_new
-#    from: base.domain.domain.v1.yaml
-#    use: letters_at_new
-#    prefix: ""
-#    postfix: "\t"
-#
-#  - field: mixed_at_common
-#    from: base.domain.domain.v1.yaml
-#    use: mixed_at_common
-#    prefix: ""
-#    postfix: "\t"
-#  - field: mixed_at_cn
-#    from: base.domain.domain.v1.yaml
-#    use: mixed_at_cn
-#    prefix: ""
-#    postfix: "\t"
-#  - field: mixed_at_new
-#    from: base.domain.domain.v1.yaml
-#    use: mixed_at_new
-#    prefix: ""
-#    postfix: "\t"
-
-  #email
-  - field: number_with_esp
-    from: base.email.email.v1.yaml
-    use: number_with_esp
+  - field: one_number_at_common
+    from: base.domain.domain.v1.yaml
+    use: one_number_at_common
     prefix: ""
     postfix: "\t"
-  - field: number_with_self
-    from: base.email.email.v1.yaml
-    use: number_with_self
+  - field: one_number_at_cn
+    from: base.domain.domain.v1.yaml
+    use: one_number_at_cn
+    prefix: ""
+    postfix: "\t"
+  - field: one_number_at_new
+    from: base.domain.domain.v1.yaml
+    use: one_number_at_new
     prefix: ""
     postfix: "\t"
 
-  - field: letter_with_esp
-    from: base.email.email.v1.yaml
-    use: letter_with_esp
+  - field: one_letter_at_common
+    from: base.domain.domain.v1.yaml
+    use: one_letter_at_common
     prefix: ""
     postfix: "\t"
-  - field: letter_with_self
-    from: base.email.email.v1.yaml
-    use: letter_with_self
+  - field: one_letter_at_cn
+    from: base.domain.domain.v1.yaml
+    use: one_letter_at_cn
     prefix: ""
     postfix: "\t"
-
-  - field: western_with_esp
-    from: base.email.email.v1.yaml
-    use: western_with_esp
-    prefix: ""
-    postfix: "\t"
-  - field: western_with_self
-    from: base.email.email.v1.yaml
-    use: western_with_self
+  - field: one_letter_at_new
+    from: base.domain.domain.v1.yaml
+    use: one_letter_at_new
     prefix: ""
     postfix: "\t"
 
-  - field: pinyin_with_esp
-    from: base.email.email.v1.yaml
-    use: pinyin_with_esp
+  - field: numbers_at_common
+    from: base.domain.domain.v1.yaml
+    use: numbers_at_common
     prefix: ""
     postfix: "\t"
-  - field: pinyin_with_self
-    from: base.email.email.v1.yaml
-    use: pinyin_with_self
+  - field: numbers_at_cn
+    from: base.domain.domain.v1.yaml
+    use: numbers_at_cn
     prefix: ""
     postfix: "\t"
+  - field: numbers_at_new
+    from: base.domain.domain.v1.yaml
+    use: numbers_at_new
+    prefix: ""
+    postfix: "\t"
+
+  - field: letters_at_common
+    from: base.domain.domain.v1.yaml
+    use: letters_at_common
+    prefix: ""
+    postfix: "\t"
+  - field: letters_at_cn
+    from: base.domain.domain.v1.yaml
+    use: letters_at_cn
+    prefix: ""
+    postfix: "\t"
+  - field: letters_at_new
+    from: base.domain.domain.v1.yaml
+    use: letters_at_new
+    prefix: ""
+    postfix: "\t"
+
+  - field: mixed_at_common
+    from: base.domain.domain.v1.yaml
+    use: mixed_at_common
+    prefix: ""
+    postfix: "\t"
+  - field: mixed_at_cn
+    from: base.domain.domain.v1.yaml
+    use: mixed_at_cn
+    prefix: ""
+    postfix: "\t"
+  - field: mixed_at_new
+    from: base.domain.domain.v1.yaml
+    use: mixed_at_new
+    prefix: ""
+    postfix: "\t"
+
+#  #email
+#  - field: number_with_esp
+#    from: base.email.email.v1.yaml
+#    use: number_with_esp
+#    prefix: ""
+#    postfix: "\t"
+#  - field: number_with_self
+#    from: base.email.email.v1.yaml
+#    use: number_with_self
+#    prefix: ""
+#    postfix: "\t"
+#
+#  - field: letter_with_esp
+#    from: base.email.email.v1.yaml
+#    use: letter_with_esp
+#    prefix: ""
+#    postfix: "\t"
+#  - field: letter_with_self
+#    from: base.email.email.v1.yaml
+#    use: letter_with_self
+#    prefix: ""
+#    postfix: "\t"
+#
+#  - field: western_with_esp
+#    from: base.email.email.v1.yaml
+#    use: western_with_esp
+#    prefix: ""
+#    postfix: "\t"
+#  - field: western_with_self
+#    from: base.email.email.v1.yaml
+#    use: western_with_self
+#    prefix: ""
+#    postfix: "\t"
+#
+#  - field: pinyin_with_esp
+#    from: base.email.email.v1.yaml
+#    use: pinyin_with_esp
+#    prefix: ""
+#    postfix: "\t"
+#  - field: pinyin_with_self
+#    from: base.email.email.v1.yaml
+#    use: pinyin_with_self
+#    prefix: ""
+#    postfix: "\t"
