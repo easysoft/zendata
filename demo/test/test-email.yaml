@@ -4,7 +4,6 @@ author: zentao
 version: 1.0
 
 fields:
-
   - field: number_with_esp
     from: base.email.email.v1.yaml
     use: number_with_esp
