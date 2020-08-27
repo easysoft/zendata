@@ -32,6 +32,12 @@ fields:
     prefix: "["
     postfix: "]\t"
 
+  - field: field_union_instant
+    from: jenkins.ip.private.yaml       # 內置instances使用了多个use-from。
+    use: privateB_union_privateC
+    prefix: "["
+    postfix: "]\t"
+
   - field: field_from_muti
     prefix: "["
     postfix: "]\t"
