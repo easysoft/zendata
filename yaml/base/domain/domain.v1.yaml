@@ -127,7 +127,7 @@ instances:
     note: 字母和数字混合的域名
     fields:
       - field: numbers_and_letters
-        range: [a-z,0-9]:R
+        range: "[a-z,0-9]:R"
         loop: 5-8
         postfix: "."
       - field: domain_postfix
@@ -137,7 +137,7 @@ instances:
     note: 字母和数字混合的CN域名
     fields:
       - field: numbers_and_letters
-        range: [a-z,0-9]:R
+        range: "[a-z,0-9]:R"
         loop: 5-8
         postfix: "."
       - field: domain_postfix
@@ -147,14 +147,14 @@ instances:
     note: 字母和数字混合的新域名
     fields:
       - field: numbers_and_letters
-        range: [a-z,0-9]:R
+        range: "[a-z,0-9]:R"
         loop: 5-8
         postfix: "."
       - field: domain_postfix
         from: base.domain.postfix.v1.yaml
         use: new
 
-  - instance: mixed_at_common
+  - instance: enaccount_at_common
     note: 使用英文账号的CN域名
     fields:
       - field: english_account
@@ -164,7 +164,7 @@ instances:
       - field: domain_postfix
         from: base.domain.postfix.v1.yaml
         use: cn
-  - instance: mixed_at_cn
+  - instance: cnaccount_at_cn
     note: 使用中文账号的新域名
     fields:
       - field: chinese_account

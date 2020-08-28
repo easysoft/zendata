@@ -83,3 +83,15 @@ fields:
     use: mixed_at_new
     prefix: ""
     postfix: "\t"
+
+  - field: enaccount_at_common
+    from: base.domain.domain.v1.yaml
+    use: enaccount_at_common
+    prefix: ""
+    postfix: "\t"
+  - field: cnaccount_at_cn
+    from: base.domain.domain.v1.yaml
+    use: cnaccount_at_cn
+    prefix: ""
+    postfix: "\t"
+

@@ -142,21 +142,21 @@ func GetFilesAndDirs(path, typ string, res *map[string][][size]string)  {
 }
 
 func readYamlInfo(path string) (title string, desc string) {
-	configDef := model.DefData{}
+	info := model.DefInfo{}
 
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
 	}
-	err = yaml.Unmarshal(yamlContent, &configDef)
+	err = yaml.Unmarshal(yamlContent, &info)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_file", path))
 		return
 	}
 
-	title = configDef.Title
-	desc = configDef.Desc
+	title = info.Title
+	desc = info.Desc
 	return
 }
 

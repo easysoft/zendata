@@ -93,6 +93,11 @@ type FieldWithValues struct {
 	ValuesWithPlaceholder []string
 }
 
+type DefInfo struct {
+	Title string   `yaml:"title"`
+	Desc string  `yaml:"desc"`
+}
+
 func (def *DefSimple) Init(tableName, author, desc, version string) {
 	def.Title = "table " + tableName
 	def.Author = author

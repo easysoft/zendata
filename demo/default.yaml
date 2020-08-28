@@ -93,7 +93,7 @@ fields:
     postfix: "\t"
 
   - field: field_format                 # 通过格式化字符串输出。
-    range: 1-10:R                       # passwd 1,passwd 2,passwd 3 ... passwd10。
+    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
     format: "passwd%02d"                # 用%2d补零，使密码整体保持8位，%2d默认补空格。
     postfix: "\t"
 
