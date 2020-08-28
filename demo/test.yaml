@@ -29,12 +29,6 @@ fields:
     prefix: "["
     postfix: "]\t"
 
-  - field: field_nested_range
-    from: custom.test.number.v1.yaml
-    use: all{5}
-    prefix: "["
-    postfix: "]"
-
   - field: field_nested_instant
     use: all
     prefix: "["

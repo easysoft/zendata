@@ -167,15 +167,19 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 	}
 
 	if resFile == "" {
-		resPath := vari.ConfigDir + resFile
+		resPath := vari.ConfigDir + from
 		if !FileExist(resPath) { // in same folder with passed config file
 
-			resPath = vari.WorkDir + resFile
+			resPath = vari.WorkDir + from
 			if !FileExist(resPath) {  // in res file
 				resPath = ""
 			}
 		}
 		resFile = resPath
+	}
+
+	if resFile == "" {
+		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from) + "\n")
 	}
 
 	return
@@ -206,10 +210,6 @@ func ConvertResYamlPath(from string) (ret string) {
 			ret = realPth2
 			break
 		}
-	}
-
-	if ret == "" {
-		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from) + "\n")
 	}
 
 	return

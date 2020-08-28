@@ -134,7 +134,7 @@ func StartWith(str, sub string) bool {
 	return strings.Index(str, sub) == 0
 }
 func EndWith(str, sub string) bool {
-	return strings.LastIndex(str, sub) == len(str) -len(sub)
+	return strings.Contains(str, sub) && strings.LastIndex(str, sub) == len(str) -len(sub)
 }
 
 func ConvertForSql(str string) (ret string) {

@@ -90,7 +90,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			if errInt3 == nil {
 				step = stepInt
 			}
-		} else {
+		} else if stepStr == "r" {
 			rand = true
 		}
 
@@ -114,7 +114,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				if errFloat3 == nil {
 					step = stepFloat
 				}
-			} else {
+			} else if stepStr == "r" {
 				rand = true
 			}
 
@@ -136,12 +136,12 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 		} else if len(startStr) == 1 && len(endStr) == 1 { // is char
 			var step interface{} = 1
-			if strings.ToLower(strings.TrimSpace(stepStr)) != "r" {
+			if stepStr != "r" {
 				stepChar, errChar3 := strconv.Atoi(stepStr)
 				if errChar3 == nil {
 					step = stepChar
 				}
-			} else {
+			} else if stepStr == "r" {
 				rand = true
 			}
 
@@ -205,7 +205,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
-	if field.Path != "" && dataType != "string" && rand {
+	if field.Path != "" && dataType != "string" && rand { // random
 		items = append(items, Placeholder(field.Path))
 
 		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision))
