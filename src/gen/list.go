@@ -166,7 +166,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 
 	if field.Path != "" && stepStr == "r" {
 		items = append(items, Placeholder(field.Path))
-		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "")
+		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "", field.Format)
 
 		vari.RandFieldNameToValuesMap[field.Path] = mp
 		return
@@ -208,7 +208,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	if field.Path != "" && dataType != "string" && rand { // random
 		items = append(items, Placeholder(field.Path))
 
-		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision))
+		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision), field.Format)
 		vari.RandFieldNameToValuesMap[field.Path] = mp
 
 		return
@@ -274,7 +274,7 @@ func Placeholder(str string) string {
 	return "${" + str + "}"
 }
 
-func placeholderMapForRandValues(tp string, list []string, start, end, step, precision string) map[string]interface{} {
+func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string) map[string]interface{} {
 	ret := map[string]interface{}{}
 
 	ret["type"] = tp
@@ -285,6 +285,7 @@ func placeholderMapForRandValues(tp string, list []string, start, end, step, pre
 	ret["end"] = end
 	ret["step"] = step
 	ret["precision"] = precision
+	ret["format"] = format
 
 	return ret
 }

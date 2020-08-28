@@ -2,6 +2,7 @@ package gen
 
 import (
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"strconv"
 	"strings"
 )
@@ -25,7 +26,7 @@ func GetRandFromList(list []string, repeatStr string, count int) []string {
 	return ret
 }
 
-func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string, count int) []string {
+func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string, count int, format string) []string {
 	repeat, _ := strconv.Atoi(repeatStr)
 	precision, _ := strconv.Atoi(precisionStr)
 
@@ -50,8 +51,14 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			val := startInt + rand
 
 			items := make([]string, 0)
+			item := strconv.FormatInt(val, 10)
+			if format != "" {
+				formatVal, success := stringUtils.FormatStr(format, val)
+				if success { item = formatVal }
+			}
+
 			for round := 0; round < repeat; round++ {
-				items = append(items, strconv.FormatInt(val, 10))
+				items = append(items, item)
 			}
 
 			temp := strings.Join(items, "")
@@ -75,8 +82,15 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			}
 			val := startChar + byte(rand)
 			items := make([]string, 0)
+
+			item := string(val)
+			if format != "" {
+				formatVal, success := stringUtils.FormatStr(format, val)
+				if success { item = formatVal }
+			}
+
 			for round := 0; round < repeat; round++ {
-				items = append(items, string(val))
+				items = append(items, item)
 			}
 
 			temp := strings.Join(items, "")
@@ -103,9 +117,15 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			val := startFloat + float64(rand)*stepFloat
 
 			items := make([]string, 0)
+
+			item := strconv.FormatFloat(val, 'f', precision, 64)
+			if format != "" {
+				formatVal, success := stringUtils.FormatStr(format, val)
+				if success { item = formatVal }
+			}
+
 			for round := 0; round < repeat; round++ {
-				str := strconv.FormatFloat(val, 'f', precision, 64)
-				items = append(items, str)
+				items = append(items, item)
 			}
 
 			temp := strings.Join(items, "")
