@@ -5,11 +5,11 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 )
 
-func GenerateIntItems(start int64, end int64, step interface{}, rand bool, limit int) []interface{} {
+func GenerateIntItems(start int64, end int64, step interface{}, rand bool, repeat int) []interface{} {
 	if !rand {
-		return GenerateIntItemsByStep(start, end, step.(int), limit)
+		return GenerateIntItemsByStep(start, end, step.(int), repeat)
 	} else{
-		return GenerateIntItemsRand(start, end, step.(int), limit)
+		return GenerateIntItemsRand(start, end, step.(int), repeat)
 	}
 }
 

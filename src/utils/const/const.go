@@ -38,11 +38,14 @@ var (
 	FormatData = "data"
 	Formats = []string{FormatText, FormatJson, FormatXml, FormatSql}
 
-	TypeText = "text"
-	TypeImage = "image"
-	TypeVoice = "voice"
-	TypeVideo = "video"
-	TypeArticle = "article"
+	ConfigTypeText    = "text"
+	ConfigTypeArticle = "article"
+	ConfigTypeImage   = "image"
+	ConfigTypeVoice   = "voice"
+	ConfigTypeVideo   = "video"
+
+	FieldTypeList    = "list"
+	FieldTypeTimestamp = "timestamp"
 
 	LeftBrackets  rune = '('
 	RightBrackets rune = ')'

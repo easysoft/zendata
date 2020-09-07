@@ -78,6 +78,7 @@ type FieldSimple struct {
 	Loopfix  string  `yaml:"loopfix"`
 	Format  string  `yaml:"format"`
 	Rand  bool  `yaml:"rand"`
+	Type  string  `yaml:"type"`
 
 	LoopStart  int  `yaml:"-"`
 	LoopEnd  int  `yaml:"-"`

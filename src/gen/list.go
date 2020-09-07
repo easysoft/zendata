@@ -8,13 +8,6 @@ import (
 	"strings"
 )
 
-func CreateList(field *model.DefField) model.FieldWithValues {
-	fieldWithValue := model.FieldWithValues{}
-	CreateListField(field, &fieldWithValue)
-
-	return fieldWithValue
-}
-
 func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
 	fieldWithValue.Field = field.Field
 	fieldWithValue.Precision = field.Precision
@@ -25,11 +18,11 @@ func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValue
 			CreateListField(&child, &childFieldWithValue)
 		}
 	} else {
-		CreateFieldValues(field, fieldWithValue)
+		CreateListFieldValues(field, fieldWithValue)
 	}
 }
 
-func CreateFieldValues(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithValues) {
 	if strings.Index(field.Range, ".txt") > -1 {
 		CreateFieldValuesFromText(field, fieldValue)
 	} else {

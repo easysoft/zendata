@@ -171,7 +171,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 func GenerateFieldValuesForDef(field *model.DefField) []string {
 	values := make([]string, 0)
 
-	fieldWithValues := CreateList(field)
+	fieldWithValues := CreateField(field)
 
 	computerLoop(field)
 	indexOfRow := 0

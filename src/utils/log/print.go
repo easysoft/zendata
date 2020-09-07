@@ -80,7 +80,7 @@ func PrintErrMsg(msg string) {
 }
 
 func PrintLine(line string) {
-	if vari.Type == constant.TypeText {
+	if vari.Type == constant.ConfigTypeText {
 		line += "\n"
 	}
 

@@ -85,7 +85,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	} else if defaultDef.Type != "" {
 		vari.Type = defaultDef.Type
 	} else {
-		vari.Type = constant.TypeText
+		vari.Type = constant.ConfigTypeText
 	}
 
 	if configDef.From != "" && defaultDef.From == "" {
@@ -208,6 +208,10 @@ func CopyField(child model.DefField, parent *model.DefField) {
 	}
 	if child.From != "" {
 		(*parent).From = child.From
+	}
+
+	if child.Type != "" {
+		(*parent).Type = child.Type
 	}
 
 	if child.Precision != 0 {

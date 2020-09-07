@@ -3,7 +3,7 @@ desc:
 author: zentao
 version: 1.0
 
-from: custom.ip.private.yaml
+from: jenkins.ip.private.yaml
 
 fields:
   - field: field_use_instance
