@@ -89,6 +89,8 @@ func GetPrecision(base float64, step interface{}) (precision int, newStep float6
 		for i := 0; i < precision; i++ {
 			newStep = newStep / 10
 		}
+	} else {
+		newStep = step.(float64)
 	}
 
 	return

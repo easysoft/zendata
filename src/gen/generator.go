@@ -66,6 +66,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 	if len(field.Fields) > 0 { // sub fields
 		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+
 		for _, child := range field.Fields {
 			if child.From == "" {
 				child.From = field.From
@@ -184,7 +185,7 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		count++
 		isRandomAndLoopEnd := !(*field).IsReferYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
-		if count >= vari.Total || isRandomAndLoopEnd {
+		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
 			break
 		}
 
@@ -349,7 +350,8 @@ func putChildrenToArr(arrOfArr [][]string) (values [][]string) {
 				index = i % len(child)
 			}
 
-			strArr = append(strArr, child[index])
+			val := child[index]
+			strArr = append(strArr, val)
 		}
 
 		values = append(values, strArr)
