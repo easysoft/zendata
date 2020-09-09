@@ -136,7 +136,7 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet string
 		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
 		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
 
-		db, err := sql.Open("sqlite3", constant.SqliteSource)
+		db, err := sql.Open("sqlite3", constant.SqliteData)
 		defer db.Close()
 		_, err = db.Exec(dropSql)
 		if err != nil {
@@ -163,10 +163,10 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet string
 func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) ([]string, string) {
 	list := make([]string, 0)
 
-	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
+	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
 	defer db.Close()
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteSource, err.Error()))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
 		return list, ""
 	}
 
@@ -241,10 +241,10 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 }
 
 func isExcelChanged(path string) bool {
-	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
+	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
 	defer db.Close()
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteSource, err.Error()))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
 		return true
 	}
 

@@ -6,6 +6,10 @@ version: 1.0
 from: jenkins.ip.private.yaml
 
 fields:
+  - field: field_use_ranges
+    prefix: ""
+    postfix: "]"
+
   - field: field_use_instance
     prefix: ""
     postfix: "]"

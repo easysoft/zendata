@@ -17,10 +17,10 @@ func Upgrade() {
 	// TODO: update date from remote server
 
 	// read data from db
-	db, err := sql.Open(constant.SqliteDriver, constant.SqliteSource)
+	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
 	defer db.Close()
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteSource, err.Error()))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
 		return
 	}
 

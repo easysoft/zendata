@@ -60,8 +60,10 @@ var (
 
 	TmpDir  = "tmp/"
 
-	SqliteDriver  = "sqlite3"
-	SqliteSource  = "file:" + TmpDir + "cache/.data.db"
+	SqliteDriver = "sqlite3"
+	SqliteData   = "file:" + TmpDir + "cache/.data.db"
+	SqliteWords   = "file:" + TmpDir + "cache/.words.db"
+
 	SqliteTrackTable  = "excel_update"
 
 	ExcelBorder  = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
