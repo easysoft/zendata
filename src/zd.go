@@ -174,7 +174,7 @@ func toGen() {
 			}
 			vari.WorkDir = fileUtils.AddSepIfNeeded(vari.WorkDir)
 		}
-		constant.SqliteSource = strings.Replace(constant.SqliteSource, "file:", "file:" + vari.WorkDir, 1)
+		constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:" + vari.WorkDir, 1)
 
 		StartServer()
 	} else if vari.RunMode == constant.RunModeServerRequest {
