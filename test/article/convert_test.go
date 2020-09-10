@@ -23,124 +23,127 @@ func TestImportSqlite(t *testing.T) {
 	files := make([]string, 0)
 	getExcelFilesInDir("xdoc/words-9.3", &files)
 
+	tableName := "words"
+	seq := 1
+	ddlFields := make([]string, 0)
+	insertSqls := make([]string, 0)
+
+	colMap := map[string]bool{}
 	for _, file := range files {
-		importExcel(file, t)
+		importExcel(file, tableName, &seq, &ddlFields, &insertSqls, &colMap)
+	}
+
+	db, err := sql.Open("sqlite3", constant.SqliteWords)
+	defer db.Close()
+
+	dropSql := `DROP TABLE IF EXISTS ` + tableName + `;`
+	_, err = db.Exec(dropSql)
+	if err != nil {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
+		return
+	}
+
+	ddlTemplate := "CREATE TABLE " + tableName + "(\n" +
+		"\t`seq` CHAR (5) PRIMARY KEY ASC UNIQUE,\n" +
+		"%s" +
+		"\n);"
+	ddlSql := fmt.Sprintf(ddlTemplate, strings.Join(ddlFields, ", \n"))
+	_, err = db.Exec(ddlSql)
+	if err != nil {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
+		return
+	}
+
+	sql := strings.Join(insertSqls, "\n")
+	_, err = db.Exec(sql)
+	if err != nil {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
+		return
 	}
 }
 
-func importExcel(filePath string, t *testing.T) {
+func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]string, colMap *map[string]bool) {
 	excel, err := excelize.OpenFile(filePath)
 	if err != nil {
-		t.Error("fail to read file " + filePath + ", error: " + err.Error())
+		logUtils.PrintTo("fail to read file " + filePath + ", error: " + err.Error())
 		return
 	}
 
 	fileName := path.Base(filePath)
 	fileName = strings.TrimSuffix(fileName, path.Ext(filePath))
 	fileName = strings.TrimSuffix(fileName, "词库")
-	tableName := getPinyin(fileName)
+	colPrefix := getPinyin(fileName)
 
-	for _, sheet := range excel.GetSheetList() {
-		rows, err := excel.GetRows(sheet)
-
+	for rowIndex, sheet := range excel.GetSheetList() {
+		rows, _ := excel.GetRows(sheet)
 		if len(rows) == 0 {
 			continue
 		}
 
-		dropTemplate := `DROP TABLE IF EXISTS %s;`
-		ddlTemplate := `CREATE TABLE %s (
-						seq CHAR (5) PRIMARY KEY ASC UNIQUE,
-						%s
-					);`
-		insertTemplate := "INSERT INTO %s (%s) VALUES %s"
-
 		colDefine := ""
-		colList := "seq"
+		colList := make([]string, 0)
+
 		colCount := 0
 		index := 0
 		for colIndex, col := range rows[0] {
+			val := strings.TrimSpace(col)
+			if rowIndex == 0 && val == "" {
+				break
+			}
 			colCount++
 
-			val := strings.TrimSpace(col)
 			colName := getPinyin(val)
 			if colIndex == 0 && colName != "ci" {
 				colName = "ci"
+			} else {
+				colName = colPrefix + ":" + colName
 			}
 
-			if index > 0 {
-				colDefine = colDefine + ",\n"
-			}
-			colList = colList + ", "
+			if (*colMap)[colName] == false {
+				colType := "VARCHAR"
+				colDefine = "    " + "`" + colName + "` " + colType
+				*ddlFields = append(*ddlFields, colDefine)
 
-			colType := "VARCHAR"
-			if colIndex > 0 {
-				colType = "BLOB"
+				(*colMap)[colName] = true
 			}
-			colDefine = "    " + colDefine + "`" + colName + "` " + colType
+			colList = append(colList, "`" + colName + "`")
 
-			colList = colList + "`" + colName + "`"
 			index++
 		}
 
-		valList := ""
+		valList := make([]string, 0)
 		for rowIndex, row := range rows {
 			if rowIndex == 0 {
 				continue
 			}
 
-			if rowIndex > 1 {
-				valList = valList + ", "
-			}
-			valList = valList + "(" + strconv.Itoa(rowIndex) + ", "
+			valListItem := make([]string, 0)
+			valListItem = append(valListItem, strconv.Itoa(*seq))
+			*seq += 1
 
 			for i := 0; i < colCount; i++ {
-				if i > 0 {
-					valList = valList + ", "
-				}
-
+				val := ""
 				if i == 0 { // word
-					val := strings.TrimSpace(row[i])
-					valList = valList + "'" + val + "'"
+					val = strings.TrimSpace(row[i])
 				} else if i <= len(row) - 1 { // excel value
-					str := strings.ToLower(strings.TrimSpace(row[i]))
-					if str == "y" {
-						val := "TRUE"
-						valList = valList + val
-					} else {
-						valList = valList + "NULL"
+					val = strings.ToLower(strings.TrimSpace(row[i]))
+					if val != "y" && val != "b" && val != "f" && val != "m" {
+						val = ""
 					}
 				} else {
-					valList = valList + "NULL"
+					val = ""
 				}
-
+				valListItem = append(valListItem,"'" + val + "'")
 			}
-
-			valList = valList + ")"
+			valList = append(valList, "(" + strings.Join(valListItem, ", ") + ")")
 		}
 
-		dropSql := fmt.Sprintf(dropTemplate, tableName)
-		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
-		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
-
-		db, err := sql.Open("sqlite3", constant.SqliteWords)
-		defer db.Close()
-		_, err = db.Exec(dropSql)
-		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
-			return
-		}
-
-		_, err = db.Exec(ddl)
-		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
-			return
-		}
-
-		_, err = db.Exec(insertSql)
-		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
-			return
-		}
+		insertTemplate := "INSERT INTO `" + tableName + "` (`seq`, %s) VALUES %s;"
+		insertSql := fmt.Sprintf(insertTemplate,
+			strings.Join(colList, ", "),
+			strings.Join(valList, ", "),
+			)
+		*insertSqls = append(*insertSqls, insertSql)
 	}
 }
 
