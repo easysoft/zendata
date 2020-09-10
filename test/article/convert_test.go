@@ -4,16 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/Chain-Zhang/pinyin"
-	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	_ "github.com/mattn/go-sqlite3"
-	"io/ioutil"
-	"path"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
@@ -21,7 +15,7 @@ import (
 
 func TestImportSqlite(t *testing.T) {
 	files := make([]string, 0)
-	getExcelFilesInDir("xdoc/words-9.3", &files)
+	getFilesInDir("xdoc/words-9.3", "xlsx", &files)
 
 	tableName := "words"
 	seq := 1
@@ -69,8 +63,7 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 		return
 	}
 
-	fileName := path.Base(filePath)
-	fileName = strings.TrimSuffix(fileName, path.Ext(filePath))
+	fileName := getFileName(filePath)
 	fileName = strings.TrimSuffix(fileName, "词库")
 	colPrefix := getPinyin(fileName)
 
@@ -95,7 +88,8 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 			colName := getPinyin(val)
 			if colIndex == 0 && colName != "ci" {
 				colName = "ci"
-			} else {
+			}
+			if colName != "ci" {
 				colName = colPrefix + ":" + colName
 			}
 
@@ -145,41 +139,4 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 			)
 		*insertSqls = append(*insertSqls, insertSql)
 	}
-}
-
-func getExcelFilesInDir(folder string, files *[]string) {
-	 folder, _ = filepath.Abs(folder)
-
-	if !fileUtils.IsDir(folder) {
-		if path.Ext(folder) == ".xlsx" {
-			*files = append(*files, folder)
-		}
-
-		return
-	}
-
-	dir, err := ioutil.ReadDir(folder)
-	if err != nil {
-		return
-	}
-
-	for _, fi := range dir {
-		name := fi.Name()
-		if commonUtils.IngoreFile(name) {
-			continue
-		}
-
-		filePath := fileUtils.AddSepIfNeeded(folder) + name
-		if fi.IsDir() {
-			getExcelFilesInDir(filePath, files)
-		} else if strings.Index(name, "~") != 0 && path.Ext(filePath) == ".xlsx" {
-			*files = append(*files, filePath)
-		}
-	}
-}
-
-func getPinyin(word string) string {
-	p, _ := pinyin.New(word).Split("").Mode(pinyin.WithoutTone).Convert()
-
-	return p
 }
