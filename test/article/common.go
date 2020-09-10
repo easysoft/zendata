@@ -36,7 +36,7 @@ func getFilesInDir(folder, ext string, files *[]string) {
 		filePath := fileUtils.AddSepIfNeeded(folder) + name
 		if fi.IsDir() {
 			getFilesInDir(filePath, ext, files)
-		} else if strings.Index(name, "~") != 0 && path.Ext(filePath) == ".xlsx" {
+		} else if strings.Index(name, "~") != 0 && path.Ext(filePath) == ext {
 			*files = append(*files, filePath)
 		}
 	}

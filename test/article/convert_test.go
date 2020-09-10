@@ -6,8 +6,8 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 	"strconv"
 	"strings"
 	"testing"
@@ -15,7 +15,7 @@ import (
 
 func TestImportSqlite(t *testing.T) {
 	files := make([]string, 0)
-	getFilesInDir("xdoc/words-9.3", "xlsx", &files)
+	getFilesInDir("xdoc/words-9.3", ".xlsx", &files)
 
 	tableName := "words"
 	seq := 1
@@ -33,7 +33,7 @@ func TestImportSqlite(t *testing.T) {
 	dropSql := `DROP TABLE IF EXISTS ` + tableName + `;`
 	_, err = db.Exec(dropSql)
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
 		return
 	}
 
@@ -44,14 +44,14 @@ func TestImportSqlite(t *testing.T) {
 	ddlSql := fmt.Sprintf(ddlTemplate, strings.Join(ddlFields, ", \n"))
 	_, err = db.Exec(ddlSql)
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
 		return
 	}
 
 	sql := strings.Join(insertSqls, "\n")
 	_, err = db.Exec(sql)
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
 		return
 	}
 }
@@ -59,7 +59,7 @@ func TestImportSqlite(t *testing.T) {
 func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]string, colMap *map[string]bool) {
 	excel, err := excelize.OpenFile(filePath)
 	if err != nil {
-		logUtils.PrintTo("fail to read file " + filePath + ", error: " + err.Error())
+		log.Println("fail to read file " + filePath + ", error: " + err.Error())
 		return
 	}
 
@@ -90,7 +90,7 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 				colName = "ci"
 			}
 			if colName != "ci" {
-				colName = colPrefix + ":" + colName
+				colName = colPrefix + "-" + colName
 			}
 
 			if (*colMap)[colName] == false {

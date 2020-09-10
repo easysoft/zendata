@@ -108,3 +108,19 @@ func (def *DefSimple) Init(tableName, author, desc, version string) {
 func (fld *FieldSimple) Init(field string) {
 	fld.Field = field
 }
+
+
+type DefExport struct {
+	ClsBase   `yaml:",inline"`
+	XFields  []DefFieldExport `yaml:"xfields,flow"` // control orders
+}
+type DefFieldExport struct {
+	Field string  `yaml:"field"`
+	Prefix string  `yaml:"prefix"`
+	Postfix  string  `yaml:"postfix"`
+
+	Select	string  `yaml:"select"`
+	Where	string  `yaml:"where"`
+	Rand  bool  `yaml:"rand"`
+	Limit	int  `yaml:"limit"`
+}
