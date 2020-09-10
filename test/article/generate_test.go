@@ -66,10 +66,10 @@ func convertToYaml(article string) (content string) {
 
 func createDef(typ, table string) (conf model.DefExport) {
 	conf.Title = "automation"
-	conf.Author = "zendata"
+	conf.Author = "ZenData"
 	conf.From = table
 	conf.Type = typ
-	conf.Desc = "generated from article text automatically"
+	conf.Desc = "Generated from article text automatically"
 
 	return
 }
