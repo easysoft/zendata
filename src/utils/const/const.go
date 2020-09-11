@@ -62,7 +62,6 @@ var (
 
 	SqliteDriver = "sqlite3"
 	SqliteData   = "file:" + TmpDir + "cache/.data.db"
-	SqliteWords   = "file:" + TmpDir + "cache/.words.db"
 
 	SqliteTrackTable  = "excel_update"
 

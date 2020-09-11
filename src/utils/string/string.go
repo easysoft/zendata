@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"github.com/Chain-Zhang/pinyin"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
@@ -62,13 +63,26 @@ func BoolToPass(b bool) string {
 	}
 }
 
-func FindInArr(str string, arr []string) bool {
-	for _, s := range arr {
+func FindInArr(str string, arr []string) (bool,int) {
+	for index, s := range arr {
 		if str == s {
-			return true
+			return true, index
 		}
 	}
 
+	return false, -1
+}
+
+func StrInArr(str string, arr []string) bool {
+	found, _ := FindInArr(str, arr)
+	return found
+}
+func InArray(need interface{}, arr []string) bool {
+	for _,v := range arr{
+		if need == v{
+			return true
+		}
+	}
 	return false
 }
 
@@ -98,15 +112,6 @@ func FormatStr(format string, val interface{}) (string, bool) {
 	}
 
 	return str, true
-}
-
-func InArray(need interface{}, arr []string) bool {
-	for _,v := range arr{
-		if need == v{
-			return true
-		}
-	}
-	return false
 }
 
 func AddPad(str string, field model.DefField) string {
@@ -160,4 +165,10 @@ func ConvertForSql(str string) (ret string) {
 	}
 
 	return
+}
+
+func GetPinyin(word string) string {
+	p, _ := pinyin.New(word).Split("").Mode(pinyin.WithoutTone).Convert()
+
+	return p
 }

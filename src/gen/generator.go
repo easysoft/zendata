@@ -33,7 +33,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 
 	// 为每个field生成值列表
 	for index, field := range vari.Def.Fields {
-		if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
+		if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
 			continue
 		}
 
@@ -51,7 +51,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 	// 处理数据
 	arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 	for _, child := range vari.Def.Fields {
-		if !stringUtils.FindInArr(child.Field, *fieldsToExport) {
+		if !stringUtils.StrInArr(child.Field, *fieldsToExport) {
 			continue
 		}
 

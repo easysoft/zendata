@@ -59,10 +59,14 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	mergerDefine(&defaultDef, &configDef, fieldsToExport)
 	orderFields(&defaultDef, *fieldsToExport)
 
-	for _, field := range defaultDef.Fields {
+	for index, field := range defaultDef.Fields {
 		if vari.Trim {
 			field.Prefix = ""
 			field.Postfix = ""
+		}
+
+		if defaultDef.Type == constant.ConfigTypeArticle {
+			defaultDef.Fields[index].Select = strings.Replace(field.Select, "-", "_", -1)
 		}
 	}
 
@@ -91,6 +95,9 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	if configDef.From != "" && defaultDef.From == "" {
 		defaultDef.From = configDef.From
 	}
+	if configDef.Type != "" && defaultDef.Type == "" {
+		defaultDef.Type = configDef.Type
+	}
 
 	for i, field := range defaultDef.Fields {
 		if !isSetFieldsToExport {
@@ -102,7 +109,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	for i, field := range configDef.Fields {
 		vari.TopFiledMap[field.Field] = field
 		if !isSetFieldsToExport {
-			if !stringUtils.FindInArr(field.Field, *fieldsToExport) {
+			if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
 				*fieldsToExport = append(*fieldsToExport, field.Field)
 			}
 		}

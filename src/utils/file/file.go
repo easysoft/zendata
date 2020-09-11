@@ -246,13 +246,16 @@ func convertResExcelPath(from string) (ret, sheet string) {
 				}
 				ret = realPth
 				return
-			} else {
-				dir := path.Dir(realPth)
-				if FileExist(dir) {
-					ret = dir
-					return
-				}
 			}
+		}
+	}
+
+	if ret == "" { // try excel dir
+		realPth := vari.WorkDir + constant.ResDirData + constant.PthSep +
+			strings.Replace(from, ".", constant.PthSep, -1)
+		if IsDir(realPth) {
+			ret = realPth
+			return
 		}
 	}
 
@@ -261,4 +264,42 @@ func convertResExcelPath(from string) (ret, sheet string) {
 	}
 
 	return
+}
+
+func GetFilesByExtInDir(folder, ext string, files *[]string) {
+	folder, _ = filepath.Abs(folder)
+
+	if !IsDir(folder) {
+		if ext == "" || path.Ext(folder) == ext {
+			*files = append(*files, folder)
+		}
+
+		return
+	}
+
+	dir, err := ioutil.ReadDir(folder)
+	if err != nil {
+		return
+	}
+
+	for _, fi := range dir {
+		name := fi.Name()
+		if commonUtils.IngoreFile(name) {
+			continue
+		}
+
+		filePath := AddSepIfNeeded(folder) + name
+		if fi.IsDir() {
+			GetFilesByExtInDir(filePath, ext, files)
+		} else if strings.Index(name, "~") != 0 && (ext == "" || path.Ext(filePath) == ext) {
+			*files = append(*files, filePath)
+		}
+	}
+}
+
+func GetFileName(filePath string) string {
+	fileName := path.Base(filePath)
+	fileName = strings.TrimSuffix(fileName, path.Ext(filePath))
+
+	return fileName
 }

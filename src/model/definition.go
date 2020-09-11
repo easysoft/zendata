@@ -120,7 +120,6 @@ type DefFieldExport struct {
 	Prefix string  `yaml:"prefix"`
 	Postfix  string  `yaml:"postfix"`
 
-	From 	string  `yaml:"from"`
 	Select	string  `yaml:"select"`
 	Where	string  `yaml:"where"`
 	Rand  bool  `yaml:"rand"`

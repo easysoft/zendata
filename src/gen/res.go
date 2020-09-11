@@ -15,11 +15,12 @@ import (
 func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 	res := map[string]map[string][]string{}
 
-	for _, field := range vari.Def.Fields {
-		if !stringUtils.FindInArr(field.Field, fieldsToExport) { continue }
+	for index, field := range vari.Def.Fields {
+		if !stringUtils.StrInArr(field.Field, fieldsToExport) { continue }
 
-		if field.Use != "" && field.From == "" {
+		if (field.Use != "" || field.Select != "") && field.From == "" {
 			field.From = vari.Def.From
+			vari.Def.Fields[index].From = vari.Def.From
 		}
 		loadResField(&field, &res)
 	}
@@ -45,8 +46,14 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 		}
 	} else if field.From != "" {
 		resFile, resType, sheet := fileUtils.GetResProp(field.From)
-		values, _ := getResValue(resFile, resType, sheet, field)
-		(*res)[field.From] = values
+		valueMap, _ := getResValue(resFile, resType, sheet, field)
+
+		if (*res)[field.From] == nil {
+			(*res)[field.From] = map[string][]string{}
+		}
+		for key, val := range valueMap {
+			(*res)[field.From][key] = val
+		}
 
 	} else if field.Config != "" {
 		resFile, resType, _ := fileUtils.GetResProp(field.Config)

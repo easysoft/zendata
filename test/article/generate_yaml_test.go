@@ -20,8 +20,11 @@ const (
 	expLeft = "（"
 	expRight = "）"
 
-	src = "data/words/v1"
+	src = "data/words"
 	dist = "demo"
+)
+var (
+	compares = []string{"=", "!=", ">", "<"}
 )
 
 func TestGenerate(ts *testing.T) {
@@ -48,8 +51,9 @@ func convertToYaml(article string) (content string) {
 		val := section["val"]
 
 		if tye == "exp" {
-			field := createField(index, prefix, val)
-			conf.XFields = append(conf.XFields, field)
+			fields := createFields(index, prefix, val)
+			conf.XFields = append(conf.XFields, fields...)
+
 			prefix = ""
 		} else {
 			prefix += val
@@ -79,8 +83,8 @@ func createDef(typ, table string) (conf model.DefExport) {
 	return
 }
 
-func createField(index int, prefix, exp string) (field model.DefFieldExport) {
-	field.From = strings.Replace(src, "/", ".", -1)
+func createFields(index int, prefix, exp string) (fields []model.DefFieldExport) {
+	field := model.DefFieldExport{}
 	field.Field = strconv.Itoa(index)
 	field.Prefix = prefix
 	field.Rand = true
@@ -99,10 +103,34 @@ func createField(index int, prefix, exp string) (field model.DefFieldExport) {
 	if strings.Index(exp, "=") == len(exp) - 2 {
 		exp = string(expArr[:len(expArr) - 2])
 		field.Select = getPinyin(exp)
-		field.Where = fmt.Sprintf("%s = %s", field.Select, string(expArr[len(expArr) - 1]))
+		field.Where = fmt.Sprintf("%s = '%s'", field.Select, string(expArr[len(expArr) - 1]))
 	} else {
 		field.Select = getPinyin(exp)
 		field.Where = "true"
+		//field.Where = getPinyin(exp) + " = 'y'"
+	}
+
+	if strings.Index(field.Select, "+") < 0 {
+		fields = append(fields, field)
+	} else if strings.Index(field.Select, "+") > 0 { // include more than one field, split to two
+		arr := strings.Split(field.Where, "=")
+		right := ""
+		if len(arr) > 1 {
+			right = arr[1]
+		}
+
+		items := strings.Split(field.Select, "+")
+		for _, item := range items {
+			var objClone interface{} = field
+			fieldClone := objClone.(model.DefFieldExport)
+			fieldClone.Select = item
+
+			if len(arr) > 1 { // has conditions
+				fieldClone.Where = item + " = " + right
+			}
+
+			fields = append(fields, fieldClone)
+		}
 	}
 
 	return

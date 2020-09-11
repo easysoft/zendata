@@ -9,9 +9,11 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -139,7 +141,7 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
 		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
 
-		db, err := sql.Open("sqlite3", constant.SqliteData)
+		db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
 		defer db.Close()
 		_, err = db.Exec(dropSql)
 		if err != nil {
@@ -163,8 +165,55 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 	return
 }
 
-func ConvertExcelsToSQLiteIfNeeded(dbName string, dir string) {
+func ConvertExcelsToSQLiteIfNeeded(tableName string, dir string) {
+	if !isExcelChanged(dir) {
+		return
+	}
 
+	files := make([]string, 0)
+	fileUtils.GetFilesByExtInDir(dir, ".xlsx", &files)
+
+	seq := 1
+	ddlFields := make([]string, 0)
+	insertSqls := make([]string, 0)
+
+	colMap := map[string]bool{}
+	for _, file := range files {
+		importExcel(file, tableName, &seq, &ddlFields, &insertSqls, &colMap)
+	}
+
+	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
+	defer db.Close()
+
+	if err != nil {
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
+		return
+	}
+
+	dropSql := `DROP TABLE IF EXISTS ` + tableName + `;`
+	_, err = db.Exec(dropSql)
+	if err != nil {
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
+		return
+	}
+
+	ddlTemplate := "CREATE TABLE " + tableName + "(\n" +
+		"\t`seq` CHAR (5) PRIMARY KEY ASC UNIQUE,\n" +
+		"%s" +
+		"\n);"
+	ddlSql := fmt.Sprintf(ddlTemplate, strings.Join(ddlFields, ", \n"))
+	_, err = db.Exec(ddlSql)
+	if err != nil {
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
+		return
+	}
+
+	sql := strings.Join(insertSqls, "\n")
+	_, err = db.Exec(sql)
+	if err != nil {
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
+		return
+	}
 
 	return
 }
@@ -179,12 +228,18 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 		return list, ""
 	}
 
-	selectCol := field.Select
-	from := dbName + "_" + tableName
-	where := field.Where
-	if where == "" {
-		where = "true"
+	selectCol := strings.Replace(field.Select, "-", "_", -1)
+	from := dbName
+	if tableName != "" {
+		from += "_" + tableName
 	}
+
+	where := field.Where
+	if where == "" || (vari.Def.Type == constant.ConfigTypeArticle && strings.ToLower(where) == "true") {
+		where = "1=1"
+	}
+
+	where = strings.Replace(where, "-", "_", -1)
 
 	if field.Rand {
 		where += " ORDER BY RANDOM() "
@@ -198,7 +253,12 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 		where = where + fmt.Sprintf(" LIMIT %d", total)
 	}
 
-	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", selectCol, from, where)
+	colStr := selectCol
+	if vari.Def.Type == constant.ConfigTypeArticle {
+		colStr = "ci AS " + selectCol
+	}
+
+	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", colStr, from, where)
 	rows, err := db.Query(sqlStr)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
@@ -250,6 +310,17 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 }
 
 func isExcelChanged(path string) bool {
+	if !fileUtils.FileExist(path) {
+		return false
+	}
+
+	fileChangeTime := time.Time{}.Unix()
+	if !fileUtils.IsDir(path) {
+		fileChangeTime = getFileModTime(path).Unix()
+	} else {
+		fileChangeTime = getDirModTime(path).Unix()
+	}
+
 	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
 	defer db.Close()
 	if err != nil {
@@ -264,8 +335,6 @@ func isExcelChanged(path string) bool {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		return true
 	}
-
-	fileChangeTime := getFileModTime(path).Unix()
 
 	found := false
 	changed := false
@@ -309,6 +378,20 @@ func isExcelChanged(path string) bool {
 	return changed
 }
 
+func getDirModTime(path string) (dirChangeTime time.Time) {
+	files := make([]string, 0)
+	fileUtils.GetFilesByExtInDir(path, "", &files)
+
+	for _, file := range files {
+		time := getFileModTime(file)
+		if dirChangeTime.Unix() < time.Unix() {
+			dirChangeTime = time
+		}
+	}
+
+	return
+}
+
 func getFileModTime(path string) time.Time {
 	f, err := os.Open(path)
 	if err != nil {
@@ -329,4 +412,90 @@ func getFileModTime(path string) time.Time {
 	//logUtils.Screen(i118Utils.I118Prt.Sprintf("file_change_time", timeStr))
 
 	return fileChangeTime
+}
+
+func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]string, colMap *map[string]bool) {
+	excel, err := excelize.OpenFile(filePath)
+	if err != nil {
+		log.Println("fail to read file " + filePath + ", error: " + err.Error())
+		return
+	}
+
+	fileName := fileUtils.GetFileName(filePath)
+	fileName = strings.TrimSuffix(fileName, "词库")
+	colPrefix := stringUtils.GetPinyin(fileName)
+
+	for rowIndex, sheet := range excel.GetSheetList() {
+		rows, _ := excel.GetRows(sheet)
+		if len(rows) == 0 {
+			continue
+		}
+
+		colDefine := ""
+		colList := make([]string, 0)
+
+		colCount := 0
+		index := 0
+		for colIndex, col := range rows[0] {
+			val := strings.TrimSpace(col)
+			if rowIndex == 0 && val == "" {
+				break
+			}
+			colCount++
+
+			colName := stringUtils.GetPinyin(val)
+
+			if colIndex == 0 && colName != "ci" {
+				colName = "ci"
+			}
+			if colName != "ci" {
+				colName = colPrefix + "_" + colName
+			}
+
+			if (*colMap)[colName] == false {
+				colType := "VARCHAR"
+				colDefine = "    " + "`" + colName + "` " + colType + " DEFAULT ''"
+				*ddlFields = append(*ddlFields, colDefine)
+
+				(*colMap)[colName] = true
+			}
+			colList = append(colList, "`" + colName + "`")
+
+			index++
+		}
+
+		valList := make([]string, 0)
+		for rowIndex, row := range rows {
+			if rowIndex == 0 {
+				continue
+			}
+
+			valListItem := make([]string, 0)
+			valListItem = append(valListItem, strconv.Itoa(*seq))
+			*seq += 1
+
+			for i := 0; i < colCount; i++ {
+				val := ""
+				if i == 0 { // word
+					val = strings.TrimSpace(row[i])
+				} else if i <= len(row) - 1 { // excel value
+					val = strings.ToLower(strings.TrimSpace(row[i]))
+					if val != "y" && val != "b" && val != "f" && val != "m" {
+						val = ""
+					}
+				} else {
+					val = ""
+				}
+				valListItem = append(valListItem,"'" + val + "'")
+			}
+			valList = append(valList, "(" + strings.Join(valListItem, ", ") + ")")
+		}
+
+		insertTemplate := "INSERT INTO `" + tableName + "` (`seq`, %s) VALUES %s;"
+		insertSql := fmt.Sprintf(insertTemplate,
+			strings.Join(colList, ", "),
+			strings.Join(valList, ", "),
+		)
+		*insertSqls = append(*insertSqls, insertSql)
+	}
 }
