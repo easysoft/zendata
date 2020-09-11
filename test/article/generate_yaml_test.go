@@ -7,6 +7,7 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	_ "github.com/mattn/go-sqlite3"
 	"gopkg.in/yaml.v3"
+	"path"
 	"strconv"
 	"strings"
 	"testing"
@@ -18,17 +19,20 @@ const (
 
 	expLeft = "（"
 	expRight = "）"
+
+	src = "data/words/v1"
+	dist = "demo"
 )
 
 func TestGenerate(ts *testing.T) {
 	files := make([]string, 0)
-	getFilesInDir("xdoc/words-9.3", ".txt", &files)
+	getFilesInDir(src, ".txt", &files)
 
 	for _, filePath := range files {
 		article := fileUtils.ReadFile(filePath)
 		content := convertToYaml(article)
 
-		newPath := changeFileExt(filePath, ".yaml")
+		newPath := fileUtils.AddSepIfNeeded(dist) + changeFileExt(path.Base(filePath), ".yaml")
 		fileUtils.WriteFile(newPath, content)
 	}
 }
@@ -76,6 +80,7 @@ func createDef(typ, table string) (conf model.DefExport) {
 }
 
 func createField(index int, prefix, exp string) (field model.DefFieldExport) {
+	field.From = strings.Replace(src, "/", ".", -1)
 	field.Field = strconv.Itoa(index)
 	field.Prefix = prefix
 	field.Rand = true

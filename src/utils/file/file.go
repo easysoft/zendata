@@ -221,21 +221,22 @@ func convertResExcelPath(from string) (ret, sheet string) {
 	path2 := from[:index] // address.cn.v1.china
 
 	paths := [2]string{path1, path2}
-	for index, path := range paths {
+	for index, filePath := range paths {
 
-		arr := strings.Split(path, ".")
+		arr := strings.Split(filePath, ".")
 		for i := 0; i < len(arr); i++ {
 			dir := ""
 			if i > 0 {
 				dir = strings.Join(arr[:i], constant.PthSep)
 			}
-			file := strings.Join(arr[i:], ".") + ".xlsx"
+
+			tagFile := strings.Join(arr[i:], ".") + ".xlsx"
 
 			relatPath := ""
 			if dir != "" {
-				relatPath = dir + constant.PthSep + file
+				relatPath = dir + constant.PthSep + tagFile
 			} else {
-				relatPath = file
+				relatPath = tagFile
 			}
 
 			realPth := vari.WorkDir + constant.ResDirData + constant.PthSep + relatPath
@@ -245,6 +246,12 @@ func convertResExcelPath(from string) (ret, sheet string) {
 				}
 				ret = realPth
 				return
+			} else {
+				dir := path.Dir(realPth)
+				if FileExist(dir) {
+					ret = dir
+					return
+				}
 			}
 		}
 	}

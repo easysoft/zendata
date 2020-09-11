@@ -6,6 +6,7 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
@@ -15,19 +16,21 @@ import (
 	"time"
 )
 
-func GenerateFieldValuesFromExcel(path, sheet string, field *model.DefField) (map[string][]string, string) {
+func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField) (map[string][]string, string) {
 	values := map[string][]string{}
 
-	dbName := getDbName(path)
+	dbName := getDbName(filePath)
 
-	list := make([]string, 0)
-	selectCol := ""
-	firstSheet := ConvertExcelToSQLiteIfNeeded(dbName, path)
-	if sheet == "" {
-		sheet = firstSheet
+	if !fileUtils.IsDir(filePath) { // file
+		firstSheet := ConvertSingleExcelToSQLiteIfNeeded(dbName, filePath)
+		if sheet == "" {
+			sheet = firstSheet
+		}
+	} else { // dir
+		ConvertExcelsToSQLiteIfNeeded(dbName, filePath)
 	}
 
-	list, selectCol = ReadDataFromSQLite(*field, dbName, sheet)
+	list, selectCol := ReadDataFromSQLite(*field, dbName, sheet)
 	// get index for data retrieve
 	numbs := GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1)
 	// get data by index
@@ -57,7 +60,7 @@ func getDbName(path string) (dbName string) {
 	return
 }
 
-func ConvertExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet string) {
+func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -156,6 +159,12 @@ func ConvertExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet string
 			return
 		}
 	}
+
+	return
+}
+
+func ConvertExcelsToSQLiteIfNeeded(dbName string, dir string) {
+
 
 	return
 }
