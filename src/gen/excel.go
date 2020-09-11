@@ -235,8 +235,11 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	}
 
 	where := field.Where
-	if where == "" || (vari.Def.Type == constant.ConfigTypeArticle && strings.ToLower(where) == "true") {
+	if where == "" {
 		where = "1=1"
+	}
+	if vari.Def.Type == constant.ConfigTypeArticle && strings.ToLower(where) == "true" {
+		where = selectCol + " = 'y'"
 	}
 
 	where = strings.Replace(where, "-", "_", -1)
