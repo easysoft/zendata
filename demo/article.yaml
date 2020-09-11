@@ -1,0 +1,215 @@
+author: ZenData
+desc: Generated from article text automatically
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: "1"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: 秋天的天气
+      rand: true
+      select: xingrongci-tianqi-qiuji-hao
+      useLastSameValue: false
+      where: "true"
+    - field: "3"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: 、
+      rand: true
+      select: xingrongci-tianqi-qiuji-hao
+      useLastSameValue: false
+      where: "true"
+    - field: "5"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ，
+      rand: true
+      select: xingrongci-waimao-nvxing
+      useLastSameValue: false
+      where: "true"
+    - field: "6"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: mingci-xing+mingci-mingzi
+      useLastSameValue: false
+      where: mingci-xing+mingci-mingzi = f
+    - field: "7"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: fuci-chengdufuci
+      useLastSameValue: false
+      where: "true"
+    - field: "8"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: xingrongcizuoweiyu-qingxu-kuaile
+      useLastSameValue: false
+      where: "true"
+    - field: "11"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ，因为
+      rand: true
+      select: mingci-chenghu
+      useLastSameValue: false
+      where: mingci-chenghu = f
+    - field: "12"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: dongci-jiwu+mingci-yiyuan
+      useLastSameValue: false
+      where: "true"
+    - field: "14"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: 带她去
+      rand: true
+      select: mingci-dedian-mingshan
+      useLastSameValue: false
+      where: "true"
+    - field: "15"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: dongci-jiwu+mingci-dongzuo-yanbu-zhongxing
+      useLastSameValue: false
+      where: "true"
+    - field: "16"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: xingrongci-yanse-zhiwu-shumu
+      useLastSameValue: false
+      where: "true"
+    - field: "17"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: mingci-zhiwu-shumu
+      useLastSameValue: false
+      where: "true"
+    - field: "18"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: lianci-binglieguanxi
+      useLastSameValue: false
+      where: "true"
+    - field: "19"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: xingrongci-yanse-zhiwu-huahui
+      useLastSameValue: false
+      where: "true"
+    - field: "20"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: mingci-zhiwu-huahui
+      useLastSameValue: false
+      where: "true"
+    - field: "22"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: 。
+      rand: true
+      select: xingrongci-waimao-nvxing
+      useLastSameValue: true
+      where: "true"
+    - field: "23"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: mingci-xing+mingci-mingzi
+      useLastSameValue: true
+      where: mingci-xing+mingci-mingzi = f
+    - field: "24"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: fuci-chengdufuci
+      useLastSameValue: false
+      where: "true"
+    - field: "25"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: xingrongcizuoweiyu-qingxu-kuaile
+      useLastSameValue: false
+      where: "true"
+    - field: "27"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ，
+      rand: true
+      select: fuci-xingrongcizuofuci-qingxu-kuaile
+      useLastSameValue: false
+      where: "true"
+    - field: "28"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: dongci-jiwu+mingci-dongzuo-shoubi-qinqie
+      useLastSameValue: false
+      where: "true"
+    - field: "29"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: xingrongci-xingge-jiji
+      useLastSameValue: false
+      where: "true"
+    - field: "30"
+      from: data.words.v1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: mingci-chenghu
+      useLastSameValue: true
+      where: mingci-chenghu = f
