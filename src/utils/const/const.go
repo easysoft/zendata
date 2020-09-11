@@ -53,6 +53,7 @@ var (
 
 	DefaultPort = 8848
 	DefaultRoot = "./"
+	DefaultNumber = 10
 
 	ResDirData  = "data"
 	ResDirYaml  = "yaml"

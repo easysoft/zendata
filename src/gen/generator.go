@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -27,6 +28,15 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		err = errors.New("")
 		return
 	}
+
+	if vari.Total < 0 {
+		if vari.Def.Type == constant.ConfigTypeArticle {
+			vari.Total = 1
+		} else {
+			vari.Total = constant.DefaultNumber
+		}
+	}
+
 	vari.Res = LoadResDef(*fieldsToExport)
 
 	topFieldNameToValuesMap := map[string][]string{}
