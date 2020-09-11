@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
@@ -77,11 +78,27 @@ func createDef(typ, table string) (conf model.DefExport) {
 func createField(index int, prefix, exp string) (field model.DefFieldExport) {
 	field.Field = strconv.Itoa(index)
 	field.Prefix = prefix
-
-	field.Select = getPinyin(exp)
-	field.Where = "true"
 	field.Rand = true
 	field.Limit = 1
+
+	// deal with exp like S：名词-姓+名词-名字=F
+	exp = strings.ToLower(strings.TrimSpace(exp))
+	expArr := []rune(exp)
+
+	if string(expArr[0]) == "s" && (string(expArr[1]) == ":" || string(expArr[1]) == "：") {
+		exp = string(expArr[2:])
+		expArr = expArr[2:]
+		field.UseLastSameValue = true
+	}
+
+	if strings.Index(exp, "=") == len(exp) - 2 {
+		exp = string(expArr[:len(expArr) - 2])
+		field.Select = getPinyin(exp)
+		field.Where = fmt.Sprintf("%s = %s", field.Select, string(expArr[len(expArr) - 1]))
+	} else {
+		field.Select = getPinyin(exp)
+		field.Where = "true"
+	}
 
 	return
 }
