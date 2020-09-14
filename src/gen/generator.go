@@ -2,7 +2,6 @@ package gen
 
 import (
 	"errors"
-	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
@@ -247,7 +246,14 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 			}
 		case string:
 			str = val.(string)
-			fmt.Sprintf(str)
+
+			match, _ := regexp.MatchString("%[0-9]*d", field.Format)
+			if match {
+				valInt, err := strconv.Atoi(str)
+				if err == nil {
+					str, success = stringUtils.FormatStr(field.Format, valInt)
+				}
+			}
 		default:
 	}
 

@@ -1,0 +1,40 @@
+title: month date
+desc: 月日
+author: zentao
+version: "1.0"
+fields:
+  - field: monthday_common
+    from: base.time.monthday.v1.yaml
+    use: common
+    prefix: ""
+    postfix: "\t"
+
+  - field: monthday_with_line
+    from: base.time.monthday.v1.yaml
+    use: with_line
+    prefix: ""
+    postfix: "\t"
+
+  - field: monthday_chinese
+    from: base.time.monthday.v1.yaml
+    use: chinese
+    prefix: ""
+    postfix: "\t"
+
+  - field: date_common
+    from: base.time.date.v1.yaml
+    use: common
+    prefix: ""
+    postfix: "\t"
+
+  - field: date_with_line
+    from: base.time.date.v1.yaml
+    use: with_line
+    prefix: ""
+    postfix: "\t"
+
+  - field: date_chinese
+    from: base.time.date.v1.yaml
+    use: chinese
+    prefix: ""
+    postfix: "\t"
