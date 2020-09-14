@@ -44,3 +44,173 @@ instances:
         from: country.v1
         select: areacode
         postfix: "\t"
+
+  # 亚洲国家
+  - instance: asia_cnfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnfull
+        where: continent = 'asia'
+        postfix: "\t"
+  - instance: asia_cnshort
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnshort
+        where: continent = 'asia'
+        postfix: "\t"
+  - instance: asia_enfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: enfull
+        where: continent = 'asia'
+        postfix: "\t"
+  - instance: asia_areacode
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: areacode
+        where: continent = 'asia'
+        postfix: "\t"
+
+  # 欧洲国家
+  - instance: europe_cnfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnfull
+        where: continent = 'europe'
+        postfix: "\t"
+  - instance: europe_cnshort
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnshort
+        where: continent = 'europe'
+        postfix: "\t"
+  - instance: europe_enfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: enfull
+        where: continent = 'europe'
+        postfix: "\t"
+  - instance: europe_areacode
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: areacode
+        where: continent = 'europe'
+        postfix: "\t"
+
+  # 北美国家
+  - instance: north_america_cnfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnfull
+        where: continent = 'north america'
+        postfix: "\t"
+  - instance: north_america_cnshort
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnshort
+        where: continent = 'north america'
+        postfix: "\t"
+  - instance: north_america_enfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: enfull
+        where: continent = 'north america'
+        postfix: "\t"
+  - instance: north_america_areacode
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: areacode
+        where: continent = 'north america'
+        postfix: "\t"
+
+  # 南美国家
+  - instance: south_america_cnfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnfull
+        where: continent = 'south america'
+        postfix: "\t"
+  - instance: south_america_cnshort
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnshort
+        where: continent = 'south america'
+        postfix: "\t"
+  - instance: south_america_enfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: enfull
+        where: continent = 'south america'
+        postfix: "\t"
+  - instance: south_america_areacode
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: areacode
+        where: continent = 'south america'
+        postfix: "\t"
+
+  # 大洋洲国家
+  - instance: oceania_cnfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnfull
+        where: continent = 'oceania'
+        postfix: "\t"
+  - instance: oceania_cnshort
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnshort
+        where: continent = 'oceania'
+        postfix: "\t"
+  - instance: oceania_enfull
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: enfull
+        where: continent = 'oceania'
+        postfix: "\t"
+  - instance: oceania_areacode
+    note:
+    fields:
+      - field: field1
+        from: country.v1
+        select: areacode
+        where: continent = 'oceania'
+        postfix: "\t"
