@@ -1,0 +1,34 @@
+title: country name
+desc: 测试国家名称
+author: zentao
+version: "1.0"
+fields:
+  - field: cnfull
+    from: base.country.v1.yaml
+    use: cnfull
+    prefix: ""
+    postfix: "\t"
+
+  - field: cnshort
+    from: base.country.v1.yaml
+    use: cnshort
+    prefix: ""
+    postfix: "\t"
+
+  - field: enfull
+    from: base.country.v1.yaml
+    use: enfull
+    prefix: ""
+    postfix: "\t"
+
+  - field: enshort
+    from: base.country.v1.yaml
+    use: enshort
+    prefix: ""
+    postfix: "\t"
+
+  - field: areacode
+    from: base.country.v1.yaml
+    use: areacode
+    prefix: ""
+    postfix: "\t"

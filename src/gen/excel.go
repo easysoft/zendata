@@ -131,6 +131,7 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 				if colIndex > 0 {
 					valList = valList + ", "
 				}
+				colCell = strings.Replace(colCell, "'", "''", -1)
 				valList = valList + "'" + colCell + "'"
 			}
 			valList = valList + ")"

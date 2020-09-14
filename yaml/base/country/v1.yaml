@@ -1,0 +1,46 @@
+title: 国家数据
+desc:
+author: zentao
+version: 1.0
+
+field: country
+instances:
+  - instance: cnfull
+    note: 国家中文全名
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnfull
+        postfix: "\t"
+
+  - instance: cnshort
+    note: 国家中文名
+    fields:
+      - field: field1
+        from: country.v1
+        select: cnshort
+        postfix: "\t"
+
+  - instance: enfull
+    note: 国家英文全名
+    fields:
+      - field: field1
+        from: country.v1
+        select: enfull
+        postfix: "\t"
+
+  - instance: enshort
+    note: 国家英文全名
+    fields:
+      - field: field1
+        from: country.v1
+        select: enshort
+        postfix: "\t"
+
+  - instance: areacode
+    note: 国家编码
+    fields:
+      - field: field1
+        from: country.v1
+        select: areacode
+        postfix: "\t"
