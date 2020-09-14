@@ -65,8 +65,8 @@ fields:
   - field: enaccount_common
     from: base.name.enaccount.v1.yaml
     use: common
-    prefix: "["
-    postfix: "]\t"
+    prefix: ""
+    postfix: "\t"
   - field: enaccount_underline
     from: base.name.enaccount.v1.yaml
     use: common_underline

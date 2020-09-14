@@ -1,0 +1,21 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: test0
+    range: [userA,a-z,1-9] # 字面常量及列表
+    postfix: "\t"
+
+  - field: test1
+    range: [userA,a-z,1-9] # 字面常量及列表
+    postfix: "\t"
+
+  - field: field_use_instance
+    froms:
+      - from: ip.v1.yaml
+        use: privateC,privateB
+      - from: ip.v1.yaml
+        use: privateC,privateB
+    postfix: "\t"
