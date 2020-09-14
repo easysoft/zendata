@@ -156,8 +156,14 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 			}
 		} else if field.Select != "" { // refer to excel
 			groupValues := vari.Res[field.From]
-			slct := field.Select
-			values = append(values, groupValues[slct]...)
+			resKey := field.Select
+
+			// deal with the key
+			if vari.Def.Type == constant.ConfigTypeArticle {
+				resKey = resKey + "_" + field.Field
+			}
+
+			values = append(values, groupValues[resKey]...)
 		}
 
 		values = loopFieldValues(field, values, vari.Total, true)

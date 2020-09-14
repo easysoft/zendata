@@ -32,10 +32,10 @@ var (
 	Ip string
 	Port int
 
-	Def = model.DefData{}
-	Res = map[string]map[string][]string{}
+	Def                      = model.DefData{}
+	Res                      = map[string]map[string][]string{}
 	RandFieldNameToValuesMap = map[string]map[string]interface{}{}
-	TopFiledMap  = map[string]model.DefField{}
+	TopFieldMap              = map[string]model.DefField{}
 
 	CacheResFileToMap  = map[string] map[string][]string {}
 	CacheResFileToName  = map[string]string{}

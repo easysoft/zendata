@@ -2,6 +2,7 @@ package gen
 
 import (
 	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -10,6 +11,7 @@ import (
 	"github.com/jinzhu/copier"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"strings"
 )
 
 func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
@@ -28,7 +30,7 @@ func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 }
 
 func loadResField(field *model.DefField, res *map[string]map[string][]string) {
-	if len(field.Fields) > 0 {
+	if len(field.Fields) > 0 { // sub fields
 		for _, child := range field.Fields {
 			if child.Use != "" && child.From == "" {
 				child.From = field.From
@@ -36,7 +38,7 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 
 			loadResField(&child, res)
 		}
-	} else if len(field.Froms) > 0 {
+	} else if len(field.Froms) > 0 { // multiple from
 		for _, child := range field.Froms {
 			if child.Use != "" && child.From == "" {
 				child.From = field.From
@@ -44,22 +46,57 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 
 			loadResField(&child, res)
 		}
-	} else if field.From != "" {
-		resFile, resType, sheet := fileUtils.GetResProp(field.From)
-		valueMap, _ := getResValue(resFile, resType, sheet, field)
+	} else if field.From != "" { // refer to res
+		var valueMap map[string][]string
+		if vari.Def.Type == constant.ConfigTypeArticle && field.UseLastSameValue { // use last
+			valueMap = getLastDuplicateVal((*res)[field.From], field.Select)
+		}
+
+		if valueMap == nil {
+			resFile, resType, sheet := fileUtils.GetResProp(field.From)
+			valueMap, _ = getResValue(resFile, resType, sheet, field)
+		}
 
 		if (*res)[field.From] == nil {
 			(*res)[field.From] = map[string][]string{}
 		}
 		for key, val := range valueMap {
-			(*res)[field.From][key] = val
+			resKey := key
+			// avoid article key to be duplicate
+			if vari.Def.Type == constant.ConfigTypeArticle {
+				resKey = resKey + "_" + field.Field
+			}
+			(*res)[field.From][resKey] = val
 		}
 
-	} else if field.Config != "" {
+	} else if field.Config != "" { // refer to config
 		resFile, resType, _ := fileUtils.GetResProp(field.Config)
 		values, _ := getResValue(resFile, resType, "", field)
 		(*res)[field.Config] = values
 	}
+}
+
+func getLastDuplicateVal(preMap map[string][]string, key string) (valMap map[string][]string) {
+	lastKey := ""
+	for k := range preMap {
+		if key == removeKeyNumber(k) {
+			lastKey = k
+			break
+		}
+	}
+
+	if lastKey == "" || preMap[lastKey] == nil {
+		return nil
+	}
+
+	valMap = map[string][]string{}
+	valMap[key] = preMap[lastKey]
+	return
+}
+func removeKeyNumber(key string) string {
+	arr := strings.Split(key, "_")
+	ret := strings.Join(arr[:len(arr) - 1], "_")
+	return ret
 }
 
 func getResValue(resFile, resType, sheet string, field *model.DefField) (map[string][]string, string) {

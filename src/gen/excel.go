@@ -228,7 +228,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 		return list, ""
 	}
 
-	selectCol := strings.Replace(field.Select, "-", "_", -1)
+	selectCol := field.Select
 	from := dbName
 	if tableName != "" {
 		from += "_" + tableName
@@ -307,6 +307,10 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 			list = append(list, val)
 			idx++
 		}
+	}
+
+	if field.Select == "xingrongci_waimao_nvxing" {
+		log.Println(field.Select)
 	}
 
 	return list, selectCol

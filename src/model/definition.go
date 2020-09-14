@@ -85,7 +85,7 @@ type FieldSimple struct {
 	LoopIndex int  `yaml:"-"`
 	IsRand bool  `yaml:"-"`
 	IsReferYaml bool  `yaml:"-"`
-	UseLastSameValue bool  `yaml:"-"`
+	UseLastSameValue bool  `yaml:"useLastSameValue"`
 }
 
 type FieldWithValues struct {

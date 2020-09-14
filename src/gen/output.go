@@ -32,7 +32,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 
 		for j, col := range cols {
 			col = replacePlaceholder(col)
-			field := vari.TopFiledMap[fields[j]]
+			field := vari.TopFieldMap[fields[j]]
 			if field.Width > runewidth.StringWidth(col) {
 				col = stringUtils.AddPad(col, field)
 			}
