@@ -303,3 +303,41 @@ func GetFileName(filePath string) string {
 
 	return fileName
 }
+
+func GetFilesInDir(folder, ext string, files *[]string) {
+	folder, _ = filepath.Abs(folder)
+
+	if !IsDir(folder) {
+		if path.Ext(folder) == ext {
+			*files = append(*files, folder)
+		}
+
+		return
+	}
+
+	dir, err := ioutil.ReadDir(folder)
+	if err != nil {
+		return
+	}
+
+	for _, fi := range dir {
+		name := fi.Name()
+		if commonUtils.IngoreFile(name) {
+			continue
+		}
+
+		filePath := AddSepIfNeeded(folder) + name
+		if fi.IsDir() {
+			GetFilesInDir(filePath, ext, files)
+		} else if strings.Index(name, "~") != 0 && path.Ext(filePath) == ext {
+			*files = append(*files, filePath)
+		}
+	}
+}
+
+func ChangeFileExt(filePath, ext string) string {
+	ret := strings.TrimSuffix(filePath, path.Ext(filePath))
+	ret += ext
+
+	return ret
+}

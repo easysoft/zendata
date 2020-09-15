@@ -16,7 +16,7 @@ Parameters:
   -r  --recursive  Recursive mode. The default mode is parallel, in which each field loops independently.
                    The value of a field in the recursive mode depends on that of the previous field, which enables the random data.
 
-  -p  --port       Run the HTTP on the specified port. The data in JSON format can be obtained via http://ip/ port. 
+  -p  --port       Run the HTTP on the specified port. The data in JSON format can be obtained via http:\\ip\ port. 
                    Only data generation is supported.
   -b  --bind       Listen IP addresses. All IP addresses are listened by default.
   -R  --root       The root directory when running HTTP. The client can call the config file under the root directory.
@@ -26,6 +26,7 @@ Parameters:
                    You need to specify an output directory by using -o.
   -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
                    Also you can output the readable format via -H.
+  -a  --article    Convert article to yaml config file in the dir provided by -o parameter.
 
   -l  --list       List all supported data formats.
   -v  --view       View the detailed definition of a data format.
@@ -34,24 +35,25 @@ Parameters:
 
 Command Line Examples:
 
-$>zd.exe -d demo/default.yaml    # Generate 10 lines of data according to the config file specified by -d.
-$>zd.exe -c demo/default.yaml    # Generate 10 lines of data according to the config file specified by -c.
-$>zd.exe -c demo/default.yaml -r # Generate 10 lines of data according to the config file specified by -c recursively.
-$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100               # Using the parameter of -c and -d at the same time.
+$>zd.exe -d demo\default.yaml    # Generate 10 lines of data according to the config file specified by -d.
+$>zd.exe -c demo\default.yaml    # Generate 10 lines of data according to the config file specified by -c.
+$>zd.exe -c demo\default.yaml -r # Generate 10 lines of data according to the config file specified by -c recursively.
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100               # Using the parameter of -c and -d at the same time.
 
-$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.txt   # Output data in original format.
-$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.json  # Output data in JSON.
-$>zd.exe -d demo/default.yaml -c demo/test.yaml -n 100 -o test.xml   # Output data in XML.
-$>zd.exe -d demo/default.yaml -n 100 -o test.sql -t user             # Output the sql inserted into the table user.
-$>zd.exe -d demo/default.yaml -o test.sql -t user -s mysql --trim    # Remove the prefix and postfix of every field.
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.txt   # Output data in original format.
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  # Output data in JSON.
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.xml   # Output data in XML.
+$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # Output the sql inserted into the table user.
+$>zd.exe -d demo\default.yaml -o test.sql -t user -s mysql --trim    # Remove the prefix and postfix of every field.
 
-$>zd.exe -i demo/zentao.sql -o db                   # Generate YAML files for each table by parsing zentao.sql.
-$>zd.exe -c demo/default.yaml -i test.txt --decode  # Parse the file specified by -i according to the config of -d.
+$>zd.exe -i demo\zentao.sql -o db                   # Generate YAML files for each table by parsing zentao.sql.
+$>zd.exe -c demo\default.yaml -i test.txt --decode  # Parse the file specified by -i according to the config of -d.
+$>zd.exe -a demo\article.txt  -o demo               # Convert article to yaml config file in demo dir.
 
 $>zd.exe -l                             # List all build-in data types.
-$>zd.exe -v address.cn.v1               # View data types in build-in Excel file data/address/cn.v1.xlsx.
+$>zd.exe -v address.cn.v1               # View data types in build-in Excel file data\address\cn.v1.xlsx.
 $>zd.exe -v address.cn.v1.china         # View data items in Excel sheet "china".
-$>zd.exe -v ip.v1.yaml                  # View data in build-in instances defined in yaml/ip/v1.yaml。
+$>zd.exe -v ip.v1.yaml                  # View data in build-in instances defined in yaml\ip\v1.yaml。
 
 Service Example:
 
@@ -60,6 +62,6 @@ $zd.exe -p 80 -R d:\zd\config           # Listen port 80. Use d:\zd\config as th
 
 Client Call:
 
-$curl http://localhost:8848/?d=demo/default.yaml&c=demo/config.yaml&n=100          # Specify the server config file via GET.
-$curl http://localhost:8848/?default=demo/default.yaml&output=test.sql&table=user  # Parameter names can be full.
-$curl -i -X POST http://localhost:8848?lines=3 -F default=@demo/default.yaml       # The config can be uploaded via POST.
+$curl http:\\localhost:8848\?d=demo\default.yaml&c=demo\config.yaml&n=100          # Specify the server config file via GET.
+$curl http:\\localhost:8848\?default=demo\default.yaml&output=test.sql&table=user  # Parameter names can be full.
+$curl -i -X POST http:\\localhost:8848?lines=3 -F default=@demo\default.yaml       # The config can be uploaded via POST.
