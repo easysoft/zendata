@@ -51,7 +51,8 @@ func ConvertArticle(src, dist string) {
 }
 
 func convertToYaml(article, filePath string) (content string) {
-	sections, _ := parseSections(article)
+	sections := parseSections(article)
+	_ = groupSectionsBySentAndParag(sections)
 
 	conf := createDef(constant.ConfigTypeArticle, table, filePath)
 
@@ -151,15 +152,12 @@ func createFields(index int, prefix, exp string) (fields []model.DefFieldExport)
 	return
 }
 
-func parseSections(content string) (sections []map[string]string, division [][]int) {
+func parseSections(content string) (sections []map[string]string) {
 	strStart := false
 	expStart := false
 
 	content = strings.TrimSpace(content)
 	runeArr := []rune(content)
-
-	//parag := 0
-	//sent := 0
 
 	section := ""
 	for i := 0; i < len(runeArr); i++ {
@@ -231,6 +229,45 @@ func parseSections(content string) (sections []map[string]string, division [][]i
 			} else if i == len(runeArr) - 1 {
 				addSection(section, "str", &sections)
 			}
+		}
+	}
+
+	return
+}
+
+func groupSectionsBySentAndParag(sections []map[string]string) (groups [][][]map[string]string) {
+	itemArr := make([]map[string]string, 0)
+	groupArr := make([][]map[string]string, 0)
+
+	for index := 0; index < len(sections); index++ {
+		section := sections[index]
+		itemArr = append(itemArr, section)
+
+		if section["parag"] == "true" {
+			groupArr = append(groupArr, itemArr)
+			groups = append(groups, groupArr)
+
+			groupArr = make([][]map[string]string, 0)
+			itemArr = make([]map[string]string, 0)
+		} else if section["sent"] == "true" {
+			if index < len(sections) - 1 && sections[index+1]["parag"] == "true" {
+				itemArr = append(itemArr, sections[index+1])
+				groupArr = append(groupArr, itemArr)
+				groups = append(groups, groupArr)
+
+				groupArr = make([][]map[string]string, 0)
+				itemArr = make([]map[string]string, 0)
+
+				index += 1
+			} else {
+				groupArr = append(groupArr, itemArr)
+				if index == len(sections) - 1 {
+					groups = append(groups, groupArr)
+				}
+
+				itemArr = make([]map[string]string, 0)
+			}
+
 		}
 	}
 
