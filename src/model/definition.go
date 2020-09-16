@@ -123,5 +123,4 @@ type DefFieldExport struct {
 	Where	string  `yaml:"where"`
 	Rand  bool  `yaml:"rand"`
 	Limit	int  `yaml:"limit"`
-	Range string `yaml:"range"`
 }

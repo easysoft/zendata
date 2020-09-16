@@ -32,6 +32,11 @@ func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithVal
 
 func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
 	rang := field.Range
+	if rang == "" {
+		fieldValue.Values = append(fieldValue.Values, "")
+		return
+	}
+
 	rangeSections := ParseRangeProperty(rang) // 1
 
 	index := 0

@@ -53,6 +53,12 @@ func ParseRangeProperty(rang string) []string {
 func ParseDesc(desc string) (items []string) {
 	desc = strings.TrimSpace(desc)
 	desc = strings.Trim(desc, ",")
+
+	if desc == "" {
+		items = append(items, desc)
+		return
+	}
+
 	runeArr := []rune(desc)
 
 	if runeArr[0] == constant.Backtick &&  runeArr[len(runeArr) - 1] == constant.Backtick { 	// `xxx`
@@ -78,6 +84,12 @@ func ParseDesc(desc string) (items []string) {
 */
 func ParseRangeSection(item string) (entry string, step string, repeat int) {
 	item = strings.TrimSpace(item)
+
+	if item == "" {
+		repeat = 1
+		return
+	}
+
 	runeArr := []rune(item)
 	if (runeArr[0] == constant.Backtick &&  runeArr[len(runeArr) - 1] == constant.Backtick) || // `xxx`
 		(string(item[0]) == string(constant.LeftBrackets) && // (xxx)
@@ -114,6 +126,11 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 */
 func ParseRangeSectionDesc(str string) (typ string, desc string) {
 	desc = strings.TrimSpace(str)
+
+	if desc == "" {
+		typ = "literal"
+		return
+	}
 
 	if stringUtils.EndWith(desc, ".yaml") { // refer to another yaml file
 		typ = "yaml"

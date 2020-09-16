@@ -51,7 +51,7 @@ func ConvertArticle(src, dist string) {
 }
 
 func convertToYaml(article, filePath string) (content string) {
-	sections := parseSections(article)
+	sections, _ := parseSections(article)
 
 	conf := createDef(constant.ConfigTypeArticle, table, filePath)
 
@@ -59,6 +59,8 @@ func convertToYaml(article, filePath string) (content string) {
 	for index, section := range sections {
 		tye := section["type"]
 		val := section["val"]
+		parag := section["parag"]
+		sent := section["sent"]
 
 		if tye == "exp" {
 			fields := createFields(index, prefix, val)
@@ -68,11 +70,18 @@ func convertToYaml(article, filePath string) (content string) {
 		} else {
 			prefix += val
 
-			if prefix != "" && index == len(sections) - 1 {
-				field := model.DefFieldExport{}
-				field.Range = prefix
-
+			if parag == "true" {
+				field := model.DefFieldExport{Field: strconv.Itoa(index), Prefix: prefix}
 				conf.XFields = append(conf.XFields, field)
+				prefix = ""
+			} else if sent == "true" {
+				field := model.DefFieldExport{Field: strconv.Itoa(index), Prefix: prefix}
+				conf.XFields = append(conf.XFields, field)
+				prefix = ""
+			} else if prefix != "" && index == len(sections) - 1 { // last section
+				field := model.DefFieldExport{Field: strconv.Itoa(index), Prefix: prefix}
+				conf.XFields = append(conf.XFields, field)
+				prefix = ""
 			}
 		}
 	}
@@ -142,12 +151,15 @@ func createFields(index int, prefix, exp string) (fields []model.DefFieldExport)
 	return
 }
 
-func parseSections(content string) (sections []map[string]string) {
+func parseSections(content string) (sections []map[string]string, division [][]int) {
 	strStart := false
 	expStart := false
 
 	content = strings.TrimSpace(content)
 	runeArr := []rune(content)
+
+	//parag := 0
+	//sent := 0
 
 	section := ""
 	for i := 0; i < len(runeArr); i++ {
@@ -158,6 +170,11 @@ func parseSections(content string) (sections []map[string]string) {
 		if isCouple {
 			section += duplicateStr
 			i += 1
+
+			if i == len(runeArr) - 1 {
+				addSection(section, "str", &sections)
+			}
+
 		} else if strStart && str == strRight { // str close
 			addSection(section, "str", &sections)
 
@@ -184,11 +201,37 @@ func parseSections(content string) (sections []map[string]string) {
 			section = ""
 		} else {
 			section += str
-		}
 
-		//if i == len(runeArr) - 1 && len(section) > 0 {
-		//	addSection(section, "str", &sections)
-		//}
+			if str == "。" {
+				if i < len(runeArr) && string(runeArr[i+1]) == strRight {
+					i += 1
+				}
+
+				addSection(section, "str", &sections)
+
+				strStart = false
+				expStart = false
+				section = ""
+			} else if str == "\n" {
+				// get all \n
+				for j := i+1; j < len(runeArr); j++ {
+					if string(runeArr[j]) == "\n" {
+						section += str
+						i = j
+					} else {
+						break
+					}
+				}
+
+				addSection(section, "str", &sections)
+
+				strStart = false
+				expStart = false
+				section = ""
+			} else if i == len(runeArr) - 1 {
+				addSection(section, "str", &sections)
+			}
+		}
 	}
 
 	return
@@ -198,6 +241,14 @@ func addSection(str, typ string, arr *[]map[string]string) {
 	mp := map[string]string{}
 	mp["type"] = typ
 	mp["val"] = str
+
+	runeArr := []rune(str)
+	end := runeArr[len(runeArr) - 1]
+	if string(end) == "\n" {
+		mp["parag"] = "true"
+	} else if string(end) == "。" {
+		mp["sent"] = "true"
+	}
 
 	*arr = append(*arr, mp)
 }

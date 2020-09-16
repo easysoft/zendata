@@ -167,7 +167,7 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 
 func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	if !isExcelChanged(dir) {
-		//return
+		return
 	}
 
 	files := make([]string, 0)
