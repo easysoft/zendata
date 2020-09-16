@@ -29,7 +29,7 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 			sheet = firstSheet
 		}
 	} else { // dir
-		ConvertExcelsToSQLiteIfNeeded(dbName, filePath)
+		ConvertWordExcelsToSQLiteIfNeeded(dbName, filePath)
 	}
 
 	list, selectCol := ReadDataFromSQLite(*field, dbName, sheet)
@@ -166,7 +166,7 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 	return
 }
 
-func ConvertExcelsToSQLiteIfNeeded(tableName string, dir string) {
+func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	if !isExcelChanged(dir) {
 		return
 	}
@@ -175,8 +175,9 @@ func ConvertExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	fileUtils.GetFilesByExtInDir(dir, ".xlsx", &files)
 
 	seq := 1
-	ddlFields := make([]string, 0)
 	insertSqls := make([]string, 0)
+	ddlFields := make([]string, 0)
+	ddlFields = append(ddlFields, "    `词语` VARCHAR DEFAULT ''")
 
 	colMap := map[string]bool{}
 	for _, file := range files {
@@ -230,12 +231,18 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	}
 
 	selectCol := field.Select
+	if vari.Def.Type == constant.ConfigTypeArticle {
+		selectCol = stringUtils.GetPinyin(selectCol)
+	}
 	from := dbName
 	if tableName != "" {
 		from += "_" + tableName
 	}
 
 	where := field.Where
+	if vari.Def.Type == constant.ConfigTypeArticle {
+		where = stringUtils.GetPinyin(where)
+	}
 	if where == "" {
 		where = "1=1"
 	}
@@ -431,7 +438,9 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 
 	fileName := fileUtils.GetFileName(filePath)
 	fileName = strings.TrimSuffix(fileName, "词库")
-	colPrefix := stringUtils.GetPinyin(fileName)
+
+	colPrefix := fileName // stringUtils.GetPinyin(fileName)
+	*ddlFields = append(*ddlFields, "    `" + colPrefix + "` VARCHAR DEFAULT ''")
 
 	for rowIndex, sheet := range excel.GetSheetList() {
 		rows, _ := excel.GetRows(sheet)
@@ -441,6 +450,7 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 
 		colDefine := ""
 		colList := make([]string, 0)
+		colList = append(colList, "`" + colPrefix + "`")
 
 		colCount := 0
 		index := 0
@@ -451,19 +461,17 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 			}
 			colCount++
 
-			colName := stringUtils.GetPinyin(val)
-
-			if colIndex == 0 && colName != "ci" {
-				colName = "ci"
-			}
-			if colName != "ci" {
-				colName = colPrefix + "_" + colName
-			}
+			colName := val // stringUtils.GetPinyin(val)
 
 			if (*colMap)[colName] == false {
 				colType := "VARCHAR"
 				colDefine = "    " + "`" + colName + "` " + colType + " DEFAULT ''"
-				*ddlFields = append(*ddlFields, colDefine)
+
+				if colIndex == 0 {
+					colName = "词语"
+				} else { // first already added
+					*ddlFields = append(*ddlFields, colDefine)
+				}
 
 				(*colMap)[colName] = true
 			}
@@ -480,6 +488,7 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 
 			valListItem := make([]string, 0)
 			valListItem = append(valListItem, strconv.Itoa(*seq))
+			valListItem = append(valListItem, "'y'")
 			*seq += 1
 
 			for i := 0; i < colCount; i++ {

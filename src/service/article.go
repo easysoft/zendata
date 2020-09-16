@@ -36,12 +36,12 @@ func ConvertArticle(src, dist string) {
 		files = append(files, pth)
 
 		if dist == "" {
-			dist = path.Dir(pth)
+			dist = fileUtils.AddSepIfNeeded(path.Dir(pth))
 		}
 	} else {
 		fileUtils.GetFilesInDir(src, ".txt", &files)
 		if dist == "" {
-			dist = src
+			dist = fileUtils.AddSepIfNeeded(src)
 		}
 	}
 
