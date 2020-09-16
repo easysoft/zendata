@@ -9,7 +9,6 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"log"
 	"os"
@@ -168,7 +167,7 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 
 func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	if !isExcelChanged(dir) {
-		return
+		//return
 	}
 
 	files := make([]string, 0)
@@ -231,26 +230,35 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	}
 
 	selectCol := field.Select
-	if vari.Def.Type == constant.ConfigTypeArticle {
-		selectCol = stringUtils.GetPinyin(selectCol)
-	}
 	from := dbName
 	if tableName != "" {
 		from += "_" + tableName
 	}
 
-	where := field.Where
+	where := strings.TrimSpace(field.Where)
 	if vari.Def.Type == constant.ConfigTypeArticle {
-		where = stringUtils.GetPinyin(where)
-	}
-	if where == "" {
-		where = "1=1"
-	}
-	if vari.Def.Type == constant.ConfigTypeArticle && strings.ToLower(where) == "true" {
-		where = selectCol + " = 'y'"
-	}
+		if where == "" {
+			where = "y"
+		}
 
-	where = strings.Replace(where, "-", "_", -1)
+		cols := strings.Split(selectCol, "-")
+		wheres := ""
+		for index, col := range cols {
+			if index == 0 {
+				wheres += fmt.Sprintf("`%s` = '%s'", col, "y")
+			} else {
+				wheres += " AND "
+				wheres += fmt.Sprintf("`%s` = '%s'", col, where)
+			}
+		}
+
+		where = wheres
+
+	} else {
+		if where == "" {
+			where = "1=1"
+		}
+	}
 
 	if field.Rand {
 		where += " ORDER BY RANDOM() "
@@ -266,7 +274,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 
 	colStr := selectCol
 	if vari.Def.Type == constant.ConfigTypeArticle {
-		colStr = "ci AS " + selectCol
+		colStr = "`词语` AS `" + selectCol + "`"
 	}
 
 	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", colStr, from, where)
@@ -315,10 +323,6 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 			list = append(list, val)
 			idx++
 		}
-	}
-
-	if field.Select == "xingrongci_waimao_nvxing" {
-		log.Println(field.Select)
 	}
 
 	return list, selectCol
@@ -442,7 +446,7 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 	colPrefix := fileName // stringUtils.GetPinyin(fileName)
 	*ddlFields = append(*ddlFields, "    `" + colPrefix + "` VARCHAR DEFAULT ''")
 
-	for rowIndex, sheet := range excel.GetSheetList() {
+	for sheetIndex, sheet := range excel.GetSheetList() {
 		rows, _ := excel.GetRows(sheet)
 		if len(rows) == 0 {
 			continue
@@ -450,69 +454,95 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 
 		colDefine := ""
 		colList := make([]string, 0)
-		colList = append(colList, "`" + colPrefix + "`")
 
 		colCount := 0
 		index := 0
+		// gen col list for ddl and insert cols
 		for colIndex, col := range rows[0] {
 			val := strings.TrimSpace(col)
-			if rowIndex == 0 && val == "" {
+
+			if sheetIndex == 0 && val == "" {
 				break
 			}
 			colCount++
 
-			colName := val // stringUtils.GetPinyin(val)
+			colList = append(colList, val)
 
-			if (*colMap)[colName] == false {
-				colType := "VARCHAR"
-				colDefine = "    " + "`" + colName + "` " + colType + " DEFAULT ''"
+			colNames := val
+			colNameArr := strings.Split(colNames, "-")
+			for _, colName := range colNameArr {
+				if (*colMap)[colName] == false {
+					colType := "VARCHAR"
+					colDefine = "    " + "`" + colName + "` " + colType + " DEFAULT ''"
 
-				if colIndex == 0 {
-					colName = "词语"
-				} else { // first already added
-					*ddlFields = append(*ddlFields, colDefine)
+					if colIndex == 0 {
+						colName = "词语"
+					} else { // first already added
+						*ddlFields = append(*ddlFields, colDefine)
+					}
+
+					(*colMap)[colName] = true
 				}
-
-				(*colMap)[colName] = true
 			}
-			colList = append(colList, "`" + colName + "`")
 
 			index++
 		}
 
-		valList := make([]string, 0)
+		insertTemplate := "INSERT INTO `" + tableName + "` (%s) VALUES (%s);"
+		// gen values for insert
 		for rowIndex, row := range rows {
-			if rowIndex == 0 {
+			if rowIndex == 0 { // ignore title line
 				continue
 			}
 
-			valListItem := make([]string, 0)
-			valListItem = append(valListItem, strconv.Itoa(*seq))
-			valListItem = append(valListItem, "'y'")
+			record := map[string]interface{}{}
+			record[colPrefix] = "y"
+			record["seq"] = *seq
 			*seq += 1
 
-			for i := 0; i < colCount; i++ {
-				val := ""
-				if i == 0 { // word
-					val = strings.TrimSpace(row[i])
-				} else if i <= len(row) - 1 { // excel value
-					val = strings.ToLower(strings.TrimSpace(row[i]))
-					if val != "y" && val != "b" && val != "f" && val != "m" {
-						val = ""
-					}
-				} else {
-					val = ""
+			for colIndex, col := range row {
+				if colIndex >= len(colList) {
+					break
 				}
-				valListItem = append(valListItem,"'" + val + "'")
-			}
-			valList = append(valList, "(" + strings.Join(valListItem, ", ") + ")")
-		}
 
-		insertTemplate := "INSERT INTO `" + tableName + "` (`seq`, %s) VALUES %s;"
-		insertSql := fmt.Sprintf(insertTemplate,
-			strings.Join(colList, ", "),
-			strings.Join(valList, ", "),
-		)
-		*insertSqls = append(*insertSqls, insertSql)
+				colNames := colList[colIndex]
+
+				val := strings.ToLower(strings.TrimSpace(col))
+				if val == "" {
+					continue
+				}
+
+				if colIndex == 0 { // word
+					record["词语"] = val
+				} else {
+					if val != "y" && val != "b" && val != "f" && val != "m" { val = "" }
+
+					colNameArr := strings.Split(colNames, "-")
+					for _, colName := range colNameArr {
+						record[colName] = val
+					}
+				}
+			}
+
+			cols := make([]string, 0)
+			vals := make([]string, 0)
+
+			for key, val := range record {
+				cols = append(cols, "`" + key + "`")
+
+				valStr := ""
+				switch val.(type) {
+				case int:
+					valStr = strconv.Itoa(val.(int))
+				default:
+					valStr = "'" + val.(string) + "'"
+				}
+
+				vals = append(vals, valStr)
+			}
+
+			insertSql := fmt.Sprintf(insertTemplate, strings.Join(cols, ","), strings.Join(vals, ","))
+			*insertSqls = append(*insertSqls, insertSql)
+		}
 	}
 }

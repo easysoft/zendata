@@ -48,14 +48,8 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 		}
 	} else if field.From != "" { // refer to res
 		var valueMap map[string][]string
-		if vari.Def.Type == constant.ConfigTypeArticle && field.UseLastSameValue { // use last
-			valueMap = getLastDuplicateVal((*res)[field.From], field.Select)
-		}
-
-		if valueMap == nil {
-			resFile, resType, sheet := fileUtils.GetResProp(field.From)
-			valueMap, _ = getResValue(resFile, resType, sheet, field)
-		}
+		resFile, resType, sheet := fileUtils.GetResProp(field.From)
+		valueMap, _ = getResValue(resFile, resType, sheet, field)
 
 		if (*res)[field.From] == nil {
 			(*res)[field.From] = map[string][]string{}

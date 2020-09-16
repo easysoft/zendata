@@ -59,14 +59,10 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	mergerDefine(&defaultDef, &configDef, fieldsToExport)
 	orderFields(&defaultDef, *fieldsToExport)
 
-	for index, field := range defaultDef.Fields {
+	for _, field := range defaultDef.Fields {
 		if vari.Trim {
 			field.Prefix = ""
 			field.Postfix = ""
-		}
-
-		if defaultDef.Type == constant.ConfigTypeArticle {
-			defaultDef.Fields[index].Select = strings.Replace(field.Select, "-", "_", -1)
 		}
 	}
 

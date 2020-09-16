@@ -1,11 +1,9 @@
 package service
 
 import (
-	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	_ "github.com/mattn/go-sqlite3"
 	"gopkg.in/yaml.v3"
 	"path"
@@ -22,8 +20,6 @@ const (
 	expRight = "）"
 
 	table = "words.v1"
-	//src = "data/words"
-	//dist = "demo"
 )
 var (
 	compares = []string{"=", "!=", ">", "<"}
@@ -71,6 +67,13 @@ func convertToYaml(article, filePath string) (content string) {
 			prefix = ""
 		} else {
 			prefix += val
+
+			if prefix != "" && index == len(sections) - 1 {
+				field := model.DefFieldExport{}
+				field.Range = prefix
+
+				conf.XFields = append(conf.XFields, field)
+			}
 		}
 	}
 
@@ -111,37 +114,26 @@ func createFields(index int, prefix, exp string) (fields []model.DefFieldExport)
 	if string(expArr[0]) == "s" && (string(expArr[1]) == ":" || string(expArr[1]) == "：") {
 		exp = string(expArr[2:])
 		expArr = expArr[2:]
-		field.UseLastSameValue = true
 	}
 
 	if strings.Index(exp, "=") == len(exp) - 2 {
 		exp = string(expArr[:len(expArr) - 2])
-		field.Select = stringUtils.GetPinyin(exp)
-		field.Where = fmt.Sprintf("%s = '%s'", field.Select, string(expArr[len(expArr) - 1]))
+		field.Select = exp
+		field.Where = string(expArr[len(expArr) - 1])
 	} else {
-		field.Select = stringUtils.GetPinyin(exp)
-		field.Where = "true"
-		//field.Where = getPinyin(exp) + " = 'y'"
+		field.Select = exp
+		field.Where = ""
 	}
 
 	if strings.Index(field.Select, "+") < 0 {
 		fields = append(fields, field)
 	} else if strings.Index(field.Select, "+") > 0 { // include more than one field, split to two
-		arr := strings.Split(field.Where, "=")
-		right := ""
-		if len(arr) > 1 {
-			right = arr[1]
-		}
-
 		items := strings.Split(field.Select, "+")
 		for _, item := range items {
 			var objClone interface{} = field
 			fieldClone := objClone.(model.DefFieldExport)
 			fieldClone.Select = item
-
-			if len(arr) > 1 { // has conditions
-				fieldClone.Where = item + " = " + right
-			}
+			fieldClone.Where = field.Where
 
 			fields = append(fields, fieldClone)
 		}
@@ -193,6 +185,10 @@ func parseSections(content string) (sections []map[string]string) {
 		} else {
 			section += str
 		}
+
+		//if i == len(runeArr) - 1 && len(section) > 0 {
+		//	addSection(section, "str", &sections)
+		//}
 	}
 
 	return

@@ -85,7 +85,6 @@ type FieldSimple struct {
 	LoopIndex int  `yaml:"-"`
 	IsRand bool  `yaml:"-"`
 	IsReferYaml bool  `yaml:"-"`
-	UseLastSameValue bool  `yaml:"useLastSameValue"`
 }
 
 type FieldWithValues struct {
@@ -124,5 +123,5 @@ type DefFieldExport struct {
 	Where	string  `yaml:"where"`
 	Rand  bool  `yaml:"rand"`
 	Limit	int  `yaml:"limit"`
-	UseLastSameValue bool  `yaml:"useLastSameValue"`
+	Range string `yaml:"range"`
 }
