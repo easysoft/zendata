@@ -79,13 +79,13 @@ type FieldSimple struct {
 	Format  string  `yaml:"format"`
 	Rand  bool  `yaml:"rand"`
 	Type  string  `yaml:"type"`
-	Refer  string  `yaml:"refer"`
+	Mode  string  `yaml:"mode"`
 
-	LoopStart  int  `yaml:"-"`
-	LoopEnd  int  `yaml:"-"`
-	LoopIndex int  `yaml:"-"`
-	IsRand bool  `yaml:"-"`
-	IsReferYaml bool  `yaml:"-"`
+	LoopStart          int  `yaml:"-"`
+	LoopEnd            int  `yaml:"-"`
+	LoopIndex          int  `yaml:"-"`
+	IsRand             bool `yaml:"-"`
+	ReferToAnotherYaml bool `yaml:"-"`
 }
 
 type FieldWithValues struct {

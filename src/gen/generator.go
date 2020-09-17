@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]string,
+func GenerateForOnTop(defaultFile, configFile string, fieldsToExport *[]string,
 		) (rows [][]string, colIsNumArr []bool, err error) {
 
 	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
@@ -67,7 +67,7 @@ func GenerateForDefinition(defaultFile, configFile string, fieldsToExport *[]str
 		childValues := topFieldNameToValuesMap[child.Field]
 		arrOfArr = append(arrOfArr, childValues)
 	}
-	rows = putChildrenToArr(arrOfArr)
+	rows = putChildrenToArr(arrOfArr, vari.Recursive)
 
 	return
 }
@@ -90,7 +90,13 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 		if count > vari.Total {
 			count = vari.Total
 		}
-		values = combineChildrenValues(arrOfArr, count)
+
+		recursive := vari.Recursive
+		if stringUtils.InArray(field.Mode, constant.Modes) { // set on field level
+			recursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
+		}
+
+		values = combineChildrenValues(arrOfArr, recursive)
 		values = loopFieldValues(field, values, count, true)
 
 	} else if len(field.Froms) > 0 { // from muti items
@@ -198,7 +204,7 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		values = append(values, val)
 
 		count++
-		isRandomAndLoopEnd := !(*field).IsReferYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
+		isRandomAndLoopEnd := !(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
 			break
@@ -353,9 +359,9 @@ func computerLoop(field *model.DefField) {
 	(*field).LoopIndex = (*field).LoopStart
 }
 
-func putChildrenToArr(arrOfArr [][]string) (values [][]string) {
+func putChildrenToArr(arrOfArr [][]string, recursive bool) (values [][]string) {
 	indexArr := make([]int, 0)
-	if vari.Recursive {
+	if recursive {
 		indexArr = getModArr(arrOfArr)
 	}
 
@@ -365,7 +371,7 @@ func putChildrenToArr(arrOfArr [][]string) (values [][]string) {
 			child := arrOfArr[j]
 
 			var index int
-			if vari.Recursive {
+			if recursive {
 				mod := indexArr[j]
 				index = i / mod % len(child)
 			} else {
@@ -410,8 +416,8 @@ func randomValues(values []string) (ret []string) {
 	return
 }
 
-func combineChildrenValues(arrOfArr [][]string, total int) (ret []string)  {
-	valueArr := putChildrenToArr(arrOfArr)
+func combineChildrenValues(arrOfArr [][]string, recursive bool) (ret []string)  {
+	valueArr := putChildrenToArr(arrOfArr, recursive)
 
 	for _, arr := range valueArr {
 		ret = append(ret, strings.Join(arr, ""))

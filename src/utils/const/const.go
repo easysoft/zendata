@@ -38,6 +38,12 @@ var (
 	FormatData = "data"
 	Formats = []string{FormatText, FormatJson, FormatXml, FormatSql}
 
+	ModeParallel = "parallel"
+	ModeRecursive = "recursive"
+	ModeParallelShort = "p"
+	ModeRecursiveShort = "r"
+	Modes = []string{ModeParallel, ModeRecursive, ModeParallelShort, ModeRecursiveShort}
+
 	ConfigTypeText    = "text"
 	ConfigTypeArticle = "article"
 	ConfigTypeImage   = "image"

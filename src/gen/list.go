@@ -58,7 +58,7 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 			items = CreateValuesFromInterval(field, desc, stepStr, repeat)
 		} else if typ == "yaml" {
 			items = CreateValuesFromYaml(field, desc, stepStr, repeat)
-			field.IsReferYaml = true
+			field.ReferToAnotherYaml = true
 		}
 
 		fieldValue.Values = append(fieldValue.Values, items...)
@@ -248,7 +248,7 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 
 	configFile := vari.ConfigDir + yamlFile
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
-	rows, colIsNumArr, _ := GenerateForDefinition("", configFile, &fieldsToExport)
+	rows, colIsNumArr, _ := GenerateForOnTop("", configFile, &fieldsToExport)
 	if field.Rand {
 		rows = randomValuesArr(rows)
 	}

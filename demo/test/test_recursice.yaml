@@ -9,6 +9,7 @@ fields:
     postfix: "\t"
 
   - field: field_recursive_test
+    mode: recursive
     fields:
       - field: recursive.1
         range: A-C
