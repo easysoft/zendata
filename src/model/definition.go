@@ -134,8 +134,8 @@ type Article struct {
 type ArticleField struct {
 	Field string  `yaml:"field"`
 	Range  string  `yaml:"range"`
-	Prefix string  `yaml:"prefix"`
-	Postfix  string  `yaml:"postfix"`
+	Prefix string  `yaml:"prefix,omitempty"`
+	Postfix  string  `yaml:"postfix,omitempty"`
 }
 type ArticleSent struct {
 	Type string
