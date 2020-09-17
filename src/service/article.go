@@ -40,7 +40,7 @@ func ConvertArticle(src, dist string) {
 
 	for _, filePath := range files {
 		yamlPaths := convertSentYaml(filePath, dist)
-		convertMainYaml(yamlPaths, fileUtils.GetRelatPath(filePath), dist)
+		convertMainYaml(yamlPaths, filePath, dist)
 	}
 }
 
@@ -89,8 +89,7 @@ func convertSentYaml(filePath, dist string) (yamlPaths []string) {
 				fileUtils.ChangeFileExt(path.Base(filePath), "-") + fileSeq + ".yaml"
 			fileUtils.WriteFile(yamlPath, content)
 
-			relatPath := fileUtils.GetRelatPath(yamlPath)
-			yamlPaths = append(yamlPaths, relatPath)
+			yamlPaths = append(yamlPaths, yamlPath)
 		}
 	}
 
@@ -101,7 +100,8 @@ func convertMainYaml(yamlPaths []string, filePath, dist string) {
 	conf := createArticle(constant.ConfigTypeArticle, fileUtils.GetRelatPath(filePath))
 
 	for index, file := range yamlPaths {
-		field := model.ArticleField{Field: strconv.Itoa(index + 1), Range: file}
+		path := strings.TrimPrefix(file, dist)
+		field := model.ArticleField{Field: strconv.Itoa(index + 1), Range: path}
 		conf.XFields = append(conf.XFields, field)
 	}
 
