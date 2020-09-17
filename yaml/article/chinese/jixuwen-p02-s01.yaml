@@ -108,3 +108,4 @@ fields:
     - field: 2-1-23
       postfix: ""
       prefix: 。
+      rand: false

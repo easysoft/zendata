@@ -84,3 +84,4 @@ fields:
       postfix: ""
       prefix: |
         ，大快朵颐。
+      rand: false

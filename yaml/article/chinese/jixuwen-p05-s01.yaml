@@ -42,3 +42,4 @@ fields:
     - field: 5-1-7
       postfix: ""
       prefix: 进去逛了逛。
+      rand: false

@@ -60,3 +60,4 @@ fields:
     - field: 3-5-9
       postfix: ""
       prefix: 。
+      rand: false

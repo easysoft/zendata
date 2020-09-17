@@ -45,3 +45,4 @@ fields:
     - field: 4-2-12
       postfix: ""
       prefix: ，都新鲜极了，让人胃口大开。
+      rand: false

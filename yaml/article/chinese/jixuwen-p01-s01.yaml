@@ -11,3 +11,4 @@ fields:
       prefix: |+
         难忘的秋游
 
+      rand: false

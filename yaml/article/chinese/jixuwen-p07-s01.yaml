@@ -9,3 +9,4 @@ fields:
     - field: 7-1-2
       postfix: ""
       prefix: ，意犹未尽。
+      rand: false

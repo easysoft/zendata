@@ -68,3 +68,4 @@ fields:
       prefix: |+
         。
 
+      rand: false

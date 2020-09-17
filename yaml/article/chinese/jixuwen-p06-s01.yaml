@@ -45,7 +45,7 @@ fields:
       prefix: 边
       rand: true
       select: 动词-及物_名词-动作-眼部-中性
-    - field: 6-1-11
+    - field: 6-1-12
       postfix: ""
-      prefix: |4+
-
+      prefix: ，意犹未尽。
+      rand: false

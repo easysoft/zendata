@@ -67,12 +67,8 @@ fields:
     - field: "16"
       postfix: ""
       prefix: ""
-      range: jixuwen-p07-s01.yaml
+      range: jixuwen-p06-s02.yaml
     - field: "17"
       postfix: ""
       prefix: ""
-      range: jixuwen-p07-s02.yaml
-    - field: "18"
-      postfix: ""
-      prefix: ""
-      range: jixuwen-p07-s03.yaml
+      range: jixuwen-p06-s03.yaml

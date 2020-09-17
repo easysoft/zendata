@@ -57,3 +57,4 @@ fields:
     - field: 3-3-19
       postfix: ""
       prefix: 五颜六色的花儿。
+      rand: false
