@@ -4,5 +4,5 @@ author: automated export
 version: "1.0"
 fields:
   - field: id
-    from: base.name.cnaccount.v1.yaml
+    from: name.cnaccount.v1.yaml
     use: common

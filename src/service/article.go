@@ -68,10 +68,6 @@ func convertSentYaml(filePath, dist string) (yamlPaths []string) {
 					prefix += sect.Val
 
 					if prefix != "" && sectIndex == len(sent) - 1 { // last section
-						//if strings.LastIndex(prefix, "\n\n") == len(prefix) - 2 {
-						//	prefix = prefix[:len(prefix) - 1]
-						//}
-
 						field := model.DefFieldExport{Field: fieldSeq, Prefix: prefix}
 						conf.XFields = append(conf.XFields, field)
 						prefix = ""

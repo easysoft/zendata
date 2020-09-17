@@ -4,141 +4,141 @@ author: zentao
 version: "1.0"
 fields:
   - field: cnfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: cnfull
     prefix: ""
     postfix: "\t"
 
   - field: cnshort
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: cnshort
     prefix: ""
     postfix: "\t"
 
   - field: enfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: enfull
     prefix: ""
     postfix: "\t"
 
   - field: enshort
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: enshort
     prefix: ""
     postfix: "\t"
 
   - field: areacode
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: areacode
     prefix: ""
     postfix: "\t"
 
   # 亚洲国家
   - field: asia_cnfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: asia_cnfull
     prefix: ""
     postfix: "\t"
   - field: asia_cnshort
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: asia_cnshort
     prefix: ""
     postfix: "\t"
   - field: asia_enfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: asia_enfull
     prefix: ""
     postfix: "\t"
   - field: asia_areacode
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: asia_areacode
     prefix: ""
     postfix: "\t"
 
   # 欧洲国家
   - field: europe_cnfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: europe_cnfull
     prefix: ""
     postfix: "\t"
   - field: europe_cnshort
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: europe_cnshort
     prefix: ""
     postfix: "\t"
   - field: europe_enfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: europe_enfull
     prefix: ""
     postfix: "\t"
   - field: europe_areacode
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: europe_areacode
     prefix: ""
     postfix: "\t"
 
   # 北美国家
   - field: north_america_cnfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: north_america_cnfull
     prefix: ""
     postfix: "\t"
   - field: north_america_cnshort
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: north_america_cnshort
     prefix: ""
     postfix: "\t"
   - field: north_america_enfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: north_america_enfull
     prefix: ""
     postfix: "\t"
   - field: north_america_areacode
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: north_america_areacode
     prefix: ""
     postfix: "\t"
 
   # 南美国家
   - field: south_america_cnfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: south_america_cnfull
     prefix: ""
     postfix: "\t"
   - field: south_america_cnshort
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: south_america_cnshort
     prefix: ""
     postfix: "\t"
   - field: south_america_enfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: south_america_enfull
     prefix: ""
     postfix: "\t"
   - field: south_america_areacode
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: south_america_areacode
     prefix: ""
     postfix: "\t"
 
   # 大洋洲国家
   - field: oceania_cnfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: oceania_cnfull
     prefix: ""
     postfix: "\t"
   - field: oceania_cnshort
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: oceania_cnshort
     prefix: ""
     postfix: "\t"
   - field: oceania_enfull
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: oceania_enfull
     prefix: ""
     postfix: "\t"
   - field: oceania_areacode
-    from: base.country.v1.yaml
+    from: country.v1.yaml
     use: oceania_areacode
     prefix: ""
     postfix: "\t"

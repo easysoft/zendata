@@ -5,12 +5,12 @@ version: 1.0
 
 fields:
   - field: letters
-    from: base.name.letters.v1.yaml
+    from: name.letters.v1.yaml
     use: letters
     postfix: "\t"
 
   - field: numbers
-    from: base.name.numbers.v1.yaml
+    from: name.numbers.v1.yaml
     use: numbers
     postfix: "\t"
 
@@ -27,89 +27,89 @@ fields:
     postfix: "\t"
 
   - field: enreal
-    from: base.name.enreal.v1.yaml
+    from: name.enreal.v1.yaml
     use: common
     prefix: "["
     postfix: "]\t"
 
   - field: enreal_male
-    from: base.name.enreal.v1.yaml
+    from: name.enreal.v1.yaml
     use: male_common
     prefix: "["
     postfix: "]\t"
 
   - field: enreal_female
-    from: base.name.enreal.v1.yaml
+    from: name.enreal.v1.yaml
     use: female_with_middle
     prefix: "["
     postfix: "]\t"
 
   - field: cnreal
-    from: base.name.cnreal.v1.yaml
+    from: name.cnreal.v1.yaml
     use: two
     prefix: "["
     postfix: "]\t"
 
   - field: cnreal_male
-    from: base.name.cnreal.v1.yaml
+    from: name.cnreal.v1.yaml
     use: male_three
     prefix: "["
     postfix: "]\t"
 
   - field: cnreal_female
-    from: base.name.cnreal.v1.yaml
+    from: name.cnreal.v1.yaml
     use: female_four
     prefix: "["
     postfix: "]\t"
 
   - field: enaccount_common
-    from: base.name.enaccount.v1.yaml
+    from: name.enaccount.v1.yaml
     use: common
     prefix: ""
     postfix: "\t"
   - field: enaccount_underline
-    from: base.name.enaccount.v1.yaml
+    from: name.enaccount.v1.yaml
     use: common_underline
     prefix: "["
     postfix: "]\t"
   - field: enaccount_dot
-    from: base.name.enaccount.v1.yaml
+    from: name.enaccount.v1.yaml
     use: common_dot
     prefix: "["
     postfix: "]\t"
   - field: enaccount_reverse
-    from: base.name.enaccount.v1.yaml
+    from: name.enaccount.v1.yaml
     use: reverse
     prefix: "["
     postfix: "]\t"
 
   - field: cnaccount_common
-    from: base.name.cnaccount.v1.yaml
+    from: name.cnaccount.v1.yaml
     use: common
     prefix: "["
     postfix: "]\t"
   - field: cnaccount_underline
-    from: base.name.cnaccount.v1.yaml
+    from: name.cnaccount.v1.yaml
     use: common_underline
     prefix: "["
     postfix: "]\t"
   - field: cnaccount_dot
-    from: base.name.cnaccount.v1.yaml
+    from: name.cnaccount.v1.yaml
     use: common_dot
     prefix: "["
     postfix: "]\t"
   - field: cnaccount_reverse
-    from: base.name.cnaccount.v1.yaml
+    from: name.cnaccount.v1.yaml
     use: reverse
     prefix: "["
     postfix: "]\t"
   - field: cnaccount_family
-    from: base.name.cnaccount.v1.yaml
+    from: name.cnaccount.v1.yaml
     use: family
     prefix: "["
     postfix: "]\t"
   - field: cnaccount_given
-    from: base.name.cnaccount.v1.yaml
+    from: name.cnaccount.v1.yaml
     use: given
     prefix: "["
     postfix: "]\t"

@@ -5,92 +5,92 @@ version: 1.0
 
 fields:
   - field: one_number_at_common
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: one_number_at_common
     prefix: ""
     postfix: "\t"
   - field: one_number_at_cn
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: one_number_at_cn
     prefix: ""
     postfix: "\t"
   - field: one_number_at_new
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: one_number_at_new
     prefix: ""
     postfix: "\t"
 
   - field: one_letter_at_common
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: one_letter_at_common
     prefix: ""
     postfix: "\t"
   - field: one_letter_at_cn
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: one_letter_at_cn
     prefix: ""
     postfix: "\t"
   - field: one_letter_at_new
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: one_letter_at_new
     prefix: ""
     postfix: "\t"
 
   - field: numbers_at_common
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: numbers_at_common
     prefix: ""
     postfix: "\t"
   - field: numbers_at_cn
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: numbers_at_cn
     prefix: ""
     postfix: "\t"
   - field: numbers_at_new
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: numbers_at_new
     prefix: ""
     postfix: "\t"
 
   - field: letters_at_common
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: letters_at_common
     prefix: ""
     postfix: "\t"
   - field: letters_at_cn
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: letters_at_cn
     prefix: ""
     postfix: "\t"
   - field: letters_at_new
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: letters_at_new
     prefix: ""
     postfix: "\t"
 
   - field: mixed_at_common
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: mixed_at_common
     prefix: ""
     postfix: "\t"
   - field: mixed_at_cn
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: mixed_at_cn
     prefix: ""
     postfix: "\t"
   - field: mixed_at_new
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: mixed_at_new
     prefix: ""
     postfix: "\t"
 
   - field: enaccount_at_common
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: enaccount_at_common
     prefix: ""
     postfix: "\t"
   - field: cnaccount_at_cn
-    from: base.domain.domain.v1.yaml
+    from: domain.domain.v1.yaml
     use: cnaccount_at_cn
     prefix: ""
     postfix: "\t"

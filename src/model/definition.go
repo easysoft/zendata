@@ -79,6 +79,7 @@ type FieldSimple struct {
 	Format  string  `yaml:"format"`
 	Rand  bool  `yaml:"rand"`
 	Type  string  `yaml:"type"`
+	Refer  string  `yaml:"refer"`
 
 	LoopStart  int  `yaml:"-"`
 	LoopEnd  int  `yaml:"-"`
@@ -116,8 +117,8 @@ type DefExport struct {
 }
 type DefFieldExport struct {
 	Field string  `yaml:"field"`
-	Prefix string  `yaml:"prefix"`
-	Postfix  string  `yaml:"postfix"`
+	Prefix string  `yaml:"prefix,omitempty"`
+	Postfix  string  `yaml:"postfix,omitempty"`
 
 	Select	string  `yaml:"select,omitempty"`
 	Where	string  `yaml:"where,omitempty"`
@@ -133,7 +134,7 @@ type Article struct {
 }
 type ArticleField struct {
 	Field string  `yaml:"field"`
-	Range  string  `yaml:"range"`
+	Range  string  `yaml:"range,omitempty"`
 	Prefix string  `yaml:"prefix,omitempty"`
 	Postfix  string  `yaml:"postfix,omitempty"`
 }
