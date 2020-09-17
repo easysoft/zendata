@@ -1,9 +1,70 @@
-title: table zt_story
-desc: "需求"
-author: automated export
-version: "1.0"
+title:
+desc:
+author:
+version: 1.0
+
 fields:
+
+  - field: WC_ID                 # 默认的列表类型，通过逗号隔成若干区段。
+    range: 0-9:R                        # 从0-9随机生成，通过R属性
+    prefix: 1                           # 前缀
+    loop: 9                             # 循环9次
+    loopfix: ""                         # 分割符
+    postfix: "\t"                       # 后缀
+
+  - instance: name
+    note: name
+    prefix:
+    fields:
+      - field: name.part1
+        from: name.cn.family.v1
+        select: name
+        postfix: ""
+      - field: name.part2
+        from: name.cn.given.v1
+        select: name
+        postfix: "\t"
+
+  - field: WC_SEX
+    range: sex.txt:R
+    postfix: "\t"
+
   - field: WC_COUNTRY
     from: address.cn.v1.china
-    select: state
+    select: country
     postfix: "\t"
+
+  - field: part3                      # 默认的列表类型，通过逗号隔成若干区段。
+    range: 0-9:R                        # 从0-9随机生成，通过R随机属性
+    prefix: 33                          # 前缀
+    loop: 4                            # 循环9次
+    loopfix: ""                         # 分割符
+
+  - field: field_common1
+    range: 19-20:R
+    format: "%02d"
+  # postfix: "\t"
+
+  - field: field_common2
+    range: 0-20:R
+    format: "%02d"
+
+  - field: field_common3
+    range: 1-12:R
+    format: "%02d"
+
+  - field: field_common4
+    range: 1-31:R
+    format: "%02d"
+
+  - field: field_common5
+    range: 0-9999:R
+    format: "%04d"
+    postfix: "\t"
+
+  - field: field_use_excel              # 从excel数据源里面取数据。
+    from: address.cn.v1.china           # 从data/system/address/v1.xlsx文件中读取名为china的工作簿。
+    select: city                        # 查询city字段。
+    where: state like '%浙江%'           # 条件是省份包含浙江。
+
+
