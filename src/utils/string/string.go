@@ -2,6 +2,9 @@ package stringUtils
 
 import (
 	"bytes"
+	"crypto/md5"
+	"crypto/sha1"
+	"encoding/base64"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
@@ -104,13 +107,35 @@ func GetNumbWidth(numb int) int {
 	return width
 }
 
-func FormatStr(format string, val interface{}) (string, bool) {
-	str := fmt.Sprintf(format, val)
+func FormatStr(format string, val interface{}, precision int) (ret string, pass bool) {
+	format = strings.ToLower(strings.TrimSpace(format))
 
+	if strings.Index(format, "md5") == 0 {
+		str := interfaceToStr(val, precision)
+		ret = Md5(str)
+		pass = true
+		return
+	} else if strings.Index(format, "sha1") == 0 {
+		str := interfaceToStr(val, precision)
+		ret = Sha1(str)
+		pass = true
+		return
+	} else if strings.Index(format, "base64") == 0 {
+		str := interfaceToStr(val, precision)
+		ret = Base64(str)
+		pass = true
+		return
+	} else if strings.Index(format, "urlencode") == 0 {
+		str := interfaceToStr(val, precision)
+		ret = UrlEncode(str)
+		pass = true
+		return
+	}
+
+	str := fmt.Sprintf(format, val)
 	if strings.Index(str,"%!") == 0 {
 		return "", false
 	}
-
 	return str, true
 }
 
@@ -171,4 +196,45 @@ func GetPinyin(word string) string {
 	p, _ := pinyin.New(word).Split("").Mode(pinyin.WithoutTone).Convert()
 
 	return p
+}
+
+func interfaceToStr(intf interface{}, precision int) (ret string) {
+	switch intf.(type) {
+	case int64:
+		return strconv.FormatInt(intf.(int64), 10)
+	case float64:
+		return strconv.FormatFloat(intf.(float64), 'f', precision, 64)
+	case byte:
+		return string(intf.(byte))
+	case string:
+		return intf.(string)
+	default:
+		return intf.(string)
+	}
+}
+
+func Md5(str string) (ret string) {
+	h := md5.New()
+	h.Write([]byte(str))
+	ret = hex.EncodeToString(h.Sum(nil))
+
+	return
+}
+func Sha1(str string) (ret string) {
+	h := sha1.New()
+	h.Write([]byte(str))
+	bs := h.Sum(nil)
+	ret = fmt.Sprintf("%x", bs)
+
+	return
+}
+func Base64(str string) (ret string) {
+	ret = base64.StdEncoding.EncodeToString([]byte(str))
+
+	return
+}
+func UrlEncode(str string) (ret string) {
+	ret = base64.URLEncoding.EncodeToString([]byte(str))
+
+	return
 }

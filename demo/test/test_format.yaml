@@ -1,0 +1,31 @@
+title: 测试
+desc:
+author: zentao
+version: 1.0
+
+fields:
+
+  - field: field_format_exp
+    range: 1-10
+    format: "passwd%02d"
+    postfix: "\t"
+
+  - field: field_format_func_md5
+    range: a-z
+    format: md5
+    postfix: "\t"
+
+  - field: field_format_func_sha1
+    range: password
+    format: sha1
+    postfix: "\t"
+
+  - field: field_format_func_base64
+    range: pass/?&=word+
+    format: base64
+    postfix: "\t"
+
+  - field: field_format_func_urlencode
+    range: pass/?&=word+
+    format: urlencode
+    postfix: "\t"

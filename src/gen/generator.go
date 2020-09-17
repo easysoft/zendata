@@ -226,7 +226,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	switch val.(type) {
 		case int64:
 			if field.Format != "" {
-				str, success = stringUtils.FormatStr(field.Format, val.(int64))
+				str, success = stringUtils.FormatStr(field.Format, val.(int64), 0)
 			}
 			if !success {
 				str = strconv.FormatInt(val.(int64), 10)
@@ -237,7 +237,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 				precision = field.Precision
 			}
 			if field.Format != "" {
-				str, success = stringUtils.FormatStr(field.Format, val.(float64))
+				str, success = stringUtils.FormatStr(field.Format, val.(float64), precision)
 			}
 			if !success {
 				str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
@@ -245,7 +245,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 		case byte:
 			str = string(val.(byte))
 			if field.Format != "" {
-				str, success = stringUtils.FormatStr(field.Format, str)
+				str, success = stringUtils.FormatStr(field.Format, str, 0)
 			}
 			if !success {
 				str = string(val.(byte))
@@ -257,8 +257,10 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 			if match {
 				valInt, err := strconv.Atoi(str)
 				if err == nil {
-					str, success = stringUtils.FormatStr(field.Format, valInt)
+					str, success = stringUtils.FormatStr(field.Format, valInt, 0)
 				}
+			} else {
+				str, success = stringUtils.FormatStr(field.Format, str, 0)
 			}
 		default:
 	}

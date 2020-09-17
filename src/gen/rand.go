@@ -53,7 +53,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			items := make([]string, 0)
 			item := strconv.FormatInt(val, 10)
 			if format != "" {
-				formatVal, success := stringUtils.FormatStr(format, val)
+				formatVal, success := stringUtils.FormatStr(format, val, 0)
 				if success { item = formatVal }
 			}
 
@@ -85,7 +85,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 
 			item := string(val)
 			if format != "" {
-				formatVal, success := stringUtils.FormatStr(format, val)
+				formatVal, success := stringUtils.FormatStr(format, val, 0)
 				if success { item = formatVal }
 			}
 
@@ -120,7 +120,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 
 			item := strconv.FormatFloat(val, 'f', precision, 64)
 			if format != "" {
-				formatVal, success := stringUtils.FormatStr(format, val)
+				formatVal, success := stringUtils.FormatStr(format, val, precision)
 				if success { item = formatVal }
 			}
 
