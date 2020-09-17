@@ -1,0 +1,78 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+title: automation
+type: article
+
+fields:
+    - field: "1"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p01-s01.yaml
+    - field: "2"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p02-s01.yaml
+    - field: "3"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p02-s02.yaml
+    - field: "4"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p03-s01.yaml
+    - field: "5"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p03-s02.yaml
+    - field: "6"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p03-s03.yaml
+    - field: "7"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p03-s04.yaml
+    - field: "8"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p03-s05.yaml
+    - field: "9"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p03-s06.yaml
+    - field: "10"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p04-s01.yaml
+    - field: "11"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p04-s02.yaml
+    - field: "12"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p04-s03.yaml
+    - field: "13"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p05-s01.yaml
+    - field: "14"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p05-s02.yaml
+    - field: "15"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p06-s01.yaml
+    - field: "16"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p07-s01.yaml
+    - field: "17"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p07-s02.yaml
+    - field: "18"
+      postfix: ""
+      prefix: ""
+      range: jixuwen-p07-s03.yaml

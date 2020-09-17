@@ -256,8 +256,8 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 	items = Print(rows, constant.FormatData, "", colIsNumArr, fieldsToExport)
 
 	if repeat > 0 {
-		if repeat > len(items) - 1 {
-			repeat = len(items) - 1
+		if repeat > len(items) {
+			repeat = len(items)
 		}
 		items = items[:repeat]
 	}

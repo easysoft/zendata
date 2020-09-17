@@ -119,10 +119,10 @@ type DefFieldExport struct {
 	Prefix string  `yaml:"prefix"`
 	Postfix  string  `yaml:"postfix"`
 
-	Select	string  `yaml:"select"`
-	Where	string  `yaml:"where"`
+	Select	string  `yaml:"select,omitempty"`
+	Where	string  `yaml:"where,omitempty"`
 	Rand  bool  `yaml:"rand"`
-	Limit	int  `yaml:"limit"`
+	Limit	int  `yaml:"limit,omitempty"`
 }
 type Article struct {
 	Title   string `yaml:"title"`

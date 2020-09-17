@@ -1,0 +1,13 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: 1-1-1
+      postfix: ""
+      prefix: |+
+        难忘的秋游
+

@@ -1,0 +1,25 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: 3-6-2
+      limit: 1
+      postfix: ""
+      prefix: 其他游客们有的在
+      rand: true
+      select: 动词-不及物-动作-嘴部
+    - field: 3-6-5
+      limit: 1
+      postfix: ""
+      prefix: ，有的在
+      rand: true
+      select: 动词-及物_名词-动作-耳部
+    - field: 3-6-9
+      postfix: ""
+      prefix: |+
+        ，还有的在互相拍照，热闹极了。
+

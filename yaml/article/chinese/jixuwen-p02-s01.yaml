@@ -1,0 +1,110 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: 2-1-3
+      limit: 1
+      postfix: ""
+      prefix: 段落一：秋天的天气
+      rand: true
+      select: 形容词-天气-秋季-好
+    - field: 2-1-5
+      limit: 1
+      postfix: ""
+      prefix: 、
+      rand: true
+      select: 形容词-天气-秋季-好
+    - field: 2-1-7
+      limit: 1
+      postfix: ""
+      prefix: ，
+      rand: true
+      select: 形容词-外貌-女性
+    - field: 2-1-8
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-姓
+      where: f
+    - field: 2-1-8
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-名字
+      where: f
+    - field: 2-1-9
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 副词-程度副词
+    - field: 2-1-10
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 形容词做谓语-情绪-快乐
+    - field: 2-1-13
+      limit: 1
+      postfix: ""
+      prefix: ，因为
+      rand: true
+      select: 名词-称呼
+      where: f
+    - field: 2-1-14
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 动词-及物_名词-意愿
+    - field: 2-1-16
+      limit: 1
+      postfix: ""
+      prefix: 带她去
+      rand: true
+      select: 名词-地点-名山
+    - field: 2-1-17
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 动词-及物_名词-动作-眼部-中性
+    - field: 2-1-18
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 形容词-颜色-植物-树木
+    - field: 2-1-19
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-植物-树木
+    - field: 2-1-20
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 连词-并列关系
+    - field: 2-1-21
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 形容词-颜色-植物-花卉
+    - field: 2-1-22
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-植物-花卉
+    - field: 2-1-23
+      postfix: ""
+      prefix: 。

@@ -1,0 +1,70 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: 2-2-1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 形容词-外貌-女性
+    - field: 2-2-2
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-姓
+      where: f
+    - field: 2-2-2
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-名字
+      where: f
+    - field: 2-2-3
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 副词-程度副词
+    - field: 2-2-4
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 形容词做谓语-情绪-快乐
+    - field: 2-2-6
+      limit: 1
+      postfix: ""
+      prefix: ，
+      rand: true
+      select: 副词-形容词做副词-情绪-快乐
+    - field: 2-2-7
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 动词-及物_名词-动作-手臂-亲切
+    - field: 2-2-8
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 形容词-性格-积极
+    - field: 2-2-9
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-称呼
+      where: f
+    - field: 2-2-11
+      postfix: ""
+      prefix: |+
+        。
+

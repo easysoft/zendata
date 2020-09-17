@@ -1,0 +1,62 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: 3-5-1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-姓
+      where: f
+    - field: 3-5-1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-名字
+      where: f
+    - field: 3-5-2
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 连词-并列关系
+    - field: 3-5-3
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-称呼
+      where: f
+    - field: 3-5-4
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 副词-形容词做副词-心情-正面
+    - field: 3-5-5
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 动词-及物_名词-动作-眼部-中性
+    - field: 3-5-7
+      limit: 1
+      postfix: ""
+      prefix: ，
+      rand: true
+      select: 副词-形容词做副词-心情-正面
+    - field: 3-5-8
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 动词-不及物-动作-身体
+    - field: 3-5-9
+      postfix: ""
+      prefix: 。

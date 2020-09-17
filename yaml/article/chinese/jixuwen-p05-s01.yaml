@@ -1,0 +1,44 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: 5-1-1
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 代词-指示代词
+    - field: 5-1-4
+      limit: 1
+      postfix: ""
+      prefix: 有一个动物园，
+      rand: true
+      select: 名词-姓
+      where: f
+    - field: 5-1-4
+      limit: 1
+      postfix: ""
+      prefix: 有一个动物园，
+      rand: true
+      select: 名词-名字
+      where: f
+    - field: 5-1-5
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 连词-并列关系
+    - field: 5-1-6
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-称呼
+      where: f
+    - field: 5-1-7
+      postfix: ""
+      prefix: 进去逛了逛。

@@ -1,0 +1,47 @@
+author: ZenData
+desc: Generated from article demo/article/jixuwen.txt
+from: words.v1
+title: automation
+type: article
+version: ""
+
+fields:
+    - field: 4-2-2
+      limit: 1
+      postfix: ""
+      prefix: 她们来到一处农家乐吃午餐，午餐的菜式有”+
+      rand: true
+      select: 形容词-颜色-植物-蔬菜
+    - field: 4-2-3
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-植物-蔬菜
+    - field: 4-2-5
+      limit: 1
+      postfix: ""
+      prefix: 、
+      rand: true
+      select: 形容词-颜色-植物-蔬菜
+    - field: 4-2-6
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-植物-蔬菜
+    - field: 4-2-8
+      limit: 1
+      postfix: ""
+      prefix: 、
+      rand: true
+      select: 形容词-颜色-植物-蔬菜
+    - field: 4-2-9
+      limit: 1
+      postfix: ""
+      prefix: ""
+      rand: true
+      select: 名词-植物-蔬菜
+    - field: 4-2-12
+      postfix: ""
+      prefix: ，都新鲜极了，让人胃口大开。
