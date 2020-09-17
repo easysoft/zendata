@@ -132,10 +132,17 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		return
 	}
 
-	str := fmt.Sprintf(format, val)
-	if strings.Index(str,"%!") == 0 {
-		return "", false
+	str := ""
+	if format != "" {
+		str := fmt.Sprintf(format, val)
+		if strings.Index(str,"%!") == 0 {
+			return "", false
+		}
+	} else {
+		str = val.(string)
 	}
+
+
 	return str, true
 }
 
