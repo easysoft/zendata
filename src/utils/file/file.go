@@ -75,12 +75,18 @@ func IsDir(f string) bool {
 	return fi.IsDir()
 }
 
-func AbosutePath(pth string) string {
+func GetAbosutePath(pth string) string {
 	if !IsAbosutePath(pth) {
 		pth, _ = filepath.Abs(pth)
 	}
 
 	pth = AddSepIfNeeded(pth)
+
+	return pth
+}
+
+func GetRelatPath(pth string) string {
+	pth = strings.TrimPrefix(pth, vari.WorkDir)
 
 	return pth
 }

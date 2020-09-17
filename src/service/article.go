@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
@@ -27,68 +28,85 @@ var (
 
 func ConvertArticle(src, dist string) {
 	files := make([]string, 0)
-	if !fileUtils.IsDir(src) {
+	if !fileUtils.IsDir(src) { //  file
 		pth, _ := filepath.Abs(src)
 		files = append(files, pth)
 
-		if dist == "" {
-			dist = fileUtils.AddSepIfNeeded(path.Dir(pth))
-		}
+		if dist == "" { dist = fileUtils.AddSepIfNeeded(path.Dir(pth)) }
 	} else {
 		fileUtils.GetFilesInDir(src, ".txt", &files)
-		if dist == "" {
-			dist = fileUtils.AddSepIfNeeded(src)
-		}
+		if dist == "" { dist = fileUtils.AddSepIfNeeded(src) }
 	}
 
 	for _, filePath := range files {
-		article := fileUtils.ReadFile(filePath)
-		content := convertToYaml(article, filePath)
-
-		newPath := fileUtils.AddSepIfNeeded(dist) + fileUtils.ChangeFileExt(path.Base(filePath), ".yaml")
-		fileUtils.WriteFile(newPath, content)
+		yamlPaths := convertSentYaml(filePath, dist)
+		convertMainYaml(yamlPaths, fileUtils.GetRelatPath(filePath), dist)
 	}
 }
 
-func convertToYaml(article, filePath string) (content string) {
+func convertSentYaml(filePath, dist string) (yamlPaths []string) {
+	article := fileUtils.ReadFile(filePath)
 	sections := parseSections(article)
-	_ = groupSectionsBySentAndParag(sections)
+	paragraphs := groupSections(sections)
 
-	conf := createDef(constant.ConfigTypeArticle, table, filePath)
+	for paragIndex, parag := range paragraphs {
 
-	prefix := ""
-	for index, section := range sections {
-		tye := section["type"]
-		val := section["val"]
-		parag := section["parag"]
-		sent := section["sent"]
+		for sentIndex, sent := range parag {
+			fileSeq := fmt.Sprintf("p%02d-s%02d", paragIndex + 1, sentIndex + 1)
 
-		if tye == "exp" {
-			fields := createFields(index, prefix, val)
-			conf.XFields = append(conf.XFields, fields...)
+			conf := createDef(constant.ConfigTypeArticle, table, fileUtils.GetRelatPath(filePath))
 
-			prefix = ""
-		} else {
-			prefix += val
+			prefix := ""
+			for sectIndex, sect := range sent { // each sent saved as a yaml file
+				fieldSeq := fmt.Sprintf("%d-%d-%d", paragIndex + 1, sentIndex + 1, sectIndex + 1)
+				if sect.Type == "exp" {
+					fields := createFields(fieldSeq, prefix, sect.Val)
+					conf.XFields = append(conf.XFields, fields...)
 
-			if parag == "true" {
-				field := model.DefFieldExport{Field: strconv.Itoa(index), Prefix: prefix}
-				conf.XFields = append(conf.XFields, field)
-				prefix = ""
-			} else if sent == "true" {
-				field := model.DefFieldExport{Field: strconv.Itoa(index), Prefix: prefix}
-				conf.XFields = append(conf.XFields, field)
-				prefix = ""
-			} else if prefix != "" && index == len(sections) - 1 { // last section
-				field := model.DefFieldExport{Field: strconv.Itoa(index), Prefix: prefix}
-				conf.XFields = append(conf.XFields, field)
-				prefix = ""
+					prefix = ""
+				} else {
+					prefix += sect.Val
+
+					if prefix != "" && sectIndex == len(sent) - 1 { // last section
+						field := model.DefFieldExport{Field: fieldSeq, Prefix: prefix}
+						conf.XFields = append(conf.XFields, field)
+						prefix = ""
+					}
+				}
 			}
+
+			bytes, _ := yaml.Marshal(&conf)
+			content := string(bytes)
+
+			// convert yaml format by using a map
+			m := make(map[string]interface{})
+			yaml.Unmarshal([]byte(content), &m)
+			bytes, _ = yaml.Marshal(&m)
+			content = string(bytes)
+			content = strings.Replace(content, "xfields", "\nfields", -1)
+
+			yamlPath := fileUtils.AddSepIfNeeded(dist) +
+				fileUtils.ChangeFileExt(path.Base(filePath), "-") + fileSeq + ".yaml"
+			fileUtils.WriteFile(yamlPath, content)
+
+			relatPath := fileUtils.GetRelatPath(yamlPath)
+			yamlPaths = append(yamlPaths, relatPath)
 		}
 	}
 
+	return
+}
+
+func convertMainYaml(yamlPaths []string, filePath, dist string) {
+	conf := createArticle(constant.ConfigTypeArticle, fileUtils.GetRelatPath(filePath))
+
+	for index, file := range yamlPaths {
+		field := model.ArticleField{Field: strconv.Itoa(index + 1), Range: file}
+		conf.XFields = append(conf.XFields, field)
+	}
+
 	bytes, _ := yaml.Marshal(&conf)
-	content = string(bytes)
+	content := string(bytes)
 
 	// convert yaml format by using a map
 	m := make(map[string]interface{})
@@ -97,22 +115,38 @@ func convertToYaml(article, filePath string) (content string) {
 	content = string(bytes)
 	content = strings.Replace(content, "xfields", "\nfields", -1)
 
-	return
+	yamlPath := fileUtils.AddSepIfNeeded(dist) + fileUtils.ChangeFileExt(path.Base(filePath), ".yaml")
+	fileUtils.WriteFile(yamlPath, content)
+
+	relatPath := fileUtils.GetRelatPath(yamlPath)
+	yamlPaths = append(yamlPaths, relatPath)
 }
 
 func createDef(typ, table, filePath string) (conf model.DefExport) {
 	conf.Title = "automation"
 	conf.Author = "ZenData"
-	conf.From = table
+	conf.Type = typ
+	conf.Desc = "Generated from article " + filePath
+
+	if table != "" {
+		conf.From = table
+	}
+
+	return
+}
+
+func createArticle(typ, filePath string) (conf model.Article) {
+	conf.Title = "automation"
+	conf.Author = "ZenData"
 	conf.Type = typ
 	conf.Desc = "Generated from article " + filePath
 
 	return
 }
 
-func createFields(index int, prefix, exp string) (fields []model.DefFieldExport) {
+func createFields(seq string, prefix, exp string) (fields []model.DefFieldExport) {
 	field := model.DefFieldExport{}
-	field.Field = strconv.Itoa(index)
+	field.Field = seq
 	field.Prefix = prefix
 	field.Rand = true
 	field.Limit = 1
@@ -152,7 +186,7 @@ func createFields(index int, prefix, exp string) (fields []model.DefFieldExport)
 	return
 }
 
-func parseSections(content string) (sections []map[string]string) {
+func parseSections(content string) (sections []model.ArticleSent) {
 	strStart := false
 	expStart := false
 
@@ -235,37 +269,37 @@ func parseSections(content string) (sections []map[string]string) {
 	return
 }
 
-func groupSectionsBySentAndParag(sections []map[string]string) (groups [][][]map[string]string) {
-	itemArr := make([]map[string]string, 0)
-	groupArr := make([][]map[string]string, 0)
+func groupSections(sectionArr []model.ArticleSent) (paragraphs [][][]model.ArticleSent) {
+	sections := make([]model.ArticleSent, 0)
+	sentences := make([][]model.ArticleSent, 0)
 
-	for index := 0; index < len(sections); index++ {
-		section := sections[index]
-		itemArr = append(itemArr, section)
+	for index := 0; index < len(sectionArr); index++ {
+		section := sectionArr[index]
+		sections = append(sections, section)
 
-		if section["parag"] == "true" {
-			groupArr = append(groupArr, itemArr)
-			groups = append(groups, groupArr)
+		if section.IsParag {
+			sentences = append(sentences, sections)
+			paragraphs = append(paragraphs, sentences)
 
-			groupArr = make([][]map[string]string, 0)
-			itemArr = make([]map[string]string, 0)
-		} else if section["sent"] == "true" {
-			if index < len(sections) - 1 && sections[index+1]["parag"] == "true" {
-				itemArr = append(itemArr, sections[index+1])
-				groupArr = append(groupArr, itemArr)
-				groups = append(groups, groupArr)
+			sentences = make([][]model.ArticleSent, 0)
+			sections = make([]model.ArticleSent, 0)
+		} else if section.IsSent {
+			if index < len(sectionArr) - 1 && sectionArr[index+1].IsParag {
+				sections = append(sections, sectionArr[index+1])
+				sentences = append(sentences, sections)
+				paragraphs = append(paragraphs, sentences)
 
-				groupArr = make([][]map[string]string, 0)
-				itemArr = make([]map[string]string, 0)
+				sections = make([]model.ArticleSent, 0)
+				sentences = make([][]model.ArticleSent, 0)
 
 				index += 1
 			} else {
-				groupArr = append(groupArr, itemArr)
-				if index == len(sections) - 1 {
-					groups = append(groups, groupArr)
+				sentences = append(sentences, sections)
+				if index == len(sectionArr) - 1 {
+					paragraphs = append(paragraphs, sentences)
 				}
 
-				itemArr = make([]map[string]string, 0)
+				sections = make([]model.ArticleSent, 0)
 			}
 
 		}
@@ -274,20 +308,20 @@ func groupSectionsBySentAndParag(sections []map[string]string) (groups [][][]map
 	return
 }
 
-func addSection(str, typ string, arr *[]map[string]string) {
-	mp := map[string]string{}
-	mp["type"] = typ
-	mp["val"] = str
+func addSection(str, typ string, arr *[]model.ArticleSent) {
+	sent := model.ArticleSent{}
+	sent.Type = typ
+	sent.Val = str
 
 	runeArr := []rune(str)
 	end := runeArr[len(runeArr) - 1]
 	if string(end) == "\n" {
-		mp["parag"] = "true"
+		sent.IsParag = true
 	} else if string(end) == "。" {
-		mp["sent"] = "true"
+		sent.IsSent = true
 	}
 
-	*arr = append(*arr, mp)
+	*arr = append(*arr, sent)
 }
 
 func isCouple(i int, arr []rune) (isCouple bool, duplicateStr string) {

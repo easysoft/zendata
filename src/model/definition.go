@@ -124,3 +124,22 @@ type DefFieldExport struct {
 	Rand  bool  `yaml:"rand"`
 	Limit	int  `yaml:"limit"`
 }
+type Article struct {
+	Title   string `yaml:"title"`
+	Desc    string `yaml:"desc"`
+	Author  string `yaml:"author"`
+	Type  string  `yaml:"type"`
+	XFields  []ArticleField `yaml:"xfields,flow"` // control orders
+}
+type ArticleField struct {
+	Field string  `yaml:"field"`
+	Range  string  `yaml:"range"`
+	Prefix string  `yaml:"prefix"`
+	Postfix  string  `yaml:"postfix"`
+}
+type ArticleSent struct {
+	Type string
+	Val string
+	IsParag bool
+	IsSent bool
+}
