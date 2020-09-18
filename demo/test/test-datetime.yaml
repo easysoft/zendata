@@ -1,0 +1,30 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: date
+    from: time.date.v1.yaml
+    use: date
+    postfix: "\t"
+
+  - field: date_with_line
+    from: time.date.v1.yaml
+    use: with_line
+    postfix: "\t"
+
+  - field: date_chinese
+    from: time.date.v1.yaml
+    use: chinese
+    postfix: "\t"
+
+  - field: time
+    from: time.time.v1.yaml
+    use: time
+    postfix: "\t"
+
+  - field: time_chinese
+    from: time.time.v1.yaml
+    use: chinese
+    postfix: "\t"

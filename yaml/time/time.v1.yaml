@@ -1,0 +1,37 @@
+title: 时间
+desc:
+author: zentao
+version: 1.0
+
+field: time
+instances:
+  - instance: time
+    note: 时间
+    mode: r
+    fields:
+      - field: hour
+        range: 0-12
+        format: "%02d"
+        postfix: ":"
+      - field: minute
+        range: 0-60
+        format: "%02d"
+        postfix: ":"
+      - field: second
+        range: 0-60
+        format: "%02d"
+        postfix: "\t"
+
+  - instance: chinese
+    note: 时间
+    mode: r
+    fields:
+      - field: hour
+        range: 0-12
+        postfix: "点"
+      - field: minute
+        range: 0-60
+        postfix: "分"
+      - field: second
+        range: 0-60
+        postfix: "秒"

@@ -9,82 +9,82 @@ instances:
     note: 数字加服务商域名
     fields:
       - field: several_numbers
-        from: base.name.numbers.v1.yaml
+        from: name.numbers.v1.yaml
         use: numbers
         postfix: "@"
       - field: esp_domain
-        from: base.domain.esp.v1.yaml
+        from: domain.esp.v1.yaml
         use: esp
   - instance: number_with_self
     note: 数字加自定义域名
     fields:
       - field: several_numbers
-        from: base.name.numbers.v1.yaml
+        from: name.numbers.v1.yaml
         use: numbers
         postfix: "@"
       - field: custom_domain
-        from: base.domain.domain.v1.yaml
+        from: domain.domain.v1.yaml
         use: mixed_at_common
 
   - instance: letter_with_esp
     note: 英文字符加服务商域名
     fields:
       - field: letters
-        from: base.name.letters.v1.yaml
+        from: name.letters.v1.yaml
         use: letters
         postfix: "@"
       - field: esp_domain
-        from: base.domain.esp.v1.yaml
+        from: domain.esp.v1.yaml
         use: esp
   - instance: letter_with_self
     note: 英文字符加自定义CN域名
     fields:
       - field: letters
-        from: base.name.letters.v1.yaml
+        from: name.letters.v1.yaml
         use: letters
         postfix: "@"
       - field: custom_domain
-        from: base.domain.domain.v1.yaml
+        from: domain.domain.v1.yaml
         use: mixed_at_cn
 
   - instance: western_with_esp
     note: 英文账号加服务商域名
     fields:
       - field: english_account
-        from: base.name.enaccount.v1.yaml
+        from: name.enaccount.v1.yaml
         use: common_underline
         postfix: "@"
       - field: esp_domain
-        from: base.domain.esp.v1.yaml
+        from: domain.esp.v1.yaml
         use: esp
   - instance: western_with_self
     note: 英文账号加自定义新域名
     fields:
       - field: english_account
-        from: base.name.enaccount.v1.yaml
+        from: name.enaccount.v1.yaml
         use: common_dot
         postfix: "@"
       - field: custom_domain
-        from: base.domain.domain.v1.yaml
+        from: domain.domain.v1.yaml
         use: mixed_at_new
 
   - instance: pinyin_with_esp
     note: 拼音加服务商域名
     fields:
       - field: chinese_account
-        from: base.name.cnaccount.v1.yaml
+        from: name.cnaccount.v1.yaml
         use: common_underline
         postfix: "@"
       - field: esp_domain
-        from: base.domain.esp.v1.yaml
+        from: domain.esp.v1.yaml
         use: esp
   - instance: pinyin_with_self
     note: 拼音加自有域名
     fields:
       - field: chinese_account
-        from: base.name.cnaccount.v1.yaml
+        from: name.cnaccount.v1.yaml
         use: common_dot
         postfix: "@"
       - field: part2
-        from: base.domain.domain.v1.yaml
+        from: domain.domain.v1.yaml
         use: mixed_at_common

@@ -1,18 +1,18 @@
-title: 日期时间
+title: 日期
 desc:
 author: zentao
 version: 1.0
 
 field: date
 instances:
-  - instance: common
+  - instance: date
     note: 普通
     prefix:
     fields:
       - field: year
         range: 2020
       - field: month_day
-        from: base.time.monthday.v1.yaml
+        from: time.monthday.v1.yaml
         use: common
         prefix: ""
         postfix: "\t"
@@ -25,7 +25,7 @@ instances:
         range: 2020
         postfix: "-"
       - field: month_day
-        from: base.time.monthday.v1.yaml
+        from: time.monthday.v1.yaml
         use: with_line
         prefix: ""
         postfix: "\t"
@@ -38,7 +38,7 @@ instances:
         range: 2020
         postfix: "年"
       - field: month_day
-        from: base.time.monthday.v1.yaml
+        from: time.monthday.v1.yaml
         use: chinese
         prefix: ""
         postfix: "\t"
