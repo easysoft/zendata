@@ -1,0 +1,103 @@
+title: UUID
+desc: 通用唯一识别码。
+author: wwccss
+version: 1.0
+
+field: uuid
+instances:
+  - instance: length16
+    note: 16位长度
+    mode: r
+    fields:
+     - field: part1
+       from: uuid.prefix.yaml
+       use: uuid_prefix_time
+       postfix: "-"
+     - field: part2
+       from: uuid.prefix.yaml
+       use: uuid_prefix_info1
+       postfix: "-"
+     - field: part3
+       from: uuid.prefix.yaml
+       use: uuid_prefix_info2
+
+  - instance: length32
+    note: 32位长度
+    mode: r
+    fields:
+      - field: part1
+        from: uuid.prefix.yaml
+        use: uuid_prefix_time
+        postfix: "-"
+      - field: part2
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info1
+        postfix: "-"
+      - field: part3
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info2
+        postfix: "-"
+
+      - field: part4
+        range: 0-9999999999999999
+        format: "%016d"
+
+  - instance: length32_no_separator
+    note: 32位随机
+    mode: r
+    fields:
+      - field: part1
+        from: uuid.prefix.yaml
+        use: uuid_prefix_time
+      - field: part2
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info1
+      - field: part3
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info2
+
+      - field: part4
+        range: 0-9999999999999999
+        format: "%016d"
+
+  - instance: length32_random
+    note: 32位随机
+    fields:
+      - field: part1
+        from: uuid.prefix.yaml
+        use: uuid_prefix_time
+        rand: true
+        postfix: "-"
+      - field: part2
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info1
+        rand: true
+        postfix: "-"
+      - field: part3
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info2
+        rand: true
+        postfix: "-"
+      - field: part4
+        range: 0-9999999999999999:R
+        format: "%016d"
+
+  - instance: length32_random_no_separator
+    note: 32位随机
+    fields:
+      - field: part1
+        from: uuid.prefix.yaml
+        use: uuid_prefix_time
+        rand: true
+      - field: part2
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info1
+        rand: true
+      - field: part3
+        from: uuid.prefix.yaml
+        use: uuid_prefix_info2
+        rand: true
+
+      - field: part4
+        range: 0-9999999999999999:R
+        format: "%016d"

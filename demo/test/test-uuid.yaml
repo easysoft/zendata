@@ -1,0 +1,30 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: uuid16
+    from: uuid.v1.yaml
+    use: length16
+    postfix: "\t"
+
+  - field: uuid32
+    from: uuid.v1.yaml
+    use: length32
+    postfix: "\t"
+
+  - field: uuid32_no_separator
+    from: uuid.v1.yaml
+    use: length32_no_separator
+    postfix: "\t"
+
+  - field: uuid32_random
+    from: uuid.v1.yaml
+    use: length32_random
+    postfix: "\t"
+
+  - field: uuid32_random_no_separator
+    from: uuid.v1.yaml
+    use: length32_random_no_separator
+    postfix: "\t"
