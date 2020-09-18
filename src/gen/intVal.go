@@ -7,13 +7,13 @@ import (
 
 func GenerateIntItems(start int64, end int64, step interface{}, rand bool, repeat int) []interface{} {
 	if !rand {
-		return GenerateIntItemsByStep(start, end, step.(int), repeat)
+		return generateIntItemsByStep(start, end, step.(int), repeat)
 	} else{
-		return GenerateIntItemsRand(start, end, step.(int), repeat)
+		return generateIntItemsRand(start, end, step.(int), repeat)
 	}
 }
 
-func GenerateIntItemsByStep(start int64, end int64, step int, repeat int) []interface{} {
+func generateIntItemsByStep(start int64, end int64, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	total := 0
@@ -41,7 +41,7 @@ func GenerateIntItemsByStep(start int64, end int64, step int, repeat int) []inte
 	return arr
 }
 
-func GenerateIntItemsRand(start int64, end int64, step int, repeat int) []interface{} {
+func generateIntItemsRand(start int64, end int64, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	countInRound := (end - start) / int64(step) + 1

@@ -7,13 +7,13 @@ import (
 
 func GenerateByteItems(start byte, end byte, step int, rand bool, repeat int) []interface{} {
 	if !rand {
-		return GenerateByteItemsByStep(start, end, step, repeat)
+		return generateByteItemsByStep(start, end, step, repeat)
 	} else{
-		return GenerateByteItemsRand(start, end, step, repeat)
+		return generateByteItemsRand(start, end, step, repeat)
 	}
 }
 
-func GenerateByteItemsByStep(start byte, end byte, step int, repeat int) []interface{} {
+func generateByteItemsByStep(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	total := 0
@@ -40,7 +40,7 @@ func GenerateByteItemsByStep(start byte, end byte, step int, repeat int) []inter
 	return arr
 }
 
-func GenerateByteItemsRand(start byte, end byte, step int, repeat int) []interface{} {
+func generateByteItemsRand(start byte, end byte, step int, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	countInRound := (int(end) - int(start)) / step

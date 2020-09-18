@@ -9,13 +9,13 @@ import (
 
 func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, repeat int) []interface{} {
 	if !rand {
-		return GenerateFloatItemsByStep(start, end, step.(float64), repeat)
+		return generateFloatItemsByStep(start, end, step.(float64), repeat)
 	} else{
-		return GenerateFloatItemsRand(start, end, step.(float64), repeat)
+		return generateFloatItemsRand(start, end, step.(float64), repeat)
 	}
 }
 
-func GenerateFloatItemsByStep(start float64, end float64, step float64, repeat int) []interface{} {
+func generateFloatItemsByStep(start float64, end float64, step float64, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	total := 0
@@ -43,7 +43,7 @@ func GenerateFloatItemsByStep(start float64, end float64, step float64, repeat i
 	return arr
 }
 
-func GenerateFloatItemsRand(start float64, end float64, step float64, repeat int) []interface{} {
+func generateFloatItemsRand(start float64, end float64, step float64, repeat int) []interface{} {
 	arr := make([]interface{}, 0)
 
 	countInRound := (end - start) / step
