@@ -203,7 +203,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
-	if field.Path != "" && dataType != "string" && rand { // random
+	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
 		items = append(items, Placeholder(field.Path))
 
 		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision), field.Format)

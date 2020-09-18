@@ -1,0 +1,46 @@
+title: 颜色
+desc: 颜色，rgb、hex、english三种表示形式。
+author: wwccss
+version: 1.0
+
+field: ip
+instances:
+  - instance: rgb
+    note: rgb颜色
+    fields:
+     - field: part1
+       range: 0-255:R
+       postfix: ","
+     - field: part2
+       range: 0-255:R
+       postfix: ","
+     - field: part3
+       range: 0-255:R
+
+  - instance: hex
+    note: 16进制
+    prefix: "#"
+    fields:
+    - field: part1
+      range: 0-255:R
+      format: "%02X"
+    - field: part2
+      range: 0-255:R
+      format: "%02X"
+    - field: part3
+      range: 0-255:R
+      format: "%02X"
+
+  - instance: english
+    note: 英文颜色名
+    fields:
+      - field: part1
+        from: color.v1
+        select: english
+
+  - instance: chinese
+    note: 中文颜色名
+    fields:
+      - field: part1
+        from: color.v1
+        select: chinese

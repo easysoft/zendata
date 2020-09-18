@@ -1,0 +1,25 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: rgb
+    from: color.v1.yaml
+    use: rgb
+    postfix: "\t"
+
+  - field: hex
+    from: color.v1.yaml
+    use: hex
+    postfix: "\t"
+
+  - field: english
+    from: color.v1.yaml
+    use: english
+    postfix: "\t"
+
+  - field: chinese
+    from: color.v1.yaml
+    use: chinese
+    postfix: "\t"

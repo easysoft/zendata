@@ -24,19 +24,19 @@ func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 			field.From = vari.Def.From
 			vari.Def.Fields[index].From = vari.Def.From
 		}
-		loadResField(&field, &res)
+		loadResForField(&field, &res)
 	}
 	return res
 }
 
-func loadResField(field *model.DefField, res *map[string]map[string][]string) {
+func loadResForField(field *model.DefField, res *map[string]map[string][]string) {
 	if len(field.Fields) > 0 { // sub fields
 		for _, child := range field.Fields {
 			if child.Use != "" && child.From == "" {
 				child.From = field.From
 			}
 
-			loadResField(&child, res)
+			loadResForField(&child, res)
 		}
 	} else if len(field.Froms) > 0 { // multiple from
 		for _, child := range field.Froms {
@@ -44,7 +44,7 @@ func loadResField(field *model.DefField, res *map[string]map[string][]string) {
 				child.From = field.From
 			}
 
-			loadResField(&child, res)
+			loadResForField(&child, res)
 		}
 	} else if field.From != "" { // refer to res
 		var valueMap map[string][]string

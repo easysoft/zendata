@@ -108,7 +108,9 @@ func GetNumbWidth(numb int) int {
 }
 
 func FormatStr(format string, val interface{}, precision int) (ret string, pass bool) {
-	format = strings.ToLower(strings.TrimSpace(format))
+	if format == "" {
+		return val.(string), true
+	}
 
 	if strings.Index(format, "md5") == 0 {
 		str := interfaceToStr(val, precision)
@@ -132,16 +134,10 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		return
 	}
 
-	str := ""
-	if format != "" {
-		str := fmt.Sprintf(format, val)
-		if strings.Index(str,"%!") == 0 {
-			return "", false
-		}
-	} else {
-		str = val.(string)
+	str := fmt.Sprintf(format, val)
+	if strings.Index(str,"%!") == 0 {
+		return "", false
 	}
-
 
 	return str, true
 }

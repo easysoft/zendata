@@ -32,6 +32,7 @@ var (
 	Ip string
 	Port int
 
+	ResLoading                      = false
 	Def                      = model.DefData{}
 	Res                      = map[string]map[string][]string{}
 	RandFieldNameToValuesMap = map[string]map[string]interface{}{}

@@ -36,7 +36,9 @@ func GenerateForOnTop(defaultFile, configFile string, fieldsToExport *[]string,
 		}
 	}
 
+	vari.ResLoading = true  // not to use placeholder when loading res
 	vari.Res = LoadResDef(*fieldsToExport)
+	vari.ResLoading = false
 
 	topFieldNameToValuesMap := map[string][]string{}
 
@@ -204,7 +206,8 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		values = append(values, val)
 
 		count++
-		isRandomAndLoopEnd := !(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
+		isRandomAndLoopEnd := !vari.ResLoading &&	//  ignore rand in res
+			!(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
 			break
@@ -223,10 +226,11 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	str := "n/a"
 	success := false
 
+	format := strings.TrimSpace(field.Format)
 	switch val.(type) {
 		case int64:
-			if field.Format != "" {
-				str, success = stringUtils.FormatStr(field.Format, val.(int64), 0)
+			if format != "" {
+				str, success = stringUtils.FormatStr(format, val.(int64), 0)
 			}
 			if !success {
 				str = strconv.FormatInt(val.(int64), 10)
@@ -236,16 +240,16 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 			if field.Precision > 0 {
 				precision = field.Precision
 			}
-			if field.Format != "" {
-				str, success = stringUtils.FormatStr(field.Format, val.(float64), precision)
+			if format != "" {
+				str, success = stringUtils.FormatStr(format, val.(float64), precision)
 			}
 			if !success {
 				str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
 			}
 		case byte:
 			str = string(val.(byte))
-			if field.Format != "" {
-				str, success = stringUtils.FormatStr(field.Format, str, 0)
+			if format != "" {
+				str, success = stringUtils.FormatStr(format, str, 0)
 			}
 			if !success {
 				str = string(val.(byte))
@@ -253,14 +257,14 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 		case string:
 			str = val.(string)
 
-			match, _ := regexp.MatchString("%[0-9]*d", field.Format)
+			match, _ := regexp.MatchString("%[0-9]*d", format)
 			if match {
 				valInt, err := strconv.Atoi(str)
 				if err == nil {
-					str, success = stringUtils.FormatStr(field.Format, valInt, 0)
+					str, success = stringUtils.FormatStr(format, valInt, 0)
 				}
 			} else {
-				str, success = stringUtils.FormatStr(field.Format, str, 0)
+				str, success = stringUtils.FormatStr(format, str, 0)
 			}
 		default:
 	}
