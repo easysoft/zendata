@@ -206,7 +206,7 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		values = append(values, val)
 
 		count++
-		isRandomAndLoopEnd := !vari.ResLoading &&	//  ignore rand in res
+		isRandomAndLoopEnd := !vari.ResLoading &&	//  ignore rand in resource
 			!(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {

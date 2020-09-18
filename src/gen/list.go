@@ -2,6 +2,7 @@ package gen
 
 import (
 	"github.com/easysoft/zendata/src/model"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"strconv"
@@ -171,7 +172,12 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	}
 
 	for i := 0; i < len(elemArr); {
-		val := elemArr[i]
+		idx := i
+		if field.Path == "" && stepStr == "r" {
+			idx = commonUtils.RandNum(len(elemArr)) // should set random here too
+		}
+
+		val := elemArr[idx]
 
 		for round := 0; round < repeat; round++ {
 			items = append(items, val)
@@ -216,17 +222,17 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = GenerateIntItemsByStep(startInt, endInt, step.(int), repeat)
+		items = GenerateIntItems(startInt, endInt, step.(int), rand, repeat)
 
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItemsByStep(startFloat, endFloat, step.(float64), repeat)
+		items = GenerateFloatItems(startFloat, endFloat, step, rand, repeat)
 
 	} else if dataType == "char" {
-		items = GenerateByteItemsByStep(startStr[0], endStr[0], step.(int), repeat)
+		items = GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat)
 
 	} else if dataType == "string" {
 		if repeat == 0 { repeat = 1 }
@@ -235,7 +241,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		}
 	}
 
-	if field.Path == "" && stepStr == "r" { // for ranges and instances, random
+	if field.Path == "" && stepStr == "r" { // for ranges and instances, random again
 		items = randomInterfaces(items)
 	}
 

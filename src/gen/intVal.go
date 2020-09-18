@@ -18,7 +18,7 @@ func GenerateIntItemsByStep(start int64, end int64, step int, repeat int) []inte
 
 	total := 0
 	for i := 0; true; {
-		val := start + int64(i*step)
+		val := start + int64(i * step)
 		if (val > end && step > 0) || (val < end && step < 0)  {
 			break
 		}
