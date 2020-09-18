@@ -1,0 +1,54 @@
+title: IP地址
+desc: 含有多种实现的示例。
+author: wwccss
+version: 1.0
+
+field: ip
+instances:
+  - instance: ipC
+    note: C类IP地址
+    mode: r
+    fields:
+      - field: part1
+        range: 192-223
+        postfix: .
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254
+
+  - instance: ipB
+    note: B类IP地址
+    mode: r
+    fields:
+      - field: part1
+        range: 128-191
+        postfix: .
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254
+
+  - instance: ipA
+    note: A类IP地址
+    mode: r
+    fields:
+      - field: part1
+        range: 1-126
+        postfix: .
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254

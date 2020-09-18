@@ -1,0 +1,37 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: privateC
+    from: ip.v1.yaml
+    use: privateC
+    prefix: ""
+    postfix: "\t"
+  - field: privateB
+    from: ip.v1.yaml
+    use: privateB
+    prefix: ""
+    postfix: "\t"
+  - field: privateA
+    from: ip.v1.yaml
+    use: privateA
+    prefix: ""
+    postfix: "\t"
+
+  - field: ipC
+    from: ip.v2.yaml
+    use: ipC
+    prefix: ""
+    postfix: "\t"
+  - field: ipB
+    from: ip.v2.yaml
+    use: ipB
+    prefix: ""
+    postfix: "\t"
+  - field: ipA
+    from: ip.v2.yaml
+    use: ipA
+    prefix: ""
+    postfix: "\t"
