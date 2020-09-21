@@ -1,6 +1,6 @@
 author: ZenData
-desc: Generated from article demo/article/jixuwen.txt
-title: automation
+title: 文章主文件
+desc:
 type: article
 
 fields:

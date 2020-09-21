@@ -20,8 +20,8 @@ fields:
     prefix: "["
     postfix: "]\t"
 
-  - field: field_literal               # 反引号括起来的字面常量。
-    range: "`1-100`"
+  - field: field_literal               # 反引号括起来表示字面常量。
+    range: "`1-9`"
     prefix: "["
     postfix: "]\t"
 

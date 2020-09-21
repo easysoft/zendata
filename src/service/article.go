@@ -123,10 +123,10 @@ func convertMainYaml(yamlPaths []string, filePath, dist string) {
 }
 
 func createDef(typ, table, filePath string) (conf model.DefExport) {
-	conf.Title = "automation"
+	conf.Title = "文章句子"
 	conf.Author = "ZenData"
 	conf.Type = typ
-	conf.Desc = "Generated from article " + filePath
+	conf.Desc = "Generated from " + filePath
 
 	if table != "" {
 		conf.From = table
@@ -136,10 +136,10 @@ func createDef(typ, table, filePath string) (conf model.DefExport) {
 }
 
 func createArticle(typ, filePath string) (conf model.Article) {
-	conf.Title = "automation"
+	conf.Title = "文章主文件"
 	conf.Author = "ZenData"
 	conf.Type = typ
-	conf.Desc = "Generated from article " + filePath
+	conf.Desc = "Generated from " + filePath
 
 	return
 }
