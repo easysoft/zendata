@@ -17,7 +17,7 @@ instances:
         postfix: "/"
 
       - field: part2
-        from: jenkins.number.v1.yaml
+        from: zentao.number.v1.yaml
         use: netmask
         note: 掩码
 
@@ -35,6 +35,6 @@ instances:
         postfix: "/"
 
       - field: part2
-        from: jenkins.number.v1.yaml
+        from: zentao.number.v1.yaml
         use: netmask
         note: 掩码

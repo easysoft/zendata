@@ -112,7 +112,7 @@ fields:
     postfix: "\t"
 
   - field: field_use_ranges             # 引用內置的定义文件，该文件定义了多个range，他们共享了一些field层面的属性。
-    from: zentao.number.v1.yaml         # 引用yaml/jenkins/number/v1.yaml文件里面的ranges定义。
+    from: zentao.number.v1.yaml         # 引用yaml/zentao/number/v1.yaml文件里面的ranges定义。
     use: medium                         # 使用该文件中定义的medium分组。
     postfix: "\t"
 
