@@ -94,8 +94,8 @@ fields:
     postfix: "\t"
 
   - field: field_length                 # Fixed length field.
-    range: 1-100                        # 001,002,003..., 099,100
-    width: 3                            # the length in Byte including prefix and postfix.
+    range: 1-99                         # 01\t,02\t,03\t..., 99\t
+    length: 3                           # the length in Byte including prefix and postfix.
     leftpad: 0                          # Using 0 to pad.
     postfix: "\t"
 

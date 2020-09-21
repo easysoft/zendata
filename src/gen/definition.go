@@ -222,8 +222,8 @@ func CopyField(child model.DefField, parent *model.DefField) {
 	if child.Precision != 0 {
 		(*parent).Precision = child.Precision
 	}
-	if child.Width != 0 {
-		(*parent).Width = child.Width
+	if child.Length != 0 {
+		(*parent).Length = child.Length
 	}
 }
 

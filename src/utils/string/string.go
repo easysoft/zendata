@@ -143,8 +143,8 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 }
 
 func AddPad(str string, field model.DefField) string {
-	if  field.Width > 0 && field.Width > runewidth.StringWidth(str) {
-		gap := field.Width - len(str)
+	if  field.Length > 0 && field.Length > runewidth.StringWidth(str) {
+		gap := field.Length - len(str)
 		if field.LeftPad != "" {
 			field.LeftPad = field.LeftPad[:1]
 			pads := strings.Repeat(field.LeftPad, gap)

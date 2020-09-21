@@ -73,9 +73,9 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 	for j, field := range fields {
 		col := ""
 
-		if field.Width > 0 {
-			col = string(left[:field.Width])
-			left = left[field.Width:]
+		if field.Length > 0 {
+			col = string(left[:field.Length])
+			left = left[field.Length:]
 		} else {
 			sepStr := ""
 			if j < len(fields) - 1 {
