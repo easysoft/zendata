@@ -277,7 +277,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 		colStr = "`词语` AS `" + selectCol + "`"
 	}
 
-	sqlStr := fmt.Sprintf("SELECT %s FROM %s WHERE %s", colStr, from, where)
+	sqlStr := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", colStr, from, where)
 	rows, err := db.Query(sqlStr)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
