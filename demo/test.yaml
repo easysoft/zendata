@@ -6,16 +6,16 @@ version: 1.0
 from: jenkins.ip.private.yaml     # 全局from配置
 
 fields:
+  - field: field_use_config
+    prefix: "{"
+    postfix: "}\t"
+
   - field: field_use_ranges
     prefix: "{"
     postfix: "}\t"
 
   - field: field_use_instance
     prefix: ""                    # 修改前缀为空
-    postfix: "}\t"
-
-  - field: field_use_config
-    prefix: "{"
     postfix: "}\t"
 
   - field: field_use_excel

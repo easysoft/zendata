@@ -6,6 +6,6 @@ version: 1.0
 fields:
 
   - field: part1
-    range: A-C,nested1.yaml{3}
+    range: A,test-nested1.yaml{3}
     prefix: ""
     postfix: ""

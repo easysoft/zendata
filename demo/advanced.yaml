@@ -36,6 +36,12 @@ fields:
     prefix: "["
     postfix: "]\t"
 
+      - field: field_nested_instant         # 引用其他的定义文件，且该文件引用了其他实例。
+        from: jenkins.ip.private.yaml       # 引用users/jenkins/ip/private.yaml
+        use: all                            # 使用该文件中的所有实例。
+        prefix: "{"
+        postfix: "}"
+
   - field: field_union_instant
     from: jenkins.ip.private.yaml       # 引用用户自定义数据，自定义数据使用了联合。
     use: privateB_union_privateC
@@ -51,9 +57,4 @@ fields:
       postfix: "-"
     - from: jenkins.number.v1.yaml
       use: large{3}                     # 指定引用个数
-
-  - field: field_use_yaml               # 引用某个yaml文件的整体数据。
-    range: test/nested1.yaml{5}         # 指定引用行数
-    prefix: "["
-    postfix: "]\t"
 
