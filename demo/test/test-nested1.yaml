@@ -4,9 +4,9 @@ author: zentao
 version: 1.0
 
 fields:
-  - field: test0
+  - field: part1
     range: 1-9
     postfix: ";\t"
 
-  - field: test1
-    range: a-c,nested2.yaml{2}
+  - field: part2
+    range: x-z,nested2.yaml{2}

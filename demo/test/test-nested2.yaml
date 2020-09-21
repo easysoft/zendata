@@ -4,7 +4,7 @@ author: zentao
 version: 1.0
 
 fields:
-  - field: test0
+  - field: part1
     range: 1-9
     loop: 2-3
     loopfix: "|"
