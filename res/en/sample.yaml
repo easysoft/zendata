@@ -78,10 +78,6 @@ fields:
     range: 1-10:R                       # 1,5,8...
     postfix: "\t"
 
-  - field: field_file                   # Read a list from a file and set it as random.
-    range: users.txt:R                  # Using the lines of users.txt as range and set it as random.
-    postfix: "\t"
-
   - field: field_loop                   # Self-loop field.
     range: a-z                          # a_b_c | d_e_f | g_h_i
     loop: 3                             # Loop three times.
@@ -96,39 +92,42 @@ fields:
     range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
     format: "passwd%02d"
     postfix: "\t"
-  
+
   - field: field_length                 # Fixed length field.
     range: 1-100                        # 001,002,003..., 099,100
-    length: 3                           # the length in Byte.
+    width: 3                            # the length in Byte including prefix and postfix.
     leftpad: 0                          # Using 0 to pad.
+    postfix: "\t"
+
+  - field: field_text                   # Read a list from a file and set it as random.
+    range: users.txt:R                  # Using the lines of users.txt as range and set it as random.
+    postfix: "\t"
+
+  - field: field_yaml                   # use another yaml file's data.
+    range: test/test-nested2.yaml{3}    # related path.
+    postfix: "\t"
   
-  - field: field_use_another_file       # Other definition file can be referred.
+  - field: field_use_config             # Other definition file can be referred.
     config: number.yaml                 # Refer to the definition in number.yaml of the current directory.
     postfix: "\t"
 
   - field: field_use_ranges             # Other definition file can be referred, in which more than one ranges are defined.
-    from: custom.test.number.v1.yaml    # Refer to the ranges in data/custom/number/v1.yaml.
+    from: zentao.number.v1.yaml         # Refer to the ranges in yaml/zentao/number/v1.yaml.
     use: medium                         # use medium range.
     postfix: "\t"
 
   - field: field_use_instance           # Refer to other definition file which defines multiple instances.
-    from: system.ip.v1.yaml             # Refer to data/system/ip/v1.yaml.
+    from: ip.v1.yaml                    # Refer to yaml/ip/v1.yaml.
     use: privateB,privateC              # Use the two instances of privateC and privateB defined in this file.
     postfix: "\t"
 
-  - field: field_nested_instant         # Refer to other definition file which refer another instances definition.
-    from: custom.ip.private.yaml        # Refer to data/custom/ip/private.yaml
-    use: all                            # Use all instances defined in this file.
-    prefix: "{"
-    postfix: "}"
-
   - field: field_use_excel              # Read the data from the data source of excel.
-    from: system.address.v1.china       # Read the book named china in data/system/address/v1.xlsx.
+    from: address.cn.v1.china           # Read the sheet named 'china' in data/address/cn.v1.xlsx.
     select: city                        # Query the field city.
     where: cityCode = 852               # Query condition.
     postfix: "\t"
 
-  - field: field_with_children          # Embeded field.
+  - field: field_with_children          # nested fields.
     fields:
       - field: child1
         range: a-z
