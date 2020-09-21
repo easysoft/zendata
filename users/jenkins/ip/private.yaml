@@ -1,26 +1,28 @@
 title: 私有IP
-desc: 引用系统IP定义
+desc:
 author: zentao
 version: 1.0
 
 field: privateIP
 instances:
   - instance: all
-    note: 引用所有內置IP
+    note: 引用內置IP定义
 
     fields:
       - field: part1
         from: ip.v1.yaml
         use: privateA, privateB, privateC
+        note: 引用多个ranges
         prefix: ""
         postfix: "/"
 
       - field: part2
         from: jenkins.number.v1.yaml
         use: netmask
+        note: 掩码
 
   - instance: privateB_union_privateC
-    note: 使用多个use-from引用原始IP地址定义
+    note: 多个use&from引用內置IP定义，结果为行合并
 
     fields:
       - field: part1
@@ -35,3 +37,4 @@ instances:
       - field: part2
         from: jenkins.number.v1.yaml
         use: netmask
+        note: 掩码

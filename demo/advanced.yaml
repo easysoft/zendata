@@ -6,58 +6,54 @@ version: 1.0
 
 fields:
 
-  - field: field_step_negative         # 区间可以指定步长。
+  - field: field_step_negative         # 区间指定步长。
     range: z-a:-2                      # 9,7,5,4...
     loop: 1-3
     loopfix: "|"
     prefix: "["
     postfix: "]\t"
 
-  - field: field_loop_range            # 自循环支持区间。
-    range: 1-3{3}
-    loop: 2-5
+  - field: field_loop_range            # 循环支持区间。
+    range: a-z                         # a,b|b,c|c|c,d...
+    loop: 1-3
     loopfix: "|"
     prefix: "["
     postfix: "]\t"
-
-  - field: field_nested_range
-    from: jenkins.number.v1.yaml   # 自定义通用ranges，保存于data目录下。
-    use: medium
-    prefix: "["
-    postfix: "]\t"
-
-  - field: field_nested_instant
-    from: jenkins.ip.private.yaml       # 內置instances引用其他ranges或instances。
-    use: all
-    prefix: "["
-    postfix: "]\t"
-
-  - field: field_union_instant
-    from: jenkins.ip.private.yaml       # 內置instances使用了多个use-from。
-    use: privateB_union_privateC
-    prefix: "["
-    postfix: "]\t"
-
-  - field: field_from_muti
-    prefix: "["
-    postfix: "]\t"
-    froms:
-    - from: jenkins.number.v1.yaml
-      use: small{2}
-      postfix: "-"
-    - from: jenkins.number.v1.yaml
-      use: large{3}
-
-  - field: field_use_yaml
-    range: 测试,测,9-7,test/nested1.yaml{5}
-    prefix: "***"
-    postfix: "***\t"
 
   - field: field_literal
     range: "`0000-00`,`AA[2,a-z]`,[1-3]:2{3},`[1-3]:2{3}`"
     type: text
 
-  - field: field_timestamp
-    range: today-aa:10
-    type: timestamp
+  - field: field_nested_range
+    from: jenkins.number.v1.yaml       # 引用用户自定义ranges，存于users目录下。
+    use: medium
+    prefix: "["
+    postfix: "]\t"
+
+  - field: field_nested_instant
+    from: jenkins.ip.private.yaml       # 引用用户自定义数据，自定义数据引用了內置数据。
+    use: all
+    prefix: "["
+    postfix: "]\t"
+
+  - field: field_union_instant
+    from: jenkins.ip.private.yaml       # 引用用户自定义数据，自定义数据使用了联合。
+    use: privateB_union_privateC
+    prefix: "["
+    postfix: "]\t"
+
+  - field: field_from_muti              # 使用多个use&from 引用用户自定义数据，结果为行合并。
+    prefix: "["
+    postfix: "]\t"
+    froms:
+    - from: jenkins.number.v1.yaml
+      use: small{2}                     # 指定引用个数
+      postfix: "-"
+    - from: jenkins.number.v1.yaml
+      use: large{3}                     # 指定引用个数
+
+  - field: field_use_yaml               # 引用某个yaml文件的整体数据。
+    range: test/nested1.yaml{5}         # 指定引用行数
+    prefix: "["
+    postfix: "]\t"
 

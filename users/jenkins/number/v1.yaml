@@ -1,10 +1,10 @@
 title: number
-desc: 数字分组
+desc: 数字系列
 author: wwccss
 version: 1.0
 
 field: number
-note: 数值类型数据
+note: 数值类型
 prefix: "'"
 postfix: "'"
 ranges:
