@@ -20,8 +20,8 @@ fields:
     prefix: "["
     postfix: "]\t"
 
-  - field: field_literal               # 测试反引号括起来的字面常量同其他区间混合。
-    range: "`0000-00`,`AA[2,a-z]`,[1-3]:2{3},`[1-3]:2{3}`"
+  - field: field_literal               # 反引号括起来的字面常量。
+    range: "`1-100`"
     prefix: "["
     postfix: "]\t"
 
