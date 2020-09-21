@@ -7,6 +7,5 @@ version: ""
 
 fields:
     - field: 4-1-2
-      postfix: ""
       prefix: 段落三：逛了好一会，妈妈说：“午饭时间到了，我们去吃饭吧。
       rand: false

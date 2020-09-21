@@ -7,6 +7,5 @@ version: ""
 
 fields:
     - field: 6-3-1
-      postfix: ""
       prefix: 就这样，在恋恋不舍中，马尔泰若曦和妈妈结束了这次旅行。
       rand: false

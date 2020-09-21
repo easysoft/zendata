@@ -8,29 +8,23 @@ version: ""
 fields:
     - field: 3-1-2
       limit: 1
-      postfix: ""
       prefix: 段落二：
       rand: true
       select: 名词-时间
     - field: 3-1-5
       limit: 1
-      postfix: ""
       prefix: ，她们先乘坐
       rand: true
       select: 名词-交通工具
     - field: 3-1-10
       limit: 1
-      postfix: ""
       prefix: 再乘坐交通工具，一起来到了
       rand: true
       select: 形容词-天气-秋季-中性
     - field: 3-1-11
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 名词-地点-名山
     - field: 3-1-12
-      postfix: ""
       prefix: 。
       rand: false

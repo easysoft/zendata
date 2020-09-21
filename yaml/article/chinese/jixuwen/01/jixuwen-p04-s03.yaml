@@ -8,80 +8,58 @@ version: ""
 fields:
     - field: 4-3-1
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 形容词-外貌-女性
     - field: 4-3-2
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 名词-姓
       where: f
     - field: 4-3-2
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 名词-名字
       where: f
     - field: 4-3-4
       limit: 1
-      postfix: ""
       prefix: 不禁食指大动，她
       rand: true
       select: 动词-及物_名词-动作-嘴部
     - field: 4-3-5
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 形容词-植物-谷物
     - field: 4-3-6
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 名词-植物-谷物
     - field: 4-3-8
       limit: 1
-      postfix: ""
       prefix: ，
       rand: true
       select: 动词-及物_名词-动作-嘴部
     - field: 4-3-9
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 形容词-植物-蔬菜
     - field: 4-3-10
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 名词-植物-蔬菜
     - field: 4-3-12
       limit: 1
-      postfix: ""
       prefix: ，
       rand: true
       select: 动词-及物_名词-动作-嘴部
     - field: 4-3-13
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 形容词-植物-水果
     - field: 4-3-14
       limit: 1
-      postfix: ""
-      prefix: ""
       rand: true
       select: 名词-植物-水果
     - field: 4-3-18
-      postfix: ""
       prefix: |
         ，大快朵颐。
       rand: false

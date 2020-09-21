@@ -8,25 +8,21 @@ version: ""
 fields:
     - field: 6-2-2
       limit: 1
-      postfix: ""
       prefix: 在”+
       rand: true
       select: 名词-姓
       where: f
     - field: 6-2-2
       limit: 1
-      postfix: ""
       prefix: 在”+
       rand: true
       select: 名词-名字
       where: f
     - field: 6-2-4
       limit: 1
-      postfix: ""
       prefix: 的记忆里她对这里似曾相识，似乎在梦中就来过
       rand: true
       select: 名词-地点-名山
     - field: 6-2-5
-      postfix: ""
       prefix: 。
       rand: false

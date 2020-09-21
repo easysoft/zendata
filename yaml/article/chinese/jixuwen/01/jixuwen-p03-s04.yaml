@@ -8,11 +8,9 @@ version: ""
 fields:
     - field: 3-4-2
       limit: 1
-      postfix: ""
       prefix: 沉浸在
       rand: true
       select: 名词-地点-名山
     - field: 3-4-3
-      postfix: ""
       prefix: 的美景中，她们忽然听到一阵悠扬的歌声，走近了一看，原来是有人在载歌载舞。
       rand: false
