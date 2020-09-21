@@ -3,7 +3,7 @@ desc:
 author: zentao
 version: 1.0
 
-from: jenkins.ip.private.yaml     # 全局from配置
+from: zentao.ip.private.yaml     # 全局from配置
 
 fields:
   - field: field_use_config

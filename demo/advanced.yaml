@@ -26,19 +26,19 @@ fields:
     postfix: "]\t"
 
   - field: field_nested_range
-    from: jenkins.number.v1.yaml       # 引用用户自定义ranges，存于users目录下。
+    from: zentao.number.v1.yaml       # 引用用户自定义ranges，存于users目录下。
     use: medium
     prefix: "["
     postfix: "]\t"
 
   - field: field_nested_instant
-    from: jenkins.ip.private.yaml       # 引用用户自定义数据，自定义数据引用了內置数据。
+    from: zentao.ip.private.yaml       # 引用用户自定义数据，自定义数据引用了內置数据。
     use: all
     prefix: "["
     postfix: "]\t"
 
   - field: field_union_instant
-    from: jenkins.ip.private.yaml       # 引用用户自定义数据，自定义数据使用了联合。
+    from: zentao.ip.private.yaml       # 引用用户自定义数据，自定义数据使用了联合。
     use: privateB_union_privateC
     prefix: "["
     postfix: "]\t"
@@ -47,9 +47,9 @@ fields:
     prefix: "["
     postfix: "]\t"
     froms:
-      - from: jenkins.number.v1.yaml
+      - from: zentao.number.v1.yaml
         use: small{2}                     # 指定引用个数
         postfix: "-"
-      - from: jenkins.number.v1.yaml
+      - from: zentao.number.v1.yaml
         use: large{3}                     # 指定引用个数
 
