@@ -235,13 +235,13 @@ func parseSections(content string) (sections []model.ArticleSent) {
 			section += str
 
 			if str == "。" {
-				if i < len(runeArr) && string(runeArr[i+1]) == strRight {
+				if i < len(runeArr) - 1 && string(runeArr[i+1]) == strRight {
 					i += 1
+					strStart = false
 				}
 
 				addSection(section, "str", &sections)
 
-				strStart = false
 				expStart = false
 				section = ""
 			} else if str == "\n" {
@@ -277,7 +277,7 @@ func groupSections(sectionArr []model.ArticleSent) (paragraphs [][][]model.Artic
 		section := sectionArr[index]
 		sections = append(sections, section)
 
-		if section.IsParag {
+		if section.IsParag || index == len(sectionArr) - 1 {
 			sentences = append(sentences, sections)
 			paragraphs = append(paragraphs, sentences)
 

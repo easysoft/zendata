@@ -9,19 +9,19 @@ instances:
     note: 模拟1-8位时间戳
     fields:
      - field: part1
-       range: 0-99999999
+       range: 1-99999999
        format: "%08d"
 
   - instance: uuid_prefix_info1
     note: 模拟9~12硬件信息
     fields:
       - field: part1
-        range: 0-9999
+        range: 1-9999
         format: "%04d"
 
   - instance: uuid_prefix_info2
     note: 模拟13~16硬件信息
     fields:
       - field: part1
-        range: 0-9999
+        range: 1-9999
         format: "%04d"
