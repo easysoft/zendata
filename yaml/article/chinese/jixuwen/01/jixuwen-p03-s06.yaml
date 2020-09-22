@@ -1,0 +1,23 @@
+author: ZenData
+desc: Generated from yaml/article/chinese/jixuwen/01/jixuwen.txt
+from: words.v1
+title: 文章句子
+type: article
+version: ""
+
+fields:
+    - field: 3-6-2
+      limit: 1
+      prefix: 其他游客们有的在
+      rand: true
+      select: 动词-不及物-动作-嘴部
+    - field: 3-6-4
+      limit: 1
+      prefix: ，有的在
+      rand: true
+      select: 动词-及物_名词-动作-耳部
+    - field: 3-6-6
+      prefix: |+
+        ，还有的在互相拍照，热闹极了。
+
+      rand: false

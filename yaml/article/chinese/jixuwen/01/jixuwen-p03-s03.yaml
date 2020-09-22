@@ -1,0 +1,50 @@
+author: ZenData
+desc: Generated from yaml/article/chinese/jixuwen/01/jixuwen.txt
+from: words.v1
+title: 文章句子
+type: article
+version: ""
+
+fields:
+    - field: 3-3-2
+      limit: 1
+      prefix: 在这个季节，
+      rand: true
+      select: 名词-地点-名山
+    - field: 3-3-4
+      limit: 1
+      prefix: 有很多花草树木，
+      rand: true
+      select: 形容词-颜色-树木
+    - field: 3-3-6
+      limit: 1
+      prefix: 、
+      rand: true
+      select: 形容词-颜色-树木
+    - field: 3-3-8
+      limit: 1
+      prefix: ，
+      rand: true
+      select: 形容词-颜色-花卉
+    - field: 3-3-10
+      limit: 1
+      prefix: 、
+      rand: true
+      select: 形容词-颜色-花卉
+    - field: 3-3-12
+      limit: 1
+      prefix: ，
+      rand: true
+      select: 形容词-风景-好
+    - field: 3-3-14
+      limit: 1
+      prefix: ，竟有
+      rand: true
+      select: 数词-需要加量词
+    - field: 3-3-15
+      limit: 1
+      rand: true
+      select: 量词-花卉
+    - field: 3-3-16
+      prefix: 五颜六色的花儿。
+      rand: false

@@ -1,0 +1,71 @@
+author: ZenData
+desc: Generated from yaml/article/chinese/jixuwen/01/jixuwen.txt
+from: words.v1
+title: 文章句子
+type: article
+version: ""
+
+fields:
+    - field: 5-2-2
+      limit: 1
+      prefix: 在动物园里，她们看到了
+      rand: true
+      select: 形容词-动物
+    - field: 5-2-3
+      limit: 1
+      rand: true
+      select: 名词-动物
+    - field: 5-2-5
+      limit: 1
+      prefix: 、
+      rand: true
+      select: 形容词-动物
+    - field: 5-2-6
+      limit: 1
+      rand: true
+      select: 名词-动物
+    - field: 5-2-8
+      limit: 1
+      prefix: 、
+      rand: true
+      select: 形容词-动物
+    - field: 5-2-9
+      limit: 1
+      rand: true
+      select: 名词-动物
+    - field: 5-2-11
+      limit: 1
+      prefix: 、
+      rand: true
+      select: 形容词-动物
+    - field: 5-2-12
+      limit: 1
+      rand: true
+      select: 名词-动物
+    - field: 5-2-14
+      limit: 1
+      prefix: ，
+      rand: true
+      select: 名词-姓
+      where: f
+    - field: 5-2-14
+      limit: 1
+      prefix: ，
+      rand: true
+      select: 名词-名字
+      where: f
+    - field: 5-2-16
+      limit: 1
+      prefix: 还是第一次逛动物园呢，第一次看到这么些只在书上见过的动物，她可真是既
+      rand: true
+      select: 形容词做谓语-情绪-惊讶
+    - field: 5-2-18
+      limit: 1
+      prefix: 又
+      rand: true
+      select: 形容词做谓语-心情-正面
+    - field: 5-2-20
+      prefix: |+
+        看得入迷都忘记了时间。
+
+      rand: false

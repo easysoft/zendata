@@ -1,0 +1,83 @@
+author: ZenData
+desc: Generated from yaml/article/chinese/jixuwen/01/jixuwen.txt
+from: words.v1
+title: 文章句子
+type: article
+version: ""
+
+fields:
+    - field: 2-1-2
+      limit: 1
+      prefix: 段落一：秋天的天气
+      rand: true
+      select: 形容词-天气-秋季-好
+    - field: 2-1-4
+      limit: 1
+      prefix: 、
+      rand: true
+      select: 形容词-天气-秋季-好
+    - field: 2-1-6
+      limit: 1
+      prefix: ，
+      rand: true
+      select: 形容词-外貌-女性
+    - field: 2-1-7
+      limit: 1
+      rand: true
+      select: 名词-姓
+      where: f
+    - field: 2-1-7
+      limit: 1
+      rand: true
+      select: 名词-名字
+      where: f
+    - field: 2-1-8
+      limit: 1
+      rand: true
+      select: 副词-程度副词
+    - field: 2-1-9
+      limit: 1
+      rand: true
+      select: 形容词做谓语-情绪-快乐
+    - field: 2-1-11
+      limit: 1
+      prefix: ，因为
+      rand: true
+      select: 名词-称呼
+      where: f
+    - field: 2-1-12
+      limit: 1
+      rand: true
+      select: 动词-及物_名词-意愿
+    - field: 2-1-14
+      limit: 1
+      prefix: 带她去
+      rand: true
+      select: 名词-地点-名山
+    - field: 2-1-15
+      limit: 1
+      rand: true
+      select: 动词-及物_名词-动作-眼部-中性
+    - field: 2-1-16
+      limit: 1
+      rand: true
+      select: 形容词-颜色-植物-树木
+    - field: 2-1-17
+      limit: 1
+      rand: true
+      select: 名词-植物-树木
+    - field: 2-1-18
+      limit: 1
+      rand: true
+      select: 连词-并列关系
+    - field: 2-1-19
+      limit: 1
+      rand: true
+      select: 形容词-颜色-植物-花卉
+    - field: 2-1-20
+      limit: 1
+      rand: true
+      select: 名词-植物-花卉
+    - field: 2-1-21
+      prefix: 。
+      rand: false

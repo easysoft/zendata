@@ -1,0 +1,11 @@
+author: ZenData
+desc: Generated from yaml/article/chinese/jixuwen/01/jixuwen.txt
+from: words.v1
+title: 文章句子
+type: article
+version: ""
+
+fields:
+    - field: 4-1-1
+      prefix: 段落三：逛了好一会，妈妈说：“午饭时间到了，我们去吃饭吧”。
+      rand: false

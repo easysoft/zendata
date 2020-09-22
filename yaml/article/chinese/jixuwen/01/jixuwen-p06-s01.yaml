@@ -1,0 +1,42 @@
+author: ZenData
+desc: Generated from yaml/article/chinese/jixuwen/01/jixuwen.txt
+from: words.v1
+title: 文章句子
+type: article
+version: ""
+
+fields:
+    - field: 6-1-2
+      limit: 1
+      prefix: 段落四：不知不觉天都黑了，
+      rand: true
+      select: 名词-姓
+      where: f
+    - field: 6-1-2
+      limit: 1
+      prefix: 段落四：不知不觉天都黑了，
+      rand: true
+      select: 名词-名字
+      where: f
+    - field: 6-1-3
+      limit: 1
+      rand: true
+      select: 连词-并列关系
+    - field: 6-1-4
+      limit: 1
+      rand: true
+      select: 名词-称呼
+      where: f
+    - field: 6-1-6
+      limit: 1
+      prefix: 边
+      rand: true
+      select: 动词-不及物-动作-嘴部
+    - field: 6-1-8
+      limit: 1
+      prefix: 边
+      rand: true
+      select: 动词-及物_名词-动作-眼部-中性
+    - field: 6-1-9
+      prefix: ，意犹未尽。
+      rand: false
