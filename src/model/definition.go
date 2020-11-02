@@ -72,6 +72,7 @@ type FieldSimple struct {
 	Field  string  `yaml:"field"`
 	Note     string  `yaml:"note"`
 	Range    string  `yaml:"range"`
+	Value string  `yaml:"value"`
 	Prefix   string  `yaml:"prefix"`
 	Postfix  string  `yaml:"postfix"`
 	Loop  string  `yaml:"loop"`

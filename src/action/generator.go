@@ -28,7 +28,7 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 		return
 	}
 
-	if format == constant.FormatExcel {
+	if format == constant.FormatExcel || format == constant.FormatCsv {
 		gen.Write(rows, format, table, colIsNumArr, fieldsToExport)
 	} else {
 		gen.Print(rows, format, table, colIsNumArr, fieldsToExport)

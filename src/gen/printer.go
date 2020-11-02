@@ -37,7 +37,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 				col = stringUtils.AddPad(col, field)
 			}
 
-			if j > 0 && vari.Human {
+			if j > 0 && vari.Human { // use a tab
 				lineForText = strings.TrimRight(lineForText, "\t")
 				col = strings.TrimLeft(col, "\t")
 

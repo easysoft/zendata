@@ -1,7 +1,7 @@
 package gen
 
 import (
-	"fmt"
+	"encoding/csv"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -13,6 +13,9 @@ import (
 const (
 	sheetName = "Sheet1"
 )
+var (
+	csvWriter *csv.Writer
+)
 
 func Write(rows [][]string, format string, table string, colIsNumArr []bool,
 		fields []string) (lines []interface{}) {
@@ -23,23 +26,41 @@ func Write(rows [][]string, format string, table string, colIsNumArr []bool,
 
 	if format == constant.FormatExcel {
 		printExcelHeader(fields, f)
+	} else if format == constant.FormatCsv {
+		csvWriter = csv.NewWriter(logUtils.FileWriter)
 	}
 
-	for i, row := range rows {
-		for j, col := range row {
+	csvData := make([][]string, 0)
+	for i, cols := range rows {
+		csvRow := make([]string, 0)
+
+		for j, col := range cols {
 			col = replacePlaceholder(col)
 			field := vari.TopFieldMap[fields[j]]
 			if field.Length > runewidth.StringWidth(col) {
 				col = stringUtils.AddPad(col, field)
 			}
 
-			colName, _ := excelize.CoordinatesToCellName(j + 1, i + 2)
-			f.SetCellValue(sheetName, colName, col)
+			if format == constant.FormatExcel {
+				colName, _ := excelize.CoordinatesToCellName(j + 1, i + 2)
+				f.SetCellValue(sheetName, colName, col)
+
+			} else if format == constant.FormatCsv {
+				csvRow = append(csvRow, col)
+			}
 		}
+		csvData = append(csvData, csvRow)
 	}
 
-	if err := f.SaveAs(logUtils.FilePath); err != nil {
-		fmt.Println(err)
+	var err error
+	if format == constant.FormatExcel {
+		err = f.SaveAs(logUtils.FilePath)
+	} else if format == constant.FormatCsv {
+		err = csvWriter.WriteAll(csvData)
+		csvWriter.Flush()
+	}
+	if err != nil {
+		logUtils.PrintErrMsg(err.Error())
 	}
 
 	return
