@@ -24,9 +24,10 @@ fields:
     postfix: "]\t"
 
   - field: field_value                 # 引用同文件其他字段进行数学运算。
-    value: "$field_step_negative * 2 - 1"
+    value: "($field_step_negative * $field_nested_range) * -1 + 1000"
     prefix: "["
     postfix: "]\t"
+    length: 20
 
   - field: field_nested_range
     from: zentao.number.v1.yaml       # 引用用户自定义ranges，存于users目录下。

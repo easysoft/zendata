@@ -257,7 +257,7 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 
 	configFile := vari.ConfigDir + yamlFile
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
-	rows, colIsNumArr, _ := GenerateForOnTop("", configFile, &fieldsToExport)
+	rows, colIsNumArr, _ := GenerateOnTopLevel("", configFile, &fieldsToExport)
 	if field.Rand {
 		rows = randomValuesArr(rows)
 	}

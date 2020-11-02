@@ -23,7 +23,7 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
 
-	rows, colIsNumArr, err := gen.GenerateForOnTop(defaultFile, configFile, &fieldsToExport)
+	rows, colIsNumArr, err := gen.GenerateOnTopLevel(defaultFile, configFile, &fieldsToExport)
 	if err != nil {
 		return
 	}

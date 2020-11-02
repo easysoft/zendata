@@ -2,6 +2,7 @@ package gen
 
 import (
 	"errors"
+	"github.com/easysoft/zendata/src/gen/helper"
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
@@ -16,7 +17,7 @@ import (
 	"strings"
 )
 
-func GenerateForOnTop(defaultFile, configFile string, fieldsToExport *[]string,
+func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string,
 		) (rows [][]string, colIsNumArr []bool, err error) {
 
 	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
@@ -40,7 +41,7 @@ func GenerateForOnTop(defaultFile, configFile string, fieldsToExport *[]string,
 	vari.Res = LoadResDef(*fieldsToExport)
 	vari.ResLoading = false
 
-	topFieldNameToValuesMap := map[string][]string{}
+	topLevelFieldNameToValuesMap := map[string][]string{}
 
 	// 为每个field生成值列表
 	for index, field := range vari.Def.Fields {
@@ -55,7 +56,7 @@ func GenerateForOnTop(defaultFile, configFile string, fieldsToExport *[]string,
 
 		vari.Def.Fields[index].Precision = field.Precision
 
-		topFieldNameToValuesMap[field.Field] = values
+		topLevelFieldNameToValuesMap[field.Field] = values
 		colIsNumArr = append(colIsNumArr, field.IsNumb)
 	}
 
@@ -66,7 +67,11 @@ func GenerateForOnTop(defaultFile, configFile string, fieldsToExport *[]string,
 			continue
 		}
 
-		childValues := topFieldNameToValuesMap[child.Field]
+		childValues := topLevelFieldNameToValuesMap[child.Field]
+		if child.Value != "" { // is value expression
+			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap)
+		}
+
 		arrOfArr = append(arrOfArr, childValues)
 	}
 	rows = putChildrenToArr(arrOfArr, vari.Recursive)
