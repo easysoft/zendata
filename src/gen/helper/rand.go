@@ -1,4 +1,4 @@
-package gen
+package helper
 
 import (
 	commonUtils "github.com/easysoft/zendata/src/utils/common"

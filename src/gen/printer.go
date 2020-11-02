@@ -3,6 +3,7 @@ package gen
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/easysoft/zendata/src/gen/helper"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -197,24 +198,24 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strs = GetRandFromRange("int", start, end, "1", repeat, precision, count, format)
+		strs = helper.GetRandFromRange("int", start, end, "1", repeat, precision, count, format)
 	} else if tp == "float" {
 		start := mp["start"].(string)
 		end := mp["end"].(string)
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strs = GetRandFromRange("float", start, end, "1", repeat, precision, count, format)
+		strs = helper.GetRandFromRange("float", start, end, "1", repeat, precision, count, format)
 	} else if tp == "char" {
 		start := mp["start"].(string)
 		end := mp["end"].(string)
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strs = GetRandFromRange("char", start, end, "1", repeat, precision, count, format)
+		strs = helper.GetRandFromRange("char", start, end, "1", repeat, precision, count, format)
 	} else if tp == "list" {
 		list := mp["list"].([]string)
-		strs = GetRandFromList(list, repeat, count)
+		strs = helper.GetRandFromList(list, repeat, count)
 	}
 
 	return strs
