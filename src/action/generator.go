@@ -27,7 +27,12 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 	if err != nil {
 		return
 	}
-	gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
+
+	if format == constant.FormatExcel {
+		gen.Write(rows, format, table, colIsNumArr, fieldsToExport)
+	} else {
+		gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
+	}
 
 	entTime := time.Now().Unix()
 	if vari.RunMode == constant.RunModeServerRequest {

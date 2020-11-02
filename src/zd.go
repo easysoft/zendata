@@ -1,4 +1,5 @@
 package main
+
 import (
 	"flag"
 	"fmt"
@@ -198,8 +199,6 @@ func toGen() {
 		if output != "" {
 			fileUtils.MkDirIfNeeded(filepath.Dir(output))
 			fileUtils.RemoveExist(output)
-			logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR | os.O_CREATE, 0777)
-			defer logUtils.FileWriter.Close()
 
 			ext := strings.ToLower(path.Ext(output))
 			if len(ext) > 1 {
@@ -207,6 +206,13 @@ func toGen() {
 			}
 			if stringUtils.InArray(ext, constant.Formats) {
 				format = ext
+			}
+
+			if format == constant.FormatExcel {
+				logUtils.FilePath = output
+			} else {
+				logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR | os.O_CREATE, 0777)
+				defer logUtils.FileWriter.Close()
 			}
 		}
 

@@ -35,8 +35,10 @@ var (
 	FormatJson = "json"
 	FormatXml = "xml"
 	FormatSql = "sql"
+	FormatExcel = "xlsx"
+	FormatCsv = "csv"
 	FormatData = "data"
-	Formats = []string{FormatText, FormatJson, FormatXml, FormatSql}
+	Formats = []string{FormatText, FormatJson, FormatXml, FormatSql, FormatExcel, FormatCsv}
 
 	ModeParallel = "parallel"
 	ModeRecursive = "recursive"

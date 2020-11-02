@@ -19,6 +19,7 @@ var (
 
 	FileWriter *os.File
 	HttpWriter http.ResponseWriter
+	FilePath string // for excel output
 )
 
 func PrintExample() {
