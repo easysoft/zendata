@@ -23,7 +23,7 @@ fields:
     prefix: "["
     postfix: "]\t"
 
-  - field: field_value                 # 引用同文件其他字段进行数学运算。
+  - field: field_value_expression      # 使用表达式引用同文件中字段进行数学运算。
     value: "($field_step_negative * $field_nested_range) * -1 + 1000"
     prefix: "["
     postfix: "]\t"

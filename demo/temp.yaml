@@ -1,0 +1,12 @@
+title: ZenData字段表达式
+author: zentao
+version: 1.0
+
+fields:
+
+  - field: field_step_negative
+    range: 1-9:2                       # 1,3,5,7,9 ...
+    postfix: "\t"
+
+  - field: field_value_expression      # 使用表达式引用同文件中字段进行数学运算。
+    value: "$field_step_negative * 10 + 1"

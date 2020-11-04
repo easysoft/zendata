@@ -51,8 +51,8 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 			var val interface{}
 			if len(referValues) > 0 {
 				valStr = referValues[i % len(referValues)]
-				valStr = strings.TrimLeft(valStr, field.Prefix)
-				valStr = strings.TrimRight(valStr, field.Postfix)
+				valStr = strings.TrimLeft(valStr, referField.Prefix)
+				valStr = strings.TrimRight(valStr, referField.Postfix)
 
 				val, tp = getNumType(valStr)
 				if tp != "int" {
