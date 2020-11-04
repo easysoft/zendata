@@ -44,8 +44,6 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 			referValues := valuesMap[fieldName]
 			referField := vari.TopFieldMap[fieldName]
 
-			logUtils.PrintErrMsg(referField.Value)
-
 			valStr := "N/A"
 			tp := ""
 			var val interface{}
