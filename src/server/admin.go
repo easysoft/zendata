@@ -22,6 +22,7 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	ret_json,_ := json.Marshal(ret)
 
 	io.WriteString(writer, string(ret_json))
+
 }
 
 type Ret struct{
