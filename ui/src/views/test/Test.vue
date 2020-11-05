@@ -12,7 +12,7 @@
 
 <script>
 
-import { listDefs } from "../../api/manage";
+import { saveDef } from "../../api/manage";
 
 export default {
   name: 'Test',
@@ -25,8 +25,13 @@ export default {
 
   },
   created () {
-    listDefs().then(res => {
-      console.log('listDefs', res)
+    // listDefs().then(res => {
+    //   console.log('listDefs', res)
+    //   this.defs = res
+    // })
+
+    saveDef().then(res => {
+      console.log('saveDef', res)
       this.defs = res
     })
   },

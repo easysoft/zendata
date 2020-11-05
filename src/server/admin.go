@@ -2,14 +2,15 @@ package server
 
 import (
 	"encoding/json"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"io"
 	"net/http"
 )
 
 func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	setupCORS(&writer, req)
-	logUtils.PrintToScreen("111")
+
+	data := map[string]interface{}{}
+	ParserJsonParams(req, &data)
 
 	ret := new(Ret)
 	id := req.FormValue("id")

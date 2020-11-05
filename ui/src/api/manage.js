@@ -15,3 +15,11 @@ export function listDefs () {
     params: {}
   })
 }
+
+export function saveDef () {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'name' : 123}
+  })
+}
