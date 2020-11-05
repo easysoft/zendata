@@ -4,14 +4,24 @@ import (
 	"encoding/json"
 	"github.com/easysoft/zendata/src/model"
 	"io"
+	"io/ioutil"
 	"net/http"
 )
 
 func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	setupCORS(&writer, req)
 
-	reqData := map[string]interface{}{}
-	ParserJsonParams(req, &reqData)
+	bytes, err := ioutil.ReadAll(req.Body)
+	if len(bytes) == 0 {
+		return
+	}
+
+	reqData := model.ReqData{}
+	err = ParserJsonReq(bytes, &reqData)
+	if err != nil {
+		outputErr(err, writer)
+		return
+	}
 
 	ret := model.ResData{ Code: 1, Msg: "success", Data: reqData }
 	jsonStr, _ := json.Marshal(ret)

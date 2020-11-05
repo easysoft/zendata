@@ -3,23 +3,22 @@ package server
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/easysoft/zendata/src/model"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 )
 
-func ParserJsonParams(req *http.Request, obj *map[string]interface{}) {
-	bts, err := ioutil.ReadAll(req.Body)
+func ParserJsonReq(bytes []byte, obj *model.ReqData) (err error) {
+	err = json.Unmarshal(bytes, &obj)
 	if err != nil {
-		log.Fatal("parse form error ",err)
+		log.Println(fmt.Sprintf("parse json error %s", err))
+		return
 	}
 
-	json.Unmarshal(bts, &obj)
-	for key,value := range *obj{
-		log.Println("key:",key," => value :",value)
-	}
+	return
 }
 
 func ParserGetParams(values url.Values, name, short string) (val string) {

@@ -4,7 +4,7 @@ import { VueAxios } from './axios'
 
 const request = axios.create({
   baseURL: 'http://localhost:8848/admin',
-  timeout: 6000,
+  timeout: 10000,
 })
 
 const errorHandler = error => {

@@ -16,10 +16,10 @@ export function listDefs () {
   })
 }
 
-export function saveDef () {
+export function saveDef (data) {
   return request({
     url: api.admin,
     method: 'post',
-    data: {'name' : 123}
+    data: {'action' : 'createDef', 'data': data}
   })
 }
