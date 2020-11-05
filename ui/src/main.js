@@ -8,8 +8,7 @@ import router from "./router"
 
 Vue.config.productionTip = false
 
-Vue.component(Button.name, Button);
-Vue.component(Button.Group.name, Button.Group);
+Vue.component(Button);
 
 Vue.use(Button);
 
