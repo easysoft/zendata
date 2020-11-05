@@ -27,7 +27,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .header {
-    font-size: 20px;
-  }
+  @import './MainLayout.less';
 </style>
