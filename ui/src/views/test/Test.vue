@@ -1,6 +1,11 @@
 <template>
   <div class="test">
-    TEST
+    <div>
+      TEST
+    </div>
+    <div>
+      {{$t('common.submit')}}
+    </div>
     <a-button type="primary">Button></a-button>
   </div>
 </template>
