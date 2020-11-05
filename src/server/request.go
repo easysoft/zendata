@@ -3,7 +3,6 @@ package server
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -12,15 +11,12 @@ import (
 )
 
 func ParserJsonParams(req *http.Request, obj *map[string]interface{}) {
-	con, _ := ioutil.ReadAll(req.Body)
-	fmt.Println(string(con))
-
-	err := req.ParseForm()
+	bts, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		log.Fatal("parse form error ",err)
 	}
 
-	json.NewDecoder(req.Body).Decode(&obj)
+	json.Unmarshal(bts, &obj)
 	for key,value := range *obj{
 		log.Println("key:",key," => value :",value)
 	}
