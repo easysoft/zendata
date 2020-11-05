@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/action"
 	"github.com/easysoft/zendata/src/gen"
+	"github.com/easysoft/zendata/src/server"
 	"github.com/easysoft/zendata/src/service"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
@@ -241,16 +242,12 @@ func StartServer() {
 		vari.Ip, port, vari.Ip, port, vari.Ip, port), color.FgCyan)
 
 	http.HandleFunc("/", DataHandler)
-	http.HandleFunc("/admin", AdminHandler)
+	http.HandleFunc("/admin", server.AdminHandler)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", vari.Port), nil)
 
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server_fail", port), color.FgRed)
 	}
-}
-
-func AdminHandler(writer http.ResponseWriter, req *http.Request) {
-	logUtils.PrintToScreen("111")
 }
 
 func DataHandler(writer http.ResponseWriter, req *http.Request) {

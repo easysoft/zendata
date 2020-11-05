@@ -11,8 +11,30 @@
 </template>
 
 <script>
+
+import { listDefs } from "../../api/manage";
+
 export default {
-  name: 'Test'
+  name: 'Test',
+  data() {
+    return {
+      defs: [],
+    };
+  },
+  computed: {
+
+  },
+  created () {
+    listDefs().then(res => {
+      console.log('listDefs', res)
+      this.defs = res
+    })
+  },
+  mounted () {
+  },
+  methods: {
+
+  }
 }
 </script>
 
