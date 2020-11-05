@@ -130,6 +130,9 @@ func main() {
 		os.Args = append(os.Args, "-help")
 	}
 
+	vari.DB, _ = configUtils.InitDB()
+	defer vari.DB.Close()
+
 	switch os.Args[1] {
 	default:
 		flagSet.SetOutput(ioutil.Discard)

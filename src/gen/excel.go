@@ -141,21 +141,19 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
 		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
 
-		db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
-		defer db.Close()
-		_, err = db.Exec(dropSql)
+		_, err = vari.DB.Exec(dropSql)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
 			return
 		}
 
-		_, err = db.Exec(ddl)
+		_, err = vari.DB.Exec(ddl)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
 			return
 		}
 
-		_, err = db.Exec(insertSql)
+		_, err = vari.DB.Exec(insertSql)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
 			return
@@ -279,6 +277,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 
 	sqlStr := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", colStr, from, where)
 	rows, err := db.Query(sqlStr)
+	defer rows.Close()
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		return list, ""

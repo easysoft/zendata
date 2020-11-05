@@ -1,6 +1,7 @@
 package configUtils
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
@@ -19,6 +20,16 @@ import (
 	"reflect"
 	"strings"
 )
+
+func InitDB() (db *sql.DB, err error) {
+	db, err = sql.Open(constant.SqliteDriver, constant.SqliteData)
+	err = db.Ping() // This DOES open a connection if necessary. This makes sure the database is accessible
+	if err != nil {
+		logUtils.PrintErrMsg(
+			fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteData, err.Error()))
+	}
+	return
+}
 
 func InitConfig() {
 	vari.ExeDir = fileUtils.GetExeDir()

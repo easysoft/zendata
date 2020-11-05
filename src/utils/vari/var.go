@@ -1,12 +1,14 @@
 package vari
 
 import (
+	"database/sql"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/utils/const"
 )
 
 var (
 	Config      = model.Config{Version: 1, Language: "en"}
+	DB *sql.DB
 
 	RunMode      constant.RunMode
 

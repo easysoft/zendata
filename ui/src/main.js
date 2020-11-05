@@ -9,7 +9,6 @@ import router from "./router"
 Vue.config.productionTip = false
 
 Vue.component(Button);
-
 Vue.use(Button);
 
 new Vue({
