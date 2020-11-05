@@ -28,7 +28,7 @@ var (
 	MinHeight = 36
 
 	CmdViewHeight = 10
-	
+
 	MaxNumb = 100000 // max number in array
 
 	FormatText = "text"
@@ -77,4 +77,6 @@ var (
 	ExcelBorder  = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
 		                              {"type":"bottom","color":"999999","style":1}, {"type":"right","color":"999999","style":1}]}`
 	ExcelHeader  = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`
+
+	TableData = "biz_data"
 )

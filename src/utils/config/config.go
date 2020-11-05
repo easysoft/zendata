@@ -14,6 +14,7 @@ import (
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"gopkg.in/ini.v1"
+	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -27,7 +28,26 @@ func InitDB() (db *sql.DB, err error) {
 	if err != nil {
 		logUtils.PrintErrMsg(
 			fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteData, err.Error()))
+		return
 	}
+
+	tableInit := isDataInit(db)
+	if tableInit {
+		return
+	}
+
+	// init db tables
+	ddlStr := `CREATE TABLE biz_data (
+						seq CHAR (5) PRIMARY KEY UNIQUE,
+						name VARCHAR(100) DEFAULT '',
+						path VARCHAR(500) DEFAULT ''
+					);`
+	_, err = db.Exec(ddlStr)
+	if err != nil {
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", "biz_data", err.Error()))
+		return
+	}
+
 	return
 }
 
@@ -216,6 +236,17 @@ func addZdToPathLinux(home string) {
 	} else {
 		logUtils.PrintToWithColor(
 			i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
+	}
+}
+
+func isDataInit(db *sql.DB) bool {
+	sql := "select * from " + constant.TableData
+	_, err := db.Query(sql)
+
+	if err == nil {
+		return true
+	} else {
+		return false
 	}
 }
 

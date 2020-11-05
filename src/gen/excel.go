@@ -1,7 +1,6 @@
 package gen
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/src/model"
@@ -181,16 +180,8 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 		importExcel(file, tableName, &seq, &ddlFields, &insertSqls, &colMap)
 	}
 
-	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
-	defer db.Close()
-
-	if err != nil {
-		log.Println(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
-		return
-	}
-
 	dropSql := `DROP TABLE IF EXISTS ` + tableName + `;`
-	_, err = db.Exec(dropSql)
+	_, err := vari.DB.Exec(dropSql)
 	if err != nil {
 		log.Println(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
 		return
@@ -201,14 +192,14 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 		"%s" +
 		"\n);"
 	ddlSql := fmt.Sprintf(ddlTemplate, strings.Join(ddlFields, ", \n"))
-	_, err = db.Exec(ddlSql)
+	_, err = vari.DB.Exec(ddlSql)
 	if err != nil {
 		log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
 		return
 	}
 
 	sql := strings.Join(insertSqls, "\n")
-	_, err = db.Exec(sql)
+	_, err = vari.DB.Exec(sql)
 	if err != nil {
 		log.Println(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
 		return
@@ -219,13 +210,6 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 
 func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) ([]string, string) {
 	list := make([]string, 0)
-
-	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
-	defer db.Close()
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
-		return list, ""
-	}
 
 	selectCol := field.Select
 	from := dbName
@@ -276,7 +260,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	}
 
 	sqlStr := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", colStr, from, where)
-	rows, err := db.Query(sqlStr)
+	rows, err := vari.DB.Query(sqlStr)
 	defer rows.Close()
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
@@ -339,16 +323,10 @@ func isExcelChanged(path string) bool {
 		fileChangeTime = getDirModTime(path).Unix()
 	}
 
-	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
-	defer db.Close()
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
-		return true
-	}
-
 	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s WHERE name = '%s';",
 		constant.SqliteTrackTable, path)
-	rows, err := db.Query(sqlStr)
+	rows, err := vari.DB.Query(sqlStr)
+	rows.Close()
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		return true
@@ -374,7 +352,6 @@ func isExcelChanged(path string) bool {
 			break
 		}
 	}
-	rows.Close()
 
 	if !found { changed = true }
 
@@ -387,7 +364,7 @@ func isExcelChanged(path string) bool {
 				constant.SqliteTrackTable, fileChangeTime, path)
 		}
 
-		_, err = db.Exec(sqlStr)
+		_, err = vari.DB.Exec(sqlStr)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		}
