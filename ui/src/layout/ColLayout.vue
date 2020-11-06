@@ -36,6 +36,7 @@ export default {
 .all {
   display:flex;
   height: 100%;
+  width: 100%;
 
   .left {
     width: 200px;
@@ -43,6 +44,7 @@ export default {
   }
   .content {
     flex: 1;
+    padding: 0 10px;
   }
 }
 </style>

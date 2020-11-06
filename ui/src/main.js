@@ -13,6 +13,11 @@ import SubMenu from "ant-design-vue/lib/menu";
 import MenuItem from "ant-design-vue/lib/menu";
 import 'ant-design-vue/lib/menu/style';
 
+import Table from "ant-design-vue/lib/table";
+import 'ant-design-vue/lib/table/style';
+
+import Tag from "ant-design-vue/lib/tag";
+import Divider from "ant-design-vue/lib/divider";
 import Icon from "ant-design-vue/lib/icon";
 
 import zhCN from './assets/lang/zh-CN'
@@ -23,9 +28,14 @@ Vue.config.productionTip = false
 Vue.component(Button)
 Vue.use(VueI18n)
 Vue.use(ConfigProvider)
-Vue.use(Button);
-Vue.use(Menu, SubMenu, MenuItem)
+Vue.use(Menu)
+Vue.use(SubMenu)
+Vue.use(MenuItem)
+Vue.use(Button)
+Vue.use(Table)
+Vue.use(Tag)
 Vue.use(Icon)
+Vue.use(Divider)
 
 const i18n = new VueI18n({
   locale: 'zh-CN',
