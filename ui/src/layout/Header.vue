@@ -1,0 +1,57 @@
+<template>
+  <div class="header">
+    <h1 class="left">
+      <a href="https://www.zendata.cn" target="_blank">zd.im</a>
+    </h1>
+    <div class="center"></div>
+    <div class="right">
+      <a href="https://www.zendata.cn/book/zendata/" target="_blank">帮助</a>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Header',
+  components: {
+  },
+  data () {
+    return {
+    }
+  },
+  computed: {
+  },
+  created () {
+  },
+  mounted () {
+  },
+  methods: {
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.header {
+  display: flex;
+  height: 48px;
+  line-height: 48px;
+
+  a {
+    color: #fff;
+  }
+
+  .left {
+    margin: 0 15px;
+    width: 100px;
+    color: #fff;
+  }
+  .center {
+    flex: 1;
+  }
+  .right {
+    margin: 0 15px;
+    width: 100px;
+    text-align: right;
+  }
+}
+</style>

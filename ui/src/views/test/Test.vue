@@ -30,8 +30,6 @@ export default {
     //   this.defs = res
     // })
 
-    console.log("========")
-
     const def = {name: "myDef"}
     saveDef(def).then(res => {
       console.log('saveDef', res)
