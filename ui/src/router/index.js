@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 
 import MainLayout from "../layout/MainLayout";
 import ColLayout from "../layout/ColLayout";
+import BlankLayout from "../layout/BlankLayout";
 
 Vue.use(VueRouter);
 
@@ -11,28 +12,64 @@ const routes = [
         path:"/",
         name: "",
         component: MainLayout,
-        redirect: '/data/mine',
+        redirect: '/data/mine/index',
         children: [
             {
                 path:"data",
                 name: "data",
                 component: ColLayout,
+                redirect: '/data/mine/index',
                 children: [
                     {
                         path: 'mine',
                         name: 'mine',
-                        component: () => import('../views/data/Mine')
+                        component: BlankLayout,
+                        redirect: '/data/mine/index',
+                        children: [
+                            {
+                                path: 'list',
+                                alias: "index",
+                                name: 'list',
+                                component: () => import('../views/data/mine/List')
+                            },
+                        ],
                     },
                     {
-                        path: 'excel',
-                        name: 'excel',
-                        component: () => import('../views/data/Excel')
-                    },
-                    {
-                        path: 'yaml',
-                        name: 'yaml',
-                        component: () => import('../views/data/Yaml')
-                    },
+                        path: 'buildin',
+                        name: 'buildin',
+                        component: BlankLayout,
+                        redirect: '/data/buildin/excel/index',
+                        children: [
+                            {
+                                path: 'excel',
+                                name: 'excel',
+                                component: BlankLayout,
+                                redirect: '/data/buildin/excel/index',
+                                children: [
+                                    {
+                                        path: 'list',
+                                        alias: "index",
+                                        name: 'list',
+                                        component: () => import('../views/data/buildin/excel/List')
+                                    },
+                                ],
+                            },
+                            {
+                                path: 'yaml',
+                                name: 'yaml',
+                                component: BlankLayout,
+                                redirect: '/data/buildin/yaml/index',
+                                children: [
+                                    {
+                                        path: 'list',
+                                        alias: "index",
+                                        name: 'list',
+                                        component: () => import('../views/data/buildin/yaml/List')
+                                    },
+                                ],
+                            },
+                        ],
+                    }
                 ]
             }
         ]

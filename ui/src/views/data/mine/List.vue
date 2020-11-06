@@ -15,7 +15,7 @@
 
 <script>
 
-import { listDef } from "../../api/manage";
+import { listDef } from "../../../api/manage";
 
 const columns = [
   {

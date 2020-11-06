@@ -12,10 +12,10 @@
 
       <a-sub-menu key="buildin" @titleClick="titleClick">
         <span slot="title"><span>內置数据</span></span>
-          <a-menu-item key="excel">
+          <a-menu-item key="buildin/excel">
             Excel数据
           </a-menu-item>
-          <a-menu-item key="yaml">
+          <a-menu-item key="buildin/yaml">
             YAML数据
           </a-menu-item>
       </a-sub-menu>
@@ -47,8 +47,8 @@ export default {
   },
   methods: {
     handleClick (e) {
-      console.log('handleClick', e)
-      this.$router.push('/data/' + e.key);
+      console.log('handleClick', e, this.$route.path)
+      if (this.$route.path.indexOf(e.key) < 0) this.$router.push('/data/' + e.key + '/index');
     },
     titleClick (e) {
       console.log('titleClick', e)
