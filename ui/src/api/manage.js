@@ -1,18 +1,18 @@
 import request from '../utils/request'
 
 const api = {
-  admin: '',
+  admin: '/admin',
   res: '/res',
   def: '/defs',
 }
 
 export default api
 
-export function listDefs () {
+export function listDef () {
   return request({
     url: api.admin,
-    method: 'get',
-    params: {}
+    method: 'post',
+    data: {'action': 'listDef'}
   })
 }
 
@@ -20,6 +20,6 @@ export function saveDef (data) {
   return request({
     url: api.admin,
     method: 'post',
-    data: {'action' : 'createDef', 'data': data}
+    data: {'action': 'createDef', 'data': data}
   })
 }

@@ -23,7 +23,11 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ret := model.ResData{ Code: 1, Msg: "success", Data: reqData }
+	ret := model.ResData{ Code: 1, Msg: "success"}
+	if reqData.Action == "listDef" {
+		ret.Data = ListData()
+	}
+
 	jsonStr, _ := json.Marshal(ret)
 
 	io.WriteString(writer, string(jsonStr))

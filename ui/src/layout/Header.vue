@@ -33,8 +33,8 @@ export default {
 <style lang="less" scoped>
 .header {
   display: flex;
-  height: 48px;
-  line-height: 48px;
+  height: 49px;
+  line-height: 49px;
 
   a {
     color: #fff;

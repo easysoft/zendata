@@ -31,8 +31,8 @@ export default {
 
 <style lang="less" scoped>
 .footer {
-  height: 38px;
-  line-height: 38px;
+  height: 39px;
+  line-height: 39px;
   text-align: center;
   font-family: 'WenQuanYi Micro Hei';
 

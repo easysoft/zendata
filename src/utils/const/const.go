@@ -78,5 +78,5 @@ var (
 		                              {"type":"bottom","color":"999999","style":1}, {"type":"right","color":"999999","style":1}]}`
 	ExcelHeader  = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`
 
-	TableData = "biz_data"
+	TablePrefix = "zd_"
 )

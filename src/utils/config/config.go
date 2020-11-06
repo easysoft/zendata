@@ -37,11 +37,11 @@ func InitDB() (db *sql.DB, err error) {
 	}
 
 	// init db tables
-	ddlStr := `CREATE TABLE biz_data (
+	ddlStr := fmt.Sprintf(`CREATE TABLE %s (
 						seq CHAR (5) PRIMARY KEY UNIQUE,
 						name VARCHAR(100) DEFAULT '',
 						path VARCHAR(500) DEFAULT ''
-					);`
+					);`, (&model.Data{}).TableName())
 	_, err = db.Exec(ddlStr)
 	if err != nil {
 		log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", "biz_data", err.Error()))
@@ -240,7 +240,7 @@ func addZdToPathLinux(home string) {
 }
 
 func isDataInit(db *sql.DB) bool {
-	sql := "select * from " + constant.TableData
+	sql := "select * from " + (&model.Data{}).TableName()
 	_, err := db.Query(sql)
 
 	if err == nil {

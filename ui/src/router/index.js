@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import MainLayout from "@/layout/MainLayout";
+import MainLayout from "../layout/MainLayout";
+import ColLayout from "../layout/ColLayout";
 
 Vue.use(VueRouter);
 
@@ -10,20 +11,22 @@ const routes = [
         path:"/",
         name: "",
         component: MainLayout,
-        redirect: '/index',
+        redirect: '/data/mine',
         children: [
             {
-                path: '/index',
-                name: 'index',
-                component: () => import('@/views/Index')
-            },
-            {
-                path: '/test',
-                name: 'test',
-                component: () => import('@/views/test/Test')
+                path:"data",
+                name: "data",
+                component: ColLayout,
+                children: [
+                    {
+                        path: 'mine',
+                        name: 'mine',
+                        component: () => import('../views/data/Mine')
+                    },
+                ]
             }
         ]
-    }
+    },
 ]
 
 const router =  new VueRouter({
