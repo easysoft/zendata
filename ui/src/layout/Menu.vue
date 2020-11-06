@@ -1,21 +1,21 @@
 <template>
   <div>
     <a-menu
-        :default-selected-keys="['item1']"
+        :default-selected-keys="['mine']"
         :open-keys.sync="openKeys"
         mode="inline"
         @click="handleClick"
     >
-      <a-menu-item key="item1">
+      <a-menu-item key="mine">
         我的数据
       </a-menu-item>
 
-      <a-sub-menu key="sub2" @titleClick="titleClick">
+      <a-sub-menu key="buildin" @titleClick="titleClick">
         <span slot="title"><span>內置数据</span></span>
-          <a-menu-item key="sub2-1">
+          <a-menu-item key="excel">
             Excel数据
           </a-menu-item>
-          <a-menu-item key="sub2-2">
+          <a-menu-item key="yaml">
             YAML数据
           </a-menu-item>
       </a-sub-menu>
@@ -31,7 +31,7 @@ export default {
   data () {
     return {
       current: [],
-      openKeys: ['sub2'],
+      openKeys: ['buildin'],
     };
   },
   watch: {
@@ -46,11 +46,12 @@ export default {
   mounted () {
   },
   methods: {
-    handleClick () {
-      console.log('handleClick')
+    handleClick (e) {
+      console.log('handleClick', e)
+      this.$router.push('/data/' + e.key);
     },
-    titleClick () {
-      console.log('titleClick')
+    titleClick (e) {
+      console.log('titleClick', e)
     },
   }
 }

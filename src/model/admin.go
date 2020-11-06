@@ -16,10 +16,10 @@ type ResData struct {
 }
 
 type Data struct {
-	seq string `json:"seq"`
-	name string `json:"name"`
-	path string `json:"path"`
-	desc string `json:"desc"`
+	Seq string `gorm:"column:seq" json:"seq"`
+	Name string `gorm:"column:name" json:"name"`
+	Path string `gorm:"column:path" json:"path"`
+	Desc string `gorm:"column:desc" json:"desc"`
 }
 
 func (*Data) TableName() string {

@@ -23,6 +23,16 @@ const routes = [
                         name: 'mine',
                         component: () => import('../views/data/Mine')
                     },
+                    {
+                        path: 'excel',
+                        name: 'excel',
+                        component: () => import('../views/data/Excel')
+                    },
+                    {
+                        path: 'yaml',
+                        name: 'yaml',
+                        component: () => import('../views/data/Yaml')
+                    },
                 ]
             }
         ]

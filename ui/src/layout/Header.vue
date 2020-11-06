@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-    <h1 class="left">
+    <h2 class="left">
       <a href="https://www.zendata.cn" target="_blank">zd.im</a>
-    </h1>
+    </h2>
     <div class="center"></div>
     <div class="right">
       <a href="https://www.zendata.cn/book/zendata/" target="_blank">帮助</a>
