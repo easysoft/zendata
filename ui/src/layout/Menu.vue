@@ -28,6 +28,7 @@ export default {
   name: 'Menu',
   components: {
   },
+
   data () {
     return {
       current: [],
