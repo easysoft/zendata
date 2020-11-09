@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/easysoft/zendata/src/model"
 	defServer "github.com/easysoft/zendata/src/server/def"
-	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -32,7 +31,6 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		var def model.Def
 		def, err = defServer.Get(reqData.Id)
 
-		def.Folder = commonUtils.GetFolder(def.Path)
 		ret.Data = def
 	} else if reqData.Action == "saveDef" {
 		def := convertDef(reqData.Data)

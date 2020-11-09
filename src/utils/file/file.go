@@ -347,3 +347,18 @@ func ChangeFileExt(filePath, ext string) string {
 
 	return ret
 }
+
+func AddPathSepRightIfNeeded(pth string) string {
+	if pth[len(pth)-1:] != constant.PthSep {
+		pth += constant.PthSep
+	}
+
+	return pth
+}
+func RemovePathSepLeftIfNeeded(pth string) string {
+	if strings.Index(pth, constant.PthSep) == 0 {
+		pth = pth[1:]
+	}
+
+	return pth
+}
