@@ -209,3 +209,15 @@ func RandNum64(length int64) int64 {
 	seedInt := rand.Int63n(length)
 	return seedInt
 }
+
+func AddPathSep(pth string) string {
+	if strings.Index(pth, constant.PthSep) != 0 {
+		pth = constant.PthSep + pth
+	}
+
+	return pth
+}
+func GetFolder(pth string) string {
+	idx := strings.LastIndex(pth, constant.PthSep)
+	return pth[:idx]
+}

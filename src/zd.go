@@ -16,7 +16,6 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
-	"github.com/jinzhu/gorm"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -134,7 +133,7 @@ func main() {
 
 	vari.DB, _ = configUtils.InitDB()
 	defer vari.DB.Close()
-	vari.GormDB, _ = gorm.Open(constant.SqliteDriver, constant.SqliteData)
+	vari.GormDB, _ = configUtils.InitGormDB()
 	defer vari.GormDB.Close()
 
 	switch os.Args[1] {

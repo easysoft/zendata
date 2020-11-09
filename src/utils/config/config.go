@@ -13,8 +13,8 @@ import (
 	stdinUtils "github.com/easysoft/zendata/src/utils/stdin"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/ini.v1"
-	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -37,15 +37,27 @@ func InitDB() (db *sql.DB, err error) {
 	}
 
 	// init db tables
-	ddlStr := fmt.Sprintf(`CREATE TABLE %s (
-						seq CHAR (5) PRIMARY KEY UNIQUE,
-						name VARCHAR(100) DEFAULT '',
-						path VARCHAR(500) DEFAULT ''
-					);`, (&model.Data{}).TableName())
-	_, err = db.Exec(ddlStr)
-	if err != nil {
-		log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", "biz_data", err.Error()))
-		return
+	//ddlStr := fmt.Sprintf(`CREATE TABLE %s (
+	//					seq CHAR (5) PRIMARY KEY UNIQUE,
+	//					name VARCHAR(100) DEFAULT '',
+	//					path VARCHAR(500) DEFAULT ''
+	//				);`, (&model.Def{}).TableName())
+	//_, err = db.Exec(ddlStr)
+	//if err != nil {
+	//	log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", "biz_data", err.Error()))
+	//	return
+	//}
+
+	return
+}
+
+func InitGormDB() (gormDb *gorm.DB, err error) {
+	gormDb, err = gorm.Open(constant.SqliteDriver, constant.SqliteData)
+	gormDb = gormDb.Debug()
+	for _, model := range model.Models {
+		if err := gormDb.Set("gorm:table_options", "").AutoMigrate(model).Error; err != nil {
+			return nil, fmt.Errorf("auto migrate table %+v failure %s", model, err.Error())
+		}
 	}
 
 	return
@@ -240,7 +252,7 @@ func addZdToPathLinux(home string) {
 }
 
 func isDataInit(db *sql.DB) bool {
-	sql := "select * from " + (&model.Data{}).TableName()
+	sql := "select * from " + (&model.Def{}).TableName()
 	_, err := db.Query(sql)
 
 	if err == nil {

@@ -1,6 +1,13 @@
 <template>
   <div>
-    <a-table :columns="columns" :data-source="defs" rowKey="seq">
+    <div class="head">
+      <div class="title">测试数据列表</div>
+      <div class="buttons">
+        <a-button type="primary" @click="create()">新建</a-button>
+      </div>
+    </div>
+
+    <a-table :columns="columns" :data-source="defs" rowKey="id">
       <a slot="name" slot-scope="text">{{ text }}</a>
 
       <span slot="customTitle">名称</span>
@@ -51,18 +58,16 @@ export default {
       console.log('listDefs', res)
       this.defs = res.data
     })
-
-    // const def = {name: "myDef"}
-    // saveDef(def).then(res => {
-    //   console.log('saveDef', res)
-    //   this.defs = res
-    // })
   },
   mounted () {
   },
   methods: {
+    create() {
+      this.$router.push({path: '/data/mine/edit/0'});
+    },
     edit(record) {
       console.log(record)
+      this.$router.push({path: `/data/mine/edit/${record.id}`});
     },
     remove(record) {
       console.log(record)

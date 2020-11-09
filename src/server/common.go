@@ -26,3 +26,10 @@ func writeRes(ret model.ResData, writer http.ResponseWriter) {
 func errRes(msg string) model.ResData {
 	return model.ResData{ Code: 0, Msg: msg }
 }
+
+func convertDef(data interface{}) (def model.Def) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &def)
+
+	return
+}

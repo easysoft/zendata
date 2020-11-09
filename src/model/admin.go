@@ -1,11 +1,17 @@
 package model
 
-import constant "github.com/easysoft/zendata/src/utils/const"
+import (
+	"time"
+)
 
-var CommonPrefix = "zd_"
+var (
+	CommonPrefix = "zd_"
+	Models = []interface{}{&Def{}}
+)
 
 type ReqData struct {
 	Action string `json:"action"`
+	Id int  `json:"id"`
 	Data interface{} `json:"data"`
 }
 
@@ -15,13 +21,11 @@ type ResData struct {
 	Data interface{} `json:"data"`
 }
 
-type Data struct {
-	Seq string `gorm:"column:seq" json:"seq"`
-	Name string `gorm:"column:name" json:"name"`
-	Path string `gorm:"column:path" json:"path"`
-	Desc string `gorm:"column:desc" json:"desc"`
-}
+type Model struct {
+	Id        uint      `gorm:"column:id;primary_key" json:"id" `
+	CreatedAt time.Time `gorm:"column:createTime" json:"createTime"`
+	UpdatedAt time.Time `gorm:"column:updateTime" json:"updateTime"`
 
-func (*Data) TableName() string {
-	return constant.TablePrefix + "data"
+	Disabled bool `gorm:"column:disabled;default:false" json:"disabled"`
+	Deleted  bool `gorm:"column:deleted;default:false" json:"deleted"`
 }

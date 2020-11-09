@@ -13,6 +13,14 @@ import SubMenu from "ant-design-vue/lib/menu";
 import MenuItem from "ant-design-vue/lib/menu";
 import 'ant-design-vue/lib/menu/style';
 
+import FormModel from "ant-design-vue/lib/form-model";
+import Input from "ant-design-vue/lib/input";
+import Select from "ant-design-vue/lib/select";
+import 'ant-design-vue/lib/form/style';
+import 'ant-design-vue/lib/form-model/style';
+import 'ant-design-vue/lib/input/style';
+import 'ant-design-vue/lib/select/style';
+
 import Table from "ant-design-vue/lib/table";
 import 'ant-design-vue/lib/table/style';
 
@@ -31,6 +39,9 @@ Vue.use(ConfigProvider)
 Vue.use(Menu)
 Vue.use(SubMenu)
 Vue.use(MenuItem)
+Vue.use(FormModel)
+Vue.use(Input)
+Vue.use(Select)
 Vue.use(Button)
 Vue.use(Table)
 Vue.use(Tag)

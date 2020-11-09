@@ -27,10 +27,15 @@ const routes = [
                         redirect: '/data/mine/index',
                         children: [
                             {
-                                path: 'list',
+                                path: 'mine-list',
                                 alias: "index",
                                 name: 'list',
                                 component: () => import('../views/data/mine/List')
+                            },
+                            {
+                                path: 'edit/:id',
+                                name: 'mine-edit',
+                                component: () => import('../views/data/mine/Edit')
                             },
                         ],
                     },
@@ -49,7 +54,7 @@ const routes = [
                                     {
                                         path: 'list',
                                         alias: "index",
-                                        name: 'list',
+                                        name: 'excel-list',
                                         component: () => import('../views/data/buildin/excel/List')
                                     },
                                 ],
@@ -63,7 +68,7 @@ const routes = [
                                     {
                                         path: 'list',
                                         alias: "index",
-                                        name: 'list',
+                                        name: 'yaml-list',
                                         component: () => import('../views/data/buildin/yaml/List')
                                     },
                                 ],

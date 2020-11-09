@@ -15,11 +15,19 @@ export function listDef () {
     data: {'action': 'listDef'}
   })
 }
-
+export function getDef (id) {
+  const data = {'action': 'getDef', id: id}
+  console.log(data)
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
 export function saveDef (data) {
   return request({
     url: api.admin,
     method: 'post',
-    data: {'action': 'createDef', 'data': data}
+    data: {'action': 'saveDef', 'data': data}
   })
 }

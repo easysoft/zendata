@@ -48,7 +48,9 @@ export default {
   methods: {
     handleClick (e) {
       console.log('handleClick', e, this.$route.path)
-      if (this.$route.path.indexOf(e.key) < 0) this.$router.push('/data/' + e.key + '/index');
+      if (e.key == 'mine' && this.$route.path != '/data/mine/index') {
+        this.$router.push('/data/mine/index');
+      }
     },
     titleClick (e) {
       console.log('titleClick', e)
