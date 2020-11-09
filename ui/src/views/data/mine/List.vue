@@ -26,12 +26,24 @@
         </a-popconfirm>
       </span>
     </a-table>
+
+    <div class="full-screen-modal">
+      <def-design-component
+          ref="editPage"
+          :visible="designVisible"
+          :model="designModel"
+          @ok="handleDesignOk"
+          @cancel="handleDesignCancel" >
+      </def-design-component>
+    </div>
+
   </div>
 </template>
 
 <script>
 
-import {listDef, removeDef} from "../../../api/manage";
+import {getDef, listDef, removeDef} from "../../../api/manage";
+import { DefDesignComponent } from '../../../components'
 
 const columns = [
   {
@@ -52,10 +64,16 @@ const columns = [
 
 export default {
   name: 'Mine',
+  components: {
+    DefDesignComponent,
+  },
   data() {
     return {
       defs: [],
-      columns
+      columns,
+
+      designVisible: false,
+      designModel: {},
     };
   },
   computed: {
@@ -80,7 +98,12 @@ export default {
     },
     design(record) {
       console.log(record)
-      this.$router.push({path: `/data/mine/design/${record.id}`});
+      this.designVisible = true
+
+      getDef(record.id).then(res => {
+        console.log('getDef', res)
+        this.designModel = res.data
+      })
     },
     remove(record) {
       console.log(record)
@@ -93,7 +116,16 @@ export default {
           })
         }
       })
-    }
+    },
+
+    handleDesignOk() {
+      console.log('handleDesignOk')
+      this.designVisible = false
+    },
+    handleDesignCancel() {
+      console.log('handleDesignCancel')
+      this.designVisible = false
+    },
   }
 }
 </script>

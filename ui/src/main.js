@@ -24,6 +24,9 @@ import 'ant-design-vue/lib/select/style';
 import Popconfirm from "ant-design-vue/lib/popconfirm";
 import 'ant-design-vue/lib/popconfirm/style';
 
+import Modal from "ant-design-vue/lib/modal";
+import 'ant-design-vue/lib/modal/style';
+
 import Table from "ant-design-vue/lib/table";
 import 'ant-design-vue/lib/table/style';
 
@@ -39,6 +42,7 @@ Vue.config.productionTip = false
 Vue.component(Button)
 Vue.use(VueI18n)
 Vue.use(ConfigProvider)
+Vue.use(Modal)
 Vue.use(Menu)
 Vue.use(SubMenu)
 Vue.use(MenuItem)
