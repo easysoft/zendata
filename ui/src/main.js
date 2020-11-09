@@ -30,6 +30,9 @@ import 'ant-design-vue/lib/modal/style';
 import Table from "ant-design-vue/lib/table";
 import 'ant-design-vue/lib/table/style';
 
+import Tree from "ant-design-vue/lib/tree";
+import 'ant-design-vue/lib/tree/style';
+
 import Tag from "ant-design-vue/lib/tag";
 import Divider from "ant-design-vue/lib/divider";
 import Icon from "ant-design-vue/lib/icon";
@@ -55,6 +58,7 @@ Vue.use(Table)
 Vue.use(Tag)
 Vue.use(Icon)
 Vue.use(Divider)
+Vue.use(Tree)
 
 const i18n = new VueI18n({
   locale: 'zh-CN',

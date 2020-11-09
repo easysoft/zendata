@@ -6,7 +6,7 @@ import (
 
 var (
 	CommonPrefix = "zd_"
-	Models = []interface{}{&Def{}}
+	Models = []interface{}{ &Def{}, &Field{} }
 )
 
 type ReqData struct {
@@ -22,7 +22,7 @@ type ResData struct {
 }
 
 type Model struct {
-	Id        uint      `gorm:"column:id;primary_key" json:"id" `
+	ID        uint      `gorm:"column:id;primary_key" json:"id" `
 	CreatedAt time.Time `gorm:"column:createTime" json:"createTime"`
 	UpdatedAt time.Time `gorm:"column:updateTime" json:"updateTime"`
 

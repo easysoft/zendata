@@ -38,7 +38,7 @@ func Update(def *model.Def) (err error) {
 	def.Path = AddExt(def.Path)
 
 	var oldDef model.Def
-	err = vari.GormDB.Where("id=?", def.Id).First(&oldDef).Error
+	err = vari.GormDB.Where("id=?", def.ID).First(&oldDef).Error
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
@@ -62,7 +62,7 @@ func Remove(id int) (err error) {
 	fileUtils.RemoveExist(oldDef.Path)
 
 	var def model.Def
-	def.Id = uint(id)
+	def.ID = uint(id)
 	err = vari.GormDB.Delete(&def).Error
 	return
 }

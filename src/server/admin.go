@@ -32,10 +32,12 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		def, err = defServer.Get(reqData.Id)
 
 		ret.Data = def
+	}  else if reqData.Action == "getDefFieldTree" {
+		ret.Data, err = defServer.GetDefFieldTree(reqData.Id)
 	} else if reqData.Action == "saveDef" {
 		def := convertDef(reqData.Data)
 
-		if def.Id == 0 {
+		if def.ID == 0 {
 			err = defServer.Create(&def)
 		} else {
 			err = defServer.Update(&def)

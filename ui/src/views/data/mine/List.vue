@@ -32,6 +32,7 @@
           ref="editPage"
           :visible="designVisible"
           :model="designModel"
+          :time="time"
           @ok="handleDesignOk"
           @cancel="handleDesignCancel" >
       </def-design-component>
@@ -42,7 +43,7 @@
 
 <script>
 
-import {getDef, listDef, removeDef} from "../../../api/manage";
+import { listDef, removeDef } from "../../../api/manage";
 import { DefDesignComponent } from '../../../components'
 
 const columns = [
@@ -74,6 +75,7 @@ export default {
 
       designVisible: false,
       designModel: {},
+      time: 0,
     };
   },
   computed: {
@@ -97,13 +99,10 @@ export default {
       this.$router.push({path: `/data/mine/edit/${record.id}`});
     },
     design(record) {
+      this.time = Date.now() // trigger data refresh
       console.log(record)
       this.designVisible = true
-
-      getDef(record.id).then(res => {
-        console.log('getDef', res)
-        this.designModel = res.data
-      })
+      this.designModel = record
     },
     remove(record) {
       console.log(record)
