@@ -21,6 +21,9 @@ import 'ant-design-vue/lib/form-model/style';
 import 'ant-design-vue/lib/input/style';
 import 'ant-design-vue/lib/select/style';
 
+import Popconfirm from "ant-design-vue/lib/popconfirm";
+import 'ant-design-vue/lib/popconfirm/style';
+
 import Table from "ant-design-vue/lib/table";
 import 'ant-design-vue/lib/table/style';
 
@@ -43,6 +46,7 @@ Vue.use(FormModel)
 Vue.use(Input)
 Vue.use(Select)
 Vue.use(Button)
+Vue.use(Popconfirm)
 Vue.use(Table)
 Vue.use(Tag)
 Vue.use(Icon)

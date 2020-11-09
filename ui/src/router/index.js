@@ -37,6 +37,11 @@ const routes = [
                                 name: 'mine-edit',
                                 component: () => import('../views/data/mine/Edit')
                             },
+                            {
+                                path: 'design/:id',
+                                name: 'mine-design',
+                                component: () => import('../views/data/mine/Design')
+                            },
                         ],
                     },
                     {

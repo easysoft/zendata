@@ -14,7 +14,16 @@
 
       <span slot="action" slot-scope="record">
         <a @click="edit(record)">编辑</a> |
-        <a @click="remove(record)" >删除</a>
+        <a @click="design(record)">设计</a> |
+
+        <a-popconfirm
+            title="确认删除？"
+            ok-text="是"
+            cancel-text="否"
+            @confirm="remove(record)"
+          >
+          <a href="#">删除</a>
+        </a-popconfirm>
       </span>
     </a-table>
   </div>
@@ -22,7 +31,7 @@
 
 <script>
 
-import { listDef } from "../../../api/manage";
+import {listDef, removeDef} from "../../../api/manage";
 
 const columns = [
   {
@@ -69,8 +78,21 @@ export default {
       console.log(record)
       this.$router.push({path: `/data/mine/edit/${record.id}`});
     },
+    design(record) {
+      console.log(record)
+      this.$router.push({path: `/data/mine/design/${record.id}`});
+    },
     remove(record) {
       console.log(record)
+      removeDef(record.id).then(json => {
+        console.log('removeDef', json)
+        if (json.code == 1) {
+          listDef().then(res => {
+            console.log('listDefs', res)
+            this.defs = res.data
+          })
+        }
+      })
     }
   }
 }

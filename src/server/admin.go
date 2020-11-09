@@ -27,24 +27,31 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 
 	ret := model.ResData{ Code: 1, Msg: "success"}
 	if reqData.Action == "listDef" {
-		ret.Data = defServer.List()
+		ret.Data, err = defServer.List()
 	} else if reqData.Action == "getDef" {
-		def := defServer.Get(reqData.Id)
+		var def model.Def
+		def, err = defServer.Get(reqData.Id)
+
 		def.Folder = commonUtils.GetFolder(def.Path)
 		ret.Data = def
 	} else if reqData.Action == "saveDef" {
 		def := convertDef(reqData.Data)
 
 		if def.Id == 0 {
-			defServer.Create(&def)
+			err = defServer.Create(&def)
 		} else {
-			defServer.Update(&def)
+			err = defServer.Update(&def)
 		}
 
 		ret.Data = def
+	} else if reqData.Action == "removeDef" {
+		err = defServer.Remove(reqData.Id)
 	}
 
-	jsonStr, _ := json.Marshal(ret)
+	if err != nil {
+		ret.Code = 0
+	}
 
-	io.WriteString(writer, string(jsonStr))
+	bytes, _ = json.Marshal(ret)
+	io.WriteString(writer, string(bytes))
 }

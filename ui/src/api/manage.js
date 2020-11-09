@@ -31,3 +31,17 @@ export function saveDef (data) {
     data: {'action': 'saveDef', 'data': data}
   })
 }
+export function saveDefDesign (data) {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'action': 'saveDefDesign', 'data': data}
+  })
+}
+export function removeDef (id) {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'action': 'removeDef', id: id}
+  })
+}
