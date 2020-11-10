@@ -32,8 +32,6 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		def, err = defServer.Get(reqData.Id)
 
 		ret.Data = def
-	}  else if reqData.Action == "getDefFieldTree" {
-		ret.Data, err = defServer.GetDefFieldTree(reqData.Id)
 	} else if reqData.Action == "saveDef" {
 		def := convertDef(reqData.Data)
 
@@ -46,6 +44,15 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = def
 	} else if reqData.Action == "removeDef" {
 		err = defServer.Remove(reqData.Id)
+	}  else if reqData.Action == "getDefFieldTree" {
+		ret.Data, err = defServer.GetDefFieldTree(reqData.Id)
+
+
+	}   else if reqData.Action == "getDefField" {
+		ret.Data, err = defServer.GetDefField(reqData.Id)
+	}   else if reqData.Action == "saveDefField" {
+		field := convertField(reqData.Data)
+		err = defServer.SaveDefField(&field)
 	}
 
 	if err != nil {

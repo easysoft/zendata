@@ -29,7 +29,7 @@
 
     <div class="full-screen-modal">
       <def-design-component
-          ref="editPage"
+          ref="designPage"
           :visible="designVisible"
           :model="designModel"
           :time="time"
@@ -66,7 +66,7 @@ const columns = [
 export default {
   name: 'Mine',
   components: {
-    DefDesignComponent,
+    DefDesignComponent
   },
   data() {
     return {

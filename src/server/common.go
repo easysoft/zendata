@@ -33,3 +33,9 @@ func convertDef(data interface{}) (def model.Def) {
 
 	return
 }
+func convertField(data interface{}) (field model.Field) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &field)
+
+	return
+}

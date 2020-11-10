@@ -34,6 +34,23 @@ export function getDefFieldTree (id) {
     data: data
   })
 }
+export function getDefField (id) {
+  const data = {'action': 'getDefField', id: id}
+  console.log(data)
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function saveField (data) {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'action': 'saveDefField', 'data': data}
+  })
+}
 
 export function saveDef (data) {
   return request({

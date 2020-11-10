@@ -13,6 +13,7 @@
       <a-tree
           ref="fieldTree"
           class="draggable-tree"
+          :show-line="true"
           :expandedKeys.sync="openKeys"
           :selectedKeys.sync="selectedKeys"
           :tree-data="treeData"
@@ -21,20 +22,51 @@
       />
     </div>
 
-    <div class="right" :style="styl">right</div>
+    <div class="right" :style="styl">
+      <a-tabs default-active-key="1" @change="onChange">
+        <a-tab-pane key="info" tab="编辑">
+          <field-info
+              ref="infoComp"
+              :visible="infoVisible"
+              :model="fieldModel"
+              :time="time2">
+          </field-info>
+        </a-tab-pane>
+
+        <a-tab-pane key="config" tab="设计" force-render>
+          <field-config
+              ref="configComp"
+              :visible="configVisible"
+              :model="fieldModel"
+              :time="time2">
+          </field-config>
+        </a-tab-pane>
+      </a-tabs>
+    </div>
   </div>
   </a-modal>
 </template>
 
 <script>
-import { getDefFieldTree } from "../api/manage";
+import { getDefFieldTree, getDefField } from "../api/manage";
+import FieldInfoComponent from "./FieldInfo";
+import FieldConfigComponent from "./FieldConfig";
 
 export default {
   name: 'DefDesignComponent',
+  components: {
+    'field-info': FieldInfoComponent,
+    'field-config': FieldConfigComponent
+  },
   data() {
     const styl = 'height: ' + (document.documentElement.clientHeight - 56) + 'px;'
     return {
       styl: styl,
+
+      infoVisible: true,
+      configVisible: false,
+      fieldModel: {},
+      time2: 0,
 
       treeData: [],
       openKeys: [],
@@ -60,13 +92,15 @@ export default {
   computed: {
   },
   created () {
+    console.log('created')
+    this.loadTreeData()
     this.$watch('time', () => {
       console.log('time changed', this.time)
       this.loadTreeData()
     })
   },
   mounted () {
-
+    console.log('mounted1')
   },
   methods: {
     save() {
@@ -86,12 +120,6 @@ export default {
         if (res.code != 1) return
         this.getOpenKeys(res.data)
         this.treeData = [res.data]
-
-        // if (this.selectedKeys.length === 0) {
-        //   this.selectedKeys[0] = res.data.key // select root
-        //   this.selectKey = res.data.key
-        //   // this.$refs.fields.refresh()
-        // }
       })
     },
     getOpenKeys (def) {
@@ -112,7 +140,10 @@ export default {
         selectedKeys[0] = e.node.eventKey // keep selected
       }
 
-      this.$refs.usersTable.refresh()
+      getDefField(parseInt(selectedKeys[0])).then(res => {
+        console.log('getDefField', res)
+        this.fieldModel = res.data
+      })
     },
     onRightClick ({ event, node }) {
       event.preventDefault()
@@ -140,6 +171,9 @@ export default {
     },
     clearMenu () {
       this.treeNode = null
+    },
+    onChange() {
+      console.log('onChange')
     }
   }
 }
@@ -154,11 +188,13 @@ export default {
     width: 220px;
     height: 100%;
     border-right: 1px solid #e9f2fb;
+    overflow: auto;
   }
   .right {
     flex: 1;
     height: 100%;
     padding: 6px;
+    overflow: auto;
   }
 }
 

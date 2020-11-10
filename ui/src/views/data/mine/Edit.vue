@@ -17,16 +17,12 @@
         <a-form-model-item label="文件夹" prop="folder">
           <a-input v-model="model.folder" />
         </a-form-model-item>
-        <!--<a-form-model-item label="类型">
-          <a-select v-model="model.region" placeholder="please select your zone">
-            <a-select-option value="shanghai">
-              Zone one
-            </a-select-option>
-            <a-select-option value="beijing">
-              Zone two
-            </a-select-option>
+        <a-form-model-item label="类型">
+          <a-select v-model="model.type" placeholder="please select your zone">
+            <a-select-option value="text">字符串</a-select-option>
+            <a-select-option value="article">文章</a-select-option>
           </a-select>
-        </a-form-model-item>-->
+        </a-form-model-item>
         <a-form-model-item label="描述" prop="desc">
           <a-input v-model="model.desc" type="textarea" rows="3" />
         </a-form-model-item>

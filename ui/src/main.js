@@ -27,8 +27,17 @@ import 'ant-design-vue/lib/popconfirm/style';
 import Modal from "ant-design-vue/lib/modal";
 import 'ant-design-vue/lib/modal/style';
 
+import InputNumber from "ant-design-vue/lib/input-number";
+import 'ant-design-vue/lib/input-number/style';
+
+import Switch from "ant-design-vue/lib/switch";
+import 'ant-design-vue/lib/switch/style';
+
 import Table from "ant-design-vue/lib/table";
 import 'ant-design-vue/lib/table/style';
+
+import Tabs from "ant-design-vue/lib/tabs";
+import 'ant-design-vue/lib/tabs/style';
 
 import Tree from "ant-design-vue/lib/tree";
 import 'ant-design-vue/lib/tree/style';
@@ -37,12 +46,15 @@ import Tag from "ant-design-vue/lib/tag";
 import Divider from "ant-design-vue/lib/divider";
 import Icon from "ant-design-vue/lib/icon";
 
+import Col from "ant-design-vue/lib/col";
+import Row from "ant-design-vue/lib/row";
+
+
 import zhCN from './assets/lang/zh-CN'
 import router from "./router"
 
 Vue.config.productionTip = false
 
-Vue.component(Button)
 Vue.use(VueI18n)
 Vue.use(ConfigProvider)
 Vue.use(Modal)
@@ -59,6 +71,11 @@ Vue.use(Tag)
 Vue.use(Icon)
 Vue.use(Divider)
 Vue.use(Tree)
+Vue.use(Tabs)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(InputNumber)
+Vue.use(Switch)
 
 const i18n = new VueI18n({
   locale: 'zh-CN',
