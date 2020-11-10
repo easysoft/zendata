@@ -23,7 +23,7 @@ type Field struct {
 	Field string `gorm:"column:field" json:"field"`
 	Note string `gorm:"column:note" json:"note"`
 
-	Range string `gorm:"column:name" json:"name"`
+	Range string `gorm:"column:range" json:"range"`
 	Exp  string `gorm:"column:exp" json:"exp"`
 	Prefix string `gorm:"column:prefix" json:"prefix"`
 	Postfix string `gorm:"column:postfix" json:"postfix"`
@@ -49,11 +49,6 @@ type Field struct {
 	Ord int `gorm:"column:ord" json:"ord"`
 
 	Children []*Field `gorm:"-" json:"children"`
-
-	// for antd tree
-	Key string `gorm:"-" json:"key"`
-	Value string   `gorm:"-" json:"value"`
-	Title string   `gorm:"-" json:"title"`
 }
 func (*Field) TableName() string {
 	return constant.TablePrefix + "field"

@@ -14,10 +14,6 @@ export default {
     };
   },
   props: {
-    visible: {
-      type: Boolean,
-      required: true
-    },
     model: {
       type: Object,
       default: () => null

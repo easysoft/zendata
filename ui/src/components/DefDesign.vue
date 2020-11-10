@@ -17,6 +17,7 @@
           :expandedKeys.sync="openKeys"
           :selectedKeys.sync="selectedKeys"
           :tree-data="treeData"
+          :replaceFields="fieldMap"
           @select="onSelect"
           @rightClick="this.onRightClick"
       />
@@ -25,21 +26,23 @@
     <div class="right" :style="styl">
       <a-tabs default-active-key="1" @change="onChange">
         <a-tab-pane key="info" tab="编辑">
-          <field-info
-              ref="infoComp"
-              :visible="infoVisible"
-              :model="fieldModel"
-              :time="time2">
-          </field-info>
+          <div v-show="infoVisible">
+            <field-info
+                ref="infoComp"
+                :model="fieldModel"
+                :time="time2">
+            </field-info>
+          </div>
         </a-tab-pane>
 
         <a-tab-pane key="config" tab="设计" force-render>
-          <field-config
-              ref="configComp"
-              :visible="configVisible"
-              :model="fieldModel"
-              :time="time2">
-          </field-config>
+          <div v-show="configVisible">
+            <field-config
+                ref="configComp"
+                :model="fieldModel"
+                :time="time2">
+            </field-config>
+          </div>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -72,6 +75,7 @@ export default {
       openKeys: [],
       selectedKeys: [],
       treeNode: null,
+      fieldMap: {title:'field', key:'id', value: 'id'},
     };
   },
   props: {
@@ -120,12 +124,15 @@ export default {
         if (res.code != 1) return
         this.getOpenKeys(res.data)
         this.treeData = [res.data]
+
+        this.infoVisible = false
+        this.configVisible = false
       })
     },
     getOpenKeys (def) {
       if (!def) return
 
-      this.openKeys.push(def.key)
+      this.openKeys.push(def.id)
       if (def.children) {
         def.children.forEach((item) => {
           this.getOpenKeys(item)
@@ -143,6 +150,14 @@ export default {
       getDefField(parseInt(selectedKeys[0])).then(res => {
         console.log('getDefField', res)
         this.fieldModel = res.data
+
+        if (this.fieldModel.parentID == 0) {
+          this.infoVisible = false
+          this.configVisible = false
+        } else {
+          this.infoVisible = true
+          this.configVisible = true
+        }
       })
     },
     onRightClick ({ event, node }) {

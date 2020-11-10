@@ -8,6 +8,12 @@
       </a-row>
 
       <a-row :gutter="colsFull">
+        <a-form-model-item label="定义" prop="range" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-input v-model="model.range" placeholder="此处自由编辑，或使用更方便的设计页面。" />
+        </a-form-model-item>
+      </a-row>
+
+      <a-row :gutter="colsFull">
         <a-col :span="colsHalf">
           <a-form-model-item label="前缀" prop="prefix" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <a-input v-model="model.prefix" />
@@ -129,10 +135,6 @@ export default {
     };
   },
   props: {
-    visible: {
-      type: Boolean,
-      required: true
-    },
     model: {
       type: Object,
       default: () => null

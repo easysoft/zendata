@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"strconv"
 )
 
 func GetDefFieldTree(defId int) (root *model.Field, err error) {
@@ -16,12 +15,6 @@ func GetDefFieldTree(defId int) (root *model.Field, err error) {
 	}
 	if len(fields) == 0 {
 		return nil, fmt.Errorf("no fields")
-	}
-
-	for i := range fields {
-		fields[i].Key = strconv.Itoa(int(fields[i].ID))
-		fields[i].Title = fields[i].Field
-		fields[i].Value = strconv.Itoa(int(fields[i].ID))
 	}
 
 	root = fields[0]
