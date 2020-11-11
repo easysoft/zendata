@@ -45,7 +45,7 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	} else if reqData.Action == "removeDef" {
 		err = defServer.Remove(reqData.Id)
 	} else if reqData.Action == "getDefFieldTree" {
-		ret.Data, err = defServer.GetDefFieldTree(reqData.Id)
+		ret.Data, err = defServer.GetDefFieldTree(uint(reqData.Id))
 
 
 	} else if reqData.Action == "getDefField" {
@@ -53,7 +53,7 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	} else if reqData.Action == "createDefField" {
 		var field *model.Field
 		field, err = defServer.CreateDefField(0, uint(reqData.Id), "新字段", reqData.Mode)
-		ret.Data, err = defServer.GetDefFieldTree(int(field.DefID))
+		ret.Data, err = defServer.GetDefFieldTree(field.DefID)
 		ret.Field = field
 	} else if reqData.Action == "saveDefField" {
 		field := convertField(reqData.Data)
@@ -61,11 +61,11 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	} else if reqData.Action == "removeDefField" {
 		var defId int
 		defId, err = defServer.RemoveDefField(reqData.Id)
-		ret.Data, err = defServer.GetDefFieldTree(defId)
+		ret.Data, err = defServer.GetDefFieldTree(uint(defId))
 	} else if reqData.Action == "moveDefField" {
 		var defId int
 		defId, ret.Field, err = defServer.MoveDefField(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
-		ret.Data, err = defServer.GetDefFieldTree(defId)
+		ret.Data, err = defServer.GetDefFieldTree(uint(defId))
 	}
 
 	if err != nil {

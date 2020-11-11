@@ -5,9 +5,10 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
+	"gopkg.in/yaml.v3"
 )
 
-func GetDefFieldTree(defId int) (root *model.Field, err error) {
+func GetDefFieldTree(defId uint) (root *model.Field, err error) {
 	var fields []*model.Field
 
 	err = vari.GormDB.Where("defID=?", defId).Order("parentID ASC ,ord ASC").Find(&fields).Error
@@ -35,6 +36,13 @@ func GetDefField(fieldId int) (field model.Field, err error) {
 
 func SaveDefField(field *model.Field) (err error) {
 	err = vari.GormDB.Save(field).Error
+
+	var def model.Def
+	err = vari.GormDB.Where("id=?", field.DefID).First(&def).Error
+
+	dataToYaml(&def)
+	err = vari.GormDB.Model(&def).Where("id=?", def.ID).Update("yaml", def.Yaml).Error
+
 	return
 }
 func CreateDefField(defId, targetId uint, name string, mode string) (field *model.Field, err error) {
@@ -180,4 +188,82 @@ func getMaxOrder(parentId uint) (ord int) {
 	ord = preChild.Ord + 1
 
 	return
+}
+
+func dataToYaml(def *model.Def) (str string) {
+	root, err := GetDefFieldTree(def.ID)
+	if err != nil {
+		return
+	}
+
+	defData := model.DefData{}
+	genDef(*def, &defData)
+
+	for _, child := range root.Children { // ignore the root
+		defField := model.DefField{}
+		convertConfModel(*child, &defField)
+
+		defData.Fields = append(defData.Fields, defField)
+	}
+
+	bytes, err := yaml.Marshal(defData)
+	def.Yaml = string(bytes)
+
+	return
+}
+func convertConfModel(treeNode model.Field, field *model.DefField) {
+	genField(treeNode, field)
+
+	for _, child := range treeNode.Children {
+		defField := model.DefField{}
+		convertConfModel(*child, &defField)
+
+		field.Fields = append(field.Fields, defField)
+	}
+
+	for _, from := range treeNode.Froms { // only one level
+		defField := model.DefField{}
+		genField(*from, &defField)
+
+		field.Froms = append(field.Froms, defField)
+	}
+
+	if len(field.Fields) == 0 {
+		field.Fields = nil
+	}
+	if len(field.Froms) == 0 {
+		field.Froms = nil
+	}
+
+	return
+}
+func genDef(def model.Def, data *model.DefData) () {
+	data.Title = def.Title
+	data.Desc = def.Desc
+	data.Type = def.Type
+}
+func genField(treeNode model.Field, field *model.DefField) () {
+	field.Field = treeNode.Field
+	field.Note = treeNode.Note
+
+	field.Range = treeNode.Range
+	field.Value = treeNode.Exp
+	field.Prefix = treeNode.Prefix
+	field.Postfix = treeNode.Postfix
+	field.Loop = treeNode.Loop
+	field.Loopfix = treeNode.Loopfix
+	field.Format = treeNode.Format
+	field.Type = treeNode.Type
+	field.Mode = treeNode.Mode
+	field.Length = treeNode.Length
+	field.LeftPad = treeNode.LeftPad
+	field.RightPad = treeNode.RightPad
+	field.Rand = treeNode.Rand
+
+	field.Config = treeNode.Config
+	field.Use = treeNode.Use
+	field.From = treeNode.From
+	field.Select = treeNode.Select
+	field.Where = treeNode.Where
+	field.Limit = treeNode.Limit
 }

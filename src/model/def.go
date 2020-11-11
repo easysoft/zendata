@@ -6,11 +6,12 @@ import (
 
 type Def struct {
 	Model
-	Name string `gorm:"column:name" json:"name"`
-	Path string `gorm:"column:path" json:"path"`
-	Type string `gorm:"column:type;default:text" json:"type"`
-	Desc string `gorm:"column:desc" json:"desc"`
-	Folder string `gorm:"-" json:"folder"`
+	Title  string `gorm:"column:title" json:"title"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+	Type   string `gorm:"column:type" json:"type"`
+	Desc   string `gorm:"column:desc" json:"desc"`
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Folder string `gorm:"-" json:"folder" yaml:"-"`
 }
 func (*Def) TableName() string {
 	return constant.TablePrefix + "def"
@@ -27,15 +28,15 @@ type Field struct {
 	Exp  string `gorm:"column:exp" json:"exp"`
 	Prefix string `gorm:"column:prefix" json:"prefix"`
 	Postfix string `gorm:"column:postfix" json:"postfix"`
-	Loop int `gorm:"column:loop" json:"loop"`
+	Loop string `gorm:"column:loop" json:"loop"`
 	Loopfix string `gorm:"column:loopfix" json:"loopfix"`
 	Format string `gorm:"column:format" json:"format"`
-	Type string `gorm:"column:type;default:list" json:"type"`
-	Mode string `gorm:"column:mode;default:parallel" json:"mode"`
+	Type string `gorm:"column:type" json:"type"`
+	Mode string `gorm:"column:mode" json:"mode"`
 	Length int `gorm:"column:length" json:"length"`
 	LeftPad string `gorm:"column:leftPad" json:"leftPad"`
 	RightPad string `gorm:"column:rightPad" json:"rightPad"`
-	Rand bool `gorm:"column:rand;default:false" json:"rand"`
+	Rand bool `gorm:"column:rand" json:"rand"`
 
 	ConfigID	uint `gorm:"column:configID" json:"configID"`
 	Config	string `gorm:"column:config" json:"config"`
@@ -49,6 +50,7 @@ type Field struct {
 	Ord int `gorm:"column:ord;default:1" json:"ord"`
 
 	Children []*Field `gorm:"-" json:"children"`
+	Froms []*Field `gorm:"-" json:"froms"`
 }
 func (*Field) TableName() string {
 	return constant.TablePrefix + "field"

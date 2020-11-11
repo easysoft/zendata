@@ -24,7 +24,7 @@ func Get(id int) (def model.Def, err error) {
 func Create(def *model.Def) (err error) {
 	def.Folder = DealWithPathSepRight(def.Folder)
 
-	def.Path = def.Folder + def.Name
+	def.Path = def.Folder + def.Title
 	def.Path = AddExt(def.Path)
 	err = vari.GormDB.Save(def).Error
 
@@ -36,7 +36,7 @@ func Create(def *model.Def) (err error) {
 func Update(def *model.Def) (err error) {
 	def.Folder = DealWithPathSepRight(def.Folder)
 
-	def.Path = def.Folder + def.Name
+	def.Path = def.Folder + def.Title
 	def.Path = AddExt(def.Path)
 
 	var oldDef model.Def
@@ -49,6 +49,7 @@ func Update(def *model.Def) (err error) {
 		fileUtils.RemoveExist(oldDef.Path)
 	}
 
+	dataToYaml(def)
 	err = vari.GormDB.Save(def).Error
 
 	return

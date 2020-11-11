@@ -11,8 +11,8 @@
 
     <div>
       <a-form-model ref="editForm" :model="model" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-form-model-item label="名称" prop="name">
-          <a-input v-model="model.name" />
+        <a-form-model-item label="名称" prop="title">
+          <a-input v-model="model.title" />
         </a-form-model-item>
         <a-form-model-item label="文件夹" prop="folder">
           <a-input v-model="model.folder" />
@@ -51,7 +51,7 @@ export default {
       labelCol: labelCol,
       wrapperCol: wrapperCol,
       rules: {
-        name: [
+        title: [
           { required: true, message: '名称不能为空', trigger: 'change' },
         ],
         folder: [

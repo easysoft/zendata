@@ -3,11 +3,11 @@ package model
 type ClsBase struct {
 	Title   string `yaml:"title"`
 	Desc    string `yaml:"desc"`
-	Author  string `yaml:"author"`
-	Version string `yaml:"version"`
+	Author  string `yaml:"author,omitempty"`
+	Version string `yaml:"version,omitempty"`
 
-	From string        `yaml:"from"`
-	Type  string  `yaml:"type"`
+	From string        `yaml:"from,omitempty"`
+	Type  string  `yaml:"type,omitempty"`
 }
 
 // instance res
@@ -39,30 +39,30 @@ type DefData struct {
 }
 type DefField struct {
 	FieldBase `yaml:",inline"`
-	Fields    []DefField `yaml:"fields,flow"`
-	Length    int        `yaml:"length"`
-	LeftPad   string     `yaml:"leftpad"`
-	RightPad  string     `yaml:"rightpad"`
-	Path      string
+	Fields    []DefField `yaml:"fields,flow,omitempty"`
+	Length    int        `yaml:"length,omitempty"`
+	LeftPad   string     `yaml:"leftpad,omitempty"`
+	RightPad  string     `yaml:"rightpad,omitempty"`
+	Path      string     `yaml:"path,omitempty"`
 
-	Froms []DefField `yaml:"froms,flow"`
+	Froms []DefField `yaml:"froms,flow,omitempty"`
 }
 
 // base struct
 type FieldBase struct {
 	FieldSimple   `yaml:",inline"`
 
-	Config	string  `yaml:"config"`
-	From	string  `yaml:"from"`
-	Select	string  `yaml:"select"`
-	Where	string  `yaml:"where"`
-	Limit	int  `yaml:"limit"`
-	Use	string  `yaml:"use"`
+	Config	string  `yaml:"config,omitempty"`
+	From	string  `yaml:"from,omitempty"`
+	Select	string  `yaml:"select,omitempty"`
+	Where	string  `yaml:"where,omitempty"`
+	Limit	int  `yaml:"limit,omitempty"`
+	Use	string  `yaml:"use,omitempty"`
 
-	IsNumb  bool  `yaml:"isNumb"`
-	Expect  string  `yaml:"expect"`
+	IsNumb  bool  `yaml:"isNumb,omitempty"`
+	Expect  string  `yaml:"expect,omitempty"`
 
-	Precision int
+	Precision int  `yaml:"precision,omitempty"`
 }
 type DefSimple struct {
 	ClsBase   `yaml:",inline"`
@@ -70,17 +70,17 @@ type DefSimple struct {
 }
 type FieldSimple struct {
 	Field  string  `yaml:"field"`
-	Note     string  `yaml:"note"`
+	Note     string  `yaml:"note,omitempty"`
 	Range    string  `yaml:"range"`
-	Value string  `yaml:"value"`
-	Prefix   string  `yaml:"prefix"`
-	Postfix  string  `yaml:"postfix"`
-	Loop  string  `yaml:"loop"`
-	Loopfix  string  `yaml:"loopfix"`
-	Format  string  `yaml:"format"`
-	Rand  bool  `yaml:"rand"`
-	Type  string  `yaml:"type"`
-	Mode  string  `yaml:"mode"`
+	Value string  `yaml:"value,omitempty"`
+	Prefix   string  `yaml:"prefix,omitempty"`
+	Postfix  string  `yaml:"postfix,omitempty"`
+	Loop  string  `yaml:"loop,omitempty"`
+	Loopfix  string  `yaml:"loopfix,omitempty"`
+	Format  string  `yaml:"format,omitempty"`
+	Rand  bool  `yaml:"rand,omitempty"`
+	Type  string  `yaml:"type,omitempty"`
+	Mode  string  `yaml:"mode,omitempty"`
 
 	LoopStart          int  `yaml:"-"`
 	LoopEnd            int  `yaml:"-"`

@@ -48,9 +48,9 @@ import { DefDesignComponent } from '../../../components'
 
 const columns = [
   {
-    dataIndex: 'name',
-    slots: { title: 'customTitle' },
-    scopedSlots: { customRender: 'name' },
+    dataIndex: 'title',
+    slots: { name: 'customTitle' },
+    scopedSlots: { customRender: 'title' },
   },
   {
     title: '路径',
