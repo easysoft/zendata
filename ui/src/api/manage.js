@@ -25,6 +25,28 @@ export function getDef (id) {
   })
 }
 
+export function saveDef (data) {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'action': 'saveDef', 'data': data}
+  })
+}
+export function saveDefDesign (data) {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'action': 'saveDefDesign', 'data': data}
+  })
+}
+export function removeDef (id) {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'action': 'removeDef', id: id}
+  })
+}
+
 export function getDefFieldTree (id) {
   const data = {'action': 'getDefFieldTree', id: id}
   console.log(data)
@@ -53,7 +75,7 @@ export function createDefField (targetId, mode) {
   })
 }
 
-export function saveField (data) {
+export function saveDefField (data) {
   return request({
     url: api.admin,
     method: 'post',
@@ -61,24 +83,12 @@ export function saveField (data) {
   })
 }
 
-export function saveDef (data) {
+export function removeDefField (id) {
+  const data = {'action': 'removeDefField', id: id}
+
   return request({
     url: api.admin,
     method: 'post',
-    data: {'action': 'saveDef', 'data': data}
-  })
-}
-export function saveDefDesign (data) {
-  return request({
-    url: api.admin,
-    method: 'post',
-    data: {'action': 'saveDefDesign', 'data': data}
-  })
-}
-export function removeDef (id) {
-  return request({
-    url: api.admin,
-    method: 'post',
-    data: {'action': 'removeDef', id: id}
+    data: data
   })
 }

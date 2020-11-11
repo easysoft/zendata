@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { getDefFieldTree, getDefField, createDefField } from "../api/manage";
+import { getDefFieldTree, getDefField, createDefField, removeDefField } from "../api/manage";
 import FieldInfoComponent from "./FieldInfo";
 import FieldConfigComponent from "./FieldConfig";
 
@@ -190,13 +190,12 @@ export default {
       console.log('menuClick', e, this.treeNode)
       this.addMode = null
 
+      this.targetModel = this.treeNode.id
       if (e.key === 'addNeighbor') {
         this.addMode = 'neighbor'
-        this.targetModel = this.treeNode.id
         this.addNeighborField()
       } else if (e.key === 'addChild') {
         this.addMode = 'child'
-        this.targetModel = this.treeNode.id
         this.addChildField()
       }else if (e.key === 'remove') {
         this.removeField()
@@ -238,10 +237,17 @@ export default {
       })
     },
     removeField () {
-      console.log('removeOrg')
+      console.log('removeField', this.targetModel)
 
+      removeDefField(this.targetModel).then(res => {
+        console.log('removeDefField', res)
 
-      this.removeFieldVisible = true
+        this.getOpenKeys(res.data)
+        this.treeData = [res.data]
+
+        this.infoVisible = false
+        this.configVisible = false
+      })
     },
     onDrop (info) {
       console.log(info, info.node.eventKey, info.dragNode.eventKey) // {event, node, dragNode, dragNodesKeys}

@@ -58,6 +58,10 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	} else if reqData.Action == "saveDefField" {
 		field := convertField(reqData.Data)
 		err = defServer.SaveDefField(&field)
+	} else if reqData.Action == "removeDefField" {
+		var defId int
+		defId, err = defServer.RemoveDefField(reqData.Id)
+		ret.Data, err = defServer.GetDefFieldTree(defId)
 	}
 
 	if err != nil {

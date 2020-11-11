@@ -57,6 +57,31 @@ func CreateDefField(defId, targetId uint, name string, mode string) (field *mode
 	return
 }
 
+func RemoveDefField(id int) (defId int, err error) {
+	var field model.Field
+
+	err = vari.GormDB.Where("id=?", id).First(&field).Error
+	defId = int(field.DefID)
+	err = deleteFieldAndChildren(field.DefID, field.ID)
+	return
+}
+func deleteFieldAndChildren(defId, fileId uint) (err error) {
+	var children []*model.Field
+
+	field := model.Field{}
+	field.ID = fileId
+	err = vari.GormDB.Delete(&field).Error
+
+	if err == nil {
+		err = vari.GormDB.Where("defID=? AND parentID=?", defId, fileId).Find(&children).Error
+		for _, child := range children {
+			deleteFieldAndChildren(child.DefID, child.ID)
+		}
+	}
+
+	return
+}
+
 func makeTree(Data []*model.Field, node *model.Field) { //参数为父节点，添加父节点的子节点指针切片
 	children, _ := haveChild(Data, node) //判断节点是否有子节点并返回
 	if children != nil {

@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import {getDefField, saveField} from "../api/manage";
+import {getDefField, saveDefField} from "../api/manage";
 
 export default {
   name: 'FieldInfoComponent',
@@ -168,8 +168,8 @@ export default {
           return
         }
 
-        saveField(this.model).then(json => {
-          console.log('saveField', json)
+        saveDefField(this.model).then(json => {
+          console.log('saveDefField', json)
         })
       })
     },
