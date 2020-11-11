@@ -51,8 +51,8 @@
         <a-col :span="colsHalf">
           <a-form-model-item label="模式" prop="mode" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
             <a-select v-model="model.mode">
-              <a-select-option value="p">平行</a-select-option>
-              <a-select-option value="r">递归</a-select-option>
+              <a-select-option value="parallel">平行</a-select-option>
+              <a-select-option value="recursive">递归</a-select-option>
             </a-select>
           </a-form-model-item>
         </a-col>

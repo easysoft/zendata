@@ -43,6 +43,15 @@ export function getDefField (id) {
     data: data
   })
 }
+export function createDefField (targetId, mode) {
+  const data = {'action': 'createDefField', id: targetId, mode: mode}
+  console.log(data)
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
 
 export function saveField (data) {
   return request({

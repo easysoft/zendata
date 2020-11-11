@@ -1,5 +1,6 @@
 <template>
-  <a-modal
+  <div id="design-page">
+    <a-modal
       title="测试数据设计"
       width="100%"
       dialogClass="full-screen-modal"
@@ -19,8 +20,22 @@
           :tree-data="treeData"
           :replaceFields="fieldMap"
           @select="onSelect"
-          @rightClick="this.onRightClick"
+          @rightClick="onRightClick"
+          @drop="onDrop"
       />
+      <div v-if="treeNode" :style="this.tmpStyle" class="org-tree-context-menu">
+        <a-menu @click="menuClick" mode="inline" class="menu">
+          <a-menu-item key="addNeighbor" v-if="!isRoot">
+            <a-icon type="plus" />创建同级
+          </a-menu-item>
+          <a-menu-item key="addChild">
+            <a-icon type="plus" />创建子级
+          </a-menu-item>
+          <a-menu-item key="remove" v-if="!isRoot">
+            <a-icon type="delete" />删除节点
+          </a-menu-item>
+        </a-menu>
+      </div>
     </div>
 
     <div class="right" :style="styl">
@@ -48,10 +63,11 @@
     </div>
   </div>
   </a-modal>
+  </div>
 </template>
 
 <script>
-import { getDefFieldTree, getDefField } from "../api/manage";
+import { getDefFieldTree, getDefField, createDefField } from "../api/manage";
 import FieldInfoComponent from "./FieldInfo";
 import FieldConfigComponent from "./FieldConfig";
 
@@ -74,6 +90,7 @@ export default {
       treeData: [],
       openKeys: [],
       selectedKeys: [],
+      targetModel: 0,
       treeNode: null,
       fieldMap: {title:'field', key:'id', value: 'id'},
     };
@@ -94,6 +111,10 @@ export default {
   },
 
   computed: {
+    isRoot () {
+      console.log('isRoot', !this.treeNode.parentID)
+      return !this.treeNode.parentID
+    },
   },
   created () {
     console.log('created')
@@ -103,8 +124,13 @@ export default {
       this.loadTreeData()
     })
   },
-  mounted () {
-    console.log('mounted1')
+  mounted: function () {
+    console.log('mounted')
+    window.addEventListener("click", this.clearMenu)
+  },
+  beforeDestroy() {
+    console.log('beforeDestroy')
+    window.removeEventListener('click', this.clearMenu);
   },
   methods: {
     save() {
@@ -160,16 +186,130 @@ export default {
         }
       })
     },
+    menuClick (e) {
+      console.log('menuClick', e, this.treeNode)
+      this.addMode = null
+
+      if (e.key === 'addNeighbor') {
+        this.addMode = 'neighbor'
+        this.targetModel = this.treeNode.id
+        this.addNeighborField()
+      } else if (e.key === 'addChild') {
+        this.addMode = 'child'
+        this.targetModel = this.treeNode.id
+        this.addChildField()
+      }else if (e.key === 'remove') {
+        this.removeField()
+      }
+      this.clearMenu()
+    },
+    addNeighborField () {
+      console.log('addNeighborOrg', this.targetModel)
+
+      createDefField(this.targetModel, "neighbor").then(res => {
+        console.log('createDefField', res)
+
+        this.getOpenKeys(res.data)
+        this.treeData = [res.data]
+
+        this.selectedKeys = [res.field.id] // select
+        this.selectKey = res.field.id
+        this.fieldModel = res.field
+
+        this.infoVisible = true
+        this.configVisible = true
+      })
+    },
+    addChildField () {
+      console.log('addChildOrg', this.targetModel)
+
+      createDefField(this.targetModel, "child").then(res => {
+        console.log('createDefField', res)
+
+        this.getOpenKeys(res.data)
+        this.treeData = [res.data]
+
+        this.selectedKeys = [res.field.id] // select
+        this.selectKey = res.field.id
+        this.fieldModel = res.field
+
+        this.infoVisible = true
+        this.configVisible = true
+      })
+    },
+    removeField () {
+      console.log('removeOrg')
+
+
+      this.removeFieldVisible = true
+    },
+    onDrop (info) {
+      console.log(info, info.node.eventKey, info.dragNode.eventKey) // {event, node, dragNode, dragNodesKeys}
+      const dropKey = info.node.eventKey
+      const dragKey = info.dragNode.eventKey
+      const dropPos = info.node.pos.split('-')
+      const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
+      const loop = (data, key, callback) => {
+        data.forEach((item, index, arr) => {
+          if (item.key === key) {
+            return callback(item, index, arr)
+          }
+          if (item.children) {
+            return loop(item.children, key, callback)
+          }
+        })
+      }
+      const data = [...this.treeData]
+
+      // Find dragObject
+      let dragObj
+      loop(data, dragKey, (item, index, arr) => {
+        arr.splice(index, 1)
+        dragObj = item
+      })
+      if (!info.dropToGap) {
+        // Drop on the content
+        loop(data, dropKey, item => {
+          item.children = item.children || []
+          // where to insert
+          item.children.push(dragObj)
+        })
+      } else if (
+          (info.node.children || []).length > 0 && // Has children
+          info.node.expanded && // Is expanded
+          dropPosition === 1 // On the bottom gap
+      ) {
+        loop(data, dropKey, item => {
+          item.children = item.children || []
+          // where to insert
+          item.children.unshift(dragObj)
+        })
+      } else {
+        let ar
+        let i
+        loop(data, dropKey, (item, index, arr) => {
+          ar = arr
+          i = index
+        })
+        if (dropPosition === -1) {
+          ar.splice(i, 0, dragObj)
+        } else {
+          ar.splice(i + 1, 0, dragObj)
+        }
+      }
+      this.orgTree = data
+    },
     onRightClick ({ event, node }) {
       event.preventDefault()
+      console.log('onRightClick', node)
+
       const y = event.currentTarget.getBoundingClientRect().top
       const x = event.currentTarget.getBoundingClientRect().right
 
-      console.log('onRightClick', node)
       this.treeNode = {
         pageX: x,
         pageY: y,
-        orgID: node._props.eventKey,
+        id: node._props.eventKey,
         title: node._props.title,
         parentID: node._props.dataRef.parentID || null
       }
@@ -185,6 +325,7 @@ export default {
       }
     },
     clearMenu () {
+      console.log('clearMenu')
       this.treeNode = null
     },
     onChange() {
@@ -210,6 +351,22 @@ export default {
     height: 100%;
     padding: 6px;
     overflow: auto;
+  }
+}
+
+.org-tree-context-menu {
+  z-index: 9;
+  .ant-tree-node-content-wrapper {
+    display: block !important;
+  }
+  .menu {
+    border: 1px solid #ebedf0;
+    background: #f0f2f5;
+    .ant-menu-item {
+      padding-left: 12px !important;
+      height: 22px;
+      line-height: 21px;
+    }
   }
 }
 

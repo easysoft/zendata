@@ -28,6 +28,8 @@ func Create(def *model.Def) (err error) {
 	def.Path = AddExt(def.Path)
 	err = vari.GormDB.Save(def).Error
 
+	_, err = CreateDefField(def.ID, 0, "字段", "root")
+
 	return
 }
 

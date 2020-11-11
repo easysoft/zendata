@@ -36,6 +36,26 @@ func SaveDefField(field *model.Field) (err error) {
 	err = vari.GormDB.Save(field).Error
 	return
 }
+func CreateDefField(defId, targetId uint, name string, mode string) (field *model.Field, err error) {
+	field = &model.Field{Field: name, DefID: defId}
+	if mode == "root" {
+		field.DefID = defId
+		field.ParentID = 0
+	} else {
+		var target model.Field
+		err = vari.GormDB.Where("id=?", targetId).First(&target).Error
+		field.DefID = target.DefID
+
+		if mode == "child" {
+			field.ParentID = target.ID
+		} else {
+			field.ParentID = target.ParentID
+		}
+	}
+
+	err = vari.GormDB.Save(field).Error
+	return
+}
 
 func makeTree(Data []*model.Field, node *model.Field) { //参数为父节点，添加父节点的子节点指针切片
 	children, _ := haveChild(Data, node) //判断节点是否有子节点并返回

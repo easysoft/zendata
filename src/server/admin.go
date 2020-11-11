@@ -44,13 +44,18 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = def
 	} else if reqData.Action == "removeDef" {
 		err = defServer.Remove(reqData.Id)
-	}  else if reqData.Action == "getDefFieldTree" {
+	} else if reqData.Action == "getDefFieldTree" {
 		ret.Data, err = defServer.GetDefFieldTree(reqData.Id)
 
 
-	}   else if reqData.Action == "getDefField" {
+	} else if reqData.Action == "getDefField" {
 		ret.Data, err = defServer.GetDefField(reqData.Id)
-	}   else if reqData.Action == "saveDefField" {
+	} else if reqData.Action == "createDefField" {
+		var field *model.Field
+		field, err = defServer.CreateDefField(0, uint(reqData.Id), "新字段", reqData.Mode)
+		ret.Data, err = defServer.GetDefFieldTree(int(field.DefID))
+		ret.Field = field
+	} else if reqData.Action == "saveDefField" {
 		field := convertField(reqData.Data)
 		err = defServer.SaveDefField(&field)
 	}
