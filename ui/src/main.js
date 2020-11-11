@@ -49,6 +49,8 @@ import Icon from "ant-design-vue/lib/icon";
 import Col from "ant-design-vue/lib/col";
 import Row from "ant-design-vue/lib/row";
 
+import Spin from "ant-design-vue/lib/spin";
+import 'ant-design-vue/lib/spin/style';
 
 import zhCN from './assets/lang/zh-CN'
 import router from "./router"
@@ -76,6 +78,7 @@ Vue.use(Row)
 Vue.use(Col)
 Vue.use(InputNumber)
 Vue.use(Switch)
+Vue.use(Spin)
 
 const i18n = new VueI18n({
   locale: 'zh-CN',

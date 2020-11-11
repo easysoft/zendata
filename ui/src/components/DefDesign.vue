@@ -8,61 +8,75 @@
       :closable=true
       :footer="null"
       @cancel="cancel"
-  >
-  <div class="container">
-    <div class="left" :style="styl">
-      <a-tree
-          ref="fieldTree"
-          class="draggable-tree"
-          :show-line="true"
-          :expandedKeys.sync="openKeys"
-          :selectedKeys.sync="selectedKeys"
-          :tree-data="treeData"
-          :replaceFields="fieldMap"
-          @select="onSelect"
-          @rightClick="onRightClick"
-          @drop="onDrop"
-      />
-      <div v-if="treeNode" :style="this.tmpStyle" class="org-tree-context-menu">
-        <a-menu @click="menuClick" mode="inline" class="menu">
-          <a-menu-item key="addNeighbor" v-if="!isRoot">
-            <a-icon type="plus" />创建同级
-          </a-menu-item>
-          <a-menu-item key="addChild">
-            <a-icon type="plus" />创建子级
-          </a-menu-item>
-          <a-menu-item key="remove" v-if="!isRoot">
-            <a-icon type="delete" />删除节点
-          </a-menu-item>
-        </a-menu>
+    >
+      <div class="container">
+      <div class="left" :style="styl">
+        <a-tree
+            ref="fieldTree"
+            class="draggable-tree"
+            :show-line="true"
+            :expandedKeys.sync="openKeys"
+            :selectedKeys.sync="selectedKeys"
+            :tree-data="treeData"
+            :replaceFields="fieldMap"
+            @select="onSelect"
+            @rightClick="onRightClick"
+            @drop="onDrop"
+        />
+        <div v-if="treeNode" :style="this.tmpStyle" class="org-tree-context-menu">
+          <a-menu @click="menuClick" mode="inline" class="menu">
+            <a-menu-item key="addNeighbor" v-if="!isRoot">
+              <a-icon type="plus" />创建同级
+            </a-menu-item>
+            <a-menu-item key="addChild">
+              <a-icon type="plus" />创建子级
+            </a-menu-item>
+            <a-menu-item key="remove" v-if="!isRoot">
+              <a-icon type="delete" />删除节点
+            </a-menu-item>
+          </a-menu>
+        </div>
+      </div>
+
+      <div class="right" :style="styl">
+        <a-tabs default-active-key="1" @change="onChange">
+          <a-tab-pane key="info" tab="编辑">
+            <div v-show="infoVisible">
+              <field-info
+                  ref="infoComp"
+                  :model="fieldModel"
+                  :time="time2">
+              </field-info>
+            </div>
+          </a-tab-pane>
+
+          <a-tab-pane key="config" tab="设计" force-render>
+            <div v-show="configVisible">
+              <field-config
+                  ref="configComp"
+                  :model="fieldModel"
+                  :time="time2">
+              </field-config>
+            </div>
+          </a-tab-pane>
+        </a-tabs>
       </div>
     </div>
+    </a-modal>
 
-    <div class="right" :style="styl">
-      <a-tabs default-active-key="1" @change="onChange">
-        <a-tab-pane key="info" tab="编辑">
-          <div v-show="infoVisible">
-            <field-info
-                ref="infoComp"
-                :model="fieldModel"
-                :time="time2">
-            </field-info>
-          </div>
-        </a-tab-pane>
+    <a-modal
+        title="确认删除"
+        :width="400"
+        :visible="removeVisible"
+        okText="确认"
+        cancelText="取消"
+        @ok="removeField"
+        @cancel="cancelRemove"
+    >
+      <div>确认删除选中字段及其子字段？</div>
 
-        <a-tab-pane key="config" tab="设计" force-render>
-          <div v-show="configVisible">
-            <field-config
-                ref="configComp"
-                :model="fieldModel"
-                :time="time2">
-            </field-config>
-          </div>
-        </a-tab-pane>
-      </a-tabs>
-    </div>
-  </div>
-  </a-modal>
+    </a-modal>
+
   </div>
 </template>
 
@@ -81,6 +95,7 @@ export default {
     const styl = 'height: ' + (document.documentElement.clientHeight - 56) + 'px;'
     return {
       styl: styl,
+      removeVisible: false,
 
       infoVisible: true,
       configVisible: false,
@@ -198,8 +213,9 @@ export default {
         this.addMode = 'child'
         this.addChildField()
       }else if (e.key === 'remove') {
-        this.removeField()
+        this.removeVisible = true
       }
+      console.log('clearMenu 1')
       this.clearMenu()
     },
     addNeighborField () {
@@ -238,6 +254,7 @@ export default {
     },
     removeField () {
       console.log('removeField', this.targetModel)
+      this.removeVisible = false
 
       removeDefField(this.targetModel).then(res => {
         console.log('removeDefField', res)
@@ -248,6 +265,10 @@ export default {
         this.infoVisible = false
         this.configVisible = false
       })
+    },
+    cancelRemove (e) {
+      e.preventDefault()
+      this.removeVisible = false
     },
     onDrop (info) {
       console.log(info, info.node.eventKey, info.dragNode.eventKey) // {event, node, dragNode, dragNodesKeys}
