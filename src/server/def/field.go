@@ -43,6 +43,7 @@ func CreateDefField(defId, targetId uint, name string, mode string) (field *mode
 		field.ParentID = 0
 	} else {
 		var target model.Field
+
 		err = vari.GormDB.Where("id=?", targetId).First(&target).Error
 		field.DefID = target.DefID
 
@@ -51,6 +52,7 @@ func CreateDefField(defId, targetId uint, name string, mode string) (field *mode
 		} else {
 			field.ParentID = target.ParentID
 		}
+		field.Ord = getMaxOrder(field.ParentID)
 	}
 
 	err = vari.GormDB.Save(field).Error
@@ -104,5 +106,20 @@ func haveChild(Data []*model.Field, node *model.Field) (child []*model.Field, ye
 	if child != nil {
 		yes = true
 	}
+	return
+}
+
+func getMaxOrder(parentId uint) (ord int) {
+	var preChild model.Field
+	err := vari.GormDB.
+		Where("parentID=?", parentId).
+		Order("ord DESC").Limit(1).
+		First(&preChild).Error
+
+	if err != nil {
+		ord = 1
+	}
+	ord = preChild.Ord + 1
+
 	return
 }

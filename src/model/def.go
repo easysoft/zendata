@@ -46,7 +46,7 @@ type Field struct {
 	Where	string `gorm:"column:whereCol" json:"whereCol"`
 	Limit	int `gorm:"column:limitCol" json:"limitCol"`
 
-	Ord int `gorm:"column:ord" json:"ord"`
+	Ord int `gorm:"column:ord;default:1" json:"ord"`
 
 	Children []*Field `gorm:"-" json:"children"`
 }
