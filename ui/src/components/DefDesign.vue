@@ -45,7 +45,8 @@
               <field-info
                   ref="infoComp"
                   :model="fieldModel"
-                  :time="time2">
+                  :time="time2"
+                  @save="onFieldSave">
               </field-info>
             </div>
           </a-tab-pane>
@@ -148,17 +149,18 @@ export default {
     window.removeEventListener('click', this.clearMenu);
   },
   methods: {
-    save() {
-      console.log('save')
-      this.$emit('ok')
+    onFieldSave() {
+      console.log('onFieldSave')
+      this.loadTreeData(this.selectedKeys[0])
     },
     cancel() {
       console.log('cancel')
       this.$emit('cancel')
     },
 
-    loadTreeData () {
-      if (!this.model.id) return
+    loadTreeData (selectedKey) {
+      if (!this.model.id)
+        return
 
       getDefFieldTree(this.model.id).then(res => {
         console.log('getDefFieldTree', res)
@@ -166,8 +168,14 @@ export default {
         this.getOpenKeys(res.data)
         this.treeData = [res.data]
 
-        this.infoVisible = false
-        this.configVisible = false
+        if (selectedKey) {
+          this.getField(selectedKey)
+          this.infoVisible = true
+          this.configVisible = true
+        } else {
+          this.infoVisible = false
+          this.configVisible = false
+        }
       })
     },
     getOpenKeys (def) {
@@ -182,13 +190,14 @@ export default {
     },
     onSelect (selectedKeys, e) { // selectedKeys, e:{selected: bool, selectedNodes, node, event}
       console.log('onSelect', selectedKeys, e.node.eventKey)
-      if (selectedKeys.length > 0) {
-        this.selectKey = selectedKeys[0]
-      } else {
+      if (selectedKeys.length == 0) {
         selectedKeys[0] = e.node.eventKey // keep selected
       }
 
-      getDefField(parseInt(selectedKeys[0])).then(res => {
+      this.getField(parseInt(selectedKeys[0]))
+    },
+    getField(id) {
+      getDefField(id).then(res => {
         console.log('getDefField', res)
         this.fieldModel = res.data
 
@@ -228,7 +237,6 @@ export default {
         this.treeData = [res.data]
 
         this.selectedKeys = [res.field.id] // select
-        this.selectKey = res.field.id
         this.fieldModel = res.field
 
         this.infoVisible = true
@@ -245,7 +253,6 @@ export default {
         this.treeData = [res.data]
 
         this.selectedKeys = [res.field.id] // select
-        this.selectKey = res.field.id
         this.fieldModel = res.field
 
         this.infoVisible = true

@@ -170,6 +170,7 @@ export default {
 
         saveDefField(this.model).then(json => {
           console.log('saveDefField', json)
+          this.$emit('save')
         })
       })
     },
