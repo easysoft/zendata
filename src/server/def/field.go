@@ -110,9 +110,7 @@ func MoveDefField(srcId, targetId uint, mode string) (defId int, srcField model.
 		srcField.Ord = targetField.Ord + 1
 	}
 
-	sql := fmt.Sprintf(`update %s set ord = %d, parentID = %d where id=%d`,
-		(&model.Field{}).TableName(), srcField.Ord, srcField.ParentID, srcField.ID)
-	err = vari.GormDB.Exec(sql).Error
+	err = vari.GormDB.Model(&srcField).UpdateColumn(model.Field{Ord: srcField.Ord, ParentID: srcField.ParentID}).Error
 
 	return
 }
