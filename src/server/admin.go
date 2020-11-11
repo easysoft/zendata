@@ -62,6 +62,10 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		var defId int
 		defId, err = defServer.RemoveDefField(reqData.Id)
 		ret.Data, err = defServer.GetDefFieldTree(defId)
+	} else if reqData.Action == "moveDefField" {
+		var defId int
+		defId, ret.Field, err = defServer.MoveDefField(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
+		ret.Data, err = defServer.GetDefFieldTree(defId)
 	}
 
 	if err != nil {

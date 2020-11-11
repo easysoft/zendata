@@ -92,3 +92,13 @@ export function removeDefField (id) {
     data: data
   })
 }
+
+export function moveDefField (src, dist, mode) {
+  const data = {'action': 'moveDefField', src: src, dist: dist, mode: ''+mode}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}

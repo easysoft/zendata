@@ -14,6 +14,9 @@ type ReqData struct {
 	Id int  `json:"id"`
 	Mode string `json:"mode"`
 	Data interface{} `json:"data"`
+
+	Src int `json:"src"`
+	Dist int `json:"dist"`
 }
 
 type ResData struct {

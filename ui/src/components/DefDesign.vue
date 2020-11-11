@@ -21,9 +21,11 @@
             :replaceFields="fieldMap"
             @select="onSelect"
             @rightClick="onRightClick"
+            :draggable="true"
+            @dragenter="onDragEnter"
             @drop="onDrop"
         />
-        <div v-if="treeNode" :style="this.tmpStyle" class="org-tree-context-menu">
+        <div v-if="treeNode" :style="this.tmpStyle" class="tree-context-menu">
           <a-menu @click="menuClick" mode="inline" class="menu">
             <a-menu-item key="addNeighbor" v-if="!isRoot">
               <a-icon type="plus" />创建同级
@@ -82,7 +84,7 @@
 </template>
 
 <script>
-import { getDefFieldTree, getDefField, createDefField, removeDefField } from "../api/manage";
+import { getDefFieldTree, getDefField, createDefField, removeDefField, moveDefField } from "../api/manage";
 import FieldInfoComponent from "./FieldInfo";
 import FieldConfigComponent from "./FieldConfig";
 
@@ -228,7 +230,7 @@ export default {
       this.clearMenu()
     },
     addNeighborField () {
-      console.log('addNeighborOrg', this.targetModel)
+      console.log('addNeighborField', this.targetModel)
 
       createDefField(this.targetModel, "neighbor").then(res => {
         console.log('createDefField', res)
@@ -244,7 +246,7 @@ export default {
       })
     },
     addChildField () {
-      console.log('addChildOrg', this.targetModel)
+      console.log('addChildField', this.targetModel)
 
       createDefField(this.targetModel, "child").then(res => {
         console.log('createDefField', res)
@@ -277,62 +279,28 @@ export default {
       e.preventDefault()
       this.removeVisible = false
     },
-    onDrop (info) {
-      console.log(info, info.node.eventKey, info.dragNode.eventKey) // {event, node, dragNode, dragNodesKeys}
-      const dropKey = info.node.eventKey
-      const dragKey = info.dragNode.eventKey
-      const dropPos = info.node.pos.split('-')
-      const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1])
-      const loop = (data, key, callback) => {
-        data.forEach((item, index, arr) => {
-          if (item.key === key) {
-            return callback(item, index, arr)
-          }
-          if (item.children) {
-            return loop(item.children, key, callback)
-          }
-        })
-      }
-      const data = [...this.treeData]
-
-      // Find dragObject
-      let dragObj
-      loop(data, dragKey, (item, index, arr) => {
-        arr.splice(index, 1)
-        dragObj = item
-      })
-      if (!info.dropToGap) {
-        // Drop on the content
-        loop(data, dropKey, item => {
-          item.children = item.children || []
-          // where to insert
-          item.children.push(dragObj)
-        })
-      } else if (
-          (info.node.children || []).length > 0 && // Has children
-          info.node.expanded && // Is expanded
-          dropPosition === 1 // On the bottom gap
-      ) {
-        loop(data, dropKey, item => {
-          item.children = item.children || []
-          // where to insert
-          item.children.unshift(dragObj)
-        })
-      } else {
-        let ar
-        let i
-        loop(data, dropKey, (item, index, arr) => {
-          ar = arr
-          i = index
-        })
-        if (dropPosition === -1) {
-          ar.splice(i, 0, dragObj)
-        } else {
-          ar.splice(i + 1, 0, dragObj)
-        }
-      }
-      this.orgTree = data
+    onDragEnter(info) {
+      console.log(info);
+      // expandedKeys 需要受控时设置
+      this.expandedKeys = info.expandedKeys
     },
+    onDrop(info) {
+      console.log(info, info.dragNode.eventKey, info.node.eventKey, info.dropPosition);
+
+      moveDefField(info.dragNode.eventKey, info.node.eventKey, info.dropPosition).then(res => {
+        console.log('dragDefField', res)
+
+        this.getOpenKeys(res.data)
+        this.treeData = [res.data]
+
+        this.selectedKeys = [res.field.id] // select
+        this.fieldModel = res.field
+
+        this.infoVisible = true
+        this.configVisible = true
+      })
+    },
+
     onRightClick ({ event, node }) {
       event.preventDefault()
       console.log('onRightClick', node)
@@ -388,7 +356,7 @@ export default {
   }
 }
 
-.org-tree-context-menu {
+.tree-context-menu {
   z-index: 9;
   .ant-tree-node-content-wrapper {
     display: block !important;

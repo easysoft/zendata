@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/jinzhu/gorm"
 )
 
 func GetDefFieldTree(defId int) (root *model.Field, err error) {
@@ -67,6 +68,63 @@ func RemoveDefField(id int) (defId int, err error) {
 	err = deleteFieldAndChildren(field.DefID, field.ID)
 	return
 }
+
+func MoveDefField(srcId, targetId uint, mode string) (defId int, srcField model.Field, err error) {
+	var targetField model.Field
+	err = vari.GormDB.Where("id=?", srcId).First(&srcField).Error
+	if err == gorm.ErrRecordNotFound {
+		return
+	}
+	err = vari.GormDB.Where("id=?", targetId).First(&targetField).Error
+	if err == gorm.ErrRecordNotFound {
+		return
+	}
+	defId = int(srcField.DefID)
+
+	if "0" == mode {
+		srcField.ParentID = targetId
+		srcField.Ord = getMaxOrder(srcField.ParentID)
+	} else if "-1" == mode {
+		err = addOrderForTargetAndNextCases(srcField.ID, targetField.Ord, targetField.ParentID)
+		if err != nil {
+			return
+		}
+
+		srcField.ParentID = targetField.ParentID
+		srcField.Ord = targetField.Ord
+	} else if "1" == mode {
+		err = addOrderForNextCases(srcField.ID, targetField.Ord, targetField.ParentID)
+		if err != nil {
+			return
+		}
+
+		srcField.ParentID = targetField.ParentID
+		srcField.Ord = targetField.Ord + 1
+	}
+
+	sql := fmt.Sprintf(`update %s set ord = %d, parentID = %d where id=%d`,
+		(&model.Field{}).TableName(), srcField.Ord, srcField.ParentID, srcField.ID)
+	err = vari.GormDB.Exec(sql).Error
+
+	return
+}
+
+func addOrderForTargetAndNextCases(srcID uint, targetOrder int, targetParentID uint) (err error) {
+	sql := fmt.Sprintf(`update %s set ord = ord + 1 where ord >= %d and parentID = %d and id!=%d`,
+		(&model.Field{}).TableName(), targetOrder, targetParentID, srcID)
+	err = vari.GormDB.Exec(sql).Error
+
+	return
+}
+
+func addOrderForNextCases(srcID uint, targetOrder int, targetParentID uint) (err error) {
+	sql := fmt.Sprintf(`update %s set ord = ord + 1 where ord > %d and parentID = %d and id!=%d`,
+		(&model.Field{}).TableName(), targetOrder, targetParentID, srcID)
+	err = vari.GormDB.Exec(sql).Error
+
+	return
+}
+
 func deleteFieldAndChildren(defId, fileId uint) (err error) {
 	var children []*model.Field
 
