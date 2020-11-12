@@ -33,6 +33,9 @@ import 'ant-design-vue/lib/input-number/style';
 import Switch from "ant-design-vue/lib/switch";
 import 'ant-design-vue/lib/switch/style';
 
+import Radio from "ant-design-vue/lib/radio";
+import 'ant-design-vue/lib/radio/style';
+
 import Table from "ant-design-vue/lib/table";
 import 'ant-design-vue/lib/table/style';
 
@@ -51,6 +54,9 @@ import Row from "ant-design-vue/lib/row";
 
 import Spin from "ant-design-vue/lib/spin";
 import 'ant-design-vue/lib/spin/style';
+
+import Popover from "ant-design-vue/lib/popover";
+import 'ant-design-vue/lib/popover/style';
 
 import zhCN from './assets/lang/zh-CN'
 import router from "./router"
@@ -78,7 +84,9 @@ Vue.use(Row)
 Vue.use(Col)
 Vue.use(InputNumber)
 Vue.use(Switch)
+Vue.use(Radio)
 Vue.use(Spin)
+Vue.use(Popover)
 
 const i18n = new VueI18n({
   locale: 'zh-CN',

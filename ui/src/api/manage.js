@@ -102,3 +102,43 @@ export function moveDefField (src, dist, mode) {
     data: data
   })
 }
+
+export function listDefFieldSection (fieldId) {
+  const data = {'action': 'listDefFieldSection', id: fieldId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function createDefFieldSection (fieldId, sectionId) {
+  const data = {'action': 'createDefFieldSection', data: { fieldId: ''+fieldId, sectionId: ''+sectionId}}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function updateDefFieldSection (section) {
+  const data = {'action': 'updateDefFieldSection', data: section}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function removeDefFieldSection (sectionId) {
+  const data = {'action': 'removeDefFieldSection', id: sectionId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}

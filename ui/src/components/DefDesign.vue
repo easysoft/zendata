@@ -41,13 +41,12 @@
       </div>
 
       <div class="right" :style="styl">
-        <a-tabs default-active-key="1" @change="onChange">
+        <a-tabs default-active-key="1" @change="onChange" type="card">
           <a-tab-pane key="info" tab="编辑">
             <div v-show="infoVisible">
               <field-info
                   ref="infoComp"
                   :model="fieldModel"
-                  :time="time2"
                   @save="onFieldSave">
               </field-info>
             </div>
@@ -74,10 +73,8 @@
         okText="确认"
         cancelText="取消"
         @ok="removeField"
-        @cancel="cancelRemove"
-    >
+        @cancel="cancelRemove">
       <div>确认删除选中字段及其子字段？</div>
-
     </a-modal>
 
   </div>
@@ -202,6 +199,7 @@ export default {
       getDefField(id).then(res => {
         console.log('getDefField', res)
         this.fieldModel = res.data
+        this.time2 = Date.now() // trigger data refresh
 
         if (this.fieldModel.parentID == 0) {
           this.infoVisible = false
@@ -288,8 +286,6 @@ export default {
       console.log(info, info.dragNode.eventKey, info.node.eventKey, info.dropPosition);
 
       moveDefField(info.dragNode.eventKey, info.node.eventKey, info.dropPosition).then(res => {
-        console.log('dragDefField', res)
-
         this.getOpenKeys(res.data)
         this.treeData = [res.data]
 

@@ -51,7 +51,31 @@ type Field struct {
 
 	Children []*Field `gorm:"-" json:"children"`
 	Froms []*Field `gorm:"-" json:"froms"`
+
+	IsRange bool `gorm:"column:isRange;default:true" json:"isRange"`
+	Sections []Section `gorm:"column:sections;ForeignKey:fieldID" json:"sections"`
 }
 func (*Field) TableName() string {
 	return constant.TablePrefix + "field"
+}
+
+type Section struct {
+	Model
+	FieldID uint   `gorm:"column:fieldID" json:"fieldID"`
+	Type    string `gorm:"column:type;default:scope" json:"type"`
+	Value     string `gorm:"column:value" json:"value"`
+	Ord     int    `gorm:"column:ord;default:1" json:"ord"`
+
+	// for range
+	Start string `gorm:"column:start" json:"start"`
+	End string `gorm:"column:end" json:"end"`
+	Step string `gorm:"column:step;default:1" json:"step"`
+	Repeat string `gorm:"column:repeat;default:1" json:"repeat"`
+	Rand bool `gorm:"column:rand;default:false" json:"rand"`
+
+	// for arr and const
+	Text string `gorm:"-" json:"-"`
+}
+func (*Section) TableName() string {
+	return constant.TablePrefix + "section"
 }

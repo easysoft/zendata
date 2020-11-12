@@ -50,6 +50,7 @@ func ParseRangeProperty(rang string) []string {
 	return items
 }
 
+// for Literal only
 func ParseDesc(desc string) (items []string) {
 	desc = strings.TrimSpace(desc)
 	desc = strings.Trim(desc, ",")

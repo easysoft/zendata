@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 func AdminHandler(writer http.ResponseWriter, req *http.Request) {
@@ -66,6 +67,28 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		var defId int
 		defId, ret.Field, err = defServer.MoveDefField(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
 		ret.Data, err = defServer.GetDefFieldTree(uint(defId))
+
+
+	} else if reqData.Action == "listDefFieldSection" {
+		ret.Data, err = defServer.ListDefFieldSection(uint(reqData.Id))
+	} else if reqData.Action == "createDefFieldSection" {
+		paramMap := convertParams(reqData.Data)
+		fieldId, _ := strconv.Atoi(paramMap["fieldId"])
+		sectionId, _ := strconv.Atoi(paramMap["sectionId"])
+
+		err = defServer.CreateDefFieldSection(uint(fieldId), uint(sectionId))
+		ret.Data, err = defServer.ListDefFieldSection(uint(fieldId))
+
+	} else if reqData.Action == "updateDefFieldSection" {
+		section := convertSection(reqData.Data)
+		err = defServer.UpdateDefFieldSection(&section)
+
+		ret.Data, err = defServer.ListDefFieldSection(section.FieldID)
+
+	} else if reqData.Action == "removeDefFieldSection" {
+		var fieldId uint
+		fieldId, err = defServer.RemoveDefFieldSection(reqData.Id)
+		ret.Data, err = defServer.ListDefFieldSection(fieldId)
 	}
 
 	if err != nil {

@@ -39,3 +39,17 @@ func convertField(data interface{}) (field model.Field) {
 
 	return
 }
+
+func convertSection(data interface{}) (section model.Section) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &section)
+
+	return
+}
+
+func convertParams(data interface{}) (mp map[string]string) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &mp)
+
+	return
+}
