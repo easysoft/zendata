@@ -65,65 +65,68 @@
         @ok="saveSection"
         @cancel="cancelSection">
       <div>
-        <div v-if="section.type==='scope'">
-          <a-row :gutter="cols">
-            <a-col :span="cols">
-              <a-form-model-item label="开始" prop="prefix" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                <a-input v-model="section.start" placeholder="数字或单个字母" />
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="cols">
-            <a-col :span="cols">
-              <a-form-model-item label="结束" prop="postfix" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                <a-input v-model="section.end" placeholder="数字或单个字母" />
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="cols">
-            <a-col :span="cols">
-              <a-form-model-item label="重复次数" prop="prefix" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                <a-input v-model="section.repeat" :min="1" placeholder="" />
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="cols">
-            <a-col :span="cols">
-              <a-form-model-item label="随机" prop="prefix" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                <a-switch v-model="section.rand" />
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="cols" v-if="!section.rand">
-            <a-col :span="cols">
-              <a-form-model-item label="步长" prop="postfix" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                <a-input v-model="section.step" placeholder="数字" />
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-        </div>
+        <a-form-model ref="editForm" :model="section" :rules="rules">
+          <div v-if="section.type==='scope'">
+            <a-row :gutter="cols">
+              <a-col :span="cols">
+                <a-form-model-item label="开始" prop="start" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.start" placeholder="数字或单个字母" />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+            <a-row :gutter="cols">
+              <a-col :span="cols">
+                <a-form-model-item label="结束" prop="end" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.end" placeholder="数字或单个字母" />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+            <a-row :gutter="cols">
+              <a-col :span="cols">
+                <a-form-model-item label="重复次数" prop="repeat" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.repeat" :precision="0" :min="1" placeholder="" />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+            <a-row :gutter="cols">
+              <a-col :span="cols">
+                <a-form-model-item label="随机" prop="rand" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-switch v-model="section.rand" />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+            <a-row :gutter="cols" v-if="!section.rand">
+              <a-col :span="cols">
+                <a-form-model-item label="步长" prop="step" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.step" placeholder="数字" />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </div>
 
-        <div v-if="section.type==='arr'">
-          <a-row :gutter="cols">
-            <a-col :span="cols">
-              <a-form-model-item label="数组" prop="prefix" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                <a-input v-model="section.text" type="textarea" rows="3" />
-                每行一个值
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-        </div>
+          <div v-if="section.type==='arr'">
+            <a-row :gutter="cols">
+              <a-col :span="cols">
+                <a-form-model-item label="数组" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.text" type="textarea" rows="3" />
+                  每行一个值
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </div>
 
-        <div v-if="section.type==='const'">
-          <a-row :gutter="cols">
-            <a-col :span="cols">
-              <a-form-model-item label="字面常量" prop="prefix" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                <a-input v-model="section.text" placeholder="" />
-              </a-form-model-item>
-            </a-col>
-          </a-row>
-        </div>
+          <div v-if="section.type==='const'">
+            <a-row :gutter="cols">
+              <a-col :span="cols">
+                <a-form-model-item label="字面常量" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.text" placeholder="" />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </div>
+        </a-form-model>
       </div>
+
     </a-modal>
 
   </div>
@@ -148,6 +151,23 @@ export default {
       section: {},
       editTitle: '',
       editSectionVisible: false,
+
+      rules: {
+        start: [
+          { required: true, message: '必须是数字或单个字母', trigger: 'change' },
+          { validator: this.checkRange, trigger: 'change' },
+        ],
+        end: [
+          { required: true, message: '必须是数字或单个字母', trigger: 'change' },
+          { validator: this.checkRange, trigger: 'change' },
+        ],
+        repeat: [
+          { validator: this.checkRepeat, message: '必须是正整数', trigger: 'change' },
+        ],
+        step: [
+          { validator: this.checkStep, message: '必须是数字', trigger: 'change' },
+        ],
+      },
     };
   },
   props: {
@@ -205,36 +225,47 @@ export default {
       this.editSectionVisible = true
     },
     saveSection() {
-      console.log('saveSection', this.section)
-
-      if (this.section.type === 'scope') {
-        this.section.value = this.section.start + '-' + this.section.end
-
-        if (this.section.rand) {
-          this.section.value += ':R'
-          this.section.step = 0
-        } else if (this.section.step && this.section.step != '' && this.section.step != 1) {
-          this.section.value += ':' + this.section.step
+      this.$refs.editForm.validate(valid => {
+        console.log(valid, this.section)
+        if (!valid) {
+          console.log('validation fail')
+          return
         }
 
-        if (this.section.repeat && this.section.repeat != '' && this.section.repeat != '1') {
-          this.section.value += '{' + this.section.repeat + '}'
+        if (this.section.type === 'scope') {
+          this.section.value = this.section.start + '-' + this.section.end
+
+          if (this.section.rand) {
+            this.section.value += ':R'
+            this.section.step = 0
+          } else if (this.section.step && this.section.step != '' && this.section.step != 1) {
+            const regx = /^[a-z,A-Z]$/
+            if (regx.test(this.section.start) || regx.test(this.section.end)) {
+              this.section.step = Math.floor(this.section.step)
+            }
+
+            this.section.value += ':' + this.section.step
+          }
+
+          if (this.section.repeat && this.section.repeat != '' && this.section.repeat != '1') {
+            this.section.value += '{' + this.section.repeat + '}'
+          }
+
+        } else if (this.section.type === 'arr') {
+          const arr = this.section.text.split('\n')
+          this.section.value = '[' + arr.join(',') + ']'
+
+        } else if (this.section.type === 'const') {
+          this.section.value = '`' + this.section.text + '`'
         }
 
-      } else if (this.section.type === 'arr') {
-        const arr = this.section.text.split('\n')
-        this.section.value = '[' + arr.join(',') + ']'
+        updateDefFieldSection(this.section).then(res => {
+          console.log('updateDefFieldSection', res)
+          this.sections = res.data
+        })
 
-      } else if (this.section.type === 'const') {
-        this.section.value = '`' + this.section.text + '`'
-      }
-
-      updateDefFieldSection(this.section).then(res => {
-        console.log('updateDefFieldSection', res)
-        this.sections = res.data
+        this.editSectionVisible = false
       })
-
-      this.editSectionVisible = false
     },
     cancelSection() {
       console.log('cancelSection')
@@ -249,6 +280,31 @@ export default {
         this.sections = res.data
       })
     },
+    checkRange (rule, value, callback){
+      console.log('checkRange', value)
+
+      const test1 = /^[0-9]+\.?[0-9]*$/.test(value);
+      const test2 = /^[a-z,A-Z]$/.test(value);
+      if (!test1 && !test2) {
+        callback('必须是数字或单个字母')
+      }
+
+      callback()
+    },
+    checkRepeat(rule, value, callback) {
+      const test = /^[1-9][0-9]*$/.test(value);
+      if (!test) {
+        callback('必须是正整数')
+      }
+      callback()
+    },
+    checkStep(rule, value, callback) {
+      const test = /^[0-9]+\.?[0-9]*$/.test(value);
+      if (!test) {
+        callback('必须是数字')
+      }
+      callback()
+    }
   }
 }
 </script>

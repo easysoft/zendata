@@ -14,7 +14,8 @@ func CreateDefFieldSection(fieldId, sectionsId uint) (err error) {
 	var preSection model.Section
 	err = vari.GormDB.Where("id=?", sectionsId).Find(&preSection).Error
 
-	section := &model.Section{Value: "0-9", FieldID: fieldId, Ord: preSection.Ord + 1}
+	section := &model.Section{Value: "0-9", FieldID: fieldId, Ord: preSection.Ord + 1,
+		Start: "0", End: "9"}
 	err = vari.GormDB.Create(&section).Error
 	return
 }
