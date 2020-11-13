@@ -1,11 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/easysoft/zendata/src/action"
 	"github.com/easysoft/zendata/src/gen"
-	"github.com/easysoft/zendata/src/server"
+	"github.com/easysoft/zendata/src/model"
+	serverConfig "github.com/easysoft/zendata/src/server/config"
+	serverRepo "github.com/easysoft/zendata/src/server/repo"
+	serverService "github.com/easysoft/zendata/src/server/service"
+	serverUtils "github.com/easysoft/zendata/src/server/utils"
 	"github.com/easysoft/zendata/src/service"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
@@ -16,6 +21,7 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -133,8 +139,6 @@ func main() {
 
 	vari.DB, _ = configUtils.InitDB()
 	defer vari.DB.Close()
-	vari.GormDB, _ = configUtils.InitGormDB()
-	defer vari.GormDB.Close()
 
 	switch os.Args[1] {
 	default:
@@ -243,10 +247,8 @@ func StartServer() {
 	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server",
 		vari.Ip, port, vari.Ip, port, vari.Ip, port), color.FgCyan)
 
-	http.HandleFunc("/", DataHandler)
-	http.HandleFunc("/admin", server.AdminHandler)
-	err := http.ListenAndServe(fmt.Sprintf(":%d", vari.Port), nil)
-
+	// start admin server
+	err := Init()
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server_fail", port), color.FgRed)
 	}
@@ -256,7 +258,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
 	defaultFile, configFile, fields, vari.Total,
-		format, table, decode, input, output = server.ParseGenParams(req)
+		format, table, decode, input, output = serverUtils.ParseGenParams(req)
 
 	if decode {
 		gen.Decode(defaultFile, configFile, fields, input, output)
@@ -265,6 +267,165 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
 		toGen()
+	}
+}
+
+// for admin server
+type Server struct {
+	config        *serverConfig.Config
+
+	defService *serverService.DefService
+	fieldService *serverService.FieldService
+	sectionService *serverService.SectionService
+	referService *serverService.ReferService
+}
+
+func Init() (err error) {
+	config := serverConfig.NewConfig()
+	gormDb, err := serverConfig.NewGormDB(config)
+	defer gormDb.Close()
+
+	deferRepo := serverRepo.NewDefRepo(gormDb)
+	fieldRepo := serverRepo.NewFieldRepo(gormDb)
+	sectionRepo := serverRepo.NewSectionRepo(gormDb)
+	referRepo := serverRepo.NewReferRepo(gormDb)
+
+	defService := serverService.NewDefService(deferRepo, fieldRepo, referRepo)
+	fieldService := serverService.NewFieldService(deferRepo, fieldRepo, referRepo)
+	sectionService := serverService.NewSectionService(fieldRepo, sectionRepo)
+	referService := serverService.NewReferService(fieldRepo, referRepo)
+
+	server := NewServer(config, defService, fieldService, sectionService, referService)
+	server.Run()
+
+	return
+}
+
+func (s *Server) Handler() http.Handler {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", DataHandler)
+	mux.HandleFunc("/admin", s.admin)
+
+	return mux
+}
+
+func (s *Server) Run() {
+	httpServer := &http.Server{
+		Addr:    fmt.Sprintf(":%d", s.config.ServerPort),
+		Handler: s.Handler(),
+	}
+
+	httpServer.ListenAndServe()
+}
+
+func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
+	serverUtils.SetupCORS(&writer, req)
+
+	bytes, err := ioutil.ReadAll(req.Body)
+	if len(bytes) == 0 {
+		return
+	}
+
+	reqData := model.ReqData{}
+	err = serverUtils.ParserJsonReq(bytes, &reqData)
+	if err != nil {
+		serverUtils.OutputErr(err, writer)
+		return
+	}
+
+	ret := model.ResData{ Code: 1, Msg: "success"}
+	if reqData.Action == "listDef" {
+		ret.Data = s.defService.List()
+	} else if reqData.Action == "getDef" {
+		var def model.Def
+		def, err = s.defService.Get(reqData.Id)
+
+		ret.Data = def
+	} else if reqData.Action == "saveDef" {
+		def := serverUtils.ConvertDef(reqData.Data)
+
+		if def.ID == 0 {
+			err = s.defService.Create(&def)
+		} else {
+			err = s.defService.Update(&def)
+		}
+		ret.Data = def
+	} else if reqData.Action == "removeDef" {
+		err = s.defService.Remove(reqData.Id)
+
+
+	} else if reqData.Action == "getDefFieldTree" { // field
+		ret.Data, err = s.fieldService.GetTree(uint(reqData.Id))
+	} else if reqData.Action == "getDefField" {
+		ret.Data, err = s.fieldService.Get(reqData.Id)
+	} else if reqData.Action == "createDefField" {
+		var field *model.Field
+		field, err = s.fieldService.Create(0, uint(reqData.Id), "新字段", reqData.Mode)
+		s.referService.CreateDefault(field.ID)
+
+		ret.Data, err = s.fieldService.GetTree(field.DefID)
+		ret.Field = field
+	} else if reqData.Action == "saveDefField" {
+		field := serverUtils.ConvertField(reqData.Data)
+		err = s.fieldService.Save(&field)
+	} else if reqData.Action == "removeDefField" {
+		var defId int
+		defId, err = s.fieldService.Remove(reqData.Id)
+		ret.Data, err = s.fieldService.GetTree(uint(defId))
+	} else if reqData.Action == "moveDefField" {
+		var defId int
+		defId, ret.Field, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
+		ret.Data, err = s.fieldService.GetTree(uint(defId))
+
+
+	} else if reqData.Action == "listDefFieldSection" { // section
+		ret.Data, err = s.sectionService.List(uint(reqData.Id))
+	} else if reqData.Action == "createDefFieldSection" {
+		paramMap := serverUtils.ConvertParams(reqData.Data)
+		fieldId, _ := strconv.Atoi(paramMap["fieldId"])
+		sectionId, _ := strconv.Atoi(paramMap["sectionId"])
+
+		err = s.sectionService.Create(uint(fieldId), uint(sectionId))
+		ret.Data, err = s.sectionService.List(uint(fieldId))
+	} else if reqData.Action == "updateDefFieldSection" {
+		section := serverUtils.ConvertSection(reqData.Data)
+		err = s.sectionService.Update(&section)
+
+		ret.Data, err = s.sectionService.List(section.FieldID)
+	} else if reqData.Action == "removeDefFieldSection" {
+		var fieldId uint
+		fieldId, err = s.sectionService.Remove(reqData.Id)
+		ret.Data, err = s.sectionService.List(fieldId)
+
+
+	} else if reqData.Action == "getDefFieldRefer" { // refer
+		ret.Data, err = s.referService.Get(uint(reqData.Id))
+	} else if reqData.Action == "updateDefFieldRefer" {
+		refer := serverUtils.ConvertRefer(reqData.Data)
+		err = s.referService.Update(&refer)
+	}
+
+	if err != nil {
+		ret.Code = 0
+	}
+
+	bytes, _ = json.Marshal(ret)
+	io.WriteString(writer, string(bytes))
+}
+
+func NewServer(config *serverConfig.Config,
+	defService *serverService.DefService,
+	fieldServer *serverService.FieldService,
+	sectionService *serverService.SectionService,
+	referService *serverService.ReferService,
+) *Server {
+	return &Server{
+		config:        config,
+		defService: defService,
+		fieldService: fieldServer,
+		sectionService: sectionService,
+		referService: referService,
 	}
 }
 

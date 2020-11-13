@@ -1,4 +1,4 @@
-package server
+package serverUtils
 
 import (
 	"bytes"
@@ -10,6 +10,26 @@ import (
 	"net/http"
 	"net/url"
 )
+
+func SetupCORS(w *http.ResponseWriter, req *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+}
+
+func OutputErr(err error, writer http.ResponseWriter) {
+	errRes := ErrRes(err.Error())
+	WriteRes(errRes, writer)
+}
+
+func WriteRes(ret model.ResData, writer http.ResponseWriter) {
+	jsonStr, _ := json.Marshal(ret)
+	io.WriteString(writer, string(jsonStr))
+}
+
+func ErrRes(msg string) model.ResData {
+	return model.ResData{ Code: 0, Msg: msg }
+}
 
 func ParserJsonReq(bytes []byte, obj *model.ReqData) (err error) {
 	err = json.Unmarshal(bytes, &obj)

@@ -1,4 +1,4 @@
-package server
+package serverUtils
 
 import (
 	constant "github.com/easysoft/zendata/src/utils/const"

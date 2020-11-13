@@ -28,6 +28,7 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/ugorji/go v1.1.13 // indirect
 	github.com/xuri/efp v0.0.0-20200605144744-ba689101faaf // indirect
+	go.uber.org/dig v1.10.0 // indirect
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
 	golang.org/x/image v0.0.0-20200801110659-972c09e46d76 // indirect
 	golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc // indirect
