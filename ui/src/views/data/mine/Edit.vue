@@ -18,7 +18,7 @@
           <a-input v-model="model.folder" />
         </a-form-model-item>
         <a-form-model-item label="类型">
-          <a-select v-model="model.type" placeholder="please select your zone">
+          <a-select v-model="model.type">
             <a-select-option value="text">字符串</a-select-option>
             <a-select-option value="article">文章</a-select-option>
           </a-select>
@@ -59,7 +59,7 @@ export default {
         ],
       },
       id: 0,
-      model: { folder: '/users' }
+      model: { folder: '/users', type: 'text' }
     };
   },
   computed: {

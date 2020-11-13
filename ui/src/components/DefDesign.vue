@@ -43,25 +43,32 @@
       <div class="right" :style="styl">
         <div v-if="rightVisible">
           <a-tabs :activeKey="tabKey" @change="onChange" type="card">
-          <a-tab-pane key="info" tab="编辑">
+          <a-tab-pane key="info" tab="编辑信息">
             <div>
-              <field-info
+              <field-info-component
                   ref="infoComp"
                   :model="fieldModel"
                   @save="onFieldSave">
-              </field-info>
+              </field-info-component>
             </div>
           </a-tab-pane>
 
-          <a-tab-pane key="config" tab="设计" force-render>
+          <a-tab-pane key="range" tab="配置区间" force-render>
             <div>
-              <field-config
-                  ref="configComp"
-                  :model="fieldModel"
-                  :time="time2">
-              </field-config>
+              <field-range-component
+                  :field="fieldModel">
+              </field-range-component>
             </div>
           </a-tab-pane>
+
+          <a-tab-pane key="refer" tab="配置引用" force-render>
+            <div>
+              <field-refer-component
+                  :field="fieldModel">
+              </field-refer-component>
+            </div>
+          </a-tab-pane>
+
         </a-tabs>
         </div>
       </div>
@@ -85,13 +92,15 @@
 <script>
 import { getDefFieldTree, getDefField, createDefField, removeDefField, moveDefField } from "../api/manage";
 import FieldInfoComponent from "./FieldInfo";
-import FieldConfigComponent from "./FieldConfig";
+import FieldRangeComponent from "./FieldRange";
+import FieldReferComponent from "./FieldRefer";
 
 export default {
   name: 'DefDesignComponent',
   components: {
-    'field-info': FieldInfoComponent,
-    'field-config': FieldConfigComponent
+    FieldInfoComponent,
+    FieldRangeComponent,
+    FieldReferComponent
   },
   data() {
     const styl = 'height: ' + (document.documentElement.clientHeight - 56) + 'px;'

@@ -17,11 +17,15 @@ func CreateDefFieldSection(fieldId, sectionsId uint) (err error) {
 	section := &model.Section{Value: "0-9", FieldID: fieldId, Ord: preSection.Ord + 1,
 		Start: "0", End: "9"}
 	err = vari.GormDB.Create(&section).Error
+
+	setDefFieldIsRange(fieldId, true)
+
 	return
 }
 
-func UpdateDefFieldSection(field *model.Section) (err error) {
-	err = vari.GormDB.Save(field).Error
+func UpdateDefFieldSection(section *model.Section) (err error) {
+	err = vari.GormDB.Save(section).Error
+	setDefFieldIsRange(section.FieldID, true)
 	return
 }
 
@@ -31,5 +35,7 @@ func RemoveDefFieldSection(sectionId int) (fieldId uint, err error) {
 	fieldId = section.FieldID
 
 	err = vari.GormDB.Where("id=?", sectionId).Delete(&model.Section{}).Error
+
+	setDefFieldIsRange(fieldId, true)
 	return
 }

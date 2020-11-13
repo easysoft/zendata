@@ -6,7 +6,7 @@ import (
 
 var (
 	CommonPrefix = "zd_"
-	Models = []interface{}{ &Def{}, &Field{}, &Section{} }
+	Models = []interface{}{ &Def{}, &Field{}, &Section{}, &Refer{} }
 )
 
 type ReqData struct {

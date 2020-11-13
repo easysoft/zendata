@@ -142,3 +142,22 @@ export function removeDefFieldSection (sectionId) {
     data: data
   })
 }
+
+export function getDefFieldRefer (fieldId) {
+  const data = {'action': 'getDefFieldRefer', id: fieldId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function updateDefFieldRefer (refer) {
+  const data = {'action': 'updateDefFieldRefer', data: refer}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}

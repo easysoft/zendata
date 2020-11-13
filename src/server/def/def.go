@@ -29,7 +29,6 @@ func Create(def *model.Def) (err error) {
 	err = vari.GormDB.Save(def).Error
 
 	_, err = CreateDefField(def.ID, 0, "字段", "root")
-
 	return
 }
 

@@ -65,6 +65,9 @@ func CreateDefField(defId, targetId uint, name string, mode string) (field *mode
 	}
 
 	err = vari.GormDB.Save(field).Error
+	if err == nil && mode != "root" {
+		CreateDefFieldRefer(field.ID)
+	}
 	return
 }
 
@@ -74,6 +77,13 @@ func RemoveDefField(id int) (defId int, err error) {
 	err = vari.GormDB.Where("id=?", id).First(&field).Error
 	defId = int(field.DefID)
 	err = deleteFieldAndChildren(field.DefID, field.ID)
+	return
+}
+
+func setDefFieldIsRange(fieldId uint, b bool) (err error) {
+	err = vari.GormDB.Model(&model.Field{}).
+		Where("id = ?", fieldId).Update("isRange", b).Error
+
 	return
 }
 

@@ -47,6 +47,13 @@ func convertSection(data interface{}) (section model.Section) {
 	return
 }
 
+func convertRefer(data interface{}) (refer model.Refer) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &refer)
+
+	return
+}
+
 func convertParams(data interface{}) (mp map[string]string) {
 	bytes, _ := json.Marshal(data)
 	json.Unmarshal(bytes, &mp)

@@ -75,8 +75,16 @@
         <a-col :span="colsHalf">
           <a-form-model-item label="格式" prop="format" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <div class="inline">
-              <a-input v-model="model.format" />
-              <a class="tips">使用函数</a>
+              <a-input v-model="model.format">
+                <a-select slot="addonAfter" default-value="" style="width: 80px">
+                  <a-select-option value="">
+                    函数
+                  </a-select-option>
+                  <a-select-option value=".jp">
+                    md5
+                  </a-select-option>
+                </a-select>
+              </a-input>
             </div>
           </a-form-model-item>
 
@@ -176,16 +184,8 @@ export default {
     },
     reset() {
       console.log('reset')
+      this.$refs.editForm.reset()
     },
-
-    // loadData () {
-    //   if (!this.model.id) return
-    //
-    //   getDefField(this.model.id).then(res => {
-    //     console.log('getField', res)
-    //     this.model = [res.data]
-    //   })
-    // },
   }
 }
 </script>

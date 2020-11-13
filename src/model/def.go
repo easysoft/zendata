@@ -52,11 +52,29 @@ type Field struct {
 	Children []*Field `gorm:"-" json:"children"`
 	Froms []*Field `gorm:"-" json:"froms"`
 
+	// for range edit
 	IsRange bool `gorm:"column:isRange;default:true" json:"isRange"`
-	Sections []Section `gorm:"column:sections;ForeignKey:fieldID" json:"sections"`
+	Sections []Section `gorm:"ForeignKey:fieldID" json:"sections"`
+
+	// for refer edit
+	Refer Refer `gorm:"ForeignKey:fieldID" json:"refer"`
 }
 func (*Field) TableName() string {
 	return constant.TablePrefix + "field"
+}
+
+type Refer struct {
+	Model
+	FieldID uint   `gorm:"column:fieldID" json:"fieldID"`
+	Type    string `gorm:"column:type" json:"type"`
+	File   string `gorm:"column:file" json:"file"`
+	ColName     string    `gorm:"column:colName" json:"colName"`
+	ColIndex     int    `gorm:"column:colIndex" json:"colIndex"`
+	Count int    `gorm:"column:count" json:"count"`
+	HasTitle bool `gorm:"column:hasTitle" json:"hasTitle"`
+}
+func (*Refer) TableName() string {
+	return constant.TablePrefix + "refer"
 }
 
 type Section struct {

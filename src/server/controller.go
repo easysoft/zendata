@@ -49,7 +49,7 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, err = defServer.GetDefFieldTree(uint(reqData.Id))
 
 
-	} else if reqData.Action == "getDefField" {
+	} else if reqData.Action == "getDefField" { // field
 		ret.Data, err = defServer.GetDefField(reqData.Id)
 	} else if reqData.Action == "createDefField" {
 		var field *model.Field
@@ -69,7 +69,7 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, err = defServer.GetDefFieldTree(uint(defId))
 
 
-	} else if reqData.Action == "listDefFieldSection" {
+	} else if reqData.Action == "listDefFieldSection" { // section
 		ret.Data, err = defServer.ListDefFieldSection(uint(reqData.Id))
 	} else if reqData.Action == "createDefFieldSection" {
 		paramMap := convertParams(reqData.Data)
@@ -78,17 +78,22 @@ func AdminHandler(writer http.ResponseWriter, req *http.Request) {
 
 		err = defServer.CreateDefFieldSection(uint(fieldId), uint(sectionId))
 		ret.Data, err = defServer.ListDefFieldSection(uint(fieldId))
-
 	} else if reqData.Action == "updateDefFieldSection" {
 		section := convertSection(reqData.Data)
 		err = defServer.UpdateDefFieldSection(&section)
 
 		ret.Data, err = defServer.ListDefFieldSection(section.FieldID)
-
 	} else if reqData.Action == "removeDefFieldSection" {
 		var fieldId uint
 		fieldId, err = defServer.RemoveDefFieldSection(reqData.Id)
 		ret.Data, err = defServer.ListDefFieldSection(fieldId)
+
+
+	} else if reqData.Action == "getDefFieldRefer" { // refer
+		ret.Data, err = defServer.GetDefFieldRefer(uint(reqData.Id))
+	} else if reqData.Action == "updateDefFieldRefer" {
+		refer := convertRefer(reqData.Data)
+		err = defServer.UpdateDefFieldRefer(&refer)
 	}
 
 	if err != nil {
