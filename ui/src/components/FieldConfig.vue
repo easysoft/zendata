@@ -1,7 +1,7 @@
 <template>
   <div class="panel">
     <div class="radios">
-      <a-radio-group :value="model.isRange" button-style="solid">
+      <a-radio-group v-model="model.isRange" button-style="solid">
         <a-radio-button :value="true">
           区间
         </a-radio-button>
@@ -12,7 +12,8 @@
       &nbsp;&nbsp;&nbsp;
       <span class="range">{{model.range}}</span>
     </div>
-    <div>
+
+    <div v-if="model.isRange">
       <a-form-model ref="editForm">
         <a-row :gutter="cols" class="title">
           <a-col :span="col">取值</a-col>
@@ -54,6 +55,10 @@
           </a-col>
         </a-row>
       </a-form-model>
+    </div>
+
+    <div v-if="!model.isRange">
+      REFER {{model.isRange}}
     </div>
 
     <a-modal

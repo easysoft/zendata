@@ -41,9 +41,10 @@
       </div>
 
       <div class="right" :style="styl">
-        <a-tabs default-active-key="1" @change="onChange" type="card">
+        <div v-if="rightVisible">
+          <a-tabs :activeKey="tabKey" @change="onChange" type="card">
           <a-tab-pane key="info" tab="编辑">
-            <div v-show="infoVisible">
+            <div>
               <field-info
                   ref="infoComp"
                   :model="fieldModel"
@@ -53,7 +54,7 @@
           </a-tab-pane>
 
           <a-tab-pane key="config" tab="设计" force-render>
-            <div v-show="configVisible">
+            <div>
               <field-config
                   ref="configComp"
                   :model="fieldModel"
@@ -62,6 +63,7 @@
             </div>
           </a-tab-pane>
         </a-tabs>
+        </div>
       </div>
     </div>
     </a-modal>
@@ -97,8 +99,8 @@ export default {
       styl: styl,
       removeVisible: false,
 
-      infoVisible: true,
-      configVisible: false,
+      tabKey: 'info',
+      rightVisible: true,
       fieldModel: {},
       time2: 0,
 
@@ -169,11 +171,9 @@ export default {
 
         if (selectedKey) {
           this.getField(selectedKey)
-          this.infoVisible = true
-          this.configVisible = true
+          this.rightVisible = true
         } else {
-          this.infoVisible = false
-          this.configVisible = false
+          this.rightVisible = false
         }
       })
     },
@@ -201,12 +201,11 @@ export default {
         this.fieldModel = res.data
         this.time2 = Date.now() // trigger data refresh
 
+        this.tabKey = 'info'
         if (this.fieldModel.parentID == 0) {
-          this.infoVisible = false
-          this.configVisible = false
+          this.rightVisible = false
         } else {
-          this.infoVisible = true
-          this.configVisible = true
+          this.rightVisible = true
         }
       })
     },
@@ -239,8 +238,7 @@ export default {
         this.selectedKeys = [res.field.id] // select
         this.fieldModel = res.field
 
-        this.infoVisible = true
-        this.configVisible = true
+        this.rightVisible = true
       })
     },
     addChildField () {
@@ -255,8 +253,7 @@ export default {
         this.selectedKeys = [res.field.id] // select
         this.fieldModel = res.field
 
-        this.infoVisible = true
-        this.configVisible = true
+        this.rightVisible = true
       })
     },
     removeField () {
@@ -269,8 +266,7 @@ export default {
         this.getOpenKeys(res.data)
         this.treeData = [res.data]
 
-        this.infoVisible = false
-        this.configVisible = false
+        this.rightVisible = false
       })
     },
     cancelRemove (e) {
@@ -292,8 +288,7 @@ export default {
         this.selectedKeys = [res.field.id] // select
         this.fieldModel = res.field
 
-        this.infoVisible = true
-        this.configVisible = true
+        this.rightVisible = true
       })
     },
 
@@ -326,8 +321,9 @@ export default {
       console.log('clearMenu')
       this.treeNode = null
     },
-    onChange() {
-      console.log('onChange')
+    onChange(activeKey) {
+      console.log('onChange', activeKey)
+      this.tabKey = activeKey
     }
   }
 }

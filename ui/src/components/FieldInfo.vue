@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import {getDefField, saveDefField} from "../api/manage";
+import {saveDefField} from "../api/manage";
 
 export default {
   name: 'FieldInfoComponent',
@@ -149,11 +149,11 @@ export default {
   },
   created () {
     console.log('created')
-    this.loadData()
-    this.$watch('time', () => {
-      console.log('time changed', this.time)
-      this.loadData()
-    })
+    // this.loadData()
+    // this.$watch('time', () => {
+    //   console.log('time changed', this.time)
+    //   this.loadData()
+    // })
   },
   mounted () {
     console.log('mounted1')
@@ -178,14 +178,14 @@ export default {
       console.log('reset')
     },
 
-    loadData () {
-      if (!this.model.id) return
-
-      getDefField(this.model.id).then(res => {
-        console.log('getField', res)
-        this.model = [res.data]
-      })
-    },
+    // loadData () {
+    //   if (!this.model.id) return
+    //
+    //   getDefField(this.model.id).then(res => {
+    //     console.log('getField', res)
+    //     this.model = [res.data]
+    //   })
+    // },
   }
 }
 </script>
