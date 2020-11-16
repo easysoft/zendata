@@ -17,7 +17,7 @@ func ViewRes(res string) {
 	resPath, resType, sheet := fileUtils.GetResProp(res)
 
 	if resType == "yaml" {
-		typ, inst, ranges := readYamlData(resPath)
+		typ, inst, ranges := ReadYamlData(resPath)
 		if typ == "inst" {
 			printInst(inst)
 		} else if typ == "range" {
@@ -28,7 +28,7 @@ func ViewRes(res string) {
 	}
 }
 
-func readYamlData(path string) (typ string, insts model.ResInsts, ranges model.ResRanges) {
+func ReadYamlData(path string) (typ string, insts model.ResInsts, ranges model.ResRanges) {
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))

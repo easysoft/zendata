@@ -337,80 +337,83 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 
 	ret := model.ResData{ Code: 1, Msg: "success"}
 	switch reqData.Action {
-		// def
-		case "listDef":
-			ret.Data = s.defService.List()
-		case "getDef":
-			var def model.Def
-			def, err = s.defService.Get(reqData.Id)
+	// def
+	case "listDef":
+		ret.Data = s.defService.List()
+	case "getDef":
+		var def model.Def
+		def, err = s.defService.Get(reqData.Id)
 
-			ret.Data = def
-		case "saveDef":
-			def := serverUtils.ConvertDef(reqData.Data)
+		ret.Data = def
+	case "saveDef":
+		def := serverUtils.ConvertDef(reqData.Data)
 
-			if def.ID == 0 {
-				err = s.defService.Create(&def)
-			} else {
-				err = s.defService.Update(&def)
-			}
-			ret.Data = def
-		case "removeDef":
-			err = s.defService.Remove(reqData.Id)
+		if def.ID == 0 {
+			err = s.defService.Create(&def)
+		} else {
+			err = s.defService.Update(&def)
+		}
+		ret.Data = def
+	case "removeDef":
+		err = s.defService.Remove(reqData.Id)
 
-		// field
-		case "getDefFieldTree":
-			ret.Data, err = s.fieldService.GetTree(uint(reqData.Id))
-		case "getDefField":
-			ret.Data, err = s.fieldService.Get(reqData.Id)
-		case "createDefField":
-			var field *model.Field
-			field, err = s.fieldService.Create(0, uint(reqData.Id), "新字段", reqData.Mode)
-			s.referService.CreateDefault(field.ID)
+	// field
+	case "getDefFieldTree":
+		ret.Data, err = s.fieldService.GetTree(uint(reqData.Id))
+	case "getDefField":
+		ret.Data, err = s.fieldService.Get(reqData.Id)
+	case "createDefField":
+		var field *model.Field
+		field, err = s.fieldService.Create(0, uint(reqData.Id), "新字段", reqData.Mode)
+		s.referService.CreateDefault(field.ID)
 
-			ret.Data, err = s.fieldService.GetTree(field.DefID)
-			ret.Field = field
-		case "saveDefField":
-			field := serverUtils.ConvertField(reqData.Data)
-			err = s.fieldService.Save(&field)
-		case "removeDefField":
-			var defId int
-			defId, err = s.fieldService.Remove(reqData.Id)
-			ret.Data, err = s.fieldService.GetTree(uint(defId))
-		case "moveDefField":
-			var defId int
-			defId, ret.Field, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
-			ret.Data, err = s.fieldService.GetTree(uint(defId))
+		ret.Data, err = s.fieldService.GetTree(field.DefID)
+		ret.Field = field
+	case "saveDefField":
+		field := serverUtils.ConvertField(reqData.Data)
+		err = s.fieldService.Save(&field)
+	case "removeDefField":
+		var defId int
+		defId, err = s.fieldService.Remove(reqData.Id)
+		ret.Data, err = s.fieldService.GetTree(uint(defId))
+	case "moveDefField":
+		var defId int
+		defId, ret.Field, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
+		ret.Data, err = s.fieldService.GetTree(uint(defId))
 
-		// section
-		case "listDefFieldSection":
-			ret.Data, err = s.sectionService.List(uint(reqData.Id))
-		case "createDefFieldSection":
-			paramMap := serverUtils.ConvertParams(reqData.Data)
-			fieldId, _ := strconv.Atoi(paramMap["fieldId"])
-			sectionId, _ := strconv.Atoi(paramMap["sectionId"])
+	// section
+	case "listDefFieldSection":
+		ret.Data, err = s.sectionService.List(uint(reqData.Id))
+	case "createDefFieldSection":
+		paramMap := serverUtils.ConvertParams(reqData.Data)
+		fieldId, _ := strconv.Atoi(paramMap["fieldId"])
+		sectionId, _ := strconv.Atoi(paramMap["sectionId"])
 
-			err = s.sectionService.Create(uint(fieldId), uint(sectionId))
-			ret.Data, err = s.sectionService.List(uint(fieldId))
-		case "updateDefFieldSection":
-			section := serverUtils.ConvertSection(reqData.Data)
-			err = s.sectionService.Update(&section)
+		err = s.sectionService.Create(uint(fieldId), uint(sectionId))
+		ret.Data, err = s.sectionService.List(uint(fieldId))
+	case "updateDefFieldSection":
+		section := serverUtils.ConvertSection(reqData.Data)
+		err = s.sectionService.Update(&section)
 
-			ret.Data, err = s.sectionService.List(section.FieldID)
-		case "removeDefFieldSection":
-			var fieldId uint
-			fieldId, err = s.sectionService.Remove(reqData.Id)
-			ret.Data, err = s.sectionService.List(fieldId)
+		ret.Data, err = s.sectionService.List(section.FieldID)
+	case "removeDefFieldSection":
+		var fieldId uint
+		fieldId, err = s.sectionService.Remove(reqData.Id)
+		ret.Data, err = s.sectionService.List(fieldId)
 
-		// refer
-		case "getDefFieldRefer":
-			var refer model.Refer
-			refer, err = s.referService.Get(uint(reqData.Id))
-			ret.Data = refer
-		case "updateDefFieldRefer":
-			refer := serverUtils.ConvertRefer(reqData.Data)
-			err = s.referService.Update(&refer)
-		case "listDefFieldReferType":
-			ret.Data = s.resService.LoadRes(reqData.Mode)
+	// refer
+	case "getDefFieldRefer":
+		var refer model.Refer
+		refer, err = s.referService.Get(uint(reqData.Id))
+		ret.Data = refer
+	case "updateDefFieldRefer":
+		refer := serverUtils.ConvertRefer(reqData.Data)
+		err = s.referService.Update(&refer)
+	case "listDefFieldReferType":
+		ret.Data = s.resService.LoadRes(reqData.Mode)
+	case "listDefFieldReferField":
+		refer := serverUtils.ConvertResFile(reqData.Data)
+		ret.Data = s.resService.LoadResField(refer)
 	}
 
 	if err != nil {

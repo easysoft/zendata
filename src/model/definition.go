@@ -157,3 +157,7 @@ type ResFile struct {
 	Desc   string `json:"desc"`
 	ResType string `json:"resType"`
 }
+type ResField struct {
+	Index int `json:"index"`
+	Name    string `json:"name"`
+}

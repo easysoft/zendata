@@ -17,11 +17,9 @@
       <a-row :gutter="colsFull">
           <a-form-model-item label="文件" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="refer.file">
-              <a-select v-model="referFile" slot="addonAfter" @change="onReferChanged" style="width: 300px">
-                <a-select-option value="">
-                  选择
-                </a-select-option>
-                <a-select-option v-for="f in files" :key="f.name">
+              <a-select v-model="referFile" @change="onReferChanged" slot="addonAfter" style="width: 300px">
+                <a-select-option value="">选择</a-select-option>
+                <a-select-option v-for="(f, i) in files" :value="f.name+'-'+f.title" :key="i">
                   {{ f.title }}
                 </a-select-option>
               </a-select>
@@ -30,24 +28,16 @@
       </a-row>
 
       <a-row :gutter="colsFull">
-          <a-form-model-item v-if="!showColIndex" label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="refer.colName">
-              <a-select slot="addonAfter" style="width: 300px">
-                <a-select-option value="">
-                  选择
-                </a-select-option>
-              </a-select>
-            </a-input>
-          </a-form-model-item>
-          <a-form-model-item v-if="showColIndex" label="列索引" prop="colIndex" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="refer.colIndex">
-              <a-select slot="addonAfter" style="width: 200px">
-                <a-select-option value="">
-                  选择
-                </a-select-option>
-              </a-select>
-            </a-input>
-          </a-form-model-item>
+        <a-form-model-item v-if="!showColIndex" label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-input v-model="refer.colName">
+            <a-select v-model="referFieldName" @change="onFieldNameChanged" slot="addonAfter" style="width: 300px">
+              <a-select-option value="">选择</a-select-option>
+              <a-select-option v-for="f in fields" :key="f.name">
+                {{ f.name }}
+              </a-select-option>
+            </a-select>
+          </a-input>
+        </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
@@ -76,7 +66,7 @@
 </template>
 
 <script>
-import {getDefFieldRefer, updateDefFieldRefer, listDefFieldReferType} from "../api/manage";
+import {getDefFieldRefer, updateDefFieldRefer, listDefFieldReferType, listDefFieldReferField} from "../api/manage";
 
 export default {
   name: 'FieldReferComponent',
@@ -102,6 +92,9 @@ export default {
       files: [],
       fields: [],
       referFile: '',
+
+      referFieldName: '',
+      referFieldIndex: '',
     };
   },
   props: {
@@ -137,25 +130,29 @@ export default {
       getDefFieldRefer(this.field.id).then(json => {
         console.log('getDefFieldRefer', json)
         this.refer = json.data
-        this.listDefFieldReferType(this.refer.type)
+        this.listDefFieldReferType(this.refer.type, true)
       })
     },
-    listDefFieldReferType(resType) {
-      listDefFieldReferType(resType).then(json => {
-        console.log('getDefFieldRefer', json)
-        this.files = json.data
-      })
-      this.refer.file = ''
-      this.referFile = ''
-    },
+
     onTypeChanged() {
       console.log('onTypeChanged')
-      this.listDefFieldReferType(this.refer.type)
+      this.listDefFieldReferType(this.refer.type, false)
     },
     onReferChanged(value) {
+      console.log("onReferChanged")
       this.refer.file = value
-      console.log(this.refer.file)
+
+      if (this.refer.type != 'text') {
+        this.listDefFieldReferField()
+      } else {
+        this.refer.colName = ''
+      }
     },
+    onFieldNameChanged(value) {
+      console.log("onFieldChanged")
+      this.refer.colName = value
+    },
+
     save() {
       console.log('save')
       this.$refs.editForm.validate(valid => {
@@ -174,6 +171,38 @@ export default {
     reset() {
       console.log('reset')
       this.$refs.editForm.reset()
+    },
+
+    listDefFieldReferType(resType, init) {
+      listDefFieldReferType(resType).then(json => {
+        console.log('getDefFieldRefer', json)
+        this.files = json.data
+      })
+
+      if (!init) {
+        this.refer.file = ''
+        this.referFile = ''
+      }
+    },
+    listDefFieldReferField() {
+      let file = {}
+      for (let i = 0; i < this.files.length; i++) {
+        const f = this.files[i]
+        if (f.name + '-' + f.title === this.referFile) {
+          file = f
+          break
+        }
+      }
+
+      listDefFieldReferField(file).then(json => {
+        console.log('listDefFieldReferField', json)
+        this.fields = json.data
+      })
+      this.refer.colName = ''
+      this.refer.colIndex = ''
+
+      this.referFieldName = ''
+      this.referFieldIndex = ''
     },
   }
 }

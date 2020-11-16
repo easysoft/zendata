@@ -163,10 +163,12 @@ func GetAbsDir(path string) string {
 
 func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 
-	index := strings.LastIndex(from, ".yaml")
-	if index > -1 { // yaml, ip.v1.yaml
+	if strings.LastIndex(from, ".yaml") > -1 { // yaml, ip.v1.yaml
 		resFile = ConvertResYamlPath(from)
 		resType = "yaml"
+	} else if strings.LastIndex(from, ".txt") > -1 {
+		resFile = ConvertResYamlPath(from)
+		resType = "text"
 	} else { // excel, like address.cn.v1.china
 		resFile, sheet = convertResExcelPath(from)
 		resType = "excel"
