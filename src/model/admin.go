@@ -24,6 +24,7 @@ type ResData struct {
 	Msg string `json:"msg"`
 	Data interface{} `json:"data"`
 	Field interface{} `json:"field"`
+	Res interface{} `json:"res"`
 }
 
 type Model struct {

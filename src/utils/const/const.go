@@ -68,6 +68,13 @@ var (
 	ResDirUsers  = "users"
 	ResKeys = []string{ResDirData, ResDirYaml, ResDirUsers}
 
+	ResTypeConfig    = "config"
+	ResTypeRanges    = "ranges"
+	ResTypeInstances = "instances"
+	ResTypeExcel     = "excel"
+	ResTypeText      = "text"
+	ResTypes         = []string{ResTypeConfig, ResTypeRanges, ResTypeInstances, ResTypeExcel, ResTypeText}
+
 	TmpDir  = "tmp/"
 
 	SqliteDriver = "sqlite3"

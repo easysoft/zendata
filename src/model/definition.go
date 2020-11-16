@@ -99,6 +99,10 @@ type FieldWithValues struct {
 type DefInfo struct {
 	Title string   `yaml:"title"`
 	Desc string  `yaml:"desc"`
+
+	Range string  `yaml:"range,omitempty"` // is config
+	Ranges interface{}  `yaml:"ranges,omitempty"` // is ranges
+	Instances interface{}  `yaml:"instances,omitempty"` // is instances
 }
 
 func (def *DefSimple) Init(tableName, author, desc, version string) {
@@ -144,4 +148,12 @@ type ArticleSent struct {
 	Val string
 	IsParag bool
 	IsSent bool
+}
+
+type ResFile struct {
+	Path string
+	Name    string
+	Title string
+	Desc   string
+	ResType string
 }

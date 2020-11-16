@@ -3,9 +3,9 @@
     <a-form-model ref="editForm" :model="refer" :rules="rules">
       <a-row :gutter="colsFull">
         <a-form-model-item label="类型" prop="type" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-select v-model="refer.type">
+          <a-select v-model="refer.type" @change="onTypeChanged">
             <a-select-option value="ranges">Ranges</a-select-option>
-            <a-select-option value="instance">Instances</a-select-option>
+            <a-select-option value="instances">Instances</a-select-option>
             <a-select-option value="config">Config</a-select-option>
             <a-select-option value="yaml">Yaml</a-select-option>
 
@@ -23,8 +23,8 @@
                 <a-select-option value="">
                   选择
                 </a-select-option>
-                <a-select-option value=".jp">
-                  md5
+                <a-select-option v-for="f in files" :key="f.path">
+                  {{ f.name }}
                 </a-select-option>
               </a-select>
             </a-input>
@@ -38,9 +38,6 @@
                 <a-select-option value="">
                   选择
                 </a-select-option>
-                <a-select-option value=".jp">
-                  md5
-                </a-select-option>
               </a-select>
             </a-input>
           </a-form-model-item>
@@ -49,9 +46,6 @@
               <a-select slot="addonAfter" default-value="" style="width: 80px">
                 <a-select-option value="">
                   选择
-                </a-select-option>
-                <a-select-option value=".jp">
-                  md5
                 </a-select-option>
               </a-select>
             </a-input>
@@ -106,6 +100,10 @@ export default {
           { validator: this.checkRange, trigger: 'change' },
         ],
       },
+
+      res: {},
+      files: [],
+      fields: [],
     };
   },
   props: {
@@ -138,10 +136,15 @@ export default {
   },
   methods: {
     loadDefFieldRefer() {
-      getDefFieldRefer(this.field.id).then(res => {
-        console.log('loadDefFieldRefer', res)
-        this.refer = res.data
+      getDefFieldRefer(this.field.id).then(json => {
+        console.log('getDefFieldRefer', json)
+        this.refer = json.data
+        this.res = json.res
       })
+    },
+    onTypeChanged() {
+      console.log('onTypeChanged')
+      this.files = this.res[this.refer.type]
     },
     save() {
       console.log('save')

@@ -12,40 +12,47 @@ import (
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"log"
 	"path"
 	"sort"
 	"strings"
 )
 
 func ListRes () {
-	res, nameWidth, titleWidth := LoadRes()
+	res, nameWidth, titleWidth := LoadRes("")
 	PrintRes(res, nameWidth, titleWidth)
 }
 
-func LoadRes() (res map[string][]ResFile, nameWidth, titleWidth int) {
-	res = map[string][]ResFile{}
+func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWidth int) {
+	res = map[string][]model.ResFile{}
 
 	for _, key := range constant.ResKeys {
 		GetFilesAndDirs(key, key, &res)
 	}
 
 	for _, key := range constant.ResKeys {
-		arr := res[key]
+		arr := make([]model.ResFile, 0)
 
-		for index, item := range arr {
-			path := item.Path
-			name := PathToName(path, key)
-			var title, desc string
+		for _, item := range res[key] {
+			pth := item.Path
+			name := PathToName(pth, key)
+			var title, desc, tp string
 
-			if key == constant.ResDirYaml || key == constant.ResDirUsers {
-				title, desc = ReadYamlInfo(path)
-			} else if key == constant.ResDirData {
-				title, desc = ReadExcelInfo(path)
+			if key == constant.ResDirData { // data dir contains excel
+				title, desc, tp = ReadExcelInfo(pth)
+			} else if key == constant.ResDirYaml || key == constant.ResDirUsers {
+				fileExt := path.Ext(pth)
+				if fileExt == ".txt" {
+					title, desc, tp = ReadTextInfo(pth, key)
+				} else {
+					title, desc, tp = ReadYamlInfo(pth)
+				}
 			}
 
-			arr[index].Name = name
-			arr[index].Title = title
-			arr[index].Desc = desc
+			item.Name = name
+			item.Title = title
+			item.Desc = desc
+			item.ResType = tp
 
 			lent := runewidth.StringWidth(name)
 			if lent > nameWidth {
@@ -66,6 +73,10 @@ func LoadRes() (res map[string][]ResFile, nameWidth, titleWidth int) {
 					titleWidth = lent2
 				}
 			}
+
+			if resType == "" || resType == item.ResType {
+				arr = append(arr, item)
+			}
 		}
 
 		res[key] = SortByName(arr)
@@ -74,7 +85,7 @@ func LoadRes() (res map[string][]ResFile, nameWidth, titleWidth int) {
 	return
 }
 
-func PrintRes(res map[string][]ResFile, nameWidth, titleWidth int) {
+func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 	dataMsg := ""
 	yamlMsg := ""
 	usersMsg := ""
@@ -116,7 +127,7 @@ func PrintRes(res map[string][]ResFile, nameWidth, titleWidth int) {
 	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
 }
 
-func GetFilesAndDirs(pth, typ string, res *map[string][]ResFile)  {
+func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile)  {
 	if !fileUtils.IsAbosutePath(pth) {
 		pth = vari.WorkDir + pth
 	}
@@ -132,18 +143,22 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]ResFile)  {
 		} else {
 			name := fi.Name()
 			fileExt := path.Ext(name)
-			if fileExt != ".yaml" && fileExt != ".xlsx" {
+			if fileExt != ".yaml" && fileExt != ".xlsx" && fileExt != ".txt" {
 				continue
 			}
 
-			file := ResFile{Path: pth + constant.PthSep + name}
+			file := model.ResFile{Path: pth + constant.PthSep + name}
 			(*res)[typ] = append((*res)[typ], file)
 		}
 	}
 }
 
-func ReadYamlInfo(path string) (title string, desc string) {
+func ReadYamlInfo(path string) (title, desc, resType string) {
 	info := model.DefInfo{}
+
+	if strings.Index(path, "zentao/number/") > -1 {
+		log.Println(path)
+	}
 
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -158,10 +173,11 @@ func ReadYamlInfo(path string) (title string, desc string) {
 
 	title = info.Title
 	desc = info.Desc
+	resType = GetYamlResType(info)
 	return
 }
 
-func ReadExcelInfo(path string) (title string, desc string) {
+func ReadExcelInfo(path string) (title, desc, resType string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -176,20 +192,33 @@ func ReadExcelInfo(path string) (title string, desc string) {
 	}
 
 	desc = i118Utils.I118Prt.Sprintf("excel_data")
+	resType = constant.ResTypeExcel
+	return
+}
+
+func ReadTextInfo(path, key string) (title, desc, resType string) {
+	title = PathToName(path, key)
+	desc = i118Utils.I118Prt.Sprintf("text_data")
+	resType = constant.ResTypeText
 	return
 }
 
 func PathToName(path, key string) string {
+	//if strings.Index(path, "users.txt") > -1 {
+	//	logUtils.PrintToScreen("111")
+	//}
+
 	name := strings.ReplaceAll(path, constant.PthSep,".")
-	name = strings.Split(name, "." + key + ".")[1]
-	if key == constant.ResDirData {
+	sep := "." + key + "."
+	name = name[strings.Index(name, sep)+len(sep):]
+	if key == constant.ResDirData { // remove .xlsx postfix
 		name = name[:strings.LastIndex(name, ".")]
 	}
 
 	return name
 }
 
-func SortByName(arr []ResFile) []ResFile {
+func SortByName(arr []model.ResFile) []model.ResFile {
 	sort.Slice(arr, func(i, j int) bool {
 		flag := false
 		if arr[i].Name > (arr[j].Name) {
@@ -200,9 +229,14 @@ func SortByName(arr []ResFile) []ResFile {
 	return arr
 }
 
-type ResFile struct {
-	Path string
-	Name    string
-	Title string
-	Desc   string
+func GetYamlResType(def model.DefInfo) string {
+	if def.Range != "" {
+		return constant.ResTypeConfig
+	} else if def.Ranges != nil {
+		return constant.ResTypeRanges
+	} else if def.Instances != nil {
+		return constant.ResTypeInstances
+	}
+
+	return ""
 }

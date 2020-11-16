@@ -278,6 +278,7 @@ type Server struct {
 	fieldService *serverService.FieldService
 	sectionService *serverService.SectionService
 	referService *serverService.ReferService
+	resService *serverService.ResService
 }
 
 func Init() (err error) {
@@ -402,7 +403,10 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 
 		// refer
 		case "getDefFieldRefer":
-			ret.Data, err = s.referService.Get(uint(reqData.Id))
+			var refer model.Refer
+			refer, err = s.referService.Get(uint(reqData.Id))
+			ret.Data = refer
+			ret.Res = s.resService.LoadRes(refer.Type)
 		case "updateDefFieldRefer":
 			refer := serverUtils.ConvertRefer(reqData.Data)
 			err = s.referService.Update(&refer)

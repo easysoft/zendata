@@ -137,6 +137,10 @@
       "translation": "Excel数据源，包含以下内容."
     },
     {
+      "id": "text_data",
+      "translation": "文本数据。"
+    },
+    {
       "id": "analyse_success",
       "translation": "成功解析数据到%s."
     },
