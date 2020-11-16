@@ -68,6 +68,8 @@ func ListRes() {
 				}
 			}
 		}
+
+		res[key] = SortByName(arr)
 	}
 
 	dataMsg := ""
@@ -76,7 +78,6 @@ func ListRes() {
 	idx := 0
 	for _, key := range constant.ResKeys {
 		arr := res[key]
-		arr = SortByName(arr)
 
 		for _, item := range arr {
 			name := item.Name
