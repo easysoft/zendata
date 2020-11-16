@@ -12,6 +12,7 @@ import (
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"path"
 	"sort"
 	"strings"
 )
@@ -111,23 +112,27 @@ func ListRes() {
 	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
 }
 
-func GetFilesAndDirs(path, typ string, res *map[string][]map[string]string)  {
-	if !fileUtils.IsAbosutePath(path) {
-		path = vari.WorkDir + path
+func GetFilesAndDirs(pth, typ string, res *map[string][]map[string]string)  {
+	if !fileUtils.IsAbosutePath(pth) {
+		pth = vari.WorkDir + pth
 	}
 
-	dir, err := ioutil.ReadDir(path)
+	dir, err := ioutil.ReadDir(pth)
 	if err != nil {
 		return
 	}
 
 	for _, fi := range dir {
 		if fi.IsDir() {
-			GetFilesAndDirs(path + constant.PthSep + fi.Name(), typ, res)
+			GetFilesAndDirs(pth + constant.PthSep + fi.Name(), typ, res)
 		} else {
 			name := fi.Name()
+			fileExt := path.Ext(name)
+			if fileExt != ".yaml" && fileExt != ".xlsx" {
+				continue
+			}
 
-			mp := map[string]string{"path": path + constant.PthSep + name}
+			mp := map[string]string{"path": pth + constant.PthSep + name}
 			(*res)[typ] = append((*res)[typ], mp)
 		}
 	}
