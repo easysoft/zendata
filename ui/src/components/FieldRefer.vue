@@ -4,53 +4,50 @@
       <a-row :gutter="colsFull">
         <a-form-model-item label="类型" prop="type" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-select v-model="refer.type" @change="onTypeChanged">
-            <a-select-option value="ranges">Ranges</a-select-option>
-            <a-select-option value="instances">Instances</a-select-option>
-            <a-select-option value="config">Config</a-select-option>
-            <a-select-option value="yaml">Yaml</a-select-option>
-
-            <a-select-option value="excel">Excel</a-select-option>
-            <a-select-option value="text">Text</a-select-option>
+            <a-select-option value="ranges">序列（Ranges）</a-select-option>
+            <a-select-option value="instances">实例（Instances）</a-select-option>
+            <a-select-option value="config">配置（Config）</a-select-option>
+            <a-select-option value="yaml">内容（取至YAML）</a-select-option>
+            <a-select-option value="excel">表格数据（Excel）</a-select-option>
+            <a-select-option value="text">文本文件（Text）</a-select-option>
           </a-select>
         </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="文件" prop="file" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+          <a-form-model-item label="文件" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="refer.file">
-              <a-select slot="addonAfter" default-value="" style="width: 80px">
+              <a-select v-model="referFile" slot="addonAfter" @change="onReferChanged" style="width: 300px">
                 <a-select-option value="">
                   选择
                 </a-select-option>
-                <a-select-option v-for="f in files" :key="f.path">
-                  {{ f.name }}
+                <a-select-option v-for="f in files" :key="f.name">
+                  {{ f.title }}
                 </a-select-option>
               </a-select>
             </a-input>
           </a-form-model-item>
-        </a-col>
+      </a-row>
 
-        <a-col :span="colsHalf">
-          <a-form-model-item v-if="!showColIndex" label="列名" prop="colName" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+      <a-row :gutter="colsFull">
+          <a-form-model-item v-if="!showColIndex" label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="refer.colName">
-              <a-select slot="addonAfter" default-value="" style="width: 80px">
+              <a-select slot="addonAfter" style="width: 300px">
                 <a-select-option value="">
                   选择
                 </a-select-option>
               </a-select>
             </a-input>
           </a-form-model-item>
-          <a-form-model-item v-if="showColIndex" label="列索引" prop="colIndex" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+          <a-form-model-item v-if="showColIndex" label="列索引" prop="colIndex" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="refer.colIndex">
-              <a-select slot="addonAfter" default-value="" style="width: 80px">
+              <a-select slot="addonAfter" style="width: 200px">
                 <a-select-option value="">
                   选择
                 </a-select-option>
               </a-select>
             </a-input>
           </a-form-model-item>
-        </a-col>
       </a-row>
 
       <a-row :gutter="colsFull">
@@ -79,7 +76,7 @@
 </template>
 
 <script>
-import {getDefFieldRefer, updateDefFieldRefer} from "../api/manage";
+import {getDefFieldRefer, updateDefFieldRefer, listDefFieldReferType} from "../api/manage";
 
 export default {
   name: 'FieldReferComponent',
@@ -104,6 +101,7 @@ export default {
       res: {},
       files: [],
       fields: [],
+      referFile: '',
     };
   },
   props: {
@@ -128,7 +126,7 @@ export default {
     this.loadDefFieldRefer()
     this.$watch('time', () => {
       console.log('time changed', this.time)
-      this.loadDefFieldRefer()
+      this.loadDefFieldRefer("")
     })
   },
   mounted () {
@@ -139,12 +137,24 @@ export default {
       getDefFieldRefer(this.field.id).then(json => {
         console.log('getDefFieldRefer', json)
         this.refer = json.data
-        this.res = json.res
+        this.listDefFieldReferType(this.refer.type)
       })
+    },
+    listDefFieldReferType(resType) {
+      listDefFieldReferType(resType).then(json => {
+        console.log('getDefFieldRefer', json)
+        this.files = json.data
+      })
+      this.refer.file = ''
+      this.referFile = ''
     },
     onTypeChanged() {
       console.log('onTypeChanged')
-      this.files = this.res[this.refer.type]
+      this.listDefFieldReferType(this.refer.type)
+    },
+    onReferChanged(value) {
+      this.refer.file = value
+      console.log(this.refer.file)
     },
     save() {
       console.log('save')

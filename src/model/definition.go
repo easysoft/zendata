@@ -151,9 +151,9 @@ type ArticleSent struct {
 }
 
 type ResFile struct {
-	Path string
-	Name    string
-	Title string
-	Desc   string
-	ResType string
+	Path string `json:"path"`
+	Name    string `json:"name"`
+	Title string `json:"title"`
+	Desc   string `json:"desc"`
+	ResType string `json:"resType"`
 }

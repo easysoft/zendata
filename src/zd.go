@@ -406,10 +406,11 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 			var refer model.Refer
 			refer, err = s.referService.Get(uint(reqData.Id))
 			ret.Data = refer
-			ret.Res = s.resService.LoadRes(refer.Type)
 		case "updateDefFieldRefer":
 			refer := serverUtils.ConvertRefer(reqData.Data)
 			err = s.referService.Update(&refer)
+		case "listDefFieldReferType":
+			ret.Data = s.resService.LoadRes(reqData.Mode)
 	}
 
 	if err != nil {

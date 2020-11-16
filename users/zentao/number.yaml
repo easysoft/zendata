@@ -1,0 +1,12 @@
+title: 数字配置
+desc:
+author: wwccss
+version: 1.0
+
+field: number
+note: 数值类型数据
+range: 100-199
+loop: 2
+loopfix: ","
+prefix: "'"
+postfix: "'"

@@ -12,7 +12,6 @@ import (
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"log"
 	"path"
 	"sort"
 	"strings"
@@ -35,13 +34,13 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 
 		for _, item := range res[key] {
 			pth := item.Path
+			fileExt := path.Ext(pth)
 			name := PathToName(pth, key)
 			var title, desc, tp string
 
 			if key == constant.ResDirData { // data dir contains excel
 				title, desc, tp = ReadExcelInfo(pth)
 			} else if key == constant.ResDirYaml || key == constant.ResDirUsers {
-				fileExt := path.Ext(pth)
 				if fileExt == ".txt" {
 					title, desc, tp = ReadTextInfo(pth, key)
 				} else {
@@ -74,7 +73,8 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 				}
 			}
 
-			if resType == "" || resType == item.ResType {
+			if resType == "" || resType == item.ResType ||
+				(resType == "yaml" && fileExt == ".yaml"){
 				arr = append(arr, item)
 			}
 		}
@@ -156,9 +156,9 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile)  {
 func ReadYamlInfo(path string) (title, desc, resType string) {
 	info := model.DefInfo{}
 
-	if strings.Index(path, "zentao/number/") > -1 {
-		log.Println(path)
-	}
+	//if strings.Index(path, "zentao/number/") > -1 {
+	//	log.Println(path)
+	//}
 
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {

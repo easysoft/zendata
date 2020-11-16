@@ -143,8 +143,17 @@ export function removeDefFieldSection (sectionId) {
   })
 }
 
-export function getDefFieldRefer (fieldId) {
-  const data = {'action': 'getDefFieldRefer', id: fieldId}
+export function listDefFieldReferType (resType) {
+  const data = {'action': 'listDefFieldReferType', mode: resType}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getDefFieldRefer (fieldId, resType) {
+  const data = {'action': 'getDefFieldRefer', id: fieldId, mode: resType}
 
   return request({
     url: api.admin,
