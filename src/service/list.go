@@ -22,7 +22,7 @@ const (
 )
 
 func ListRes() {
-	res := map[string][]map[string]string{}
+	res := map[string][]ResFile{}
 
 	for _, key := range constant.ResKeys {
 		GetFilesAndDirs(key, key, &res)
@@ -31,10 +31,10 @@ func ListRes() {
 	nameWidth := 0
 	titleWidth := 0
 	for _, key := range constant.ResKeys {
-		mpArr := res[key]
+		arr := res[key]
 
-		for _, mp := range mpArr {
-			path := mp["path"]
+		for index, item := range arr {
+			path := item.Path
 			name := PathToName(path, key)
 			var title, desc string
 
@@ -44,9 +44,9 @@ func ListRes() {
 				title, desc = ReadExcelInfo(path)
 			}
 
-			mp["name"] = name
-			mp["title"] = title
-			mp["desc"] = desc
+			arr[index].Name = name
+			arr[index].Title = title
+			arr[index].Desc = desc
 
 			lent := runewidth.StringWidth(name)
 			if lent > nameWidth {
@@ -75,13 +75,13 @@ func ListRes() {
 	usersMsg := ""
 	idx := 0
 	for _, key := range constant.ResKeys {
-		mpArr := res[key]
-		mpArr = SortByName(mpArr)
+		arr := res[key]
+		arr = SortByName(arr)
 
-		for _, mp := range mpArr {
-			name := mp["name"]
-			desc := mp["desc"]
-			title := mp["title"]
+		for _, item := range arr {
+			name := item.Name
+			desc := item.Desc
+			title := item.Title
 			titles := strings.Split(title, "|")
 
 			idx2 := 0
@@ -112,7 +112,7 @@ func ListRes() {
 	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
 }
 
-func GetFilesAndDirs(pth, typ string, res *map[string][]map[string]string)  {
+func GetFilesAndDirs(pth, typ string, res *map[string][]ResFile)  {
 	if !fileUtils.IsAbosutePath(pth) {
 		pth = vari.WorkDir + pth
 	}
@@ -132,8 +132,8 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]map[string]string)  {
 				continue
 			}
 
-			mp := map[string]string{"path": pth + constant.PthSep + name}
-			(*res)[typ] = append((*res)[typ], mp)
+			file := ResFile{Path: pth + constant.PthSep + name}
+			(*res)[typ] = append((*res)[typ], file)
 		}
 	}
 }
@@ -185,13 +185,20 @@ func PathToName(path, key string) string {
 	return name
 }
 
-func SortByName(arr []map[string]string) []map[string]string {
+func SortByName(arr []ResFile) []ResFile {
 	sort.Slice(arr, func(i, j int) bool {
 		flag := false
-		if arr[i]["name"] > (arr[j]["name"]) {
+		if arr[i].Name > (arr[j].Name) {
 			flag = true
 		}
 		return flag
 	})
 	return arr
+}
+
+type ResFile struct {
+	Path string
+	Name    string
+	Title string
+	Desc   string
 }
