@@ -1,0 +1,5 @@
+package serverService
+
+func ListRes() {
+
+}

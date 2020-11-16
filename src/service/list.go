@@ -21,37 +21,39 @@ const (
 )
 
 func ListRes() {
-	orderedKeys := [3]string{constant.ResDirData, constant.ResDirYaml, constant.ResDirUsers}
-	res := map[string][][size]string{}
+	res := map[string][]map[string]string{}
 
-	for _, key := range orderedKeys {
+	for _, key := range constant.ResKeys {
 		GetFilesAndDirs(key, key, &res)
 	}
 
-	//names := make([]string, 0)
 	nameWidth := 0
 	titleWidth := 0
-	for _, key := range orderedKeys {
-		arrOfArr := res[key]
+	for _, key := range constant.ResKeys {
+		mpArr := res[key]
 
-		for index, arr := range arrOfArr {
-			path := arr[0]
+		for _, mp := range mpArr {
+			path := mp["path"]
+			name := PathToName(path, key)
+			var title, desc string
+
 			if key == constant.ResDirYaml || key == constant.ResDirUsers {
-				arr[2], arr[3] = readYamlInfo(path)
+				title, desc = ReadYamlInfo(path)
 			} else if key == constant.ResDirData {
-				arr[2], arr[3] = readExcelInfo(path)
+				title, desc = ReadExcelInfo(path)
 			}
 
-			res[key][index] = arr
-			name := pathToName(arr[1], key)
-			//names = append(names, name)
+			mp["name"] = name
+			mp["title"] = title
+			mp["desc"] = desc
+
 			lent := runewidth.StringWidth(name)
 			if lent > nameWidth {
 				nameWidth = lent
 			}
 
 			if key == constant.ResDirData {
-				sheets := strings.Split(arr[2], "|")
+				sheets := strings.Split(title, "|")
 				for _, sheet := range sheets {
 					lent2 := runewidth.StringWidth(sheet)
 					if lent2 > titleWidth {
@@ -59,7 +61,7 @@ func ListRes() {
 					}
 				}
 			} else {
-				lent2 := runewidth.StringWidth(arr[2])
+				lent2 := runewidth.StringWidth(title)
 				if lent2 > titleWidth {
 					titleWidth = lent2
 				}
@@ -71,15 +73,15 @@ func ListRes() {
 	yamlMsg := ""
 	usersMsg := ""
 	idx := 0
-	for _, key := range orderedKeys {
-		arrOfArr := res[key]
-		arrOfArr = sortByName(arrOfArr)
+	for _, key := range constant.ResKeys {
+		mpArr := res[key]
+		mpArr = SortByName(mpArr)
 
-		for _, arr := range arrOfArr {
-			name := pathToName(arr[1], key)
-
-			titleStr := arr[2]
-			titles := strings.Split(titleStr, "|")
+		for _, mp := range mpArr {
+			name := mp["name"]
+			desc := mp["desc"]
+			title := mp["title"]
+			titles := strings.Split(title, "|")
 
 			idx2 := 0
 			for _, title := range titles {
@@ -89,7 +91,7 @@ func ListRes() {
 				name = name + strings.Repeat(" ", nameWidth - runewidth.StringWidth(name))
 
 				title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
-				msg := fmt.Sprintf("%s  %s  %s\n", name, title, arr[3])
+				msg := fmt.Sprintf("%s  %s  %s\n", name, title, desc)
 
 				if key == constant.ResDirData {
 					dataMsg = dataMsg + msg
@@ -109,7 +111,7 @@ func ListRes() {
 	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
 }
 
-func GetFilesAndDirs(path, typ string, res *map[string][][size]string)  {
+func GetFilesAndDirs(path, typ string, res *map[string][]map[string]string)  {
 	if !fileUtils.IsAbosutePath(path) {
 		path = vari.WorkDir + path
 	}
@@ -124,24 +126,14 @@ func GetFilesAndDirs(path, typ string, res *map[string][][size]string)  {
 			GetFilesAndDirs(path + constant.PthSep + fi.Name(), typ, res)
 		} else {
 			name := fi.Name()
-			arr := [size]string{}
-			if strings.HasSuffix(name, ".yaml") {
-				arr[0] = path + constant.PthSep + name
-				arr[1] = arr[0]
 
-				(*res)[typ] = append((*res)[typ], arr)
-			} else if strings.HasSuffix(name, ".xlsx") {
-				arr[0] = path + constant.PthSep + name
-				arr[1] = arr[0]
-
-				(*res)[typ] = append((*res)[typ], arr)
-			}
+			mp := map[string]string{"path": path + constant.PthSep + name}
+			(*res)[typ] = append((*res)[typ], mp)
 		}
-
 	}
 }
 
-func readYamlInfo(path string) (title string, desc string) {
+func ReadYamlInfo(path string) (title string, desc string) {
 	info := model.DefInfo{}
 
 	yamlContent, err := ioutil.ReadFile(path)
@@ -160,7 +152,7 @@ func readYamlInfo(path string) (title string, desc string) {
 	return
 }
 
-func readExcelInfo(path string) (title string, desc string) {
+func ReadExcelInfo(path string) (title string, desc string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -178,7 +170,7 @@ func readExcelInfo(path string) (title string, desc string) {
 	return
 }
 
-func pathToName(path, key string) string {
+func PathToName(path, key string) string {
 	name := strings.ReplaceAll(path, constant.PthSep,".")
 	name = strings.Split(name, "." + key + ".")[1]
 	if key == constant.ResDirData {
@@ -188,13 +180,13 @@ func pathToName(path, key string) string {
 	return name
 }
 
-func sortByName(pl [][4]string) [][4]string {
-	sort.Slice(pl, func(i, j int) bool {
+func SortByName(arr []map[string]string) []map[string]string {
+	sort.Slice(arr, func(i, j int) bool {
 		flag := false
-		if pl[i][0] > (pl[j][0]) {
+		if arr[i]["name"] > (arr[j]["name"]) {
 			flag = true
 		}
 		return flag
 	})
-	return pl
+	return arr
 }

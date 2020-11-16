@@ -66,6 +66,7 @@ var (
 	ResDirData  = "data"
 	ResDirYaml  = "yaml"
 	ResDirUsers  = "users"
+	ResKeys = []string{ResDirData, ResDirYaml, ResDirUsers}
 
 	TmpDir  = "tmp/"
 
