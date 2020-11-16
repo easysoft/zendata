@@ -7,9 +7,9 @@
             <a-select-option value="ranges">序列（Ranges）</a-select-option>
             <a-select-option value="instances">实例（Instances）</a-select-option>
             <a-select-option value="config">配置（Config）</a-select-option>
-            <a-select-option value="yaml">内容（取至YAML）</a-select-option>
-            <a-select-option value="excel">表格数据（Excel）</a-select-option>
-            <a-select-option value="text">文本文件（Text）</a-select-option>
+            <a-select-option value="yaml">内容（来自YAML）</a-select-option>
+            <a-select-option value="excel">表格（Excel）</a-select-option>
+            <a-select-option value="text">文本（Text）</a-select-option>
           </a-select>
         </a-form-model-item>
       </a-row>
@@ -28,7 +28,7 @@
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-form-model-item v-if="!showColIndex" label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-form-model-item v-if="!showColSection" label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-input v-model="refer.colName">
             <a-select v-model="referFieldName" @change="onFieldNameChanged" slot="addonAfter" style="width: 300px">
               <a-select-option value="">选择</a-select-option>
@@ -109,8 +109,8 @@ export default {
   },
 
   computed: {
-    showColIndex() {
-      return this.refer.type == 'text' && !this.refer.hasTitle
+    showColSection() {
+      return this.refer.type == 'yaml' || this.refer.type == 'text'
     }
   },
   created () {
