@@ -17,19 +17,18 @@ import (
 	"strings"
 )
 
-const (
-	size = 4
-)
+func ListRes () {
+	res, nameWidth, titleWidth := LoadRes()
+	PrintRes(res, nameWidth, titleWidth)
+}
 
-func ListRes() {
-	res := map[string][]ResFile{}
+func LoadRes() (res map[string][]ResFile, nameWidth, titleWidth int) {
+	res = map[string][]ResFile{}
 
 	for _, key := range constant.ResKeys {
 		GetFilesAndDirs(key, key, &res)
 	}
 
-	nameWidth := 0
-	titleWidth := 0
 	for _, key := range constant.ResKeys {
 		arr := res[key]
 
@@ -72,6 +71,10 @@ func ListRes() {
 		res[key] = SortByName(arr)
 	}
 
+	return
+}
+
+func PrintRes(res map[string][]ResFile, nameWidth, titleWidth int) {
 	dataMsg := ""
 	yamlMsg := ""
 	usersMsg := ""
