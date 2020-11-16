@@ -29,7 +29,7 @@
       <a-row :gutter="colsFull">
         <a-col :span="colsHalf">
           <a-form-model-item label="循环" prop="loop" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.loop" placeholder="支持区间，如3或3-5" />
+            <a-input v-model="model.loop" placeholder="数字3，或区间1-3" />
           </a-form-model-item>
         </a-col>
         <a-col :span="colsHalf">
@@ -139,6 +139,9 @@ export default {
         field: [
           { required: true, message: '名称不能为空', trigger: 'change' },
         ],
+        loop: [
+          { validator: this.checkLoop, message: '需为正整数或其区间', trigger: 'change' },
+        ],
       },
     };
   },
@@ -185,6 +188,17 @@ export default {
     reset() {
       console.log('reset')
       this.$refs.editForm.reset()
+    },
+    checkLoop (rule, value, callback){
+      console.log('checkLoop', value)
+
+      const regx1 = /^[1-9][0-9]*$/;
+      const regx2 = /^[1-9][0-9]*-?[1-9][0-9]*$/;
+      if (!regx1.test(value) && !regx2.test(value)) {
+        callback('需为整数或整数区间')
+      }
+
+      callback()
     },
   }
 }

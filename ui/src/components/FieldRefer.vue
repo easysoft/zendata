@@ -82,10 +82,6 @@ export default {
 
       refer: {},
       rules: {
-        start: [
-          { required: true, message: '必须是数字或单个字母', trigger: 'change' },
-          { validator: this.checkRange, trigger: 'change' },
-        ],
       },
 
       res: {},
@@ -142,7 +138,7 @@ export default {
       console.log("onReferChanged")
       this.refer.file = value
 
-      if (this.refer.type != 'text') {
+      if (this.refer.type != 'yaml' && this.refer.type != 'text') {
         this.listDefFieldReferField()
       } else {
         this.refer.colName = ''
@@ -203,7 +199,7 @@ export default {
 
       this.referFieldName = ''
       this.referFieldIndex = ''
-    },
+    }
   }
 }
 </script>
