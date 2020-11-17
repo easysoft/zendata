@@ -3,6 +3,7 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 )
 
@@ -52,6 +53,14 @@ func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 
 func (s *RangesService) Remove(id int) (err error) {
 	err = s.rangesRepo.Remove(uint(id))
+	if err != nil {
+		return
+	}
+
+	ranges, _ := s.rangesRepo.Get(uint(id))
+	logUtils.PrintTo(ranges.Path)
+	//fileUtils.RemoveExist(ranges.Path)
+
 	return
 }
 

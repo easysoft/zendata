@@ -68,10 +68,10 @@
 </template>
 
 <script>
-import {getRanges, saveRanges} from "../../../../api/manage";
+import {getConfig, saveConfig} from "../../../../api/manage";
 
 export default {
-  name: 'RangesEdit',
+  name: 'ConfigEdit',
   data() {
     return {
       colsFull: 24,
@@ -106,8 +106,8 @@ export default {
     loadData () {
       if (!this.id) return
 
-      getRanges(this.id).then(res => {
-        console.log('getRanges', res)
+      getConfig(this.id).then(res => {
+        console.log('getConfig', res)
         this.model = res.data
       })
     },
@@ -120,8 +120,8 @@ export default {
           return
         }
 
-        saveRanges(this.model).then(json => {
-          console.log('saveRanges', json)
+        saveConfig(this.model).then(json => {
+          console.log('saveConfig', json)
           this.back()
         })
       })

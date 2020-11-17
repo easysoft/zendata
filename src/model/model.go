@@ -6,7 +6,8 @@ import (
 
 var (
 	CommonPrefix = "zd_"
-	Models = []interface{}{ &ZdDef{}, &ZdField{}, &ZdSection{}, &ZdRefer{}, &ZdRanges{}, &ZdRangesItem{} }
+	Models = []interface{}{ &ZdDef{}, &ZdField{}, &ZdSection{}, &ZdRefer{},
+		&ZdRanges{}, &ZdRangesItem{}, &ZdText{}, &ZdConfig{}, &ZdInstances{}, &ZdExcel{} }
 )
 
 type ZdDef struct {
@@ -133,10 +134,99 @@ type ZdRangesItem struct {
 	RangesID uint `gorm:"column:rangesID" json:"rangesID"`
 	Ord int `gorm:"column:ord" json:"ord"`
 
-	ParentID uint `gorm:"-" json:"parentID"` // for tree node
-
+	// for tree node
+	ParentID uint `gorm:"-" json:"parentID"`
 	Children []*ZdRangesItem `gorm:"-" json:"children"`
 }
 func (*ZdRangesItem) TableName() string {
 	return constant.TablePrefix + "rangesItem"
+}
+
+type ZdText struct {
+	Model
+	Title  string `gorm:"column:title" json:"title"`
+	Text   string `gorm:"column:desc" json:"desc"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+
+	Folder string `gorm:"-" json:"folder" yaml:"-"`
+
+	Name  string `gorm:"column:name" json:"name"`
+}
+func (*ZdText) TableName() string {
+	return constant.TablePrefix + "text"
+}
+
+type ZdExcel struct {
+	Model
+	Title  string `gorm:"column:title" json:"title"`
+	Text   string `gorm:"column:desc" json:"desc"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+
+	Folder string `gorm:"-" json:"folder" yaml:"-"`
+
+	Name  string `gorm:"column:name" json:"name"`
+}
+func (*ZdExcel) TableName() string {
+	return constant.TablePrefix + "excel"
+}
+
+type ZdConfig struct {
+	Model
+	Title  string `gorm:"column:title" json:"title"`
+	Desc   string `gorm:"column:desc" json:"desc"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Folder string `gorm:"-" json:"folder" yaml:"-"`
+
+	Name  string `gorm:"column:name" json:"name"`
+	Field string `gorm:"column:field" json:"field"`
+	Note string `gorm:"column:note" json:"note"`
+
+	Prefix string `gorm:"column:prefix" json:"prefix"`
+	Postfix string `gorm:"column:postfix" json:"postfix"`
+	Loop string `gorm:"column:loop" json:"loop"`
+	Loopfix string `gorm:"column:loopfix" json:"loopfix"`
+	Format string `gorm:"column:format" json:"format"`
+}
+func (*ZdConfig) TableName() string {
+	return constant.TablePrefix + "config"
+}
+
+type ZdInstances struct {
+	Model
+	Title  string `gorm:"column:title" json:"title"`
+	Desc   string `gorm:"column:desc" json:"desc"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Folder string `gorm:"-" json:"folder" yaml:"-"`
+
+	Name  string `gorm:"column:name" json:"name"`
+	Field string `gorm:"column:field" json:"field"`
+	Note string `gorm:"column:note" json:"note"`
+
+	Prefix string `gorm:"column:prefix" json:"prefix"`
+	Postfix string `gorm:"column:postfix" json:"postfix"`
+	Format string `gorm:"column:format" json:"format"`
+
+	Instances []ZdInstancesItem `gorm:"ForeignKey:instancesID" json:"instances"`
+}
+func (*ZdInstances) TableName() string {
+	return constant.TablePrefix + "instances"
+}
+
+type ZdInstancesItem struct {
+	Model
+	Name string `gorm:"column:name" json:"name"`
+	Value string `gorm:"column:value" json:"value"`
+	InstancesID uint `gorm:"column:instancesID" json:"instancesID"`
+	Ord int `gorm:"column:ord" json:"ord"`
+
+	// for tree node only
+	ParentID uint `gorm:"-" json:"parentID"`
+	Children []*ZdInstancesItem `gorm:"-" json:"children"`
+}
+func (*ZdInstancesItem) TableName() string {
+	return constant.TablePrefix + "instancesItem"
 }

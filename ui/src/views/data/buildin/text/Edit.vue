@@ -13,46 +13,13 @@
       <a-form-model ref="editForm" :model="model" :rules="rules">
       <a-row :gutter="colsFull">
         <a-form-model-item label="名称" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.title" />
+          <a-input v-model="model.name" />
         </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="前缀" prop="prefix" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.prefix" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="colsHalf">
-          <a-form-model-item label="后缀" prop="postfix" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.postfix" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-
-      <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="格式" prop="format" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
-            <div class="inline">
-              <a-input v-model="model.format">
-                <a-select slot="addonAfter" default-value="" style="width: 80px">
-                  <a-select-option value="">
-                    函数
-                  </a-select-option>
-                  <a-select-option value=".jp">
-                    md5
-                  </a-select-option>
-                </a-select>
-              </a-input>
-            </div>
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="colsHalf"></a-col>
-      </a-row>
-
-      <a-row :gutter="colsFull">
-        <a-form-model-item label="描述" prop="note" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.note" type="textarea" rows="3" />
+        <a-form-model-item label="描述" prop="desc">
+          <a-input v-model="model.text" type="textarea" rows="3" />
         </a-form-model-item>
       </a-row>
 
@@ -68,10 +35,10 @@
 </template>
 
 <script>
-import {getRanges, saveRanges} from "../../../../api/manage";
+import {getText, saveText} from "../../../../api/manage";
 
 export default {
-  name: 'RangesEdit',
+  name: 'TestEdit',
   data() {
     return {
       colsFull: 24,
@@ -106,8 +73,8 @@ export default {
     loadData () {
       if (!this.id) return
 
-      getRanges(this.id).then(res => {
-        console.log('getRanges', res)
+      getText(this.id).then(res => {
+        console.log('getText', res)
         this.model = res.data
       })
     },
@@ -120,8 +87,8 @@ export default {
           return
         }
 
-        saveRanges(this.model).then(json => {
-          console.log('saveRanges', json)
+        saveText(this.model).then(json => {
+          console.log('saveText', json)
           this.back()
         })
       })

@@ -279,7 +279,11 @@ type Server struct {
 	sectionService *serverService.SectionService
 	referService *serverService.ReferService
 	resService *serverService.ResService
+
 	rangesService *serverService.RangesService
+	instancesService *serverService.InstancesService
+	textService *serverService.TextService
+	excelService *serverService.ExcelService
 }
 
 func Init() (err error) {
@@ -292,14 +296,22 @@ func Init() (err error) {
 	sectionRepo := serverRepo.NewSectionRepo(gormDb)
 	referRepo := serverRepo.NewReferRepo(gormDb)
 	rangesRepo := serverRepo.NewRangesRepo(gormDb)
+	instancesRepo := serverRepo.NewInstancesRepo(gormDb)
+	textRepo := serverRepo.NewTextRepo(gormDb)
+	excelRepo := serverRepo.NewExcelRepo(gormDb)
 
 	defService := serverService.NewDefService(deferRepo, fieldRepo, referRepo)
 	fieldService := serverService.NewFieldService(deferRepo, fieldRepo, referRepo)
 	sectionService := serverService.NewSectionService(fieldRepo, sectionRepo)
 	referService := serverService.NewReferService(fieldRepo, referRepo)
-	rangesService := serverService.NewRangesService(rangesRepo)
 
-	server := NewServer(config, defService, fieldService, sectionService, referService, rangesService)
+	rangesService := serverService.NewRangesService(rangesRepo)
+	instancesService := serverService.NewInstancesService(instancesRepo)
+	textService := serverService.NewTextService(textRepo)
+	excelService := serverService.NewExcelService(excelRepo)
+
+	server := NewServer(config, defService, fieldService, sectionService, referService,
+		rangesService, instancesService, textService, excelService)
 	server.Run()
 
 	return
@@ -425,6 +437,9 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "saveRanges":
 		ranges := serverUtils.ConvertRanges(reqData.Data)
 		ret.Data = s.rangesService.Save(&ranges)
+	case "removeRanges":
+		err = s.rangesService.Remove(reqData.Id)
+
 	case "createResRangesItem":
 		var rangesItem *model.ZdRangesItem
 		rangesId := reqData.DomainId
@@ -442,6 +457,47 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "removeResRangesItem":
 		err = s.rangesService.RemoveItem(reqData.Id)
 		ret.Data = s.rangesService.GetItemTree(reqData.DomainId)
+
+	case "listInstances":
+		ret.Data = s.rangesService.List()
+	case "getInstances":
+		ret.Data = s.rangesService.Get(reqData.Id)
+	case "saveInstances":
+		ranges := serverUtils.ConvertRanges(reqData.Data)
+		ret.Data = s.rangesService.Save(&ranges)
+	case "removeInstances":
+		err = s.rangesService.Remove(reqData.Id)
+
+	case "listExcel":
+		ret.Data = s.rangesService.List()
+	case "getExcel":
+		ret.Data = s.rangesService.Get(reqData.Id)
+	case "saveExcel":
+		ranges := serverUtils.ConvertRanges(reqData.Data)
+		ret.Data = s.rangesService.Save(&ranges)
+	case "removeExcel":
+		err = s.rangesService.Remove(reqData.Id)
+
+	case "listText":
+		ret.Data = s.rangesService.List()
+	case "getText":
+		ret.Data = s.rangesService.Get(reqData.Id)
+	case "saveText":
+		ranges := serverUtils.ConvertRanges(reqData.Data)
+		ret.Data = s.rangesService.Save(&ranges)
+	case "removeText":
+		err = s.rangesService.Remove(reqData.Id)
+
+	case "listConfig":
+		ret.Data = s.rangesService.List()
+	case "getConfig":
+		ret.Data = s.rangesService.Get(reqData.Id)
+	case "saveConfig":
+		ranges := serverUtils.ConvertRanges(reqData.Data)
+		ret.Data = s.rangesService.Save(&ranges)
+	case "removeConfig":
+		err = s.rangesService.Remove(reqData.Id)
+
 	}
 	if err != nil {
 		ret.Code = 0
@@ -451,13 +507,10 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	io.WriteString(writer, string(bytes))
 }
 
-func NewServer(config *serverConfig.Config,
-	defService *serverService.DefService,
-	fieldServer *serverService.FieldService,
-	sectionService *serverService.SectionService,
-	referService *serverService.ReferService,
-	rangesService *serverService.RangesService,
-) *Server {
+func NewServer(config *serverConfig.Config, defService *serverService.DefService,
+		fieldServer *serverService.FieldService, sectionService *serverService.SectionService, referService *serverService.ReferService,
+		rangesService *serverService.RangesService, instancesService *serverService.InstancesService,
+		textService *serverService.TextService, excelService *serverService.ExcelService, ) *Server {
 	return &Server{
 		config:        config,
 		defService: defService,
@@ -465,6 +518,9 @@ func NewServer(config *serverConfig.Config,
 		sectionService: sectionService,
 		referService: referService,
 		rangesService: rangesService,
+		instancesService: instancesService,
+		textService: textService,
+		excelService: excelService,
 	}
 }
 

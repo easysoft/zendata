@@ -207,6 +207,15 @@ export function saveRanges (model) {
     data: data
   })
 }
+export function removeRanges (id) {
+  const data = {'action': 'removeRanges', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
 export function getResRangesItemTree (id) {
   const data = {'action': 'getResRangesItemTree', id: id}
 
@@ -244,6 +253,80 @@ export function saveRangesItem (model) {
   })
 }export function removeResRangesItem (itemId, rangesId) {
   const data = {'action': 'removeResRangesItem', id: itemId, domainId: rangesId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function listText () {
+  const data = {'action': 'listText'}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getText (id) {
+  const data = {'action': 'getText', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveText (model) {
+  const data = {'action': 'saveText', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function removeText (id) {
+  const data = {'action': 'removeText', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function listConfig () {
+  const data = {'action': 'listConfig'}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getConfig (id) {
+  const data = {'action': 'getConfig', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveConfig (model) {
+  const data = {'action': 'saveConfig', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function removeConfig (id) {
+  const data = {'action': 'removeConfig', id: id}
 
   return request({
     url: api.admin,
