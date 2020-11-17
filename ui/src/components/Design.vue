@@ -30,7 +30,7 @@
             <a-menu-item key="addNeighbor" v-if="!isRoot">
               <a-icon type="plus" />创建同级
             </a-menu-item>
-            <a-menu-item key="addChild">
+            <a-menu-item key="addChild" v-if="type=='def'|| (type=='ranges' && isRoot)">
               <a-icon type="plus" />创建子级
             </a-menu-item>
             <a-menu-item key="remove" v-if="!isRoot">
@@ -42,34 +42,43 @@
 
       <div class="right" :style="styl">
         <div v-if="rightVisible">
-          <a-tabs :activeKey="tabKey" @change="onChange" type="card">
-          <a-tab-pane key="info" tab="编辑信息">
-            <div>
-              <field-info-component
-                  ref="infoComp"
-                  :model="fieldModel"
-                  @save="onFieldSave">
-              </field-info-component>
-            </div>
-          </a-tab-pane>
+          <div v-if="type=='def'">
+            <a-tabs :activeKey="tabKey" @change="onChange" type="card">
+            <a-tab-pane key="info" tab="编辑信息">
+              <div>
+                <field-info-component
+                    ref="infoComp"
+                    :model="modelData"
+                    @save="onFieldSave">
+                </field-info-component>
+              </div>
+            </a-tab-pane>
 
-          <a-tab-pane key="range" tab="配置区间" force-render>
-            <div>
-              <field-range-component
-                  :field="fieldModel">
-              </field-range-component>
-            </div>
-          </a-tab-pane>
+            <a-tab-pane key="range" tab="配置区间" force-render>
+              <div>
+                <field-range-component
+                    :field="modelData">
+                </field-range-component>
+              </div>
+            </a-tab-pane>
 
-          <a-tab-pane key="refer" tab="配置引用" force-render>
-            <div>
-              <field-refer-component
-                  :field="fieldModel">
-              </field-refer-component>
-            </div>
-          </a-tab-pane>
+            <a-tab-pane key="refer" tab="配置引用" force-render>
+              <div>
+                <field-refer-component
+                    :field="modelData">
+                </field-refer-component>
+              </div>
+            </a-tab-pane>
 
-        </a-tabs>
+          </a-tabs>
+          </div>
+          <div v-if="type=='ranges'">
+            <res-ranges-item-component
+                ref="rangesItem"
+                :model="modelData"
+                @save="onModelSave">
+            </res-ranges-item-component>
+          </div>
         </div>
       </div>
     </div>
@@ -81,7 +90,7 @@
         :visible="removeVisible"
         okText="确认"
         cancelText="取消"
-        @ok="removeField"
+        @ok="removeNode"
         @cancel="cancelRemove">
       <div>确认删除选中字段及其子字段？</div>
     </a-modal>
@@ -90,17 +99,18 @@
 </template>
 
 <script>
-import { getDefFieldTree, getDefField, createDefField, removeDefField, moveDefField } from "../api/manage";
+import { getDefFieldTree, getDefField, createDefField, removeDefField, moveDefField,
+         getResRangesItemTree, getResRangesItem, createResRangesItem, removeResRangesItem } from "../api/manage";
 import FieldInfoComponent from "./FieldInfo";
 import FieldRangeComponent from "./FieldRange";
 import FieldReferComponent from "./FieldRefer";
+import ResRangesItemComponent from "./RangeItem"
 
 export default {
   name: 'DefDesignComponent',
   components: {
-    FieldInfoComponent,
-    FieldRangeComponent,
-    FieldReferComponent
+    FieldInfoComponent, FieldRangeComponent, FieldReferComponent,
+    ResRangesItemComponent,
   },
   data() {
     const styl = 'height: ' + (document.documentElement.clientHeight - 56) + 'px;'
@@ -110,7 +120,7 @@ export default {
 
       tabKey: 'info',
       rightVisible: true,
-      fieldModel: {},
+      modelData: {},
       time2: 0,
 
       treeData: [],
@@ -118,19 +128,19 @@ export default {
       selectedKeys: [],
       targetModel: 0,
       treeNode: null,
-      fieldMap: {title:'field', key:'id', value: 'id'},
+      fieldMap: {key:'id', value: 'id'},
     };
   },
   props: {
     type: {
-      type: Number,
+      type: String,
       required: true
     },
     visible: {
       type: Boolean,
       required: true
     },
-    model: {
+    modelProp: {
       type: Object,
       default: () => null
     },
@@ -142,16 +152,23 @@ export default {
 
   computed: {
     isRoot () {
-      console.log('isRoot', !this.treeNode.parentID)
-      return !this.treeNode.parentID
+      console.log('treeNode', this.treeNode)
+      return this.treeNode.parentID == 0 || this.treeNode.id == 0
     },
   },
   created () {
     console.log('created')
-    this.loadTreeData()
+
+    if (this.type === 'def') {
+      this.fieldMap.title = 'field'
+    } else if (this.type === 'ranges') {
+      this.fieldMap.title = 'name'
+    }
+
+    this.loadTree()
     this.$watch('time', () => {
       console.log('time changed', this.time)
-      this.loadTreeData()
+      this.loadTree()
     })
   },
   mounted: function () {
@@ -163,32 +180,48 @@ export default {
     window.removeEventListener('click', this.clearMenu);
   },
   methods: {
-    onFieldSave() {
-      console.log('onFieldSave')
-      this.loadTreeData(this.selectedKeys[0])
+    onModelSave() {
+      console.log('onModelSave')
+      this.loadTree(this.selectedKeys[0])
     },
     cancel() {
       console.log('cancel')
       this.$emit('cancel')
     },
 
-    loadTreeData (selectedKey) {
-      if (!this.model.id)
+    loadTree (selectedKey) {
+      if (!this.modelProp.id)
         return
 
-      getDefFieldTree(this.model.id).then(res => {
-        console.log('getDefFieldTree', res)
-        if (res.code != 1) return
-        this.getOpenKeys(res.data)
-        this.treeData = [res.data]
+      if (this.type === 'def') {
+        getDefFieldTree(this.modelProp.id).then(res => {
+          console.log('getDefFieldTree', res)
+          if (res.code != 1) return
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
 
-        if (selectedKey) {
-          this.getField(selectedKey)
-          this.rightVisible = true
-        } else {
-          this.rightVisible = false
-        }
-      })
+          if (selectedKey) {
+            this.getModel(selectedKey)
+            this.rightVisible = true
+          } else {
+            this.rightVisible = false
+          }
+        })
+      } else if (this.type === 'ranges') {
+        getResRangesItemTree(this.modelProp.id).then(res => {
+          console.log('getResRangesItemTree', res)
+          if (res.code != 1) return
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
+
+          if (selectedKey) {
+            this.getModel(selectedKey)
+            this.rightVisible = true
+          } else {
+            this.rightVisible = false
+          }
+        })
+      }
     },
     getOpenKeys (def) {
       if (!def) return
@@ -206,21 +239,36 @@ export default {
         selectedKeys[0] = e.node.eventKey // keep selected
       }
 
-      this.getField(parseInt(selectedKeys[0]))
+      this.getModel(parseInt(selectedKeys[0]))
     },
-    getField(id) {
-      getDefField(id).then(res => {
-        console.log('getDefField', res)
-        this.fieldModel = res.data
-        this.time2 = Date.now() // trigger data refresh
+    getModel(id) {
+      if (this.type === 'def') {
+        getDefField(id).then(res => {
+          console.log('getDefField', res)
+          this.modelData = res.data
+          this.time2 = Date.now() // trigger data refresh
 
-        this.tabKey = 'info'
-        if (this.fieldModel.parentID == 0) {
+          this.tabKey = 'info'
+          if (this.modelData.parentID == 0) {
+            this.rightVisible = false
+          } else {
+            this.rightVisible = true
+          }
+        })
+      } else if (this.type === 'ranges') {
+        if (id == 0) {
           this.rightVisible = false
         } else {
-          this.rightVisible = true
+          getResRangesItem(id).then(res => {
+            console.log('getResRangesItem', res)
+            this.modelData = res.data
+            this.time2 = Date.now() // trigger data refresh
+
+
+            this.rightVisible = true
+          })
         }
-      })
+      }
     },
     menuClick (e) {
       console.log('menuClick', e, this.treeNode)
@@ -229,58 +277,96 @@ export default {
       this.targetModel = this.treeNode.id
       if (e.key === 'addNeighbor') {
         this.addMode = 'neighbor'
-        this.addNeighborField()
+        this.addNeighbor()
       } else if (e.key === 'addChild') {
         this.addMode = 'child'
         this.addChildField()
       }else if (e.key === 'remove') {
         this.removeVisible = true
       }
-      console.log('clearMenu 1')
       this.clearMenu()
     },
-    addNeighborField () {
-      console.log('addNeighborField', this.targetModel)
+    addNeighbor () {
+      console.log('addNeighbor', this.targetModel)
 
-      createDefField(this.targetModel, "neighbor").then(res => {
-        console.log('createDefField', res)
+      if (this.type === 'def') {
+        createDefField(this.targetModel, "neighbor").then(res => {
+          console.log('createDefField', res)
 
-        this.getOpenKeys(res.data)
-        this.treeData = [res.data]
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
 
-        this.selectedKeys = [res.field.id] // select
-        this.fieldModel = res.field
+          this.selectedKeys = [res.model.id] // select
+          this.modelData = res.model
 
-        this.rightVisible = true
-      })
+          this.rightVisible = true
+        })
+      } else if (this.type === 'ranges') {
+        createResRangesItem(this.modelProp.id, "neighbor").then(res => {
+          console.log('createResRangesItem', res)
+
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
+
+          this.selectedKeys = [res.model.id] // select
+          this.modelData = res.model
+
+          this.rightVisible = true
+        })
+      }
     },
     addChildField () {
       console.log('addChildField', this.targetModel)
 
-      createDefField(this.targetModel, "child").then(res => {
-        console.log('createDefField', res)
+      if (this.type === 'def') {
+        createDefField(this.targetModel, "child").then(res => {
+          console.log('createDefField', res)
 
-        this.getOpenKeys(res.data)
-        this.treeData = [res.data]
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
 
-        this.selectedKeys = [res.field.id] // select
-        this.fieldModel = res.field
+          this.selectedKeys = [res.model.id] // select
+          this.modelData = res.model
 
-        this.rightVisible = true
-      })
+          this.rightVisible = true
+        })
+      } else if (this.type === 'ranges') {
+        createResRangesItem(this.modelProp.id, "child").then(res => {
+          console.log('createResRangesItem', res)
+
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
+
+          this.selectedKeys = [res.model.id] // select
+          this.modelData = res.model
+
+          this.rightVisible = true
+        })
+      }
     },
-    removeField () {
-      console.log('removeField', this.targetModel)
+    removeNode () {
+      console.log('removeNode', this.targetModel)
       this.removeVisible = false
+      if (this.type === 'def') {
+        removeDefField(this.targetModel).then(res => {
+          console.log('removeDefField', res)
 
-      removeDefField(this.targetModel).then(res => {
-        console.log('removeDefField', res)
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
 
-        this.getOpenKeys(res.data)
-        this.treeData = [res.data]
+          this.rightVisible = false
+        })
+      } else if (this.type === 'ranges') {
+        removeResRangesItem(this.targetModel, this.modelProp.id).then(res => {
+          console.log('removeResRangesItem', res)
 
-        this.rightVisible = false
-      })
+          this.getOpenKeys(res.data)
+          this.treeData = [res.data]
+
+          this.rightVisible = false
+        })
+      }
+
     },
     cancelRemove (e) {
       e.preventDefault()
@@ -298,8 +384,8 @@ export default {
         this.getOpenKeys(res.data)
         this.treeData = [res.data]
 
-        this.selectedKeys = [res.field.id] // select
-        this.fieldModel = res.field
+        this.selectedKeys = [res.model.id] // select
+        this.modelData = res.model
 
         this.rightVisible = true
       })

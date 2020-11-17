@@ -371,7 +371,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		s.referService.CreateDefault(field.ID)
 
 		ret.Data, err = s.fieldService.GetTree(field.DefID)
-		ret.Field = field
+		ret.Model = field
 	case "saveDefField":
 		field := serverUtils.ConvertField(reqData.Data)
 		err = s.fieldService.Save(&field)
@@ -381,7 +381,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, err = s.fieldService.GetTree(uint(defId))
 	case "moveDefField":
 		var defId int
-		defId, ret.Field, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
+		defId, ret.Model, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
 		ret.Data, err = s.fieldService.GetTree(uint(defId))
 
 	// section
@@ -425,8 +425,24 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "saveRanges":
 		ranges := serverUtils.ConvertRanges(reqData.Data)
 		ret.Data = s.rangesService.Save(&ranges)
-	}
+	case "createResRangesItem":
+		var rangesItem *model.ZdRangesItem
+		rangesId := reqData.DomainId
+		rangesItem, err = s.rangesService.CreateItem(rangesId, reqData.Id, reqData.Mode)
 
+		ret.Data = s.rangesService.GetItemTree(rangesId)
+		ret.Model = rangesItem
+	case "getResRangesItemTree":
+		ret.Data = s.rangesService.GetItemTree(reqData.Id)
+	case "getResRangesItem":
+		ret.Data = s.rangesService.GetItem(reqData.Id)
+	case "saveRangesItem":
+		rangesItem := serverUtils.ConvertRangesItem(reqData.Data)
+		ret.Data = s.rangesService.SaveItem(&rangesItem)
+	case "removeResRangesItem":
+		err = s.rangesService.RemoveItem(reqData.Id)
+		ret.Data = s.rangesService.GetItemTree(reqData.DomainId)
+	}
 	if err != nil {
 		ret.Code = 0
 	}

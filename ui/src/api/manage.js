@@ -207,3 +207,47 @@ export function saveRanges (model) {
     data: data
   })
 }
+export function getResRangesItemTree (id) {
+  const data = {'action': 'getResRangesItemTree', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getResRangesItem (id) {
+  const data = {'action': 'getResRangesItem', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function createResRangesItem (rangesId, mode) {
+  const data = {'action': 'createResRangesItem', domainId: rangesId, mode: mode}
+  console.log(data)
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveRangesItem (model) {
+  const data = {'action': 'saveRangesItem', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}export function removeResRangesItem (itemId, rangesId) {
+  const data = {'action': 'removeResRangesItem', id: itemId, domainId: rangesId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}

@@ -18,18 +18,15 @@ const routes = [
                 path:"data",
                 name: "data",
                 component: ColLayout,
-                redirect: '/data/mine/index',
                 children: [
                     {
                         path: 'mine',
                         name: 'mine',
                         component: BlankLayout,
-                        redirect: '/data/mine/index',
                         children: [
                             {
-                                path: 'mine-list',
-                                alias: "index",
-                                name: 'list',
+                                path: 'list',
+                                name: 'mine-list',
                                 component: () => import('../views/data/mine/List')
                             },
                             {

@@ -44,6 +44,12 @@ func ConvertRanges(data interface{}) (ranges model.ZdRanges) {
 
 	return
 }
+func ConvertRangesItem(data interface{})  (item model.ZdRangesItem) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &item)
+
+	return
+}
 
 func ConvertParams(data interface{}) (mp map[string]string) {
 	bytes, _ := json.Marshal(data)

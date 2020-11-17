@@ -29,7 +29,7 @@
           ref="designPage"
           type="ranges"
           :visible="designVisible"
-          :model="designModel"
+          :modelProp="designModel"
           :time="time"
           @ok="handleDesignOk"
           @cancel="handleDesignCancel" >

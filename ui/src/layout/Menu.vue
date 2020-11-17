@@ -6,7 +6,7 @@
         mode="inline"
         @click="handleClick"
     >
-      <a-menu-item key="mine">
+      <a-menu-item key="mine/list">
         我的数据
       </a-menu-item>
 
@@ -57,12 +57,12 @@ export default {
   methods: {
     handleClick (e) {
       console.log('handleClick', e, this.$route.path, e.key)
-      if (e.key == 'mine' && this.$route.path != '/data/mine/index') {
-        this.$router.push('/data/mine/index');
-      } else {
+      // if (e.key == 'mine' && this.$route.path != '/data/mine/index') {
+      //   this.$router.push('/data/mine/index');
+      // } else {
         const path = '/data/' + e.key
         if (this.$route.path != path) this.$router.push(path);
-      }
+      // }
     },
     titleClick (e) {
       console.log('titleClick', e)

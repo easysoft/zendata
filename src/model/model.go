@@ -120,7 +120,7 @@ type ZdRanges struct {
 	Postfix string `gorm:"column:postfix" json:"postfix"`
 	Format string `gorm:"column:format" json:"format"`
 
-	Ranges []ZdRangesItem `gorm:"ForeignKey:ranges" json:"ranges"`
+	Ranges []ZdRangesItem `gorm:"ForeignKey:rangesID" json:"ranges"`
 }
 func (*ZdRanges) TableName() string {
 	return constant.TablePrefix + "ranges"
@@ -130,6 +130,12 @@ type ZdRangesItem struct {
 	Model
 	Name string `gorm:"column:name" json:"name"`
 	Value string `gorm:"column:value" json:"value"`
+	RangesID uint `gorm:"column:rangesID" json:"rangesID"`
+	Ord int `gorm:"column:ord" json:"ord"`
+
+	ParentID uint `gorm:"-" json:"parentID"` // for tree node
+
+	Children []*ZdRangesItem `gorm:"-" json:"children"`
 }
 func (*ZdRangesItem) TableName() string {
 	return constant.TablePrefix + "rangesItem"

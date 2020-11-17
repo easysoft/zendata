@@ -7,6 +7,7 @@ import (
 type ReqData struct {
 	Action string `json:"action"`
 	Id int  `json:"id"`
+	DomainId int  `json:"domainId"`
 	Mode string `json:"mode"`
 	Data interface{} `json:"data"`
 
@@ -15,11 +16,11 @@ type ReqData struct {
 }
 
 type ResData struct {
-	Code int `json:"code"`
-	Msg string `json:"msg"`
-	Data interface{} `json:"data"`
-	Field interface{} `json:"field"`
-	Res interface{} `json:"res"`
+	Code  int         `json:"code"`
+	Msg   string      `json:"msg"`
+	Data  interface{} `json:"data"`
+	Model interface{} `json:"model"`
+	Res   interface{} `json:"res"`
 }
 
 type Model struct {

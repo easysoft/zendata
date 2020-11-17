@@ -32,7 +32,7 @@
           ref="designPage"
           type="def"
           :visible="designVisible"
-          :model="designModel"
+          :modelProp="designModel"
           :time="time"
           @ok="handleDesignOk"
           @cancel="handleDesignCancel" >
