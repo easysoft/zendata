@@ -122,6 +122,10 @@ export default {
     };
   },
   props: {
+    type: {
+      type: Number,
+      required: true
+    },
     visible: {
       type: Boolean,
       required: true

@@ -249,7 +249,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 }
 
 func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int) (items []interface{}) {
-	// keep root def, since vari.Def will be overwrite by refer yaml file
+	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
 	rootDef := vari.Def
 	defaultDir := vari.DefaultDir
 	configDir := vari.ConfigDir

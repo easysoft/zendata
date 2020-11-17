@@ -2,7 +2,7 @@ package serverService
 
 import "github.com/easysoft/zendata/src/model"
 
-func convertToConfModel(treeNode model.Field, field *model.DefField) {
+func convertToConfModel(treeNode model.ZdField, field *model.DefField) {
 	genField(treeNode, field)
 
 	for _, child := range treeNode.Children {
@@ -29,7 +29,7 @@ func convertToConfModel(treeNode model.Field, field *model.DefField) {
 	return
 }
 
-func genField(treeNode model.Field, field *model.DefField) () {
+func genField(treeNode model.ZdField, field *model.DefField) () {
 	field.Field = treeNode.Field
 	field.Note = treeNode.Note
 

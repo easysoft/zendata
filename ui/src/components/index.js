@@ -1,3 +1,3 @@
-import DefDesignComponent from './DefDesign'
+import DesignComponent from './Design'
 
-export { DefDesignComponent }
+export { DesignComponent }

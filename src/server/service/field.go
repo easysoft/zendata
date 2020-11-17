@@ -11,29 +11,29 @@ type FieldService struct {
 	referRepo *serverRepo.ReferRepo
 }
 
-func (s *FieldService) GetTree(defId uint) (root *model.Field, err error) {
+func (s *FieldService) GetTree(defId uint) (root *model.ZdField, err error) {
 	root, err = s.fieldRepo.GetDefFieldTree(defId)
 	return
 }
 
-func (s *FieldService) Get(fieldId int) (field model.Field, err error) {
+func (s *FieldService) Get(fieldId int) (field model.ZdField, err error) {
 	field, err = s.fieldRepo.Get(uint(fieldId))
 
 	return
 }
 
-func (s *FieldService) Save(field *model.Field) (err error) {
+func (s *FieldService) Save(field *model.ZdField) (err error) {
 	err = s.fieldRepo.Save(field)
 
 	return
 }
-func (s *FieldService) Create(defId, targetId uint, name string, mode string) (field *model.Field, err error) {
-	field = &model.Field{Field: name, DefID: defId}
+func (s *FieldService) Create(defId, targetId uint, name string, mode string) (field *model.ZdField, err error) {
+	field = &model.ZdField{Field: name, DefID: defId}
 	if mode == "root" {
 		field.DefID = defId
 		field.ParentID = 0
 	} else {
-		var target model.Field
+		var target model.ZdField
 
 		target, err = s.fieldRepo.Get(targetId)
 		field.DefID = target.DefID
@@ -59,7 +59,7 @@ func (s *FieldService) Remove(id int) (defId int, err error) {
 	return
 }
 
-func (s *FieldService) Move(srcId, targetId uint, mode string) (defId int, srcField model.Field, err error) {
+func (s *FieldService) Move(srcId, targetId uint, mode string) (defId int, srcField model.ZdField, err error) {
 	srcField, err = s.fieldRepo.Get(srcId)
 	targetField, err := s.fieldRepo.Get(targetId)
 

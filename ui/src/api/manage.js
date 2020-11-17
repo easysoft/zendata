@@ -179,3 +179,31 @@ export function listDefFieldReferField (refer) {
     data: data
   })
 }
+
+export function listRanges () {
+  const data = {'action': 'listRanges'}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getRanges (id) {
+  const data = {'action': 'getRanges', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveRanges (model) {
+  const data = {'action': 'saveRanges', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}

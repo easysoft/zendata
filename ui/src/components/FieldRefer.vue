@@ -171,7 +171,7 @@ export default {
 
     listDefFieldReferType(resType, init) {
       listDefFieldReferType(resType).then(json => {
-        console.log('getDefFieldRefer', json)
+        console.log('listDefFieldReferType', json)
         this.files = json.data
       })
 

@@ -9,31 +9,31 @@ type DefRepo struct {
 	db *gorm.DB
 }
 
-func (r *DefRepo) List() (defs []*model.Def, err error) {
+func (r *DefRepo) List() (defs []*model.ZdDef, err error) {
 	err = r.db.Find(&defs).Error
 	return
 }
 
-func (r *DefRepo) Get(id uint) (def model.Def, err error) {
+func (r *DefRepo) Get(id uint) (def model.ZdDef, err error) {
 	err = r.db.Where("id=?", id).First(&def).Error
 
 	return
 }
 
-func (r *DefRepo) Create(def *model.Def) (err error) {
+func (r *DefRepo) Create(def *model.ZdDef) (err error) {
 	err = r.db.Create(def).Error
 
 	return
 }
 
-func (r *DefRepo) Update(def *model.Def) (err error) {
+func (r *DefRepo) Update(def *model.ZdDef) (err error) {
 	err = r.db.Save(def).Error
 
 	return
 }
 
 func (r *DefRepo) Remove(id uint) (err error) {
-	var def model.Def
+	var def model.ZdDef
 	def.ID = uint(id)
 
 	err = r.db.Delete(&def).Error
@@ -42,12 +42,12 @@ func (r *DefRepo) Remove(id uint) (err error) {
 }
 
 
-func (r *DefRepo) UpdateYaml(def model.Def) (err error) {
-	err = r.db.Model(&model.Def{}).Where("id=?", def.ID).Update("yaml", def.Yaml).Error
+func (r *DefRepo) UpdateYaml(def model.ZdDef) (err error) {
+	err = r.db.Model(&model.ZdDef{}).Where("id=?", def.ID).Update("yaml", def.Yaml).Error
 	return
 }
 
-func (r *DefRepo) GenDef(def model.Def, data *model.DefData) () {
+func (r *DefRepo) GenDef(def model.ZdDef, data *model.DefData) () {
 	data.Title = def.Title
 	data.Desc = def.Desc
 	data.Type = def.Type

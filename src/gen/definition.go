@@ -158,7 +158,7 @@ func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, 
 	}
 
 	path := field.Path
-	//logUtils.Screen(path + " -> " + field.Field)
+	//logUtils.Screen(path + " -> " + field.ZdField)
 	mp[path] = field
 
 	if keys != nil {

@@ -4,11 +4,6 @@ import (
 	"time"
 )
 
-var (
-	CommonPrefix = "zd_"
-	Models = []interface{}{ &Def{}, &Field{}, &Section{}, &Refer{} }
-)
-
 type ReqData struct {
 	Action string `json:"action"`
 	Id int  `json:"id"`

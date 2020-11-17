@@ -3,7 +3,7 @@ desc: RGB、HEX、英文、中文名4种表示形式。
 author: wwccss
 version: 1.0
 
-field: ip
+field: color
 instances:
   - instance: rgb
     note: rgb颜色

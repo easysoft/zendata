@@ -227,7 +227,7 @@ func addZdToPathLinux(home string) {
 }
 
 func isDataInit(db *sql.DB) bool {
-	sql := "select * from " + (&model.Def{}).TableName()
+	sql := "select * from " + (&model.ZdDef{}).TableName()
 	_, err := db.Query(sql)
 
 	if err == nil {

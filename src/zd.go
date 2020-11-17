@@ -279,6 +279,7 @@ type Server struct {
 	sectionService *serverService.SectionService
 	referService *serverService.ReferService
 	resService *serverService.ResService
+	rangesService *serverService.RangesService
 }
 
 func Init() (err error) {
@@ -290,13 +291,15 @@ func Init() (err error) {
 	fieldRepo := serverRepo.NewFieldRepo(gormDb)
 	sectionRepo := serverRepo.NewSectionRepo(gormDb)
 	referRepo := serverRepo.NewReferRepo(gormDb)
+	rangesRepo := serverRepo.NewRangesRepo(gormDb)
 
 	defService := serverService.NewDefService(deferRepo, fieldRepo, referRepo)
 	fieldService := serverService.NewFieldService(deferRepo, fieldRepo, referRepo)
 	sectionService := serverService.NewSectionService(fieldRepo, sectionRepo)
 	referService := serverService.NewReferService(fieldRepo, referRepo)
+	rangesService := serverService.NewRangesService(rangesRepo)
 
-	server := NewServer(config, defService, fieldService, sectionService, referService)
+	server := NewServer(config, defService, fieldService, sectionService, referService, rangesService)
 	server.Run()
 
 	return
@@ -341,7 +344,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listDef":
 		ret.Data = s.defService.List()
 	case "getDef":
-		var def model.Def
+		var def model.ZdDef
 		def, err = s.defService.Get(reqData.Id)
 
 		ret.Data = def
@@ -363,7 +366,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "getDefField":
 		ret.Data, err = s.fieldService.Get(reqData.Id)
 	case "createDefField":
-		var field *model.Field
+		var field *model.ZdField
 		field, err = s.fieldService.Create(0, uint(reqData.Id), "新字段", reqData.Mode)
 		s.referService.CreateDefault(field.ID)
 
@@ -403,7 +406,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 
 	// refer
 	case "getDefFieldRefer":
-		var refer model.Refer
+		var refer model.ZdRefer
 		refer, err = s.referService.Get(uint(reqData.Id))
 		ret.Data = refer
 	case "updateDefFieldRefer":
@@ -414,6 +417,14 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listDefFieldReferField":
 		refer := serverUtils.ConvertResFile(reqData.Data)
 		ret.Data = s.resService.LoadResField(refer)
+
+	case "listRanges":
+		ret.Data = s.rangesService.List()
+	case "getRanges":
+		ret.Data = s.rangesService.Get(reqData.Id)
+	case "saveRanges":
+		ranges := serverUtils.ConvertRanges(reqData.Data)
+		ret.Data = s.rangesService.Save(&ranges)
 	}
 
 	if err != nil {
@@ -429,6 +440,7 @@ func NewServer(config *serverConfig.Config,
 	fieldServer *serverService.FieldService,
 	sectionService *serverService.SectionService,
 	referService *serverService.ReferService,
+	rangesService *serverService.RangesService,
 ) *Server {
 	return &Server{
 		config:        config,
@@ -436,6 +448,7 @@ func NewServer(config *serverConfig.Config,
 		fieldService: fieldServer,
 		sectionService: sectionService,
 		referService: referService,
+		rangesService: rangesService,
 	}
 }
 

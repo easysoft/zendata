@@ -1,16 +1,13 @@
 <template>
   <div>
     <div class="head">
-      <div class="title">测试数据列表</div>
+      <div class="title">序列列表</div>
       <div class="buttons">
         <a-button type="primary" @click="create()">新建</a-button>
       </div>
     </div>
 
-    <a-table :columns="columns" :data-source="defs" rowKey="id">
-      <a slot="name" slot-scope="text">{{ text }}</a>
-
-      <span slot="customTitle">名称</span>
+    <a-table :columns="columns" :data-source="models" rowKey="id">
 
       <span slot="action" slot-scope="record">
         <a @click="edit(record)">编辑</a> |
@@ -21,7 +18,7 @@
             ok-text="是"
             cancel-text="否"
             @confirm="remove(record)"
-          >
+        >
           <a href="#">删除</a>
         </a-popconfirm>
       </span>
@@ -30,7 +27,7 @@
     <div class="full-screen-modal">
       <design-component
           ref="designPage"
-          type="def"
+          type="ranges"
           :visible="designVisible"
           :model="designModel"
           :time="time"
@@ -44,14 +41,17 @@
 
 <script>
 
-import { listDef, removeDef } from "../../../api/manage";
-import { DesignComponent } from '../../../components'
+import {listRanges, removeDef} from "../../../../api/manage";
+import { DesignComponent } from '../../../../components'
 
 const columns = [
   {
+    title: '名称',
     dataIndex: 'title',
-    slots: { name: 'customTitle' },
-    scopedSlots: { customRender: 'title' },
+  },
+  {
+    title: '引用',
+    dataIndex: 'name',
   },
   {
     title: '路径',
@@ -65,13 +65,13 @@ const columns = [
 ];
 
 export default {
-  name: 'Mine',
+  name: 'RangesList',
   components: {
     DesignComponent
   },
   data() {
     return {
-      defs: [],
+      models: [],
       columns,
 
       designVisible: false,
@@ -83,21 +83,23 @@ export default {
 
   },
   created () {
-    console.log('===')
-    listDef().then(res => {
-      console.log('listDefs', res)
-      this.defs = res.data
-    })
+    this.loadData()
   },
   mounted () {
   },
   methods: {
     create() {
-      this.$router.push({path: '/data/mine/edit/0'});
+      this.$router.push({path: '/data/buildin/ranges/edit/0'});
+    },
+    loadData() {
+      listRanges().then(json => {
+        console.log('listRanges', json)
+        this.models = json.data
+      })
     },
     edit(record) {
       console.log(record)
-      this.$router.push({path: `/data/mine/edit/${record.id}`});
+      this.$router.push({path: `/data/buildin/ranges/edit/${record.id}`});
     },
     design(record) {
       this.time = Date.now() // trigger data refresh
@@ -109,12 +111,7 @@ export default {
       console.log(record)
       removeDef(record.id).then(json => {
         console.log('removeDef', json)
-        if (json.code == 1) {
-          listDef().then(res => {
-            console.log('listDefs', res)
-            this.defs = res.data
-          })
-        }
+        this.loadData()
       })
     },
 

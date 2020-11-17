@@ -10,7 +10,7 @@ type SectionService struct {
 	sectionRepo *serverRepo.SectionRepo
 }
 
-func (s *SectionService) List(fieldId uint) (sections []*model.Section, err error) {
+func (s *SectionService) List(fieldId uint) (sections []*model.ZdSection, err error) {
 	sections, err = s.sectionRepo.List(fieldId)
 	return
 }
@@ -18,7 +18,7 @@ func (s *SectionService) List(fieldId uint) (sections []*model.Section, err erro
 func (s *SectionService) Create(fieldId, sectionsId uint) (err error) {
 	preSection, err := s.sectionRepo.Get(sectionsId)
 
-	section := model.Section{Value: "0-9", FieldID: fieldId, Ord: preSection.Ord + 1,
+	section := model.ZdSection{Value: "0-9", FieldID: fieldId, Ord: preSection.Ord + 1,
 		Start: "0", End: "9"}
 	err = s.sectionRepo.Create(&section)
 
@@ -27,7 +27,7 @@ func (s *SectionService) Create(fieldId, sectionsId uint) (err error) {
 	return
 }
 
-func (s *SectionService) Update(section *model.Section) (err error) {
+func (s *SectionService) Update(section *model.ZdSection) (err error) {
 	err = s.sectionRepo.Update(section)
 	s.fieldRepo.SetIsRange(section.FieldID, true)
 	return

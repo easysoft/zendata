@@ -160,14 +160,9 @@ export default {
   },
   created () {
     console.log('created')
-    // this.loadData()
-    // this.$watch('time', () => {
-    //   console.log('time changed', this.time)
-    //   this.loadData()
-    // })
   },
   mounted () {
-    console.log('mounted1')
+    console.log('mounted')
   },
   methods: {
     save() {
@@ -205,10 +200,4 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .tips {
-    a {
-      margin-left: -100px;
-      line-height: 40px;
-    }
-  }
 </style>

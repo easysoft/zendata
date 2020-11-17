@@ -10,23 +10,23 @@ type ReferRepo struct {
 }
 
 func (r *ReferRepo) CreateDefault(fieldId uint) (err error) {
-	refer := &model.Refer{FieldID: fieldId}
+	refer := &model.ZdRefer{FieldID: fieldId}
 	err = r.db.Create(&refer).Error
 
 	return
 }
 
-func (r *ReferRepo) Create(refer *model.Refer) (err error) {
+func (r *ReferRepo) Create(refer *model.ZdRefer) (err error) {
 	err = r.db.Create(&refer).Error
 	return
 }
 
-func (r *ReferRepo) Get(fieldId uint) (refer model.Refer, err error) {
+func (r *ReferRepo) Get(fieldId uint) (refer model.ZdRefer, err error) {
 	err = r.db.Where("fieldID=?", fieldId).First(&refer).Error
 	return
 }
 
-func (r *ReferRepo) Save(ref *model.Refer) (err error) {
+func (r *ReferRepo) Save(ref *model.ZdRefer) (err error) {
 	err = r.db.Save(ref).Error
 	return
 }

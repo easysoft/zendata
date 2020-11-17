@@ -11,18 +11,18 @@ type ReferService struct {
 }
 
 func (s *ReferService) CreateDefault(fieldId uint) (err error) {
-	refer := &model.Refer{FieldID: fieldId}
+	refer := &model.ZdRefer{FieldID: fieldId}
 	err = s.referRepo.Create(refer)
 
 	return
 }
 
-func (s *ReferService) Get(fieldId uint) (refer model.Refer, err error) {
+func (s *ReferService) Get(fieldId uint) (refer model.ZdRefer, err error) {
 	refer, err = s.referRepo.Get(fieldId)
 	return
 }
 
-func (s *ReferService) Update(ref *model.Refer) (err error) {
+func (s *ReferService) Update(ref *model.ZdRefer) (err error) {
 	err = s.referRepo.Save(ref)
 
 	s.fieldRepo.SetIsRange(ref.FieldID, false)

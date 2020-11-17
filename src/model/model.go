@@ -4,7 +4,12 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 )
 
-type Def struct {
+var (
+	CommonPrefix = "zd_"
+	Models = []interface{}{ &ZdDef{}, &ZdField{}, &ZdSection{}, &ZdRefer{}, &ZdRanges{}, &ZdRangesItem{} }
+)
+
+type ZdDef struct {
 	Model
 	Title  string `gorm:"column:title" json:"title"`
 	Path   string `gorm:"column:path" json:"path" yaml:"-"`
@@ -13,11 +18,11 @@ type Def struct {
 	Yaml   string `gorm:"yaml" json:"yaml"`
 	Folder string `gorm:"-" json:"folder" yaml:"-"`
 }
-func (*Def) TableName() string {
+func (*ZdDef) TableName() string {
 	return constant.TablePrefix + "def"
 }
 
-type Field struct {
+type ZdField struct {
 	Model
 	DefID uint `gorm:"column:defID" json:"defID"`
 	ParentID uint `gorm:"column:parentID" json:"parentID"`
@@ -49,21 +54,21 @@ type Field struct {
 
 	Ord int `gorm:"column:ord;default:1" json:"ord"`
 
-	Children []*Field `gorm:"-" json:"children"`
-	Froms []*Field `gorm:"-" json:"froms"`
+	Children []*ZdField `gorm:"-" json:"children"`
+	Froms []*ZdField    `gorm:"-" json:"froms"`
 
 	// for range edit
-	IsRange bool `gorm:"column:isRange;default:true" json:"isRange"`
-	Sections []Section `gorm:"ForeignKey:fieldID" json:"sections"`
+	IsRange bool         `gorm:"column:isRange;default:true" json:"isRange"`
+	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections"`
 
 	// for refer edit
-	Refer Refer `gorm:"ForeignKey:fieldID" json:"refer"`
+	Refer ZdRefer `gorm:"ForeignKey:fieldID" json:"refer"`
 }
-func (*Field) TableName() string {
+func (*ZdField) TableName() string {
 	return constant.TablePrefix + "field"
 }
 
-type Refer struct {
+type ZdRefer struct {
 	Model
 	FieldID uint   `gorm:"column:fieldID" json:"fieldID"`
 	Type    string `gorm:"column:type" json:"type"`
@@ -73,11 +78,11 @@ type Refer struct {
 	Count int    `gorm:"column:count" json:"count"`
 	HasTitle bool `gorm:"column:hasTitle" json:"hasTitle"`
 }
-func (*Refer) TableName() string {
+func (*ZdRefer) TableName() string {
 	return constant.TablePrefix + "refer"
 }
 
-type Section struct {
+type ZdSection struct {
 	Model
 	FieldID uint   `gorm:"column:fieldID" json:"fieldID"`
 	Type    string `gorm:"column:type;default:scope" json:"type"`
@@ -94,6 +99,38 @@ type Section struct {
 	// for arr and const
 	Text string `gorm:"-" json:"-"`
 }
-func (*Section) TableName() string {
+func (*ZdSection) TableName() string {
 	return constant.TablePrefix + "section"
+}
+
+type ZdRanges struct {
+	Model
+	Title  string `gorm:"column:title" json:"title"`
+	Desc   string `gorm:"column:desc" json:"desc"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Folder string `gorm:"-" json:"folder" yaml:"-"`
+
+	Name  string `gorm:"column:name" json:"name"`
+	Field string `gorm:"column:field" json:"field"`
+	Note string `gorm:"column:note" json:"note"`
+
+	Prefix string `gorm:"column:prefix" json:"prefix"`
+	Postfix string `gorm:"column:postfix" json:"postfix"`
+	Format string `gorm:"column:format" json:"format"`
+
+	Ranges []ZdRangesItem `gorm:"ForeignKey:ranges" json:"ranges"`
+}
+func (*ZdRanges) TableName() string {
+	return constant.TablePrefix + "ranges"
+}
+
+type ZdRangesItem struct {
+	Model
+	Name string `gorm:"column:name" json:"name"`
+	Value string `gorm:"column:value" json:"value"`
+}
+func (*ZdRangesItem) TableName() string {
+	return constant.TablePrefix + "rangesItem"
 }

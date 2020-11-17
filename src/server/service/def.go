@@ -16,19 +16,19 @@ type DefService struct {
 	referRepo *serverRepo.ReferRepo
 }
 
-func (s *DefService) List() (defs []*model.Def) {
+func (s *DefService) List() (defs []*model.ZdDef) {
 	defs, _ = s.defRepo.List()
 	return
 }
 
-func (s *DefService) Get(id int) (def model.Def, err error) {
+func (s *DefService) Get(id int) (def model.ZdDef, err error) {
 	def, _ = s.defRepo.Get(uint(id))
 	def.Folder = s.getFolder(def.Path)
 
 	return
 }
 
-func (s *DefService) Create(def *model.Def) (err error) {
+func (s *DefService) Create(def *model.ZdDef) (err error) {
 	def.Folder = s.dealWithPathSepRight(def.Folder)
 
 	def.Path = def.Folder + def.Title
@@ -44,13 +44,13 @@ func (s *DefService) Create(def *model.Def) (err error) {
 	return
 }
 
-func (s *DefService) Update(def *model.Def) (err error) {
+func (s *DefService) Update(def *model.ZdDef) (err error) {
 	def.Folder = s.dealWithPathSepRight(def.Folder)
 
 	def.Path = def.Folder + def.Title
 	def.Path = s.addExt(def.Path)
 
-	var oldDef model.Def
+	var oldDef model.ZdDef
 	oldDef, err = s.defRepo.Get(def.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
@@ -67,7 +67,7 @@ func (s *DefService) Update(def *model.Def) (err error) {
 }
 
 func (s *DefService) Remove(id int) (err error) {
-	var oldDef model.Def
+	var oldDef model.ZdDef
 	oldDef, err = s.defRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
@@ -75,14 +75,14 @@ func (s *DefService) Remove(id int) (err error) {
 
 	fileUtils.RemoveExist(oldDef.Path)
 
-	var def model.Def
+	var def model.ZdDef
 	def.ID = uint(id)
 	err = s.defRepo.Remove(uint(id))
 	return
 }
 
 func (s *DefService) UpdateYaml(defId uint) (err error) {
-	var def model.Def
+	var def model.ZdDef
 	def, err = s.Get(int(defId))
 
 	s.dataToYaml(&def)
@@ -91,7 +91,7 @@ func (s *DefService) UpdateYaml(defId uint) (err error) {
 	return
 }
 
-func (s *DefService) dataToYaml(def *model.Def) (str string) {
+func (s *DefService) dataToYaml(def *model.ZdDef) (str string) {
 	root, err := s.fieldRepo.GetDefFieldTree(def.ID)
 	if err != nil {
 		return
