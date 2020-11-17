@@ -58,7 +58,7 @@ const routes = [
                                     },
                                 ],
                             },
-/*                            {
+ /*                           {
                                 path: 'instances',
                                 name: 'instances',
                                 component: BlankLayout,
@@ -75,6 +75,19 @@ const routes = [
                                     },
                                 ],
                             },
+                            {
+                                path: 'excel',
+                                name: 'excel',
+                                component: BlankLayout,
+                                children: [
+                                    {
+                                        path: 'list',
+                                        alias: "index",
+                                        name: 'excel-list',
+                                        component: () => import('../views/data/buildin/excel/List')
+                                    },
+                                ],
+                            },*/
                             {
                                 path: 'config',
                                 name: 'config',
@@ -109,19 +122,6 @@ const routes = [
                                     },
                                 ],
                             },
-                            {
-                                path: 'excel',
-                                name: 'excel',
-                                component: BlankLayout,
-                                children: [
-                                    {
-                                        path: 'list',
-                                        alias: "index",
-                                        name: 'excel-list',
-                                        component: () => import('../views/data/buildin/excel/List')
-                                    },
-                                ],
-                            },*/
                         ],
                     }
                 ]

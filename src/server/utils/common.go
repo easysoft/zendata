@@ -51,6 +51,31 @@ func ConvertRangesItem(data interface{})  (item model.ZdRangesItem) {
 	return
 }
 
+func ConvertExcel(data interface{}) (ranges model.ZdExcel) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &ranges)
+
+	return
+}
+func ConvertInstances(data interface{}) (ranges model.ZdInstances) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &ranges)
+
+	return
+}
+func ConvertConfig(data interface{}) (ranges model.ZdConfig) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &ranges)
+
+	return
+}
+func ConvertText(data interface{}) (ranges model.ZdText) {
+	bytes, _ := json.Marshal(data)
+	json.Unmarshal(bytes, &ranges)
+
+	return
+}
+
 func ConvertParams(data interface{}) (mp map[string]string) {
 	bytes, _ := json.Marshal(data)
 	json.Unmarshal(bytes, &mp)

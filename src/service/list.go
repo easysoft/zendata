@@ -36,12 +36,15 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 			pth := item.Path
 			fileExt := path.Ext(pth)
 			name := PathToName(pth, key)
+			isArticleFiles := false
 			var title, desc, tp string
 
 			if key == constant.ResDirData { // data dir contains excel
 				title, desc, tp = ReadExcelInfo(pth)
 			} else if key == constant.ResDirYaml || key == constant.ResDirUsers {
-				if fileExt == ".txt" {
+				isArticleFiles = strings.Contains(pth, fmt.Sprintf("yaml%sarticle", constant.PthSep))
+
+				if fileExt == ".txt" { // ignore packaged article text file
 					title, desc, tp = ReadTextInfo(pth, key)
 				} else {
 					title, desc, tp = ReadYamlInfo(pth)
@@ -73,7 +76,7 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 				}
 			}
 
-			if resType == "" || resType == item.ResType {
+			if !isArticleFiles && (resType == "" || resType == item.ResType) {
 				arr = append(arr, item)
 			}
 		}

@@ -284,6 +284,7 @@ type Server struct {
 	instancesService *serverService.InstancesService
 	textService *serverService.TextService
 	excelService *serverService.ExcelService
+	configService *serverService.ConfigService
 }
 
 func Init() (err error) {
@@ -299,6 +300,7 @@ func Init() (err error) {
 	instancesRepo := serverRepo.NewInstancesRepo(gormDb)
 	textRepo := serverRepo.NewTextRepo(gormDb)
 	excelRepo := serverRepo.NewExcelRepo(gormDb)
+	configRepo := serverRepo.NewConfigRepo(gormDb)
 
 	defService := serverService.NewDefService(deferRepo, fieldRepo, referRepo)
 	fieldService := serverService.NewFieldService(deferRepo, fieldRepo, referRepo)
@@ -309,9 +311,10 @@ func Init() (err error) {
 	instancesService := serverService.NewInstancesService(instancesRepo)
 	textService := serverService.NewTextService(textRepo)
 	excelService := serverService.NewExcelService(excelRepo)
+	configService := serverService.NewConfigService(configRepo)
 
 	server := NewServer(config, defService, fieldService, sectionService, referService,
-		rangesService, instancesService, textService, excelService)
+		rangesService, instancesService, textService, excelService, configService)
 	server.Run()
 
 	return
@@ -459,44 +462,44 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.rangesService.GetItemTree(reqData.DomainId)
 
 	case "listInstances":
-		ret.Data = s.rangesService.List()
+		ret.Data = s.instancesService.List()
 	case "getInstances":
-		ret.Data = s.rangesService.Get(reqData.Id)
+		ret.Data = s.instancesService.Get(reqData.Id)
 	case "saveInstances":
-		ranges := serverUtils.ConvertRanges(reqData.Data)
-		ret.Data = s.rangesService.Save(&ranges)
+		ranges := serverUtils.ConvertInstances(reqData.Data)
+		ret.Data = s.instancesService.Save(&ranges)
 	case "removeInstances":
-		err = s.rangesService.Remove(reqData.Id)
+		err = s.instancesService.Remove(reqData.Id)
 
 	case "listExcel":
-		ret.Data = s.rangesService.List()
+		ret.Data = s.excelService.List()
 	case "getExcel":
-		ret.Data = s.rangesService.Get(reqData.Id)
+		ret.Data = s.excelService.Get(reqData.Id)
 	case "saveExcel":
-		ranges := serverUtils.ConvertRanges(reqData.Data)
-		ret.Data = s.rangesService.Save(&ranges)
+		ranges := serverUtils.ConvertExcel(reqData.Data)
+		ret.Data = s.excelService.Save(&ranges)
 	case "removeExcel":
-		err = s.rangesService.Remove(reqData.Id)
+		err = s.excelService.Remove(reqData.Id)
 
 	case "listText":
-		ret.Data = s.rangesService.List()
+		ret.Data = s.textService.List()
 	case "getText":
-		ret.Data = s.rangesService.Get(reqData.Id)
+		ret.Data = s.textService.Get(reqData.Id)
 	case "saveText":
-		ranges := serverUtils.ConvertRanges(reqData.Data)
-		ret.Data = s.rangesService.Save(&ranges)
+		ranges := serverUtils.ConvertText(reqData.Data)
+		ret.Data = s.textService.Save(&ranges)
 	case "removeText":
-		err = s.rangesService.Remove(reqData.Id)
+		err = s.textService.Remove(reqData.Id)
 
 	case "listConfig":
-		ret.Data = s.rangesService.List()
+		ret.Data = s.configService.List()
 	case "getConfig":
-		ret.Data = s.rangesService.Get(reqData.Id)
+		ret.Data = s.configService.Get(reqData.Id)
 	case "saveConfig":
-		ranges := serverUtils.ConvertRanges(reqData.Data)
-		ret.Data = s.rangesService.Save(&ranges)
+		ranges := serverUtils.ConvertConfig(reqData.Data)
+		ret.Data = s.configService.Save(&ranges)
 	case "removeConfig":
-		err = s.rangesService.Remove(reqData.Id)
+		err = s.configService.Remove(reqData.Id)
 
 	}
 	if err != nil {
@@ -507,10 +510,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	io.WriteString(writer, string(bytes))
 }
 
-func NewServer(config *serverConfig.Config, defService *serverService.DefService,
-		fieldServer *serverService.FieldService, sectionService *serverService.SectionService, referService *serverService.ReferService,
-		rangesService *serverService.RangesService, instancesService *serverService.InstancesService,
-		textService *serverService.TextService, excelService *serverService.ExcelService, ) *Server {
+func NewServer(config *serverConfig.Config, defService *serverService.DefService, fieldServer *serverService.FieldService, sectionService *serverService.SectionService, referService *serverService.ReferService, rangesService *serverService.RangesService, instancesService *serverService.InstancesService, textService *serverService.TextService, excelService *serverService.ExcelService, configService *serverService.ConfigService, ) *Server {
 	return &Server{
 		config:        config,
 		defService: defService,
@@ -521,6 +521,7 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 		instancesService: instancesService,
 		textService: textService,
 		excelService: excelService,
+		configService: configService,
 	}
 }
 

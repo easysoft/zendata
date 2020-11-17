@@ -29,6 +29,7 @@ const errorHandler = error => {
 
 // request interceptor
 request.interceptors.request.use(config => {
+  console.log('===Axios Request===', config.url, config.data);
   return config
 }, errorHandler)
 
