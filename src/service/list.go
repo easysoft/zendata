@@ -73,8 +73,7 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 				}
 			}
 
-			if resType == "" || resType == item.ResType ||
-				(resType == "yaml" && fileExt == ".yaml"){
+			if resType == "" || resType == item.ResType {
 				arr = append(arr, item)
 			}
 		}
@@ -236,6 +235,8 @@ func GetYamlResType(def model.DefInfo) string {
 		return constant.ResTypeRanges
 	} else if def.Instances != nil {
 		return constant.ResTypeInstances
+	} else if def.Fields != nil {
+		return constant.ResTypeYaml
 	}
 
 	return ""

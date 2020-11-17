@@ -71,6 +71,7 @@ var (
 	ResTypeConfig    = "config"
 	ResTypeRanges    = "ranges"
 	ResTypeInstances = "instances"
+	ResTypeYaml = "yaml"
 	ResTypeExcel     = "excel"
 	ResTypeText      = "text"
 	ResTypes         = []string{ResTypeConfig, ResTypeRanges, ResTypeInstances, ResTypeExcel, ResTypeText}

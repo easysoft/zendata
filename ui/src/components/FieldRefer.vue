@@ -136,7 +136,7 @@ export default {
     },
     onReferChanged(value) {
       console.log("onReferChanged")
-      this.refer.file = value
+      this.refer.file = value.split('-')[0]
 
       if (this.refer.type != 'yaml' && this.refer.type != 'text') {
         this.listDefFieldReferField()

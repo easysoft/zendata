@@ -100,6 +100,7 @@ type DefInfo struct {
 	Title string   `yaml:"title"`
 	Desc string  `yaml:"desc"`
 
+	Fields interface{}  `yaml:"fields,omitempty"` // is yaml
 	Range string  `yaml:"range,omitempty"` // is config
 	Ranges interface{}  `yaml:"ranges,omitempty"` // is ranges
 	Instances interface{}  `yaml:"instances,omitempty"` // is instances

@@ -1,0 +1,18 @@
+title: YAML类型
+desc:
+author:
+version: 1.0
+
+fields:
+  - field: t1
+    range: a-z
+    postfix: "\t"
+
+  - field: WC_SEX
+    range: sex.txt
+    #rand: true
+    postfix: "\t"
+
+  - field: t2
+    range: 1-9
+    postfix: "\t"

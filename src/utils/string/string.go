@@ -66,6 +66,10 @@ func BoolToPass(b bool) string {
 	}
 }
 
+func FindInArrBool(str string, arr []string) bool {
+	found, _ := FindInArr(str, arr)
+	return found
+}
 func FindInArr(str string, arr []string) (bool,int) {
 	for index, s := range arr {
 		if str == s {
