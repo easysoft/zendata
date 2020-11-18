@@ -6,6 +6,8 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"gopkg.in/yaml.v3"
+	"io/ioutil"
 )
 
 type InstancesService struct {
@@ -56,7 +58,7 @@ func (s *InstancesService) GetItemTree(rangesId int) (root model.ZdInstancesItem
 	root.Field = "实例"
 	for _, item := range items {
 		item.ParentID = root.ID
-		root.Children = append(root.Children, item)
+		root.Fields = append(root.Fields, item)
 	}
 
 	return
@@ -91,14 +93,37 @@ func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.
 		names = append(names, item.Path)
 	}
 
-	for _, item := range instances {
-		if !stringUtils.FindInArrBool(item.Path, names) {
-			instances := model.ZdInstances{Title: item.Title, Name: item.Name, Desc: item.Desc, Path: item.Path}
-			s.instancesRepo.Save(&instances)
+	for _, inst := range instances {
+		if !stringUtils.FindInArrBool(inst.Path, names) {
+			//if strings.Contains(inst.Path, "aaa") {
+				content, _ := ioutil.ReadFile(inst.Path)
+				yamlContent := stringUtils.ReplaceSpecialChars(content)
+				instPo := model.ZdInstances{}
+				err = yaml.Unmarshal(yamlContent, &instPo)
+				instPo.Title = inst.Title
+				instPo.Name = inst.Name
+				instPo.Desc = inst.Desc
+				instPo.Path = inst.Path
+
+				s.instancesRepo.Save(&instPo)
+
+				for _, item := range instPo.Instances {
+					s.saveItemToDB(&item, 0, instPo.ID)
+				}
+			//}
 		}
 	}
 
 	return
+}
+func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, parentID, instancesID uint) {
+	item.InstancesID = instancesID
+	item.ParentID = parentID
+	s.instancesRepo.SaveItem(item)
+
+	for _, child := range item.Fields {
+		s.saveItemToDB(child, item.ID, instancesID)
+	}
 }
 
 func NewInstancesService(instancesRepo *serverRepo.InstancesRepo, referRepo *serverRepo.ReferRepo) *InstancesService {

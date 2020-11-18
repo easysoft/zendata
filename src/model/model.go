@@ -197,9 +197,9 @@ type ZdInstancesItem struct {
 	Where	string `gorm:"column:whereCol" json:"whereCol"`
 	Limit	int `gorm:"column:limitCol" json:"limitCol"`
 
-	Ord int `gorm:"column:ord;default:1" json:"ord"`
-	Children []*ZdInstancesItem `gorm:"-" json:"children"`
-	Froms []*ZdInstancesItem    `gorm:"-" json:"froms"`
+	Ord    int                `gorm:"column:ord;default:1" json:"ord"`
+	Fields []*ZdInstancesItem `gorm:"-" json:"fields"`
+	Froms  []*ZdInstancesItem `gorm:"-" json:"froms"`
 
 	// for range edit
 	IsRange bool         `gorm:"column:isRange;default:true" json:"isRange"`
