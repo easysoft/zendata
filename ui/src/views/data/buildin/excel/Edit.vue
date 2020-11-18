@@ -11,22 +11,16 @@
 
     <div>
       <a-form-model ref="editForm" :model="model" :rules="rules">
-      <a-row :gutter="colsFull">
-        <a-form-model-item label="名称" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.title" />
-        </a-form-model-item>
-      </a-row>
-      <a-row :gutter="colsFull">
-        <a-form-model-item label="引用" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          {{model.name}}
-        </a-form-model-item>
-      </a-row>
-
-      <a-row :gutter="colsFull">
-        <a-form-model-item label="内容" prop="content" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.content" type="textarea" rows="3" />
-        </a-form-model-item>
-      </a-row>
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="名称" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-input v-model="model.title" />
+          </a-form-model-item>
+        </a-row>
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="引用" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            {{model.name}}
+          </a-form-model-item>
+        </a-row>
 
       <a-row :gutter="colsFull">
         <a-form-model-item class="center">
@@ -40,7 +34,7 @@
 </template>
 
 <script>
-import {getText, saveText} from "../../../../api/manage";
+import {getExcel, saveText} from "../../../../api/manage";
 
 export default {
   name: 'TestEdit',
@@ -78,7 +72,7 @@ export default {
     loadData () {
       if (!this.id) return
 
-      getText(this.id).then(res => {
+      getExcel(this.id).then(res => {
         console.log('getText', res)
         this.model = res.data
       })
@@ -103,7 +97,7 @@ export default {
       this.$refs.editForm.reset()
     },
     back() {
-      this.$router.push({path: '/data/buildin/text/list'});
+      this.$router.push({path: '/data/buildin/excel/list'});
     },
   }
 }

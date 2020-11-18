@@ -334,3 +334,77 @@ export function removeConfig (id) {
     data: data
   })
 }
+
+export function listExcel () {
+  const data = {'action': 'listExcel'}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getExcel (id) {
+  const data = {'action': 'getExcel', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveExcel (model) {
+  const data = {'action': 'saveExcel', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function removeExcel (id) {
+  const data = {'action': 'removeExcel', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function listInstances () {
+  const data = {'action': 'listInstances'}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getInstances (id) {
+  const data = {'action': 'getInstances', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveInstances (model) {
+  const data = {'action': 'saveInstances', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function removeInstances (id) {
+  const data = {'action': 'removeInstances', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}

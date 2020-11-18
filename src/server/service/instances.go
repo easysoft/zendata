@@ -55,7 +55,7 @@ func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.
 
 	for _, item := range instances {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			instances := model.ZdInstances{Path: item.Path, Name: item.Name, Title: item.Title, Desc: item.Desc, Field: item.Title, Note: item.Desc}
+			instances := model.ZdInstances{Title: item.Title, Name: item.Name, Desc: item.Desc, Path: item.Path}
 			s.instancesRepo.Save(&instances)
 		}
 	}

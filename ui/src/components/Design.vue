@@ -49,7 +49,7 @@
                 <field-info-component
                     ref="infoComp"
                     :model="modelData"
-                    @save="onFieldSave">
+                    @save="onModelSave">
                 </field-info-component>
               </div>
             </a-tab-pane>

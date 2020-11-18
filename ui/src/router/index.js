@@ -12,7 +12,7 @@ const routes = [
         path:"/",
         name: "",
         component: MainLayout,
-        redirect: '/data/mine/index',
+        redirect: '/data/mine/list',
         children: [
             {
                 path:"data",
@@ -58,7 +58,7 @@ const routes = [
                                     },
                                 ],
                             },
- /*                           {
+                            {
                                 path: 'instances',
                                 name: 'instances',
                                 component: BlankLayout,
@@ -69,7 +69,7 @@ const routes = [
                                         component: () => import('../views/data/buildin/instances/List')
                                     },
                                     {
-                                        path: 'edit',
+                                        path: 'edit/:id',
                                         name: 'instances-edit',
                                         component: () => import('../views/data/buildin/instances/Edit')
                                     },
@@ -86,8 +86,13 @@ const routes = [
                                         name: 'excel-list',
                                         component: () => import('../views/data/buildin/excel/List')
                                     },
+                                    {
+                                        path: 'excel/:id',
+                                        name: 'excel-edit',
+                                        component: () => import('../views/data/buildin/excel/Edit')
+                                    },
                                 ],
-                            },*/
+                            },
                             {
                                 path: 'config',
                                 name: 'config',
@@ -99,7 +104,7 @@ const routes = [
                                         component: () => import('../views/data/buildin/config/List')
                                     },
                                     {
-                                        path: 'edit',
+                                        path: 'edit/:id',
                                         name: 'config-edit',
                                         component: () => import('../views/data/buildin/config/Edit')
                                     },
@@ -116,7 +121,7 @@ const routes = [
                                         component: () => import('../views/data/buildin/text/List')
                                     },
                                     {
-                                        path: 'edit',
+                                        path: 'edit/:id',
                                         name: 'text-edit',
                                         component: () => import('../views/data/buildin/text/Edit')
                                     },

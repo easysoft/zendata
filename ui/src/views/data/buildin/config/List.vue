@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     create() {
-      this.$router.push({path: '/data/buildin/text/edit/0'});
+      this.$router.push({path: '/data/buildin/config/edit/0'});
     },
     loadData() {
       listConfig().then(json => {
@@ -85,7 +85,7 @@ export default {
     },
     edit(record) {
       console.log(record)
-      this.$router.push({path: `/data/buildin/text/edit/${record.id}`});
+      this.$router.push({path: `/data/buildin/config/edit/${record.id}`});
     },
     remove(record) {
       console.log(record)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head">
-      <div class="title">文本列表</div>
+      <div class="title">表格列表</div>
       <div class="buttons">
         <a-button type="primary" @click="create()">新建</a-button>
       </div>
@@ -28,7 +28,7 @@
 
 <script>
 
-import {listText, removeText} from "../../../../api/manage";
+import {listExcel, removeExcel} from "../../../../api/manage";
 
 const columns = [
   {
@@ -51,7 +51,7 @@ const columns = [
 ];
 
 export default {
-  name: 'TextList',
+  name: 'ExcelList',
   components: {
   },
   data() {
@@ -74,22 +74,22 @@ export default {
   },
   methods: {
     create() {
-      this.$router.push({path: '/data/buildin/text/edit/0'});
+      this.$router.push({path: '/data/buildin/excel/edit/0'});
     },
     loadData() {
-      listText().then(json => {
-        console.log('listText', json)
+      listExcel().then(json => {
+        console.log('listExcel', json)
         this.models = json.data
       })
     },
     edit(record) {
       console.log(record)
-      this.$router.push({path: `/data/buildin/text/edit/${record.id}`});
+      this.$router.push({path: `/data/buildin/excel/edit/${record.id}`});
     },
     remove(record) {
       console.log(record)
-      removeText(record.id).then(json => {
-        console.log('removeText', json)
+      removeExcel(record.id).then(json => {
+        console.log('removeExcel', json)
         this.loadData()
       })
     },

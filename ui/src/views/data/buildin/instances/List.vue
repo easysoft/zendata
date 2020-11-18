@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head">
-      <div class="title">文本列表</div>
+      <div class="title">实例列表</div>
       <div class="buttons">
         <a-button type="primary" @click="create()">新建</a-button>
       </div>
@@ -11,6 +11,7 @@
 
       <span slot="action" slot-scope="record">
         <a @click="edit(record)">编辑</a> |
+        <a @click="design(record)">设计</a> |
 
         <a-popconfirm
             title="确认删除？"
@@ -23,12 +24,25 @@
       </span>
     </a-table>
 
+    <div class="full-screen-modal">
+      <design-component
+          ref="designPage"
+          type="instances"
+          :visible="designVisible"
+          :modelProp="designModel"
+          :time="time"
+          @ok="handleDesignOk"
+          @cancel="handleDesignCancel" >
+      </design-component>
+    </div>
+
   </div>
 </template>
 
 <script>
 
-import {listText, removeText} from "../../../../api/manage";
+import {listInstances, removeInstances} from "../../../../api/manage";
+import { DesignComponent } from '../../../../components'
 
 const columns = [
   {
@@ -51,8 +65,9 @@ const columns = [
 ];
 
 export default {
-  name: 'TextList',
+  name: 'InstanceList',
   components: {
+    DesignComponent
   },
   data() {
     return {
@@ -74,22 +89,28 @@ export default {
   },
   methods: {
     create() {
-      this.$router.push({path: '/data/buildin/text/edit/0'});
+      this.$router.push({path: '/data/buildin/instances/edit/0'});
     },
     loadData() {
-      listText().then(json => {
-        console.log('listText', json)
+      listInstances().then(json => {
+        console.log('listInstances', json)
         this.models = json.data
       })
     },
     edit(record) {
       console.log(record)
-      this.$router.push({path: `/data/buildin/text/edit/${record.id}`});
+      this.$router.push({path: `/data/buildin/instances/edit/${record.id}`});
+    },
+    design(record) {
+      this.time = Date.now() // trigger data refresh
+      console.log(record)
+      this.designVisible = true
+      this.designModel = record
     },
     remove(record) {
       console.log(record)
-      removeText(record.id).then(json => {
-        console.log('removeText', json)
+      removeInstances(record.id).then(json => {
+        console.log('removeInstances', json)
         this.loadData()
       })
     },

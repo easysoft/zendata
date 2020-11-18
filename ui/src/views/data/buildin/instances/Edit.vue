@@ -2,7 +2,7 @@
   <div>
     <div class="head">
       <div class="title">
-        配置<span v-if="id!=0">编辑</span><span v-if="id==0">新建</span>
+        序列<span v-if="id!=0">编辑</span><span v-if="id==0">新建</span>
       </div>
       <div class="buttons">
         <a-button type="primary" @click="back()">返回</a-button>
@@ -34,19 +34,6 @@
           </a-form-model-item>
         </a-col>
       </a-row>
-
-        <a-row :gutter="colsFull">
-          <a-col :span="colsHalf">
-            <a-form-model-item label="循环" prop="loop" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
-              <a-input v-model="model.loop" placeholder="数字3，或区间1-3" />
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="colsHalf">
-            <a-form-model-item label="循环间隔符" prop="loopfix" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
-              <a-input v-model="model.loopfix" />
-            </a-form-model-item>
-          </a-col>
-        </a-row>
 
       <a-row :gutter="colsFull">
         <a-col :span="colsHalf">
@@ -86,11 +73,10 @@
 </template>
 
 <script>
-import {getConfig, saveConfig} from "../../../../api/manage";
-import {checkLoop} from "../../../../api/utils";
+import {getInstances, saveInstances} from "../../../../api/manage";
 
 export default {
-  name: 'ConfigEdit',
+  name: 'RangesEdit',
   data() {
     return {
       colsFull: 24,
@@ -103,9 +89,6 @@ export default {
       rules: {
         field: [
           { required: true, message: '名称不能为空', trigger: 'change' },
-        ],
-        loop: [
-          { validator: checkLoop, message: '需为正整数或其区间', trigger: 'change' },
         ],
       },
 
@@ -128,8 +111,8 @@ export default {
     loadData () {
       if (!this.id) return
 
-      getConfig(this.id).then(res => {
-        console.log('getConfig', res)
+      getInstances(this.id).then(res => {
+        console.log('getInstances', res)
         this.model = res.data
       })
     },
@@ -142,8 +125,8 @@ export default {
           return
         }
 
-        saveConfig(this.model).then(json => {
-          console.log('saveConfig', json)
+        saveInstances(this.model).then(json => {
+          console.log('saveInstances', json)
           this.back()
         })
       })
@@ -153,7 +136,7 @@ export default {
       this.$refs.editForm.reset()
     },
     back() {
-      this.$router.push({path: '/data/buildin/config/list'});
+      this.$router.push({path: '/data/buildin/instances/list'});
     },
   }
 }

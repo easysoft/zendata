@@ -55,7 +55,7 @@ func (s *ConfigService) saveResToDB(config []model.ResFile, list []*model.ZdConf
 
 	for _, item := range config {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			config := model.ZdConfig{Path: item.Path, Name: item.Name, Title: item.Title, Desc: item.Desc, Field: item.Title, Note: item.Desc}
+			config := model.ZdConfig{Title: item.Title, Name: item.Name, Desc: item.Desc, Field: item.Title, Path: item.Path, Note: item.Desc}
 			s.configRepo.Save(&config)
 		}
 	}

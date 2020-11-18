@@ -17,7 +17,8 @@ func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 
 	for _, key := range constant.ResKeys {
 		for _, res := range res[key] {
-			if res.ResType == constant.ResTypeExcel && strings.Index(res.Title, "|") > -1 { // more than 1 sheet
+			if res.ResType == constant.ResTypeExcel && strings.Index(res.Title, "|") > -1 {
+				// more than 1 sheet
 				arr := strings.Split(res.Title, "|")
 
 				res.Title = arr[0]

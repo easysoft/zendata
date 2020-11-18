@@ -41,7 +41,7 @@
 
 <script>
 
-import {listRanges, removeDef} from "../../../../api/manage";
+import {listRanges, removeRanges} from "../../../../api/manage";
 import { DesignComponent } from '../../../../components'
 
 const columns = [
@@ -109,8 +109,8 @@ export default {
     },
     remove(record) {
       console.log(record)
-      removeDef(record.id).then(json => {
-        console.log('removeDef', json)
+      removeRanges(record.id).then(json => {
+        console.log('removeRanges', json)
         this.loadData()
       })
     },

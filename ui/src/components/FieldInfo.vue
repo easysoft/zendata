@@ -123,6 +123,7 @@
 
 <script>
 import {saveDefField} from "../api/manage";
+import {checkLoop} from "../api/utils";
 
 export default {
   name: 'FieldInfoComponent',
@@ -140,7 +141,7 @@ export default {
           { required: true, message: '名称不能为空', trigger: 'change' },
         ],
         loop: [
-          { validator: this.checkLoop, message: '需为正整数或其区间', trigger: 'change' },
+          { validator: checkLoop, message: '需为正整数或其区间', trigger: 'change' },
         ],
       },
     };
@@ -183,17 +184,6 @@ export default {
     reset() {
       console.log('reset')
       this.$refs.editForm.reset()
-    },
-    checkLoop (rule, value, callback){
-      console.log('checkLoop', value)
-
-      const regx1 = /^[1-9][0-9]*$/;
-      const regx2 = /^[1-9][0-9]*-?[1-9][0-9]*$/;
-      if (!regx1.test(value) && !regx2.test(value)) {
-        callback('需为整数或整数区间')
-      }
-
-      callback()
     },
   }
 }

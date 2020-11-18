@@ -116,7 +116,6 @@ func (fld *FieldSimple) Init(field string) {
 	fld.Field = field
 }
 
-
 type DefExport struct {
 	ClsBase   `yaml:",inline"`
 	XFields  []DefFieldExport `yaml:"xfields,flow"` // control orders

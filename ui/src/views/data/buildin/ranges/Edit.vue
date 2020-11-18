@@ -11,11 +11,16 @@
 
     <div>
       <a-form-model ref="editForm" :model="model" :rules="rules">
-      <a-row :gutter="colsFull">
-        <a-form-model-item label="名称" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.title" />
-        </a-form-model-item>
-      </a-row>
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="名称" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-input v-model="model.title" />
+          </a-form-model-item>
+        </a-row>
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="引用" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            {{model.name}}
+          </a-form-model-item>
+        </a-row>
 
       <a-row :gutter="colsFull">
         <a-col :span="colsHalf">

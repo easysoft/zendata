@@ -90,7 +90,7 @@ func (s *RangesService) saveResToDB(ranges []model.ResFile, list []*model.ZdRang
 
 	for _, item := range ranges {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			ranges := model.ZdRanges{Path: item.Path, Name: item.Name, Title: item.Title, Desc: item.Desc, Field: item.Title, Note: item.Desc}
+			ranges := model.ZdRanges{Title: item.Title, Name: item.Name, Desc: item.Desc, Field: item.Title, Path: item.Path, Note: item.Desc}
 			s.rangesRepo.Save(&ranges)
 		}
 	}

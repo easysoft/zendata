@@ -3,6 +3,7 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 )
@@ -13,10 +14,10 @@ type TextService struct {
 }
 
 func (s *TextService) List() (list []*model.ZdText) {
-	text := s.resService.LoadRes("text")
+	texts := s.resService.LoadRes("text")
 	list, _ = s.textRepo.List()
 
-	s.saveResToDB(text, list)
+	s.saveResToDB(texts, list)
 	list, _ = s.textRepo.List()
 
 	return
@@ -47,15 +48,19 @@ func (s *TextService) Remove(id int) (err error) {
 	return
 }
 
-func (s *TextService) saveResToDB(text []model.ResFile, list []*model.ZdText) (err error) {
+func (s *TextService) saveResToDB(texts []model.ResFile, list []*model.ZdText) (err error) {
 	names := make([]string, 0)
 	for _, item := range list {
 		names = append(names, item.Path)
 	}
 
-	for _, item := range text {
+	for _, item := range texts {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			text := model.ZdText{Path: item.Path, Name: item.Name, Title: item.Title}
+			text := model.ZdText{Title: item.Title, Name: item.Name,Path: item.Path}
+
+			content := fileUtils.ReadFile(item.Path)
+			text.Content = content
+
 			s.textRepo.Save(&text)
 		}
 	}
