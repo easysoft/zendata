@@ -243,9 +243,6 @@ type ZdConfig struct {
 	Name  string `gorm:"column:name" json:"name"`
 	Desc   string `gorm:"column:desc" json:"desc"`
 	Path   string `gorm:"column:path" json:"path" yaml:"-"`
-
-	Yaml   string `gorm:"yaml" json:"yaml"`
-	Folder string `gorm:"-" json:"folder" yaml:"-"`
 	Field string `gorm:"column:field" json:"field"`
 	Note string `gorm:"column:note" json:"note"`
 
@@ -254,6 +251,9 @@ type ZdConfig struct {
 	Loop string `gorm:"column:loop" json:"loop"`
 	Loopfix string `gorm:"column:loopfix" json:"loopfix"`
 	Format string `gorm:"column:format" json:"format"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Folder string `gorm:"-" json:"folder" yaml:"-"`
 }
 func (*ZdConfig) TableName() string {
 	return constant.TablePrefix + "config"

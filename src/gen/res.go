@@ -120,7 +120,7 @@ func getResFromYaml(resFile string) (valueMap map[string][]string, resName strin
 	}
 
 	yamlContent, err := ioutil.ReadFile(resFile)
-	yamlContent = ReplaceSpecialChars(yamlContent)
+	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
 
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
@@ -141,7 +141,7 @@ func getResFromYaml(resFile string) (valueMap map[string][]string, resName strin
 		} else {
 			configRes := model.DefField{}
 			err = yaml.Unmarshal(yamlContent, &configRes)
-			if err == nil { // config
+			if err == nil {                                               // config
 				valueMap = getResForConfig(configRes)
 				resName = configRes.Field
 			}
@@ -226,7 +226,7 @@ func getreferencedRangeOrInstant(inst model.DefField) (referencedRanges model.Re
 	resFile, _, _ := fileUtils.GetResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
-	yamlContent = ReplaceSpecialChars(yamlContent)
+	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return

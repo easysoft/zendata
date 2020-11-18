@@ -26,7 +26,7 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 		}
 
 		defaultContent, err := ioutil.ReadFile(pathDefaultFile)
-		defaultContent = ReplaceSpecialChars(defaultContent)
+		defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
 		if err != nil {
 			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
 			return defaultDef
@@ -45,7 +45,7 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	}
 
 	yamlContent, err := ioutil.ReadFile(pathConfigFile)
-	yamlContent = ReplaceSpecialChars(yamlContent)
+	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathConfigFile), color.FgCyan)
 		return configDef
@@ -225,28 +225,5 @@ func CopyField(child model.DefField, parent *model.DefField) {
 	if child.Length != 0 {
 		(*parent).Length = child.Length
 	}
-}
-
-func ReplaceSpecialChars(bytes []byte) []byte {
-	str := string(bytes)
-
-	inRanges := false // for ranges yaml only
-	ret := ""
-	for _, line := range strings.Split(str, "\n") {
-		if strings.Index(strings.TrimSpace(line), "ranges") == 0 {
-			inRanges = true
-		} else if len(line) > 0 && string(line[0]) != " " { // not begin with space, ranges end
-			inRanges = false
-		}
-
-		if strings.Index(strings.TrimSpace(line), "range") == 0 || inRanges {
-			line = strings.ReplaceAll(line,"[", string(constant.LeftBrackets))
-			line = strings.ReplaceAll(line,"]", string(constant.RightBrackets))
-		}
-
-		ret += line + "\n"
-	}
-
-	return []byte(ret)
 }
 

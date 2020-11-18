@@ -5,6 +5,8 @@ import (
 	"github.com/easysoft/zendata/src/server/repo"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"gopkg.in/yaml.v3"
+	"io/ioutil"
 )
 
 type ConfigService struct {
@@ -55,7 +57,17 @@ func (s *ConfigService) saveResToDB(config []model.ResFile, list []*model.ZdConf
 
 	for _, item := range config {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			config := model.ZdConfig{Title: item.Title, Name: item.Name, Desc: item.Desc, Field: item.Title, Path: item.Path, Note: item.Desc}
+			content, _ := ioutil.ReadFile(item.Path)
+			yamlContent := stringUtils.ReplaceSpecialChars(content)
+			config := model.ZdConfig{}
+			err = yaml.Unmarshal(yamlContent, &config)
+			config.Title = item.Title
+			config.Name = item.Name
+			config.Desc = item.Desc
+			config.Path = item.Path
+			config.Field = item.Title
+			config.Note = item.Desc
+
 			s.configRepo.Save(&config)
 		}
 	}
