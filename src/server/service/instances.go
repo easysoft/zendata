@@ -95,7 +95,7 @@ func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.
 
 	for _, inst := range instances {
 		if !stringUtils.FindInArrBool(inst.Path, names) {
-			//if strings.Contains(inst.Path, "aaa") {
+			//if strings.Contains(inst.Path, "_test") {
 				content, _ := ioutil.ReadFile(inst.Path)
 				yamlContent := stringUtils.ReplaceSpecialChars(content)
 				instPo := model.ZdInstances{}
