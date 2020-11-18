@@ -122,7 +122,8 @@ type ZdRanges struct {
 	Postfix string `gorm:"column:postfix" json:"postfix"`
 	Format string `gorm:"column:format" json:"format"`
 
-	Ranges []ZdRangesItem `gorm:"ForeignKey:rangesID" json:"ranges"`
+	Ranges []ZdRangesItem `gorm:"ForeignKey:rangesID" json:"ranges" yaml:"-"`
+	RangeMap map[string]string  `gorm:"-" yaml:"ranges"`
 }
 func (*ZdRanges) TableName() string {
 	return constant.TablePrefix + "ranges"

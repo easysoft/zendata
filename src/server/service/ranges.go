@@ -5,6 +5,8 @@ import (
 	"github.com/easysoft/zendata/src/server/repo"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"gopkg.in/yaml.v3"
+	"io/ioutil"
 )
 
 type RangesService struct {
@@ -90,8 +92,24 @@ func (s *RangesService) saveResToDB(ranges []model.ResFile, list []*model.ZdRang
 
 	for _, item := range ranges {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			ranges := model.ZdRanges{Title: item.Title, Name: item.Name, Desc: item.Desc, Field: item.Title, Path: item.Path, Note: item.Desc}
+			content, _ := ioutil.ReadFile(item.Path)
+			yamlContent := stringUtils.ReplaceSpecialChars(content)
+			ranges := model.ZdRanges{}
+			err = yaml.Unmarshal(yamlContent, &ranges)
+			ranges.Title = item.Title
+			ranges.Name = item.Name
+			ranges.Desc = item.Desc
+			ranges.Path = item.Path
+			ranges.Field = item.Title
+			ranges.Note = item.Desc
+
 			s.rangesRepo.Save(&ranges)
+
+			for k, v := range ranges.RangeMap {
+				item := model.ZdRangesItem{Name: k, Value: v}
+				item.RangesID = ranges.ID
+				s.rangesRepo.SaveItem(&item)
+			}
 		}
 	}
 
