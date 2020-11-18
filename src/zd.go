@@ -443,6 +443,10 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "removeRanges":
 		err = s.rangesService.Remove(reqData.Id)
 
+	case "getResRangesItemTree":
+		ret.Data = s.rangesService.GetItemTree(reqData.Id)
+	case "getResRangesItem":
+		ret.Data = s.rangesService.GetItem(reqData.Id)
 	case "createResRangesItem":
 		var rangesItem *model.ZdRangesItem
 		rangesId := reqData.DomainId
@@ -450,10 +454,6 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 
 		ret.Data = s.rangesService.GetItemTree(rangesId)
 		ret.Model = rangesItem
-	case "getResRangesItemTree":
-		ret.Data = s.rangesService.GetItemTree(reqData.Id)
-	case "getResRangesItem":
-		ret.Data = s.rangesService.GetItem(reqData.Id)
 	case "saveRangesItem":
 		rangesItem := serverUtils.ConvertRangesItem(reqData.Data)
 		ret.Data = s.rangesService.SaveItem(&rangesItem)
@@ -470,6 +470,23 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.instancesService.Save(&ranges)
 	case "removeInstances":
 		err = s.instancesService.Remove(reqData.Id)
+	case "getResInstancesItemTree":
+		ret.Data = s.instancesService.GetItemTree(reqData.Id)
+	case "getResInstancesItem":
+		ret.Data = s.instancesService.GetItem(reqData.Id)
+	case "createResInstancesItem":
+		var rangesItem *model.ZdInstancesItem
+		rangesId := reqData.DomainId
+		rangesItem, err = s.instancesService.CreateItem(rangesId, reqData.Id, reqData.Mode)
+
+		ret.Data = s.instancesService.GetItemTree(rangesId)
+		ret.Model = rangesItem
+	case "saveInstancesItem":
+		rangesItem := serverUtils.ConvertInstancesItem(reqData.Data)
+		ret.Data = s.instancesService.SaveItem(&rangesItem)
+	case "removeResInstancesItem":
+		err = s.instancesService.RemoveItem(reqData.Id)
+		ret.Data = s.instancesService.GetItemTree(reqData.DomainId)
 
 	case "listExcel":
 		ret.Data = s.excelService.List()
@@ -500,10 +517,13 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.configService.Save(&ranges)
 	case "removeConfig":
 		err = s.configService.Remove(reqData.Id)
-
+	default:
+		ret.Code = 0
+		ret.Msg = "api not found"
 	}
 	if err != nil {
 		ret.Code = 0
+		ret.Msg = "api error: " + err.Error()
 	}
 
 	bytes, _ = json.Marshal(ret)

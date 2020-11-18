@@ -216,6 +216,7 @@ export function removeRanges (id) {
     data: data
   })
 }
+
 export function getResRangesItemTree (id) {
   const data = {'action': 'getResRangesItemTree', id: id}
 
@@ -253,6 +254,52 @@ export function saveRangesItem (model) {
   })
 }export function removeResRangesItem (itemId, rangesId) {
   const data = {'action': 'removeResRangesItem', id: itemId, domainId: rangesId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function getResInstancesItemTree (id) {
+  const data = {'action': 'getResInstancesItemTree', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getResInstancesItem (id) {
+  const data = {'action': 'getResInstancesItem', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function createResInstancesItem (rangesId, mode) {
+  const data = {'action': 'createResInstancesItem', domainId: rangesId, mode: mode}
+  console.log(data)
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveInstancesItem (model) {
+  const data = {'action': 'saveInstancesItem', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function removeResInstancesItem (itemId, rangesId) {
+  const data = {'action': 'removeResInstancesItem', id: itemId, domainId: rangesId}
 
   return request({
     url: api.admin,

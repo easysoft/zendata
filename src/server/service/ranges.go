@@ -28,23 +28,6 @@ func (s *RangesService) Get(id int) (ranges model.ZdRanges) {
 	return
 }
 
-func (s *RangesService) GetItemTree(rangesId int) (root model.ZdRangesItem) {
-	items, _ := s.rangesRepo.GetItems(rangesId)
-
-	root.ID = 0
-	root.Name = "序列"
-	for _, item := range items {
-		item.ParentID = root.ID
-		root.Children = append(root.Children, item)
-	}
-
-	return
-}
-func (s *RangesService) GetItem(id int) (item model.ZdRangesItem) {
-	item, _ = s.rangesRepo.GetItem(uint(id))
-	return
-}
-
 func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 	err = s.rangesRepo.Save(ranges)
 
@@ -61,6 +44,23 @@ func (s *RangesService) Remove(id int) (err error) {
 	logUtils.PrintTo(ranges.Path)
 	//fileUtils.RemoveExist(ranges.Path)
 
+	return
+}
+
+func (s *RangesService) GetItemTree(rangesId int) (root model.ZdRangesItem) {
+	items, _ := s.rangesRepo.GetItems(rangesId)
+
+	root.ID = 0
+	root.Name = "序列"
+	for _, item := range items {
+		item.ParentID = root.ID
+		root.Children = append(root.Children, item)
+	}
+
+	return
+}
+func (s *RangesService) GetItem(id int) (item model.ZdRangesItem) {
+	item, _ = s.rangesRepo.GetItem(uint(id))
 	return
 }
 

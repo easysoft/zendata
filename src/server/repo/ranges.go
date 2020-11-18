@@ -44,7 +44,12 @@ func (r *RangesRepo) SaveItem(item *model.ZdRangesItem) (err error) {
 	err = r.db.Save(item).Error
 	return
 }
-
+func (r *RangesRepo) RemoveItem(id uint) (err error) {
+	item := model.ZdRangesItem{}
+	item.ID = id
+	err = r.db.Delete(item).Error
+	return
+}
 func (r *RangesRepo) GetMaxOrder(rangesId int) (ord int) {
 	var preChild model.ZdField
 	err := r.db.
@@ -57,13 +62,6 @@ func (r *RangesRepo) GetMaxOrder(rangesId int) (ord int) {
 	}
 	ord = preChild.Ord + 1
 
-	return
-}
-
-func (r *RangesRepo) RemoveItem(id uint) (err error) {
-	item := model.ZdRangesItem{}
-	item.ID = id
-	err = r.db.Delete(item).Error
 	return
 }
 

@@ -47,6 +47,41 @@ func (s *InstancesService) Remove(id int) (err error) {
 	return
 }
 
+func (s *InstancesService) GetItemTree(rangesId int) (root model.ZdInstancesItem) {
+	items, _ := s.instancesRepo.GetItems(rangesId)
+
+	root.ID = 0
+	root.Note = "实例"
+	for _, item := range items {
+		item.ParentID = root.ID
+		root.Children = append(root.Children, item)
+	}
+
+	return
+}
+func (s *InstancesService) GetItem(id int) (item model.ZdInstancesItem) {
+	item, _ = s.instancesRepo.GetItem(uint(id))
+	return
+}
+
+func (s *InstancesService) CreateItem(domainId, targetId int, mode string) (item *model.ZdInstancesItem, err error) {
+	item = &model.ZdInstancesItem{Field: "instances_", InstancesID: uint(domainId)}
+	item.Ord = s.instancesRepo.GetMaxOrder(domainId)
+
+	err = s.instancesRepo.SaveItem(item)
+
+	return
+}
+func (s *InstancesService) SaveItem(item *model.ZdInstancesItem) (err error) {
+	err = s.instancesRepo.SaveItem(item)
+	return
+}
+
+func (s *InstancesService) RemoveItem(id int) (err error) {
+	err = s.instancesRepo.RemoveItem(uint(id))
+	return
+}
+
 func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.ZdInstances) (err error) {
 	names := make([]string, 0)
 	for _, item := range list {
