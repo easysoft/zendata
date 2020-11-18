@@ -11,7 +11,6 @@
 
       <span slot="action" slot-scope="record">
         <a @click="edit(record)">编辑</a> |
-        <a @click="design(record)">设计</a> |
 
         <a-popconfirm
             title="确认删除？"
