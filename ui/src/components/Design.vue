@@ -30,7 +30,7 @@
             <a-menu-item key="addNeighbor" v-if="!isRoot">
               <a-icon type="plus" />创建同级
             </a-menu-item>
-            <a-menu-item key="addChild" v-if="type=='def'|| (type=='ranges' && isRoot)">
+            <a-menu-item key="addChild" v-if="type=='def'|| ((type=='ranges' || type=='instances') && isRoot)">
               <a-icon type="plus" />创建子级
             </a-menu-item>
             <a-menu-item key="remove" v-if="!isRoot">
@@ -42,12 +42,13 @@
 
       <div class="right" :style="styl">
         <div v-if="rightVisible">
-          <div v-if="type=='def'">
+          <div v-if="type=='def' || type=='instances'">
             <a-tabs :activeKey="tabKey" @change="onChange" type="card">
             <a-tab-pane key="info" tab="编辑信息">
               <div>
                 <field-info-component
                     ref="infoComp"
+                    :type="type"
                     :model="modelData"
                     @save="onModelSave">
                 </field-info-component>
@@ -57,7 +58,10 @@
             <a-tab-pane key="range" tab="配置区间" force-render>
               <div>
                 <field-range-component
-                    :field="modelData">
+                    ref="rangeComp"
+                    :type="type"
+                    :model="modelData"
+                    :time2="time2">
                 </field-range-component>
               </div>
             </a-tab-pane>
@@ -65,13 +69,17 @@
             <a-tab-pane key="refer" tab="配置引用" force-render>
               <div>
                 <field-refer-component
-                    :field="modelData">
+                    ref="referComp"
+                    :type="type"
+                    :model="modelData"
+                    :time2="time2">
                 </field-refer-component>
               </div>
             </a-tab-pane>
 
           </a-tabs>
           </div>
+
           <div v-if="type=='ranges'">
             <res-ranges-item-component
                 ref="rangesItem"
@@ -79,7 +87,6 @@
                 @save="onModelSave">
             </res-ranges-item-component>
           </div>
-
         </div>
       </div>
     </div>
@@ -107,7 +114,8 @@ import { getDefFieldTree, getDefField, createDefField, removeDefField, moveDefFi
 import FieldInfoComponent from "./FieldInfo";
 import FieldRangeComponent from "./FieldRange";
 import FieldReferComponent from "./FieldRefer";
-import ResRangesItemComponent from "./RangeItem"
+import ResRangesItemComponent from "./RangesItem"
+import {ResTypeDef, ResTypeInstances, ResTypeRanges} from "../api/utils";
 
 export default {
   name: 'DefDesignComponent',
@@ -155,8 +163,8 @@ export default {
 
   computed: {
     isRoot () {
-      console.log('treeNode', this.treeNode)
-      return this.treeNode.parentID == 0 || this.treeNode.id == 0
+      console.log('isRoot', this.treeNode)
+      return !this.treeNode.parentID || this.treeNode.parentID == 0 || this.treeNode.id == 0
     },
   },
   created () {
@@ -167,7 +175,7 @@ export default {
     } else if (this.type === 'ranges') {
       this.fieldMap.title = 'name'
     } else if (this.type === 'instances') {
-      this.fieldMap.title = 'note'
+      this.fieldMap.title = 'field'
     }
 
     this.loadTree()
@@ -195,20 +203,21 @@ export default {
     },
 
     loadTree (selectedKey) {
+      console.log('loadTree', this.modelProp)
       if (!this.modelProp.id)
         return
 
-      if (this.type === 'def') {
+      if (this.type === ResTypeDef) {
         getDefFieldTree(this.modelProp.id).then(json => {
           console.log('getDefFieldTree', json)
           this.loadTreeCallback(json, selectedKey)
         })
-      } else if (this.type === 'ranges') {
+      } else if (this.type === ResTypeRanges) {
         getResRangesItemTree(this.modelProp.id).then(json => {
           console.log('getResRangesItemTree', json)
           this.loadTreeCallback(json, selectedKey)
         })
-      } else if (this.type === 'instances') {
+      } else if (this.type === ResTypeInstances) {
         getResInstancesItemTree(this.modelProp.id).then(json => {
           console.log('getResInstancesItemTree', json)
           this.loadTreeCallback(json, selectedKey)
@@ -267,7 +276,6 @@ export default {
             console.log('getResRangesItem', res)
             this.modelData = res.data
             this.time2 = Date.now() // trigger data refresh
-
 
             this.rightVisible = true
           })

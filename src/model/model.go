@@ -68,25 +68,12 @@ func (*ZdField) TableName() string {
 	return constant.TablePrefix + "field"
 }
 
-type ZdRefer struct {
-	Model
-	FieldID uint   `gorm:"column:fieldID" json:"fieldID"`
-	Type    string `gorm:"column:type" json:"type"`
-	File   string `gorm:"column:file" json:"file"`
-	ColName     string    `gorm:"column:colName" json:"colName"`
-	ColIndex     int    `gorm:"column:colIndex" json:"colIndex"`
-	Count int    `gorm:"column:count" json:"count"`
-	HasTitle bool `gorm:"column:hasTitle" json:"hasTitle"`
-}
-func (*ZdRefer) TableName() string {
-	return constant.TablePrefix + "refer"
-}
-
 type ZdSection struct {
 	Model
-	FieldID uint   `gorm:"column:fieldID" json:"fieldID"`
+	OwnerType string   `gorm:"column:ownerType" json:"ownerType"` // field or instances
+	OwnerID uint   `gorm:"column:ownerID" json:"ownerID"`
 	Type    string `gorm:"column:type;default:scope" json:"type"`
-	Value     string `gorm:"column:value" json:"value"`
+	Value   string `gorm:"column:value" json:"value"`
 	Ord     int    `gorm:"column:ord;default:1" json:"ord"`
 
 	// for range
@@ -101,6 +88,21 @@ type ZdSection struct {
 }
 func (*ZdSection) TableName() string {
 	return constant.TablePrefix + "section"
+}
+
+type ZdRefer struct {
+	Model
+	OwnerType string   `gorm:"column:ownerType" json:"ownerType"` // field or instances
+	OwnerID   uint   `gorm:"column:ownerID" json:"ownerID"`
+	Type      string `gorm:"column:type" json:"type"`
+	File      string `gorm:"column:file" json:"file"`
+	ColName   string `gorm:"column:colName" json:"colName"`
+	ColIndex  int    `gorm:"column:colIndex" json:"colIndex"`
+	Count     int    `gorm:"column:count" json:"count"`
+	HasTitle  bool   `gorm:"column:hasTitle" json:"hasTitle"`
+}
+func (*ZdRefer) TableName() string {
+	return constant.TablePrefix + "refer"
 }
 
 type ZdRanges struct {
@@ -128,10 +130,10 @@ func (*ZdRanges) TableName() string {
 
 type ZdRangesItem struct {
 	Model
+	RangesID uint `gorm:"column:rangesID" json:"rangesID"`
 	Name string `gorm:"column:name" json:"name"`
 	Value string `gorm:"column:value" json:"value"`
 	Ord int `gorm:"column:ord" json:"ord"`
-	RangesID uint `gorm:"column:rangesID" json:"rangesID"`
 
 	// for tree node
 	ParentID uint `gorm:"-" json:"parentID"`
@@ -166,7 +168,7 @@ func (*ZdInstances) TableName() string {
 
 type ZdInstancesItem struct {
 	Model
-	DefID uint `gorm:"column:defID" json:"defID"`
+	InstancesID uint `gorm:"column:instancesID" json:"instancesID"`
 	ParentID uint `gorm:"column:parentID" json:"parentID"`
 	Field string `gorm:"column:field" json:"field"`
 	Note string `gorm:"column:note" json:"note"`
@@ -197,7 +199,6 @@ type ZdInstancesItem struct {
 	Ord int `gorm:"column:ord;default:1" json:"ord"`
 	Children []*ZdInstancesItem `gorm:"-" json:"children"`
 	Froms []*ZdInstancesItem    `gorm:"-" json:"froms"`
-	InstancesID uint `gorm:"column:instancesID" json:"instancesID"`
 
 	// for range edit
 	IsRange bool         `gorm:"column:isRange;default:true" json:"isRange"`

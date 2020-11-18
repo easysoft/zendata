@@ -30,7 +30,7 @@
     <div class="full-screen-modal">
       <design-component
           ref="designPage"
-          type="def"
+          :type="type"
           :visible="designVisible"
           :modelProp="designModel"
           :time="time"
@@ -46,6 +46,7 @@
 
 import { listDef, removeDef } from "../../../api/manage";
 import { DesignComponent } from '../../../components'
+import {ResTypeDef} from "../../../api/utils";
 
 const columns = [
   {
@@ -76,6 +77,7 @@ export default {
 
       designVisible: false,
       designModel: {},
+      type: ResTypeDef,
       time: 0,
     };
   },

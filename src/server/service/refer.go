@@ -10,22 +10,15 @@ type ReferService struct {
 	referRepo *serverRepo.ReferRepo
 }
 
-func (s *ReferService) CreateDefault(fieldId uint) (err error) {
-	refer := &model.ZdRefer{FieldID: fieldId}
-	err = s.referRepo.Create(refer)
-
-	return
-}
-
-func (s *ReferService) Get(fieldId uint) (refer model.ZdRefer, err error) {
-	refer, err = s.referRepo.Get(fieldId)
+func (s *ReferService) Get(ownerId uint, ownerType string) (refer model.ZdRefer, err error) {
+	refer, err = s.referRepo.Get(ownerId, ownerType)
 	return
 }
 
 func (s *ReferService) Update(ref *model.ZdRefer) (err error) {
 	err = s.referRepo.Save(ref)
 
-	s.fieldRepo.SetIsRange(ref.FieldID, false)
+	s.fieldRepo.SetIsRange(ref.OwnerID, false)
 
 	return
 }

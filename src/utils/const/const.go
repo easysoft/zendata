@@ -68,6 +68,7 @@ var (
 	ResDirUsers  = "users"
 	ResKeys = []string{ResDirData, ResDirYaml, ResDirUsers}
 
+	ResTypeDef = "def" // only used for refer type
 	ResTypeConfig    = "config"
 	ResTypeRanges    = "ranges"
 	ResTypeInstances = "instances"

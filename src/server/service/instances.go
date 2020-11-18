@@ -3,12 +3,14 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 )
 
 type InstancesService struct {
 	instancesRepo *serverRepo.InstancesRepo
+	referRepo  *serverRepo.ReferRepo
 	resService *ResService
 }
 
@@ -51,7 +53,7 @@ func (s *InstancesService) GetItemTree(rangesId int) (root model.ZdInstancesItem
 	items, _ := s.instancesRepo.GetItems(rangesId)
 
 	root.ID = 0
-	root.Note = "实例"
+	root.Field = "实例"
 	for _, item := range items {
 		item.ParentID = root.ID
 		root.Children = append(root.Children, item)
@@ -65,10 +67,11 @@ func (s *InstancesService) GetItem(id int) (item model.ZdInstancesItem) {
 }
 
 func (s *InstancesService) CreateItem(domainId, targetId int, mode string) (item *model.ZdInstancesItem, err error) {
-	item = &model.ZdInstancesItem{Field: "instances_", InstancesID: uint(domainId)}
+	item = &model.ZdInstancesItem{Field: "instances_", Note: "", InstancesID: uint(domainId)}
 	item.Ord = s.instancesRepo.GetMaxOrder(domainId)
 
 	err = s.instancesRepo.SaveItem(item)
+	s.referRepo.CreateDefault(item.ID, constant.ResTypeInstances)
 
 	return
 }
@@ -98,6 +101,6 @@ func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.
 	return
 }
 
-func NewInstancesService(instancesRepo *serverRepo.InstancesRepo) *InstancesService {
-	return &InstancesService{instancesRepo: instancesRepo}
+func NewInstancesService(instancesRepo *serverRepo.InstancesRepo, referRepo *serverRepo.ReferRepo) *InstancesService {
+	return &InstancesService{instancesRepo: instancesRepo, referRepo: referRepo}
 }

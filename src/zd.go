@@ -308,7 +308,7 @@ func Init() (err error) {
 	referService := serverService.NewReferService(fieldRepo, referRepo)
 
 	rangesService := serverService.NewRangesService(rangesRepo)
-	instancesService := serverService.NewInstancesService(instancesRepo)
+	instancesService := serverService.NewInstancesService(instancesRepo, referRepo)
 	textService := serverService.NewTextService(textRepo)
 	excelService := serverService.NewExcelService(excelRepo)
 	configService := serverService.NewConfigService(configRepo)
@@ -383,7 +383,6 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "createDefField":
 		var field *model.ZdField
 		field, err = s.fieldService.Create(0, uint(reqData.Id), "新字段", reqData.Mode)
-		s.referService.CreateDefault(field.ID)
 
 		ret.Data, err = s.fieldService.GetTree(field.DefID)
 		ret.Model = field
@@ -399,37 +398,38 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		defId, ret.Model, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
 		ret.Data, err = s.fieldService.GetTree(uint(defId))
 
-	// section
-	case "listDefFieldSection":
-		ret.Data, err = s.sectionService.List(uint(reqData.Id))
-	case "createDefFieldSection":
+	// field or instances section
+	case "listSection":
+		ret.Data, err = s.sectionService.List(uint(reqData.Id), reqData.Mode)
+	case "createSection":
 		paramMap := serverUtils.ConvertParams(reqData.Data)
-		fieldId, _ := strconv.Atoi(paramMap["fieldId"])
+		ownerType, _ := paramMap["ownerType"]
+		ownerId, _ := strconv.Atoi(paramMap["ownerId"])
 		sectionId, _ := strconv.Atoi(paramMap["sectionId"])
 
-		err = s.sectionService.Create(uint(fieldId), uint(sectionId))
-		ret.Data, err = s.sectionService.List(uint(fieldId))
-	case "updateDefFieldSection":
+		err = s.sectionService.Create(uint(ownerId), uint(sectionId), ownerType)
+		ret.Data, err = s.sectionService.List(uint(ownerId), ownerType)
+	case "updateSection":
 		section := serverUtils.ConvertSection(reqData.Data)
 		err = s.sectionService.Update(&section)
 
-		ret.Data, err = s.sectionService.List(section.FieldID)
-	case "removeDefFieldSection":
+		ret.Data, err = s.sectionService.List(section.OwnerID, reqData.Mode)
+	case "removeSection":
 		var fieldId uint
-		fieldId, err = s.sectionService.Remove(reqData.Id)
-		ret.Data, err = s.sectionService.List(fieldId)
+		fieldId, err = s.sectionService.Remove(reqData.Id, reqData.Mode)
+		ret.Data, err = s.sectionService.List(fieldId, reqData.Mode)
 
-	// refer
-	case "getDefFieldRefer":
+	// field or instances refer, be create when init its owner
+	case "getRefer":
 		var refer model.ZdRefer
-		refer, err = s.referService.Get(uint(reqData.Id))
+		refer, err = s.referService.Get(uint(reqData.Id), reqData.Mode)
 		ret.Data = refer
-	case "updateDefFieldRefer":
+	case "updateRefer":
 		refer := serverUtils.ConvertRefer(reqData.Data)
 		err = s.referService.Update(&refer)
-	case "listDefFieldReferType":
+	case "listReferType":
 		ret.Data = s.resService.LoadRes(reqData.Mode)
-	case "listDefFieldReferField":
+	case "listReferField":
 		refer := serverUtils.ConvertResFile(reqData.Data)
 		ret.Data = s.resService.LoadResField(refer)
 
@@ -475,12 +475,12 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "getResInstancesItem":
 		ret.Data = s.instancesService.GetItem(reqData.Id)
 	case "createResInstancesItem":
-		var rangesItem *model.ZdInstancesItem
-		rangesId := reqData.DomainId
-		rangesItem, err = s.instancesService.CreateItem(rangesId, reqData.Id, reqData.Mode)
+		var item *model.ZdInstancesItem
+		ownerId := reqData.DomainId
+		item, err = s.instancesService.CreateItem(ownerId, reqData.Id, reqData.Mode)
 
-		ret.Data = s.instancesService.GetItemTree(rangesId)
-		ret.Model = rangesItem
+		ret.Data = s.instancesService.GetItemTree(ownerId)
+		ret.Model = item
 	case "saveInstancesItem":
 		rangesItem := serverUtils.ConvertInstancesItem(reqData.Data)
 		ret.Data = s.instancesService.SaveItem(&rangesItem)

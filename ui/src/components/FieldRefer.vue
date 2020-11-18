@@ -66,7 +66,8 @@
 </template>
 
 <script>
-import {getDefFieldRefer, updateDefFieldRefer, listDefFieldReferType, listDefFieldReferField} from "../api/manage";
+import {listReferType, listReferField, getRefer, updateRefer,
+} from "../api/refer";
 
 export default {
   name: 'FieldReferComponent',
@@ -94,11 +95,15 @@ export default {
     };
   },
   props: {
-    field: {
+    type: {
+      type: String,
+      default: () => ''
+    },
+    model: {
       type: Object,
       default: () => null
     },
-    time: {
+    time2: {
       type: Number,
       default: () => 0
     },
@@ -112,27 +117,27 @@ export default {
   created () {
     console.log('created')
 
-    this.loadDefFieldRefer()
-    this.$watch('time', () => {
-      console.log('time changed', this.time)
-      this.loadDefFieldRefer("")
+    this.loadData()
+    this.$watch('time2', () => {
+      console.log('time2 changed', this.time2)
+      this.loadData("")
     })
   },
   mounted () {
     console.log('mounted')
   },
   methods: {
-    loadDefFieldRefer() {
-      getDefFieldRefer(this.field.id).then(json => {
-        console.log('getDefFieldRefer', json)
+    loadData() {
+      getRefer(this.model.id, this.type).then(json => {
+        console.log('getRefer', json)
         this.refer = json.data
-        this.listDefFieldReferType(this.refer.type, true)
+        this.listReferType(this.refer.type, true)
       })
     },
 
     onTypeChanged() {
       console.log('onTypeChanged')
-      this.listDefFieldReferType(this.refer.type, false)
+      this.listReferType(this.refer.type, false)
     },
     onReferChanged(value) {
       console.log("onReferChanged")
@@ -159,8 +164,8 @@ export default {
         }
 
         this.refer.count = parseInt(this.refer.count)
-        updateDefFieldRefer(this.refer).then(json => {
-          console.log('updateDefFieldRefer', json)
+        updateRefer(this.refer, this.type).then(json => {
+          console.log('updateRefer', json)
         })
       })
     },
@@ -169,9 +174,9 @@ export default {
       this.$refs.editForm.reset()
     },
 
-    listDefFieldReferType(resType, init) {
-      listDefFieldReferType(resType).then(json => {
-        console.log('listDefFieldReferType', json)
+    listReferType(resType, init) {
+      listReferType(resType).then(json => {
+        console.log('listReferType', json)
         this.files = json.data
       })
 
@@ -190,8 +195,8 @@ export default {
         }
       }
 
-      listDefFieldReferField(file).then(json => {
-        console.log('listDefFieldReferField', json)
+      listReferField(file).then(json => {
+        console.log('listReferField', json)
         this.fields = json.data
       })
       this.refer.colName = ''
@@ -207,6 +212,5 @@ export default {
 <style lang="less" scoped>
   .panel {
     padding: 4px 8px;
-
   }
 </style>

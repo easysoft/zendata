@@ -120,11 +120,8 @@
 
 <script>
 import {
-  listDefFieldSection,
-  createDefFieldSection,
-  removeDefFieldSection,
-  updateDefFieldSection
-} from "../api/manage";
+  listSection, createSection, removeSection, updateSection,
+} from "../api/section";
 
 export default {
   name: 'FieldRangeComponent',
@@ -162,11 +159,15 @@ export default {
     };
   },
   props: {
-    field: {
+    type: {
+      type: String,
+      default: () => ''
+    },
+    model: {
       type: Object,
       default: () => null
     },
-    time: {
+    time2: {
       type: Number,
       default: () => 0
     },
@@ -178,8 +179,8 @@ export default {
     console.log('created')
 
     this.loadData()
-    this.$watch('time', () => {
-      console.log('time changed', this.time)
+    this.$watch('time2', () => {
+      console.log('time2 changed', this.time2)
       this.loadData()
     })
   },
@@ -188,17 +189,16 @@ export default {
   },
   methods: {
     loadData () {
-      if (!this.field.id) return
+      if (!this.model.id) return
 
-      listDefFieldSection(this.field.id).then(res => {
-        console.log('listDefFieldSection', res)
+      listSection(this.model.id, this.type).then(res => {
+        console.log('listSection', res)
         this.sections = res.data
       })
     },
     insertSection (item) {
-      console.log(item)
-      createDefFieldSection(this.field.id, item?item.id:0).then(res => {
-        console.log('createDefFieldSection', res)
+      createSection(this.model.id, item ? item.id : 0, this.type).then(res => {
+        console.log('createSection', res)
         this.sections = res.data
       })
     },
@@ -251,8 +251,8 @@ export default {
           this.section.value = '`' + this.section.text + '`'
         }
 
-        updateDefFieldSection(this.section).then(res => {
-          console.log('updateDefFieldSection', res)
+        updateSection(this.section, this.type).then(res => {
+          console.log('updateSection', res)
           this.sections = res.data
         })
 
@@ -266,9 +266,8 @@ export default {
 
     removeSection (item) {
       console.log(item)
-
-      removeDefFieldSection(item.id).then(res => {
-        console.log('removeDefFieldSection', res)
+      removeSection(item.id, this.type).then(res => {
+        console.log('removeSection', res)
         this.sections = res.data
       })
     },

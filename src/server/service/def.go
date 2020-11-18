@@ -36,7 +36,7 @@ func (s *DefService) Create(def *model.ZdDef) (err error) {
 	err = s.defRepo.Create(def)
 
 	rootField, err := s.fieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
-	s.referRepo.CreateDefault(rootField.ID)
+	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
 
 	s.dataToYaml(def)
 	err = s.defRepo.Update(def)

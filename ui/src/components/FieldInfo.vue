@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import {saveDefField} from "../api/manage";
+import {saveDefField, saveInstancesItem} from "../api/manage";
 import {checkLoop} from "../api/utils";
 
 export default {
@@ -147,13 +147,13 @@ export default {
     };
   },
   props: {
+    type: {
+      type: String,
+      default: () => ''
+    },
     model: {
       type: Object,
       default: () => null
-    },
-    time: {
-      type: Number,
-      default: () => 0
     },
   },
 
@@ -175,10 +175,17 @@ export default {
           return
         }
 
-        saveDefField(this.model).then(json => {
-          console.log('saveDefField', json)
-          this.$emit('save')
-        })
+        if (this.type === 'def') {
+          saveDefField(this.model).then(json => {
+            console.log('saveDefField', json)
+            this.$emit('save')
+          })
+        } else {
+          saveInstancesItem(this.model).then(json => {
+            console.log('saveInstancesItem', json)
+            this.$emit('save')
+          })
+        }
       })
     },
     reset() {

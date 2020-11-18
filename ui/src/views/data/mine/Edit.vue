@@ -97,7 +97,7 @@ export default {
       this.$refs.editForm.resetFields()
     },
     back() {
-      this.$router.push({path: '/data/mine/index'});
+      this.$router.push({path: '/data/mine/list'});
     },
   }
 }

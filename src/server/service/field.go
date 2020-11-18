@@ -3,6 +3,7 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	constant "github.com/easysoft/zendata/src/utils/const"
 )
 
 type FieldService struct {
@@ -47,7 +48,7 @@ func (s *FieldService) Create(defId, targetId uint, name string, mode string) (f
 	}
 
 	err = s.fieldRepo.Save(field)
-	s.referRepo.CreateDefault(field.ID)
+	s.referRepo.CreateDefault(field.ID, constant.ResTypeDef)
 	return
 }
 

@@ -1,4 +1,9 @@
 
+const ResTypeDef = "def"
+const ResTypeRanges = "ranges"
+const ResTypeInstances = "instances"
+export { ResTypeDef, ResTypeRanges, ResTypeInstances }
+
 export function checkLoop (rule, value, callback){
   console.log('checkLoop', value)
 

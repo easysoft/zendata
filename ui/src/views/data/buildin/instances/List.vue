@@ -27,7 +27,7 @@
     <div class="full-screen-modal">
       <design-component
           ref="designPage"
-          type="instances"
+          :type="type"
           :visible="designVisible"
           :modelProp="designModel"
           :time="time"
@@ -43,6 +43,7 @@
 
 import {listInstances, removeInstances} from "../../../../api/manage";
 import { DesignComponent } from '../../../../components'
+import {ResTypeInstances} from "../../../../api/utils";
 
 const columns = [
   {
@@ -76,6 +77,7 @@ export default {
 
       designVisible: false,
       designModel: {},
+      type: ResTypeInstances,
       time: 0,
     };
   },

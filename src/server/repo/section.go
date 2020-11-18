@@ -9,13 +9,13 @@ type SectionRepo struct {
 	db *gorm.DB
 }
 
-func (r *SectionRepo) List(fieldId uint) (sections []*model.ZdSection, err error) {
-	err = r.db.Where("fieldID=?", fieldId).Find(&sections).Error
+func (r *SectionRepo) List(ownerId uint, ownerType string) (sections []*model.ZdSection, err error) {
+	err = r.db.Where("ownerID=? AND ownerType=?", ownerId, ownerType).Find(&sections).Error
 	return
 }
 
-func (r *SectionRepo) Get(id uint) (section *model.ZdSection, err error) {
-	err = r.db.Where("id=?", id).Find(&section).Error
+func (r *SectionRepo) Get(id uint, ownerType string) (section model.ZdSection, err error) {
+	err = r.db.Where("id=? AND ownerType=?", id, ownerType).First(&section).Error
 	return
 }
 
@@ -29,8 +29,8 @@ func (r *SectionRepo) Update(section *model.ZdSection) (err error) {
 	return
 }
 
-func (r *SectionRepo) Remove(id uint) (err error) {
-	err = r.db.Where("id=?", id).Delete(&model.ZdSection{}).Error
+func (r *SectionRepo) Remove(id uint, ownerType string) (err error) {
+	err = r.db.Where("id=? AND ownerType=?", id, ownerType).Delete(&model.ZdSection{}).Error
 	return
 }
 
