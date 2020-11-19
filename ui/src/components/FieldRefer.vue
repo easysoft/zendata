@@ -19,7 +19,7 @@
             <a-input v-model="refer.file">
               <a-select v-model="referFile" @change="onReferChanged" slot="addonAfter" style="width: 300px">
                 <a-select-option value="">选择</a-select-option>
-                <a-select-option v-for="(f, i) in files" :value="f.name+'-'+f.title" :key="i">
+                <a-select-option v-for="(f, i) in files" :value="f.id" :key="i">
                   {{ f.title }}
                 </a-select-option>
               </a-select>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import {listReferType, listReferField, getRefer, updateRefer,
+import {listReferForSelection, listReferFieldForSelection, getRefer, updateRefer,
 } from "../api/refer";
 
 export default {
@@ -131,26 +131,35 @@ export default {
       getRefer(this.model.id, this.type).then(json => {
         console.log('getRefer', json)
         this.refer = json.data
-        this.listReferType(this.refer.type, true)
+        this.listReferForSelection(this.refer.type, true)
       })
     },
 
     onTypeChanged() {
       console.log('onTypeChanged')
-      this.listReferType(this.refer.type, false)
+      this.listReferForSelection(this.refer.type, false)
     },
     onReferChanged(value) {
       console.log("onReferChanged")
-      this.refer.file = value.split('-')[0]
 
-      if (this.refer.type != 'yaml' && this.refer.type != 'text') {
-        this.listDefFieldReferField()
+      let file = {}
+      for (let i = 0; i < this.files.length; i++) {
+        const f = this.files[i]
+        if (f.id === value) {
+          file = f
+          break
+        }
+      }
+      this.refer.file = file.name
+
+      if (this.refer.type != 'yaml' && this.refer.type != 'config' && this.refer.type != 'text') {
+        this.listReferFieldForSelection()
       } else {
         this.refer.colName = ''
       }
     },
     onFieldNameChanged(value) {
-      console.log("onFieldChanged")
+      console.log("onFieldNameChanged")
       this.refer.colName = value
     },
 
@@ -174,9 +183,9 @@ export default {
       this.$refs.editForm.reset()
     },
 
-    listReferType(resType, init) {
-      listReferType(resType).then(json => {
-        console.log('listReferType', json)
+    listReferForSelection(resType, init) {
+      listReferForSelection(resType).then(json => {
+        console.log('listReferForSelection', json)
         this.files = json.data
       })
 
@@ -185,18 +194,9 @@ export default {
         this.referFile = ''
       }
     },
-    listDefFieldReferField() {
-      let file = {}
-      for (let i = 0; i < this.files.length; i++) {
-        const f = this.files[i]
-        if (f.name + '-' + f.title === this.referFile) {
-          file = f
-          break
-        }
-      }
-
-      listReferField(file).then(json => {
-        console.log('listReferField', json)
+    listReferFieldForSelection() {
+      listReferFieldForSelection(this.referFile, this.refer.type).then(json => {
+        console.log('listReferFieldForSelection', json)
         this.fields = json.data
       })
       this.refer.colName = ''

@@ -21,8 +21,8 @@ export function updateRefer (refer, ownerType) {
 }
 
 // selection input on page
-export function listReferType (resType) {
-  const data = {'action': 'listReferType', mode: resType}
+export function listReferForSelection (resType) {
+  const data = {'action': 'listReferForSelection', mode: resType}
 
   return request({
     url: api.admin,
@@ -30,8 +30,8 @@ export function listReferType (resType) {
     data: data
   })
 }
-export function listReferField (refer) {
-  const data = {'action': 'listReferField', data: refer}
+export function listReferFieldForSelection (referId, referType) {
+  const data = {'action': 'listReferFieldForSelection', id: referId, mode: referType}
 
   return request({
     url: api.admin,

@@ -292,7 +292,7 @@ func Init() (err error) {
 	gormDb, err := serverConfig.NewGormDB(config)
 	defer gormDb.Close()
 
-	deferRepo := serverRepo.NewDefRepo(gormDb)
+	defRepo := serverRepo.NewDefRepo(gormDb)
 	fieldRepo := serverRepo.NewFieldRepo(gormDb)
 	sectionRepo := serverRepo.NewSectionRepo(gormDb)
 	referRepo := serverRepo.NewReferRepo(gormDb)
@@ -302,8 +302,8 @@ func Init() (err error) {
 	excelRepo := serverRepo.NewExcelRepo(gormDb)
 	configRepo := serverRepo.NewConfigRepo(gormDb)
 
-	defService := serverService.NewDefService(deferRepo, fieldRepo, referRepo)
-	fieldService := serverService.NewFieldService(deferRepo, fieldRepo, referRepo)
+	defService := serverService.NewDefService(defRepo, fieldRepo, referRepo)
+	fieldService := serverService.NewFieldService(defRepo, fieldRepo, referRepo)
 	sectionService := serverService.NewSectionService(fieldRepo, sectionRepo)
 	referService := serverService.NewReferService(fieldRepo, referRepo)
 
@@ -312,9 +312,11 @@ func Init() (err error) {
 	textService := serverService.NewTextService(textRepo)
 	excelService := serverService.NewExcelService(excelRepo)
 	configService := serverService.NewConfigService(configRepo)
+	resService := serverService.NewResService(rangesRepo, instancesRepo,
+		configRepo, excelRepo, textRepo, defRepo)
 
 	server := NewServer(config, defService, fieldService, sectionService, referService,
-		rangesService, instancesService, textService, excelService, configService)
+		rangesService, instancesService, textService, excelService, configService, resService)
 	server.Run()
 
 	return
@@ -427,11 +429,10 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "updateRefer":
 		refer := serverUtils.ConvertRefer(reqData.Data)
 		err = s.referService.Update(&refer)
-	case "listReferType":
-		ret.Data = s.resService.LoadRes(reqData.Mode)
-	case "listReferField":
-		refer := serverUtils.ConvertResFile(reqData.Data)
-		ret.Data = s.resService.LoadResField(refer)
+	case "listReferForSelection":
+		ret.Data = s.resService.ListReferForSelection(reqData.Mode)
+	case "listReferFieldForSelection":
+		ret.Data = s.resService.ListReferFieldForSelection(reqData.Id, reqData.Mode)
 
 	case "listRanges":
 		ret.Data = s.rangesService.List()
@@ -530,7 +531,12 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	io.WriteString(writer, string(bytes))
 }
 
-func NewServer(config *serverConfig.Config, defService *serverService.DefService, fieldServer *serverService.FieldService, sectionService *serverService.SectionService, referService *serverService.ReferService, rangesService *serverService.RangesService, instancesService *serverService.InstancesService, textService *serverService.TextService, excelService *serverService.ExcelService, configService *serverService.ConfigService, ) *Server {
+func NewServer(config *serverConfig.Config, defService *serverService.DefService,
+	fieldServer *serverService.FieldService, sectionService *serverService.SectionService,
+	referService *serverService.ReferService, rangesService *serverService.RangesService,
+	instancesService *serverService.InstancesService, textService *serverService.TextService,
+	excelService *serverService.ExcelService, configService *serverService.ConfigService,
+	resService *serverService.ResService) *Server {
 	return &Server{
 		config:        config,
 		defService: defService,
@@ -542,6 +548,7 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 		textService: textService,
 		excelService: excelService,
 		configService: configService,
+		resService: resService,
 	}
 }
 

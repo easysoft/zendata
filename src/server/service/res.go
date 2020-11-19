@@ -3,13 +3,19 @@ package serverService
 import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/src/model"
+	serverRepo "github.com/easysoft/zendata/src/server/repo"
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"strings"
 )
 
 type ResService struct {
+	rangesRepo *serverRepo.RangesRepo
+	instancesRepo *serverRepo.InstancesRepo
+	configRepo *serverRepo.ConfigRepo
+	excelRepo *serverRepo.ExcelRepo
+	textRepo *serverRepo.TextRepo
+	defRepo *serverRepo.DefRepo
 }
 
 func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
@@ -37,31 +43,44 @@ func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 	return
 }
 
-func (s *ResService) LoadResField(refer model.ResFile) (ret []model.ResField) {
-	resFile, resType, _ := fileUtils.GetResProp(refer.Name)
-
-	if resType == "yaml" {
-		typ, inst, ranges := service.ReadYamlData(resFile)
-		if typ == "inst" {
-			for i, item := range inst.Instances {
-				field := model.ResField{Name: item.Instance, Index: i+1}
-				ret = append(ret, field)
-			}
-		} else if typ == "range" {
-			i := 0
-			for name, _ := range ranges.Ranges {
-				field := model.ResField{Name: name, Index: i+1}
-				ret = append(ret, field)
-				i++
-			}
-		}
-	} else if resType == "text" {
-		// no need to show fields in webpage, used as list
-
+func (s *ResService) ListReferForSelection(resType string) (ret interface{}) {
+	if resType == "ranges" {
+		ret, _ = s.rangesRepo.List()
+	} else if resType == "instances" {
+		ret, _ = s.instancesRepo.List()
+	} else if resType == "config" {
+		ret, _ = s.configRepo.List()
+	} else if resType == "yaml" {
+		ret, _ = s.defRepo.List()
 	} else if resType == "excel" {
-		excel, _ := excelize.OpenFile(resFile)
+		ret, _ = s.excelRepo.List()
+	} else if resType == "text" {
+		ret, _ = s.textRepo.List()
+	}
+
+	return
+}
+func (s *ResService) ListReferFieldForSelection(resId int, resType string) (ret []model.ResField) {
+	if resType == "instances" {
+		items, _ := s.instancesRepo.GetItems(resId)
+		for i, item := range items {
+			if item.ParentID != 0 { return } // ignore sub nodes
+			field := model.ResField{Name: item.Instance, Index: i+1}
+			ret = append(ret, field)
+		}
+	} else if resType == "ranges" {
+		items, _ := s.rangesRepo.GetItems(resId)
+		for i, item := range items {
+			if item.ParentID != 0 { return } // ignore sub nodes
+			field := model.ResField{Name: item.Name, Index: i+1}
+			ret = append(ret, field)
+		}
+	} else if resType == "excel" {
+		res, _ := s.excelRepo.Get(uint(resId))
+		excel, _ := excelize.OpenFile(res.Path)
+
 		for _, sheet := range excel.GetSheetList() {
-			if refer.Title != sheet { continue }
+			if res.Sheet != sheet { continue }
 
 			rows, _ := excel.GetRows(sheet)
 
@@ -79,5 +98,17 @@ func (s *ResService) LoadResField(refer model.ResFile) (ret []model.ResField) {
 			}
 		}
 	}
+
 	return
+}
+
+func NewResService(rangesRepo *serverRepo.RangesRepo,
+	instancesRepo *serverRepo.InstancesRepo,
+	configRepo *serverRepo.ConfigRepo,
+	excelRepo *serverRepo.ExcelRepo,
+	textRepo *serverRepo.TextRepo,
+	defRepo *serverRepo.DefRepo) *ResService {
+	return &ResService{rangesRepo: rangesRepo, instancesRepo: instancesRepo,
+		configRepo: configRepo, excelRepo: excelRepo,
+		textRepo: textRepo, defRepo: defRepo}
 }

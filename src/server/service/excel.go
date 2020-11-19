@@ -55,7 +55,7 @@ func (s *ExcelService) saveResToDB(excel []model.ResFile, list []*model.ZdExcel)
 
 	for _, item := range excel {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			excel := model.ZdExcel{Title: item.Title, Name: item.Name, Path: item.Path}
+			excel := model.ZdExcel{Title: item.Title, Name: item.Name, Path: item.Path, Sheet: item.Title}
 			s.excelRepo.Save(&excel)
 		}
 	}

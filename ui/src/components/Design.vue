@@ -135,6 +135,7 @@ export default {
       time2: 0,
 
       treeData: [],
+      nodeMap: {},
       openKeys: [],
       selectedKeys: [],
       targetModel: 0,
@@ -236,62 +237,57 @@ export default {
         this.rightVisible = false
       }
     },
-    getOpenKeys (field) {
-      if (!field) return
+    getOpenKeys (node) {
+      if (!node) return
 
-      this.openKeys.push(field.id)
-      if (field.fields) {
-        field.fields.forEach((item) => {
+      this.openKeys.push(node.id)
+      this.nodeMap[node.id] = node
+      if (node.fields) {
+        node.fields.forEach((item) => {
           this.getOpenKeys(item)
         })
       }
     },
     onSelect (selectedKeys, e) { // selectedKeys, e:{selected: bool, selectedNodes, node, event}
-      console.log('onSelect', selectedKeys, e.node.eventKey)
+      console.log('onSelect', selectedKeys, e.selectedNodes, e.node, e.node.eventKey)
       if (selectedKeys.length == 0) {
         selectedKeys[0] = e.node.eventKey // keep selected
+      }
+
+      const node = this.nodeMap[e.node.eventKey]
+      console.log('node', node.fields)
+      if (node.fields && node.fields.length > 0) {
+        this.rightVisible = false
+        this.modelData = {}
+        return
+      } else {
+        this.rightVisible = true
+        this.tabKey = 'info'
       }
 
       this.getModel(parseInt(selectedKeys[0]))
     },
     getModel(id) {
+      console.log('getModel', id)
+
       if (this.type === 'def') {
         getDefField(id).then(res => {
           console.log('getDefField', res)
           this.modelData = res.data
           this.time2 = Date.now() // trigger data refresh
-
-          this.tabKey = 'info'
-          if (this.modelData.parentID == 0) {
-            this.rightVisible = false
-          } else {
-            this.rightVisible = true
-          }
         })
       } else if (this.type === 'ranges') {
-        if (id == 0) {
-          this.rightVisible = false
-        } else {
-          getResRangesItem(id).then(res => {
-            console.log('getResRangesItem', res)
-            this.modelData = res.data
-            this.time2 = Date.now() // trigger data refresh
-
-            this.rightVisible = true
-          })
-        }
+        getResRangesItem(id).then(res => {
+          console.log('getResRangesItem', res)
+          this.modelData = res.data
+          this.time2 = Date.now() // trigger data refresh
+        })
       } else if (this.type === 'instances') {
-        if (id == 0) {
-          this.rightVisible = false
-        } else {
-          getResInstancesItem(id).then(res => {
-            console.log('getResInstancesItem', res)
-            this.modelData = res.data
-            this.time2 = Date.now() // trigger data refresh
-
-            this.rightVisible = true
-          })
-        }
+        getResInstancesItem(id).then(res => {
+          console.log('getResInstancesItem', res)
+          this.modelData = res.data
+          this.time2 = Date.now() // trigger data refresh
+        })
       }
     },
     menuClick (e) {

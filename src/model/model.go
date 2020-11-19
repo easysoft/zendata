@@ -231,7 +231,7 @@ type ZdExcel struct {
 	Model
 	Title  string `gorm:"column:title" json:"title"`
 	Name  string `gorm:"column:name" json:"name"`
-	Text   string `gorm:"column:desc" json:"desc"`
+	Sheet   string `gorm:"column:sheet" json:"sheet"`
 	Path   string `gorm:"column:path" json:"path" yaml:"-"`
 
 	Folder string `gorm:"-" json:"folder" yaml:"-"`
