@@ -67,6 +67,7 @@ func (s *ConfigService) saveResToDB(config []model.ResFile, list []*model.ZdConf
 			config.Path = item.Path
 			config.Field = item.Title
 			config.Note = item.Desc
+			config.Yaml = string(content)
 
 			s.configRepo.Save(&config)
 		}

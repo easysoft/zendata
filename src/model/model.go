@@ -18,6 +18,7 @@ type ZdDef struct {
 	Desc   string `gorm:"column:desc" json:"desc"`
 	Yaml   string `gorm:"yaml" json:"yaml"`
 	Folder string `gorm:"-" json:"folder" yaml:"-"`
+	Fields []ZdField `gorm:"-" json:"fields"`
 }
 func (*ZdDef) TableName() string {
 	return constant.TablePrefix + "def"
@@ -54,7 +55,7 @@ type ZdField struct {
 	Limit	int `gorm:"column:limitCol" json:"limitCol"`
 
 	Ord int `gorm:"column:ord;default:1" json:"ord"`
-	Children []*ZdField `gorm:"-" json:"children"`
+	Fields []*ZdField `gorm:"-" json:"fields"`
 	Froms []*ZdField    `gorm:"-" json:"froms"`
 
 	// for range edit

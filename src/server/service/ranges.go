@@ -102,13 +102,17 @@ func (s *RangesService) saveResToDB(ranges []model.ResFile, list []*model.ZdRang
 			ranges.Path = item.Path
 			ranges.Field = item.Title
 			ranges.Note = item.Desc
+			ranges.Yaml = string(content)
 
 			s.rangesRepo.Save(&ranges)
 
+			i := 1
 			for k, v := range ranges.RangeMap {
 				item := model.ZdRangesItem{Name: k, Value: v}
 				item.RangesID = ranges.ID
+				item.Ord = i
 				s.rangesRepo.SaveItem(&item)
+				i += 1
 			}
 		}
 	}

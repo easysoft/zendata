@@ -86,7 +86,7 @@ func (r *FieldRepo) Save(field *model.ZdField) (err error) {
 func (r *FieldRepo) makeTree(Data []*model.ZdField, node *model.ZdField) { //参数为父节点，添加父节点的子节点指针切片
 	children, _ := r.haveChild(Data, node) //判断节点是否有子节点并返回
 	if children != nil {
-		node.Children = append(node.Children, children[0:]...) //添加子节点
+		node.Fields = append(node.Fields, children[0:]...) //添加子节点
 		for _, v := range children {                           //查询子节点的子节点，并添加到子节点
 			_, has := r.haveChild(Data, v)
 			if has {

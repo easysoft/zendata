@@ -5,8 +5,10 @@ import (
 	"github.com/easysoft/zendata/src/server/repo"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
+	"io/ioutil"
 	"strings"
 )
 
@@ -14,10 +16,15 @@ type DefService struct {
 	defRepo *serverRepo.DefRepo
 	fieldRepo *serverRepo.FieldRepo
 	referRepo *serverRepo.ReferRepo
+	resService *ResService
 }
 
-func (s *DefService) List() (defs []*model.ZdDef) {
-	defs, _ = s.defRepo.List()
+func (s *DefService) List() (list []*model.ZdDef) {
+	defs := s.resService.LoadRes("yaml")
+	list, _ = s.defRepo.List()
+
+	s.saveDataToDB(defs, list)
+	list, _ = s.defRepo.List()
 	return
 }
 
@@ -100,7 +107,7 @@ func (s *DefService) dataToYaml(def *model.ZdDef) (str string) {
 	defData := model.DefData{}
 	s.defRepo.GenDef(*def, &defData)
 
-	for _, child := range root.Children { // ignore the root
+	for _, child := range root.Fields { // ignore the root
 		defField := model.DefField{}
 		convertToConfModel(*child, &defField)
 
@@ -132,6 +139,47 @@ func (s *DefService) getFolder(pth string) string {
 	return pth[:idx+1]
 }
 
-func NewDefService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo, referRepo *serverRepo.ReferRepo) *DefService {
+func (s *DefService) saveDataToDB(defs []model.ResFile, list []*model.ZdDef) (err error) {
+	names := make([]string, 0)
+	for _, item := range list {
+		names = append(names, item.Path)
+	}
+
+	for _, def := range defs {
+		if !stringUtils.FindInArrBool(def.Path, names) {
+			//if strings.Contains(inst.Path, "_test") {
+			content, _ := ioutil.ReadFile(def.Path)
+			yamlContent := stringUtils.ReplaceSpecialChars(content)
+			defPo := model.ZdDef{}
+			err = yaml.Unmarshal(yamlContent, &defPo)
+			defPo.Title = def.Title
+			defPo.Type = def.ResType
+			defPo.Desc = def.Desc
+			defPo.Path = def.Path
+			defPo.Yaml = string(content)
+
+			s.defRepo.Create(&defPo)
+
+			for _, field := range defPo.Fields {
+				s.saveFieldToDB(&field, 0, defPo.ID)
+			}
+			//}
+		}
+	}
+
+	return
+}
+func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
+	item.DefID = defID
+	item.ParentID = parentID
+	s.fieldRepo.Save(item)
+
+	for _, child := range item.Fields {
+		s.saveFieldToDB(child, item.ID, defID)
+	}
+}
+
+func NewDefService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo,
+	referRepo *serverRepo.ReferRepo) *DefService {
 	return &DefService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo}
 }

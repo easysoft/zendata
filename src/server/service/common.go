@@ -5,7 +5,7 @@ import "github.com/easysoft/zendata/src/model"
 func convertToConfModel(treeNode model.ZdField, field *model.DefField) {
 	genField(treeNode, field)
 
-	for _, child := range treeNode.Children {
+	for _, child := range treeNode.Fields {
 		defField := model.DefField{}
 		convertToConfModel(*child, &defField)
 

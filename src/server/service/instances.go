@@ -104,10 +104,12 @@ func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.
 				instPo.Name = inst.Name
 				instPo.Desc = inst.Desc
 				instPo.Path = inst.Path
+				instPo.Yaml = string(content)
 
 				s.instancesRepo.Save(&instPo)
 
-				for _, item := range instPo.Instances {
+				for i, item := range instPo.Instances {
+					item.Ord = i + 1
 					s.saveItemToDB(&item, 0, instPo.ID)
 				}
 			//}
