@@ -27,8 +27,11 @@ func (s *TextService) List() (list []*model.ZdText) {
 	return
 }
 
-func (s *TextService) Get(id int) (text model.ZdText) {
+func (s *TextService) Get(id int) (text model.ZdText, dirTree model.Dir) {
 	text, _ = s.textRepo.Get(uint(id))
+
+	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirYaml)}
+	serverUtils.GetDirTree(&dirTree)
 
 	return
 }
@@ -72,8 +75,8 @@ func (s *TextService) Remove(id int) (err error) {
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
-	fileUtils.RemoveExist(old.Path)
 
+	fileUtils.RemoveExist(old.Path)
 	err = s.textRepo.Remove(uint(id))
 
 	return

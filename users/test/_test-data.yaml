@@ -1,0 +1,28 @@
+title: 数据测试
+desc:
+
+author: zentao
+version: 1.0
+
+fields:
+
+  - field: field_with_children          # 字段多层嵌套
+    fields:
+      - field: child1
+        range: a-z
+        prefix: part1_
+        postfix: '|'
+
+      - field:  child2
+        range: A-Z
+        prefix: part2_
+        postfix: '|'
+
+      - field: child_with_child
+        prefix: part3_
+        postfix:
+        fields:
+          - field: field_grandson
+            prefix: int_
+            range: 10-20
+            postfix:

@@ -76,13 +76,14 @@
           <a-form-model-item label="格式" prop="format" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <div class="inline">
               <a-input v-model="model.format">
-                <a-select slot="addonAfter" default-value="" style="width: 80px">
+                <a-select v-model="model.format" slot="addonAfter" default-value="" style="width: 100px">
                   <a-select-option value="">
-                    函数
+                    选择函数
                   </a-select-option>
-                  <a-select-option value=".jp">
-                    md5
-                  </a-select-option>
+                  <a-select-option value="md5">md5</a-select-option>
+                  <a-select-option value="sha1">sha1</a-select-option>
+                  <a-select-option value="base64">base64</a-select-option>
+                  <a-select-option value="urlencode">urlencode</a-select-option>
                 </a-select>
               </a-input>
             </div>

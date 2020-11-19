@@ -29,9 +29,11 @@ func (s *DefService) List() (list []*model.ZdDef) {
 	return
 }
 
-func (s *DefService) Get(id int) (def model.ZdDef, err error) {
+func (s *DefService) Get(id int) (def model.ZdDef, dirTree model.Dir) {
 	def, _ = s.defRepo.Get(uint(id))
-	def.Folder = serverUtils.GetRelativePath(def.Path)
+
+	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirUsers)}
+	serverUtils.GetDirTree(&dirTree)
 
 	return
 }
@@ -90,7 +92,7 @@ func (s *DefService) Remove(id int) (err error) {
 
 func (s *DefService) UpdateYaml(defId uint) (err error) {
 	var def model.ZdDef
-	def, err = s.Get(int(defId))
+	def, _ = s.defRepo.Get(defId)
 
 	s.dataToYaml(&def)
 	err = s.defRepo.UpdateYaml(def)
@@ -136,6 +138,7 @@ func (s *DefService) saveDataToDB(defs []model.ResFile, list []*model.ZdDef) (er
 			defPo.Type = def.ResType
 			defPo.Desc = def.Desc
 			defPo.Path = def.Path
+			defPo.Folder = serverUtils.GetRelativePath(defPo.Path)
 			defPo.Yaml = string(content)
 
 			s.defRepo.Create(&defPo)

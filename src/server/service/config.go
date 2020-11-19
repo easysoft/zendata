@@ -83,8 +83,8 @@ func (s *ConfigService) Remove(id int) (err error) {
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
-	fileUtils.RemoveExist(old.Path)
 
+	fileUtils.RemoveExist(old.Path)
 	err = s.configRepo.Remove(uint(id))
 
 	return

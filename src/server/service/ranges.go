@@ -29,8 +29,11 @@ func (s *RangesService) List() (list []*model.ZdRanges) {
 	return
 }
 
-func (s *RangesService) Get(id int) (ranges model.ZdRanges) {
+func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirTree model.Dir) {
 	ranges, _ = s.rangesRepo.Get(uint(id))
+
+	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirYaml)}
+	serverUtils.GetDirTree(&dirTree)
 
 	return
 }
@@ -76,44 +79,9 @@ func (s *RangesService) Remove(id int) (err error) {
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
+
 	fileUtils.RemoveExist(old.Path)
-
 	err = s.rangesRepo.Remove(uint(id))
-	return
-}
-
-func (s *RangesService) GetItemTree(rangesId int) (root model.ZdRangesItem) {
-	items, _ := s.rangesRepo.GetItems(rangesId)
-
-	root.ID = 0
-	root.Name = "序列"
-	for _, item := range items {
-		item.ParentID = root.ID
-		root.Children = append(root.Children, item)
-	}
-
-	return
-}
-func (s *RangesService) GetItem(id int) (item model.ZdRangesItem) {
-	item, _ = s.rangesRepo.GetItem(uint(id))
-	return
-}
-
-func (s *RangesService) CreateItem(domainId, targetId int, mode string) (item *model.ZdRangesItem, err error) {
-	item = &model.ZdRangesItem{Name: "ranges_", RangesID: uint(domainId)}
-	item.Ord = s.rangesRepo.GetMaxOrder(domainId)
-
-	err = s.rangesRepo.SaveItem(item)
-
-	return
-}
-func (s *RangesService) SaveItem(item *model.ZdRangesItem) (err error) {
-	err = s.rangesRepo.SaveItem(item)
-	return
-}
-
-func (s *RangesService) RemoveItem(id int) (err error) {
-	err = s.rangesRepo.RemoveItem(uint(id))
 	return
 }
 

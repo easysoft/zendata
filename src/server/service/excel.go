@@ -27,8 +27,11 @@ func (s *ExcelService) List() (list []*model.ZdExcel) {
 	return
 }
 
-func (s *ExcelService) Get(id int) (excel model.ZdExcel) {
+func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirTree model.Dir) {
 	excel, _ = s.excelRepo.Get(uint(id))
+
+	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirData)}
+	serverUtils.GetDirTree(&dirTree)
 
 	return
 }
@@ -67,8 +70,8 @@ func (s *ExcelService) Remove(id int) (err error) {
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
-	fileUtils.RemoveExist(old.Path)
 
+	fileUtils.RemoveExist(old.Path)
 	err = s.excelRepo.Remove(uint(id))
 	return
 }

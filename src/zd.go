@@ -362,7 +362,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.defService.List()
 	case "getDef":
 		var def model.ZdDef
-		def, err = s.defService.Get(reqData.Id)
+		def, ret.Res = s.defService.Get(reqData.Id)
 
 		ret.Data = def
 	case "saveDef":
@@ -433,7 +433,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listRanges":
 		ret.Data = s.rangesService.List()
 	case "getRanges":
-		ret.Data = s.rangesService.Get(reqData.Id)
+		ret.Data, ret.Res = s.rangesService.Get(reqData.Id)
 	case "saveRanges":
 		ranges := serverUtils.ConvertRanges(reqData.Data)
 		ret.Data = s.rangesService.Save(&ranges)
@@ -461,7 +461,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listInstances":
 		ret.Data = s.instancesService.List()
 	case "getInstances":
-		ret.Data = s.instancesService.Get(reqData.Id)
+		ret.Data, ret.Res = s.instancesService.Get(reqData.Id)
 	case "saveInstances":
 		ranges := serverUtils.ConvertInstances(reqData.Data)
 		ret.Data = s.instancesService.Save(&ranges)
@@ -488,7 +488,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listExcel":
 		ret.Data = s.excelService.List()
 	case "getExcel":
-		ret.Data = s.excelService.Get(reqData.Id)
+		ret.Data, ret.Res = s.excelService.Get(reqData.Id)
 	case "saveExcel":
 		ranges := serverUtils.ConvertExcel(reqData.Data)
 		ret.Data = s.excelService.Save(&ranges)
@@ -498,7 +498,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listText":
 		ret.Data = s.textService.List()
 	case "getText":
-		ret.Data = s.textService.Get(reqData.Id)
+		ret.Data, ret.Res = s.textService.Get(reqData.Id)
 	case "saveText":
 		ranges := serverUtils.ConvertText(reqData.Data)
 		ret.Data = s.textService.Save(&ranges)

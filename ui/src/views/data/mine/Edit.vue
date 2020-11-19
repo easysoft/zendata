@@ -15,8 +15,21 @@
           <a-input v-model="model.title" />
         </a-form-model-item>
         <a-form-model-item label="目录" prop="folder">
-          <a-input v-model="model.folder" />
+          <a-input v-model="model.folder">
+            <a-tree-select
+                slot="addonAfter"
+                v-model="model.folder"
+                style="width: 400px"
+                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                :tree-data="dirTreeData"
+                placeholder="请选择"
+                tree-default-expand-all
+                :replaceFields="dirFieldMap"
+            >
+            </a-tree-select>
+          </a-input>
         </a-form-model-item>
+
         <a-form-model-item label="类型">
           <a-select v-model="model.type">
             <a-select-option value="text">字符串</a-select-option>
@@ -42,15 +55,15 @@
 <script>
 
 import { getDef, saveDef } from "../../../api/manage";
-import { labelCol, wrapperCol } from "../../../utils/const";
+import { labelColLarge, wrapperColLarge } from "../../../utils/const";
 import {checkDirIsUsers} from "../../../api/utils";
 
 export default {
   name: 'Mine',
   data() {
     return {
-      labelCol: labelCol,
-      wrapperCol: wrapperCol,
+      labelCol: labelColLarge,
+      wrapperCol: wrapperColLarge,
       rules: {
         title: [
           { required: true, message: '名称不能为空', trigger: 'change' },
@@ -60,7 +73,9 @@ export default {
         ],
       },
       id: 0,
-      model: { folder: 'users/', type: 'text' }
+      model: { folder: 'users/', type: 'text' },
+      dirTreeData: [],
+      dirFieldMap: {children:'children', title:'name', key:'name', value: 'name' }
     };
   },
   computed: {
@@ -74,6 +89,7 @@ export default {
     getDef(this.id).then(json => {
       console.log('getDef', json)
       this.model = json.data
+      this.dirTreeData = [json.res]
     })
   },
   mounted () {
