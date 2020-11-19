@@ -161,3 +161,9 @@ type ResField struct {
 	Index int `json:"index"`
 	Name    string `json:"name"`
 }
+
+type Dir struct {
+	Name string `json:"name"`
+	Path string `json:-`
+	Children []*Dir `json:"children"`
+}

@@ -29,8 +29,13 @@ func (s *ConfigService) List() (list []*model.ZdConfig) {
 	return
 }
 
-func (s *ConfigService) Get(id int) (config model.ZdConfig) {
-	config, _ = s.configRepo.Get(uint(id))
+func (s *ConfigService) Get(id int) (config model.ZdConfig, dirTree model.Dir) {
+	if id > 0 {
+		config, _ = s.configRepo.Get(uint(id))
+	}
+
+	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirYaml)}
+	serverUtils.GetDirTree(&dirTree)
 
 	return
 }
@@ -56,18 +61,18 @@ func (s *ConfigService) Create(config *model.ZdConfig) (err error) {
 	return
 }
 
-func (s *ConfigService) Update(def *model.ZdConfig) (err error) {
+func (s *ConfigService) Update(config *model.ZdConfig) (err error) {
 	var old model.ZdConfig
-	old, err = s.configRepo.Get(def.ID)
+	old, err = s.configRepo.Get(config.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
-	if def.Path != old.Path {
+	if config.Path != old.Path {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	s.dataToYaml(def)
-	err = s.configRepo.Update(def)
+	s.dataToYaml(config)
+	err = s.configRepo.Update(config)
 
 	return
 }
@@ -106,6 +111,7 @@ func (s *ConfigService) importResToDB(config []model.ResFile, list []*model.ZdCo
 			config.Name = item.Name
 			config.Desc = item.Desc
 			config.Path = item.Path
+			config.Folder = serverUtils.GetRelativePath(config.Path)
 			config.Field = item.Title
 			config.Note = item.Desc
 			config.Yaml = string(content)

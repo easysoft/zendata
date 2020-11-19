@@ -141,7 +141,7 @@ type ZdRangesItem struct {
 	Children []*ZdRangesItem `gorm:"-" json:"children"`
 }
 func (*ZdRangesItem) TableName() string {
-	return constant.TablePrefix + "rangesItem"
+	return constant.TablePrefix + "ranges_item"
 }
 
 type ZdInstances struct {
@@ -207,7 +207,7 @@ type ZdInstancesItem struct {
 	Refer ZdRefer `gorm:"ForeignKey:fieldID" json:"refer"`
 }
 func (*ZdInstancesItem) TableName() string {
-	return constant.TablePrefix + "instancesItem"
+	return constant.TablePrefix + "instances_item"
 }
 
 type ZdConfig struct {

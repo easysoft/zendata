@@ -23,7 +23,19 @@
         </a-row>
         <a-row :gutter="colsFull">
           <a-form-model-item label="目录" prop="folder" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.folder" />
+            <a-input v-model="model.folder">
+              <a-tree-select
+                  slot="addonAfter"
+                  v-model="model.folder"
+                  style="width: 400px"
+                  :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                  :tree-data="dirTreeData"
+                  placeholder="请选择"
+                  tree-default-expand-all
+                  :replaceFields="dirFieldMap"
+              >
+              </a-tree-select>
+            </a-input>
           </a-form-model-item>
         </a-row>
 
@@ -119,6 +131,8 @@ export default {
 
       id: 0,
       model: { folder: 'yaml/'},
+      dirTreeData: [],
+      dirFieldMap: {children:'children', title:'name', key:'name', value: 'name' }
     };
   },
 
@@ -134,11 +148,10 @@ export default {
   },
   methods: {
     loadData () {
-      if (!this.id) return
-
-      getConfig(this.id).then(res => {
-        console.log('getConfig', res)
-        this.model = res.data
+      getConfig(this.id).then(json => {
+        console.log('getConfig', json)
+        this.model = json.data
+        this.dirTreeData = [json.res]
       })
     },
     save() {

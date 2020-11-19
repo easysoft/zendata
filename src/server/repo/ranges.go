@@ -24,7 +24,7 @@ func (r *RangesRepo) Create(ranges *model.ZdRanges) (err error) {
 	return
 }
 func (r *RangesRepo) Update(ranges *model.ZdRanges) (err error) {
-	err = r.db.Update(ranges).Error
+	err = r.db.Save(ranges).Error
 	return
 }
 

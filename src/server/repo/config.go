@@ -24,7 +24,7 @@ func (r *ConfigRepo) Create(model *model.ZdConfig) (err error) {
 	return
 }
 func (r *ConfigRepo) Update(model *model.ZdConfig) (err error) {
-	err = r.db.Update(model).Error
+	err = r.db.Save(model).Error
 	return
 }
 

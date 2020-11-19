@@ -24,7 +24,7 @@ func (r *InstancesRepo) Create(model *model.ZdInstances) (err error) {
 	return
 }
 func (r *InstancesRepo) Update(model *model.ZdInstances) (err error) {
-	err = r.db.Update(model).Error
+	err = r.db.Save(model).Error
 	return
 }
 

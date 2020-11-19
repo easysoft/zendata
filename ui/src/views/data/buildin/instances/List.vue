@@ -8,6 +8,14 @@
     </div>
 
     <a-table :columns="columns" :data-source="models" rowKey="id">
+      <span slot="folderWithPath" slot-scope="text, record">
+        <a-tooltip placement="top" overlayClassName="tooltip-light">
+          <template slot="title">
+            <span>{{record.path}}</span>
+          </template>
+          {{record.folder}}
+        </a-tooltip>
+      </span>
 
       <span slot="action" slot-scope="record">
         <a @click="edit(record)">编辑</a> |
@@ -55,8 +63,9 @@ const columns = [
     dataIndex: 'name',
   },
   {
-    title: '路径',
-    dataIndex: 'path',
+    title: '目录',
+    dataIndex: 'folder',
+    scopedSlots: { customRender: 'folderWithPath' },
   },
   {
     title: '操作',

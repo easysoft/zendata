@@ -6,6 +6,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"io/ioutil"
 	"strings"
 )
 
@@ -107,4 +108,22 @@ func AddExt(pth, ext string) string {
 	}
 
 	return pth
+}
+
+func GetDirTree(parent *model.Dir) {
+	folder := parent.Name
+	files, _ := ioutil.ReadDir(folder)
+	for _, fi := range files {
+		name := fi.Name()
+		if !fi.IsDir() || strings.Index(name, ".") == 0 {
+			continue
+		}
+
+		childFolder := fileUtils.AddSepIfNeeded(folder + name)
+		child := &model.Dir{Name: childFolder}
+		parent.Children = append(parent.Children, child)
+		GetDirTree(child)
+	}
+
+	return
 }

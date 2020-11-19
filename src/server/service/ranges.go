@@ -138,6 +138,7 @@ func (s *RangesService) importResToDB(ranges []model.ResFile, list []*model.ZdRa
 			ranges.Name = item.Name
 			ranges.Desc = item.Desc
 			ranges.Path = item.Path
+			ranges.Folder = serverUtils.GetRelativePath(ranges.Path)
 			ranges.Field = item.Title
 			ranges.Note = item.Desc
 			ranges.Yaml = string(content)

@@ -93,7 +93,7 @@ func (s *TextService) importResToDB(texts []model.ResFile, list []*model.ZdText)
 	for _, item := range texts {
 		if !stringUtils.FindInArrBool(item.Path, names) {
 			text := model.ZdText{Title: item.Title, Name: item.Name,Path: item.Path}
-
+			text.Folder = serverUtils.GetRelativePath(text.Path)
 			content := fileUtils.ReadFile(item.Path)
 			text.Content = content
 

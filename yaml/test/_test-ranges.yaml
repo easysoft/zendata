@@ -1,0 +1,14 @@
+title: 系列测试
+desc:
+author: wwccss
+version: 1.0
+
+field: number
+note: 数值类型
+prefix: "'"
+postfix: "'"
+ranges:
+  small: 1-9
+  medium: 101-199
+  large: 10001-99999
+  netmask: 8,16,24

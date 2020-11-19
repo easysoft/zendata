@@ -86,7 +86,10 @@ func (s *ExcelService) importResToDB(excel []model.ResFile, list []*model.ZdExce
 
 	for _, item := range excel {
 		if !stringUtils.FindInArrBool(item.Path, names) {
-			excel := model.ZdExcel{Title: item.Title, Name: item.Name, Path: item.Path, Sheet: item.Title}
+			excel := model.ZdExcel{Title: item.Title, Name: item.Name,
+				Path: item.Path,
+				Sheet: item.Title}
+			excel.Folder = serverUtils.GetRelativePath(excel.Path)
 			s.excelRepo.Create(&excel)
 		}
 	}

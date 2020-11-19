@@ -508,7 +508,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listConfig":
 		ret.Data = s.configService.List()
 	case "getConfig":
-		ret.Data = s.configService.Get(reqData.Id)
+		ret.Data, ret.Res = s.configService.Get(reqData.Id)
 	case "saveConfig":
 		ranges := serverUtils.ConvertConfig(reqData.Data)
 		ret.Data = s.configService.Save(&ranges)

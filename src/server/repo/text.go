@@ -24,7 +24,7 @@ func (r *TextRepo) Create(model *model.ZdText) (err error) {
 	return
 }
 func (r *TextRepo) Update(model *model.ZdText) (err error) {
-	err = r.db.Update(model).Error
+	err = r.db.Save(model).Error
 	return
 }
 

@@ -24,7 +24,7 @@ func (r *ExcelRepo) Create(model *model.ZdExcel) (err error) {
 	return
 }
 func (r *ExcelRepo) Update(model *model.ZdExcel) (err error) {
-	err = r.db.Update(model).Error
+	err = r.db.Save(model).Error
 	return
 }
 

@@ -124,24 +124,23 @@ func (s *InstancesService) importResToDB(instances []model.ResFile, list []*mode
 
 	for _, inst := range instances {
 		if !stringUtils.FindInArrBool(inst.Path, names) {
-			//if strings.Contains(inst.Path, "_test") {
-				content, _ := ioutil.ReadFile(inst.Path)
-				yamlContent := stringUtils.ReplaceSpecialChars(content)
-				instPo := model.ZdInstances{}
-				err = yaml.Unmarshal(yamlContent, &instPo)
-				instPo.Title = inst.Title
-				instPo.Name = inst.Name
-				instPo.Desc = inst.Desc
-				instPo.Path = inst.Path
-				instPo.Yaml = string(content)
+			content, _ := ioutil.ReadFile(inst.Path)
+			yamlContent := stringUtils.ReplaceSpecialChars(content)
+			instPo := model.ZdInstances{}
+			err = yaml.Unmarshal(yamlContent, &instPo)
+			instPo.Title = inst.Title
+			instPo.Name = inst.Name
+			instPo.Desc = inst.Desc
+			instPo.Path = inst.Path
+			instPo.Folder = serverUtils.GetRelativePath(instPo.Path)
+			instPo.Yaml = string(content)
 
-				s.instancesRepo.Create(&instPo)
+			s.instancesRepo.Create(&instPo)
 
-				for i, item := range instPo.Instances {
-					item.Ord = i + 1
-					s.saveItemToDB(&item, 0, instPo.ID)
-				}
-			//}
+			for i, item := range instPo.Instances {
+				item.Ord = i + 1
+				s.saveItemToDB(&item, 0, instPo.ID)
+			}
 		}
 	}
 

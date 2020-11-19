@@ -61,6 +61,9 @@ import 'ant-design-vue/lib/popover/style';
 import Tooltip from "ant-design-vue/lib/tooltip";
 import 'ant-design-vue/lib/tooltip/style';
 
+import TreeSelect from "ant-design-vue/lib/tree-select";
+import 'ant-design-vue/lib/tree-select/style';
+
 import zhCN from './assets/lang/zh-CN'
 import router from "./router"
 
@@ -91,6 +94,7 @@ Vue.use(Radio)
 Vue.use(Spin)
 Vue.use(Popover)
 Vue.use(Tooltip)
+Vue.use(TreeSelect)
 
 const i18n = new VueI18n({
   locale: 'zh-CN',
