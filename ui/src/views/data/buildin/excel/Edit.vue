@@ -16,9 +16,14 @@
             <a-input v-model="model.title" />
           </a-form-model-item>
         </a-row>
-        <a-row :gutter="colsFull">
+        <a-row :gutter="colsFull" v-if="id > 0">
           <a-form-model-item label="引用" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             {{model.name}}
+          </a-form-model-item>
+        </a-row>
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="目录" prop="folder" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-input v-model="model.folder" />
           </a-form-model-item>
         </a-row>
 
@@ -35,6 +40,7 @@
 
 <script>
 import {getExcel, saveText} from "../../../../api/manage";
+import {checkDirIsData} from "../../../../api/utils";
 
 export default {
   name: 'TestEdit',
@@ -48,13 +54,16 @@ export default {
       labelColHalf2: { lg: { span: 4}, sm: { span: 4 } },
       wrapperColHalf: { lg: { span: 12 }, sm: { span: 12 } },
       rules: {
-        field: [
+        title: [
           { required: true, message: '名称不能为空', trigger: 'change' },
+        ],
+        folder: [
+          { validator: checkDirIsData, trigger: 'change' },
         ],
       },
 
       id: 0,
-      model: {},
+      model: { folder: 'data/'},
     };
   },
 

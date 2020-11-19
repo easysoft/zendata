@@ -3,9 +3,12 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	serverUtils "github.com/easysoft/zendata/src/server/utils"
+	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -21,7 +24,7 @@ func (s *InstancesService) List() (list []*model.ZdInstances) {
 	instances := s.resService.LoadRes("instances")
 	list, _ = s.instancesRepo.List()
 
-	s.saveResToDB(instances, list)
+	s.importResToDB(instances, list)
 	list, _ = s.instancesRepo.List()
 
 	return
@@ -34,7 +37,36 @@ func (s *InstancesService) Get(id int) (instances model.ZdInstances) {
 }
 
 func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
-	err = s.instancesRepo.Save(instances)
+	instances.Folder = serverUtils.DealWithPathSepRight(instances.Folder)
+	instances.Path = vari.WorkDir + instances.Folder + serverUtils.AddExt(instances.Title, ".yaml")
+	instances.Name = service.PathToName(instances.Path, constant.ResDirYaml)
+
+	if instances.ID == 0 {
+		err = s.Create(instances)
+	} else {
+		err = s.Update(instances)
+	}
+
+	return
+}
+func (s *InstancesService) Create(instances *model.ZdInstances) (err error) {
+	s.dataToYaml(instances)
+	err = s.instancesRepo.Create(instances)
+
+	return
+}
+func (s *InstancesService) Update(instances *model.ZdInstances) (err error) {
+	var old model.ZdInstances
+	old, err = s.instancesRepo.Get(instances.ID)
+	if err == gorm.ErrRecordNotFound {
+		return
+	}
+	if instances.Path != old.Path {
+		fileUtils.RemoveExist(old.Path)
+	}
+
+	s.dataToYaml(instances)
+	err = s.instancesRepo.Update(instances)
 
 	return
 }
@@ -79,7 +111,12 @@ func (s *InstancesService) RemoveItem(id int) (err error) {
 	return
 }
 
-func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.ZdInstances) (err error) {
+func (s *InstancesService) dataToYaml(inst *model.ZdInstances) (str string) {
+
+	return
+}
+
+func (s *InstancesService) importResToDB(instances []model.ResFile, list []*model.ZdInstances) (err error) {
 	names := make([]string, 0)
 	for _, item := range list {
 		names = append(names, item.Path)
@@ -98,7 +135,7 @@ func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.
 				instPo.Path = inst.Path
 				instPo.Yaml = string(content)
 
-				s.instancesRepo.Save(&instPo)
+				s.instancesRepo.Create(&instPo)
 
 				for i, item := range instPo.Instances {
 					item.Ord = i + 1

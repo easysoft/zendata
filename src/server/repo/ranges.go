@@ -10,7 +10,7 @@ type RangesRepo struct {
 }
 
 func (r *RangesRepo) List() (list []*model.ZdRanges, err error) {
-	err = r.db.Where("true").Order("id ASC").Find(&list).Error
+	err = r.db.Select("id,title,name,folder,path").Where("true").Order("id ASC").Find(&list).Error
 	return
 }
 
@@ -19,8 +19,12 @@ func (r *RangesRepo) Get(id uint) (ranges model.ZdRanges, err error) {
 	return
 }
 
-func (r *RangesRepo) Save(ranges *model.ZdRanges) (err error) {
-	err = r.db.Save(ranges).Error
+func (r *RangesRepo) Create(ranges *model.ZdRanges) (err error) {
+	err = r.db.Create(ranges).Error
+	return
+}
+func (r *RangesRepo) Update(ranges *model.ZdRanges) (err error) {
+	err = r.db.Update(ranges).Error
 	return
 }
 

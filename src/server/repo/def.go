@@ -10,7 +10,7 @@ type DefRepo struct {
 }
 
 func (r *DefRepo) List() (defs []*model.ZdDef, err error) {
-	err = r.db.Find(&defs).Error
+	err = r.db.Select("id,title,folder,path").Find(&defs).Error
 	return
 }
 

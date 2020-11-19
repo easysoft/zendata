@@ -3,13 +3,14 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	serverUtils "github.com/easysoft/zendata/src/server/utils"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"strings"
 )
 
 type DefService struct {
@@ -30,16 +31,24 @@ func (s *DefService) List() (list []*model.ZdDef) {
 
 func (s *DefService) Get(id int) (def model.ZdDef, err error) {
 	def, _ = s.defRepo.Get(uint(id))
-	def.Folder = s.getFolder(def.Path)
+	def.Folder = serverUtils.GetRelativePath(def.Path)
 
 	return
 }
 
-func (s *DefService) Create(def *model.ZdDef) (err error) {
-	def.Folder = s.dealWithPathSepRight(def.Folder)
+func (s *DefService) Save(def *model.ZdDef) (err error) {
+	def.Folder = serverUtils.DealWithPathSepRight(def.Folder)
+	def.Path = vari.WorkDir + def.Folder + serverUtils.AddExt(def.Title, ".yaml")
 
-	def.Path = def.Folder + def.Title
-	def.Path = s.addExt(def.Path)
+	if def.ID == 0 {
+		err = s.Create(def)
+	} else {
+		err = s.Update(def)
+	}
+	return
+}
+
+func (s *DefService) Create(def *model.ZdDef) (err error) {
 	err = s.defRepo.Create(def)
 
 	rootField, err := s.fieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
@@ -52,19 +61,13 @@ func (s *DefService) Create(def *model.ZdDef) (err error) {
 }
 
 func (s *DefService) Update(def *model.ZdDef) (err error) {
-	def.Folder = s.dealWithPathSepRight(def.Folder)
-
-	def.Path = def.Folder + def.Title
-	def.Path = s.addExt(def.Path)
-
-	var oldDef model.ZdDef
-	oldDef, err = s.defRepo.Get(def.ID)
+	var old model.ZdDef
+	old, err = s.defRepo.Get(def.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
-
-	if def.Path != oldDef.Path {
-		fileUtils.RemoveExist(oldDef.Path)
+	if def.Path != old.Path {
+		fileUtils.RemoveExist(old.Path)
 	}
 
 	s.dataToYaml(def)
@@ -115,25 +118,6 @@ func (s *DefService) dataToYaml(def *model.ZdDef) (str string) {
 	def.Yaml = string(bytes)
 
 	return
-}
-
-func (s *DefService) addExt(pth string) string {
-	if strings.LastIndex(pth, ".yaml") != len(pth) - 4 {
-		pth += ".yaml"
-	}
-
-	return pth
-}
-
-func (s *DefService) dealWithPathSepRight(pth string) string {
-	pth = fileUtils.RemovePathSepLeftIfNeeded(pth)
-	pth = fileUtils.AddPathSepRightIfNeeded(pth)
-
-	return pth
-}
-func (s *DefService) getFolder(pth string) string {
-	idx := strings.LastIndex(pth, constant.PthSep)
-	return pth[:idx+1]
 }
 
 func (s *DefService) saveDataToDB(defs []model.ResFile, list []*model.ZdDef) (err error) {

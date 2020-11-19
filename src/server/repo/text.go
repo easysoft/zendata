@@ -10,7 +10,7 @@ type TextRepo struct {
 }
 
 func (r *TextRepo) List() (models []*model.ZdText, err error) {
-	err = r.db.Where("true").Order("id ASC").Find(&models).Error
+	err = r.db.Select("id,title,name,folder,path").Where("true").Order("id ASC").Find(&models).Error
 	return
 }
 
@@ -19,8 +19,12 @@ func (r *TextRepo) Get(id uint) (model model.ZdText, err error) {
 	return
 }
 
-func (r *TextRepo) Save(model *model.ZdText) (err error) {
-	err = r.db.Save(model).Error
+func (r *TextRepo) Create(model *model.ZdText) (err error) {
+	err = r.db.Create(model).Error
+	return
+}
+func (r *TextRepo) Update(model *model.ZdText) (err error) {
+	err = r.db.Update(model).Error
 	return
 }
 

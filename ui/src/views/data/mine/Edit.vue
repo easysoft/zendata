@@ -14,7 +14,7 @@
         <a-form-model-item label="名称" prop="title">
           <a-input v-model="model.title" />
         </a-form-model-item>
-        <a-form-model-item label="文件夹" prop="folder">
+        <a-form-model-item label="目录" prop="folder">
           <a-input v-model="model.folder" />
         </a-form-model-item>
         <a-form-model-item label="类型">
@@ -43,6 +43,7 @@
 
 import { getDef, saveDef } from "../../../api/manage";
 import { labelCol, wrapperCol } from "../../../utils/const";
+import {checkDirIsUsers} from "../../../api/utils";
 
 export default {
   name: 'Mine',
@@ -55,11 +56,11 @@ export default {
           { required: true, message: '名称不能为空', trigger: 'change' },
         ],
         folder: [
-          { required: true, message: '目录不能为空', trigger: 'change' },
+          { validator: checkDirIsUsers, trigger: 'change' },
         ],
       },
       id: 0,
-      model: { folder: '/users', type: 'text' }
+      model: { folder: 'users/', type: 'text' }
     };
   },
   computed: {

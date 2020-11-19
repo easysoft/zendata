@@ -367,12 +367,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = def
 	case "saveDef":
 		def := serverUtils.ConvertDef(reqData.Data)
-
-		if def.ID == 0 {
-			err = s.defService.Create(&def)
-		} else {
-			err = s.defService.Update(&def)
-		}
+		s.defService.Save(&def)
 		ret.Data = def
 	case "removeDef":
 		err = s.defService.Remove(reqData.Id)
@@ -434,6 +429,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listReferFieldForSelection":
 		ret.Data = s.resService.ListReferFieldForSelection(reqData.Id, reqData.Mode)
 
+	// resource
 	case "listRanges":
 		ret.Data = s.rangesService.List()
 	case "getRanges":

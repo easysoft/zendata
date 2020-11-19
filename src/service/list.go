@@ -206,10 +206,6 @@ func ReadTextInfo(path, key string) (title, desc, resType string) {
 }
 
 func PathToName(path, key string) string {
-	//if strings.Index(path, "users.txt") > -1 {
-	//	logUtils.PrintToScreen("111")
-	//}
-
 	name := strings.ReplaceAll(path, constant.PthSep,".")
 	sep := "." + key + "."
 	name = name[strings.Index(name, sep)+len(sep):]

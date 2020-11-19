@@ -13,12 +13,13 @@ var (
 type ZdDef struct {
 	Model
 	Title  string `gorm:"column:title" json:"title"`
-	Path   string `gorm:"column:path" json:"path" yaml:"-"`
 	Type   string `gorm:"column:type" json:"type"`
 	Desc   string `gorm:"column:desc" json:"desc"`
-	Yaml   string `gorm:"yaml" json:"yaml"`
-	Folder string `gorm:"-" json:"folder" yaml:"-"`
 	Fields []ZdField `gorm:"-" json:"fields"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder string `gorm:"folder" json:"folder" yaml:"-"`
 }
 func (*ZdDef) TableName() string {
 	return constant.TablePrefix + "def"
@@ -111,17 +112,15 @@ type ZdRanges struct {
 	Title  string `gorm:"column:title" json:"title"`
 	Name  string `gorm:"column:name" json:"name"`
 	Desc   string `gorm:"column:desc" json:"desc"`
-	Path   string `gorm:"column:path" json:"path" yaml:"-"`
-
-	Yaml   string `gorm:"yaml" json:"yaml"`
-	Folder string `gorm:"-" json:"folder" yaml:"-"`
-
 	Field string `gorm:"column:field" json:"field"`
 	Note string `gorm:"column:note" json:"note"`
-
 	Prefix string `gorm:"column:prefix" json:"prefix"`
 	Postfix string `gorm:"column:postfix" json:"postfix"`
 	Format string `gorm:"column:format" json:"format"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder string `gorm:"folder" json:"folder" yaml:"-"`
 
 	Ranges []ZdRangesItem `gorm:"ForeignKey:rangesID" json:"ranges" yaml:"-"`
 	RangeMap map[string]string  `gorm:"-" yaml:"ranges"`
@@ -150,19 +149,16 @@ type ZdInstances struct {
 	Title  string `gorm:"column:title" json:"title"`
 	Name  string `gorm:"column:name" json:"name"`
 	Desc   string `gorm:"column:desc" json:"desc"`
-	Path   string `gorm:"column:path" json:"path" yaml:"-"`
-
-	Yaml   string `gorm:"yaml" json:"yaml"`
-	Folder string `gorm:"-" json:"folder" yaml:"-"`
-
 	Field string `gorm:"column:field" json:"field"`
 	Note string `gorm:"column:note" json:"note"`
-
 	Prefix string `gorm:"column:prefix" json:"prefix"`
 	Postfix string `gorm:"column:postfix" json:"postfix"`
 	Format string `gorm:"column:format" json:"format"`
-
 	Instances []ZdInstancesItem `gorm:"ForeignKey:instancesID" json:"instances"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder string `gorm:"folder" json:"folder" yaml:"-"`
 }
 func (*ZdInstances) TableName() string {
 	return constant.TablePrefix + "instances"
@@ -214,38 +210,11 @@ func (*ZdInstancesItem) TableName() string {
 	return constant.TablePrefix + "instancesItem"
 }
 
-type ZdText struct {
-	Model
-	Title  string `gorm:"column:title" json:"title"`
-	Name  string `gorm:"column:name" json:"name"`
-	Content   string `gorm:"column:content" json:"content"`
-	Path   string `gorm:"column:path" json:"path" yaml:"-"`
-
-	Folder string `gorm:"-" json:"folder" yaml:"-"`
-}
-func (*ZdText) TableName() string {
-	return constant.TablePrefix + "text"
-}
-
-type ZdExcel struct {
-	Model
-	Title  string `gorm:"column:title" json:"title"`
-	Name  string `gorm:"column:name" json:"name"`
-	Sheet   string `gorm:"column:sheet" json:"sheet"`
-	Path   string `gorm:"column:path" json:"path" yaml:"-"`
-
-	Folder string `gorm:"-" json:"folder" yaml:"-"`
-}
-func (*ZdExcel) TableName() string {
-	return constant.TablePrefix + "excel"
-}
-
 type ZdConfig struct {
 	Model
 	Title  string `gorm:"column:title" json:"title"`
 	Name  string `gorm:"column:name" json:"name"`
 	Desc   string `gorm:"column:desc" json:"desc"`
-	Path   string `gorm:"column:path" json:"path" yaml:"-"`
 	Field string `gorm:"column:field" json:"field"`
 	Note string `gorm:"column:note" json:"note"`
 
@@ -256,8 +225,36 @@ type ZdConfig struct {
 	Format string `gorm:"column:format" json:"format"`
 
 	Yaml   string `gorm:"yaml" json:"yaml"`
-	Folder string `gorm:"-" json:"folder" yaml:"-"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder string `gorm:"folder" json:"folder" yaml:"-"`
 }
 func (*ZdConfig) TableName() string {
 	return constant.TablePrefix + "config"
+}
+
+type ZdText struct {
+	Model
+	Title  string `gorm:"column:title" json:"title"`
+	Name  string `gorm:"column:name" json:"name"`
+
+	Content   string `gorm:"column:content" json:"content"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder string `gorm:"folder" json:"folder" yaml:"-"`
+}
+func (*ZdText) TableName() string {
+	return constant.TablePrefix + "text"
+}
+
+type ZdExcel struct {
+	Model
+	Title  string `gorm:"column:title" json:"title"`
+	Name  string `gorm:"column:name" json:"name"`
+	Sheet   string `gorm:"column:sheet" json:"sheet"`
+
+	Yaml   string `gorm:"yaml" json:"yaml"`
+	Path   string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder string `gorm:"folder" json:"folder" yaml:"-"`
+}
+func (*ZdExcel) TableName() string {
+	return constant.TablePrefix + "excel"
 }

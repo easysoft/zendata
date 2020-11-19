@@ -3,8 +3,12 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	serverUtils "github.com/easysoft/zendata/src/server/utils"
+	"github.com/easysoft/zendata/src/service"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -19,7 +23,7 @@ func (s *RangesService) List() (list []*model.ZdRanges) {
 	ranges := s.resService.LoadRes("ranges")
 	list, _ = s.rangesRepo.List()
 
-	s.saveResToDB(ranges, list)
+	s.importResToDB(ranges, list)
 	list, _ = s.rangesRepo.List()
 
 	return
@@ -32,7 +36,36 @@ func (s *RangesService) Get(id int) (ranges model.ZdRanges) {
 }
 
 func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
-	err = s.rangesRepo.Save(ranges)
+	ranges.Folder = serverUtils.DealWithPathSepRight(ranges.Folder)
+	ranges.Path = vari.WorkDir + ranges.Folder + serverUtils.AddExt(ranges.Title, ".yaml")
+	ranges.Name = service.PathToName(ranges.Path, constant.ResDirYaml)
+
+	if ranges.ID == 0 {
+		err = s.Create(ranges)
+	} else {
+		err = s.Update(ranges)
+	}
+
+	return
+}
+func (s *RangesService) Create(ranges *model.ZdRanges) (err error) {
+	s.dataToYaml(ranges)
+	err = s.rangesRepo.Create(ranges)
+
+	return
+}
+func (s *RangesService) Update(ranges *model.ZdRanges) (err error) {
+	var old model.ZdRanges
+	old, err = s.rangesRepo.Get(ranges.ID)
+	if err == gorm.ErrRecordNotFound {
+		return
+	}
+	if ranges.Path != old.Path {
+		fileUtils.RemoveExist(old.Path)
+	}
+
+	s.dataToYaml(ranges)
+	err = s.rangesRepo.Update(ranges)
 
 	return
 }
@@ -84,7 +117,12 @@ func (s *RangesService) RemoveItem(id int) (err error) {
 	return
 }
 
-func (s *RangesService) saveResToDB(ranges []model.ResFile, list []*model.ZdRanges) (err error) {
+func (s *RangesService) dataToYaml(ranges *model.ZdRanges) (str string) {
+
+	return
+}
+
+func (s *RangesService) importResToDB(ranges []model.ResFile, list []*model.ZdRanges) (err error) {
 	names := make([]string, 0)
 	for _, item := range list {
 		names = append(names, item.Path)
@@ -104,7 +142,7 @@ func (s *RangesService) saveResToDB(ranges []model.ResFile, list []*model.ZdRang
 			ranges.Note = item.Desc
 			ranges.Yaml = string(content)
 
-			s.rangesRepo.Save(&ranges)
+			s.rangesRepo.Create(&ranges)
 
 			i := 1
 			for k, v := range ranges.RangeMap {

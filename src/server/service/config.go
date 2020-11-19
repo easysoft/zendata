@@ -3,8 +3,12 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
+	serverUtils "github.com/easysoft/zendata/src/server/utils"
+	"github.com/easysoft/zendata/src/service"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -19,7 +23,7 @@ func (s *ConfigService) List() (list []*model.ZdConfig) {
 	config := s.resService.LoadRes("config")
 	list, _ = s.configRepo.List()
 
-	s.saveResToDB(config, list)
+	s.importResToDB(config, list)
 	list, _ = s.configRepo.List()
 
 	return
@@ -32,7 +36,38 @@ func (s *ConfigService) Get(id int) (config model.ZdConfig) {
 }
 
 func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
-	err = s.configRepo.Save(config)
+	config.Folder = serverUtils.DealWithPathSepRight(config.Folder)
+	config.Path = vari.WorkDir + config.Folder + serverUtils.AddExt(config.Title, ".yaml")
+	config.Name = service.PathToName(config.Path, constant.ResDirYaml)
+
+	if config.ID == 0 {
+		err = s.Create(config)
+	} else {
+		err = s.Update(config)
+	}
+
+	return
+}
+
+func (s *ConfigService) Create(config *model.ZdConfig) (err error) {
+	s.dataToYaml(config)
+	err = s.configRepo.Create(config)
+
+	return
+}
+
+func (s *ConfigService) Update(def *model.ZdConfig) (err error) {
+	var old model.ZdConfig
+	old, err = s.configRepo.Get(def.ID)
+	if err == gorm.ErrRecordNotFound {
+		return
+	}
+	if def.Path != old.Path {
+		fileUtils.RemoveExist(old.Path)
+	}
+
+	s.dataToYaml(def)
+	err = s.configRepo.Update(def)
 
 	return
 }
@@ -50,7 +85,12 @@ func (s *ConfigService) Remove(id int) (err error) {
 	return
 }
 
-func (s *ConfigService) saveResToDB(config []model.ResFile, list []*model.ZdConfig) (err error) {
+func (s *ConfigService) dataToYaml(config *model.ZdConfig) (str string) {
+
+	return
+}
+
+func (s *ConfigService) importResToDB(config []model.ResFile, list []*model.ZdConfig) (err error) {
 	names := make([]string, 0)
 	for _, item := range list {
 		names = append(names, item.Path)
@@ -70,7 +110,7 @@ func (s *ConfigService) saveResToDB(config []model.ResFile, list []*model.ZdConf
 			config.Note = item.Desc
 			config.Yaml = string(content)
 
-			s.configRepo.Save(&config)
+			s.configRepo.Create(&config)
 		}
 	}
 

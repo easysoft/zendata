@@ -15,3 +15,32 @@ export function checkLoop (rule, value, callback){
 
   callback()
 }
+
+export function checkDirIsYaml (rule, value, callback){
+  console.log('checkDirIsYaml', value)
+
+  if (value.indexOf('yaml/') != 0) {
+    callback('存放资源的目录必须以yaml/')
+  }
+
+  callback()
+}
+export function checkDirIsData (rule, value, callback){
+  console.log('checkDirIsData', value)
+
+  if (value.indexOf('data/') != 0) {
+    callback('存放Excel的目录必须以data/')
+  }
+
+  callback()
+}
+export function checkDirIsUsers (rule, value, callback){
+  console.log('checkDirIsUsers', value)
+
+  if (value.indexOf('users/') != 0) {
+    callback('存放数据的目录必须以users/')
+  }
+
+  callback()
+}
+

@@ -10,7 +10,7 @@ type InstancesRepo struct {
 }
 
 func (r *InstancesRepo) List() (models []*model.ZdInstances, err error) {
-	err = r.db.Where("true").Order("id ASC").Find(&models).Error
+	err = r.db.Select("id,title,name,folder,path").Where("true").Order("id ASC").Find(&models).Error
 	return
 }
 
@@ -19,8 +19,12 @@ func (r *InstancesRepo) Get(id uint) (model model.ZdInstances, err error) {
 	return
 }
 
-func (r *InstancesRepo) Save(model *model.ZdInstances) (err error) {
-	err = r.db.Save(model).Error
+func (r *InstancesRepo) Create(model *model.ZdInstances) (err error) {
+	err = r.db.Create(model).Error
+	return
+}
+func (r *InstancesRepo) Update(model *model.ZdInstances) (err error) {
+	err = r.db.Update(model).Error
 	return
 }
 

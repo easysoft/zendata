@@ -10,7 +10,7 @@ type ExcelRepo struct {
 }
 
 func (r *ExcelRepo) List() (models []*model.ZdExcel, err error) {
-	err = r.db.Where("true").Order("id ASC").Find(&models).Error
+	err = r.db.Select("id,title,name,folder,path").Where("true").Order("id ASC").Find(&models).Error
 	return
 }
 
@@ -19,8 +19,12 @@ func (r *ExcelRepo) Get(id uint) (model model.ZdExcel, err error) {
 	return
 }
 
-func (r *ExcelRepo) Save(model *model.ZdExcel) (err error) {
-	err = r.db.Save(model).Error
+func (r *ExcelRepo) Create(model *model.ZdExcel) (err error) {
+	err = r.db.Create(model).Error
+	return
+}
+func (r *ExcelRepo) Update(model *model.ZdExcel) (err error) {
+	err = r.db.Update(model).Error
 	return
 }
 
