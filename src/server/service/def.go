@@ -74,16 +74,13 @@ func (s *DefService) Update(def *model.ZdDef) (err error) {
 }
 
 func (s *DefService) Remove(id int) (err error) {
-	var oldDef model.ZdDef
-	oldDef, err = s.defRepo.Get(uint(id))
+	var old model.ZdDef
+	old, err = s.defRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
+	fileUtils.RemoveExist(old.Path)
 
-	fileUtils.RemoveExist(oldDef.Path)
-
-	var def model.ZdDef
-	def.ID = uint(id)
 	err = s.defRepo.Remove(uint(id))
 	return
 }

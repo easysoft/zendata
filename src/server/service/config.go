@@ -3,8 +3,9 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 )
@@ -37,14 +38,14 @@ func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
 }
 
 func (s *ConfigService) Remove(id int) (err error) {
-	err = s.configRepo.Remove(uint(id))
-	if err != nil {
+	var old model.ZdConfig
+	old, err = s.configRepo.Get(uint(id))
+	if err == gorm.ErrRecordNotFound {
 		return
 	}
+	fileUtils.RemoveExist(old.Path)
 
-	config, _ := s.configRepo.Get(uint(id))
-	logUtils.PrintTo(config.Path)
-	//fileUtils.RemoveExist(config.Path)
+	err = s.configRepo.Remove(uint(id))
 
 	return
 }

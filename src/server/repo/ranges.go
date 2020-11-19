@@ -25,9 +25,11 @@ func (r *RangesRepo) Save(ranges *model.ZdRanges) (err error) {
 }
 
 func (r *RangesRepo) Remove(id uint) (err error) {
-	model := model.ZdRanges{}
-	model.ID = id
-	err = r.db.Delete(model).Error
+	ranges := model.ZdRanges{}
+	ranges.ID = id
+
+	err = r.db.Delete(ranges).Error
+	err = r.db.Where("rangesID = ?", id).Delete(&model.ZdRangesItem{}).Error
 
 	return
 }

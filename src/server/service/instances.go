@@ -4,8 +4,9 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 )
@@ -39,15 +40,14 @@ func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
 }
 
 func (s *InstancesService) Remove(id int) (err error) {
-	err = s.instancesRepo.Remove(uint(id))
-	if err != nil {
+	var old model.ZdInstances
+	old, err = s.instancesRepo.Get(uint(id))
+	if err == gorm.ErrRecordNotFound {
 		return
 	}
+	fileUtils.RemoveExist(old.Path)
 
-	instances, _ := s.instancesRepo.Get(uint(id))
-	logUtils.PrintTo(instances.Path)
-	//fileUtils.RemoveExist(instances.Path)
-
+	err = s.instancesRepo.Remove(uint(id))
 	return
 }
 

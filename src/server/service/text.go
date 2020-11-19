@@ -4,8 +4,8 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/jinzhu/gorm"
 )
 
 type TextService struct {
@@ -36,14 +36,14 @@ func (s *TextService) Save(text *model.ZdText) (err error) {
 }
 
 func (s *TextService) Remove(id int) (err error) {
-	err = s.textRepo.Remove(uint(id))
-	if err != nil {
+	var old model.ZdText
+	old, err = s.textRepo.Get(uint(id))
+	if err == gorm.ErrRecordNotFound {
 		return
 	}
+	fileUtils.RemoveExist(old.Path)
 
-	text, _ := s.textRepo.Get(uint(id))
-	logUtils.PrintTo(text.Path)
-	//fileUtils.RemoveExist(text.Path)
+	err = s.textRepo.Remove(uint(id))
 
 	return
 }

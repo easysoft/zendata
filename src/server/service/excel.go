@@ -3,8 +3,9 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/jinzhu/gorm"
 )
 
 type ExcelService struct {
@@ -35,15 +36,14 @@ func (s *ExcelService) Save(excel *model.ZdExcel) (err error) {
 }
 
 func (s *ExcelService) Remove(id int) (err error) {
-	err = s.excelRepo.Remove(uint(id))
-	if err != nil {
+	var old model.ZdExcel
+	old, err = s.excelRepo.Get(uint(id))
+	if err == gorm.ErrRecordNotFound {
 		return
 	}
+	fileUtils.RemoveExist(old.Path)
 
-	excel, _ := s.excelRepo.Get(uint(id))
-	logUtils.PrintTo(excel.Path)
-	//fileUtils.RemoveExist(excel.Path)
-
+	err = s.excelRepo.Remove(uint(id))
 	return
 }
 

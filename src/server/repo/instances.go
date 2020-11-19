@@ -25,9 +25,11 @@ func (r *InstancesRepo) Save(model *model.ZdInstances) (err error) {
 }
 
 func (r *InstancesRepo) Remove(id uint) (err error) {
-	model := model.ZdInstances{}
-	model.ID = id
-	err = r.db.Delete(model).Error
+	inst := model.ZdInstances{}
+	inst.ID = id
+
+	err = r.db.Delete(inst).Error
+	err = r.db.Where("instancesID = ?", id).Delete(&model.ZdInstancesItem{}).Error
 
 	return
 }

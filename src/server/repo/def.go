@@ -34,9 +34,10 @@ func (r *DefRepo) Update(def *model.ZdDef) (err error) {
 
 func (r *DefRepo) Remove(id uint) (err error) {
 	var def model.ZdDef
-	def.ID = uint(id)
+	def.ID = id
 
 	err = r.db.Delete(&def).Error
+	err = r.db.Where("defID = ?", id).Delete(&model.ZdField{}).Error
 
 	return
 }

@@ -3,8 +3,9 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 )
@@ -37,15 +38,14 @@ func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 }
 
 func (s *RangesService) Remove(id int) (err error) {
-	err = s.rangesRepo.Remove(uint(id))
-	if err != nil {
+	var old model.ZdRanges
+	old, err = s.rangesRepo.Get(uint(id))
+	if err == gorm.ErrRecordNotFound {
 		return
 	}
+	fileUtils.RemoveExist(old.Path)
 
-	ranges, _ := s.rangesRepo.Get(uint(id))
-	logUtils.PrintTo(ranges.Path)
-	//fileUtils.RemoveExist(ranges.Path)
-
+	err = s.rangesRepo.Remove(uint(id))
 	return
 }
 
