@@ -174,6 +174,7 @@ type ZdInstancesItem struct {
 	ParentID uint `gorm:"column:parentID" json:"parentID"`
 	Field string `gorm:"column:field" json:"field"`
 	Note string `gorm:"column:note" json:"note"`
+	Instance string `gorm:"column:instance" json:"instance"`
 
 	Range string `gorm:"column:range" json:"range"`
 	Exp  string `gorm:"column:exp" json:"exp"`

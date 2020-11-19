@@ -139,7 +139,7 @@ export default {
       selectedKeys: [],
       targetModel: 0,
       treeNode: null,
-      fieldMap: {key:'id', value: 'id'},
+      fieldMap: {key:'id', value: 'id', children: 'fields'},
     };
   },
   props: {
@@ -236,12 +236,12 @@ export default {
         this.rightVisible = false
       }
     },
-    getOpenKeys (def) {
-      if (!def) return
+    getOpenKeys (field) {
+      if (!field) return
 
-      this.openKeys.push(def.id)
-      if (def.children) {
-        def.children.forEach((item) => {
+      this.openKeys.push(field.id)
+      if (field.fields) {
+        field.fields.forEach((item) => {
           this.getOpenKeys(item)
         })
       }

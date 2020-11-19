@@ -51,16 +51,8 @@ func (s *InstancesService) Remove(id int) (err error) {
 	return
 }
 
-func (s *InstancesService) GetItemTree(rangesId int) (root model.ZdInstancesItem) {
-	items, _ := s.instancesRepo.GetItems(rangesId)
-
-	root.ID = 0
-	root.Field = "实例"
-	for _, item := range items {
-		item.ParentID = root.ID
-		root.Fields = append(root.Fields, item)
-	}
-
+func (s *InstancesService) GetItemTree(instancesId int) (root model.ZdInstancesItem) {
+	root = s.instancesRepo.GetItemTree(instancesId)
 	return
 }
 func (s *InstancesService) GetItem(id int) (item model.ZdInstancesItem) {
@@ -119,11 +111,16 @@ func (s *InstancesService) saveResToDB(instances []model.ResFile, list []*model.
 	return
 }
 func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, parentID, instancesID uint) {
+	if item.Instance != "" { // instance node
+		item.Field = item.Instance
+	}
+
 	item.InstancesID = instancesID
 	item.ParentID = parentID
 	s.instancesRepo.SaveItem(item)
 
-	for _, child := range item.Fields {
+	for i, child := range item.Fields {
+		child.Ord = i + 1
 		s.saveItemToDB(child, item.ID, instancesID)
 	}
 }

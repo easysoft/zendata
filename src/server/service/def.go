@@ -144,7 +144,6 @@ func (s *DefService) saveDataToDB(defs []model.ResFile, list []*model.ZdDef) (er
 
 	for _, def := range defs {
 		if !stringUtils.FindInArrBool(def.Path, names) {
-			//if strings.Contains(inst.Path, "_test") {
 			content, _ := ioutil.ReadFile(def.Path)
 			yamlContent := stringUtils.ReplaceSpecialChars(content)
 			defPo := model.ZdDef{}
@@ -157,10 +156,12 @@ func (s *DefService) saveDataToDB(defs []model.ResFile, list []*model.ZdDef) (er
 
 			s.defRepo.Create(&defPo)
 
-			for _, field := range defPo.Fields {
-				s.saveFieldToDB(&field, 0, defPo.ID)
+			rootField, _ := s.fieldRepo.CreateTreeNode(defPo.ID, 0, "字段", "root")
+			s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
+			for i, field := range defPo.Fields {
+				field.Ord = i + 1
+				s.saveFieldToDB(&field, rootField.ID, defPo.ID)
 			}
-			//}
 		}
 	}
 

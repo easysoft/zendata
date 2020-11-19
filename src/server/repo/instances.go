@@ -35,7 +35,7 @@ func (r *InstancesRepo) Remove(id uint) (err error) {
 }
 
 func (r *InstancesRepo) GetItems(instancesId int) (items []*model.ZdInstancesItem, err error) {
-	err = r.db.Where("instancesId=?", instancesId).Find(&items).Error
+	err = r.db.Where("instancesId=?", instancesId).Order("parentID ASC, ord ASC").Find(&items).Error
 	return
 }
 func (r *InstancesRepo) GetItem(itemId uint) (item model.ZdInstancesItem, err error) {
@@ -64,6 +64,41 @@ func (r *InstancesRepo) GetMaxOrder(instancesId int) (ord int) {
 	}
 	ord = preChild.Ord + 1
 
+	return
+}
+
+func (r *InstancesRepo) GetItemTree(instancesId int) (root model.ZdInstancesItem) {
+	items, _ := r.GetItems(instancesId)
+
+	root.ID = 0
+	root.Field = "实例"
+	r.makeTree(items, &root)
+
+	return
+}
+
+func (r *InstancesRepo) makeTree(Data []*model.ZdInstancesItem, node *model.ZdInstancesItem) {
+	children, _ := r.haveChild(Data, node)
+	if children != nil {
+		node.Fields = append(node.Fields, children[0:]...)
+		for _, v := range children {
+			_, has := r.haveChild(Data, v)
+			if has {
+				r.makeTree(Data, v)
+			}
+		}
+	}
+}
+func (r *InstancesRepo) haveChild(Data []*model.ZdInstancesItem,
+		node *model.ZdInstancesItem) (child []*model.ZdInstancesItem, yes bool) {
+	for _, v := range Data {
+		if v.ParentID == node.ID {
+			child = append(child, v)
+		}
+	}
+	if child != nil {
+		yes = true
+	}
 	return
 }
 
