@@ -475,7 +475,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "removeInstances":
 		err = s.instancesService.Remove(reqData.Id)
 	case "getResInstancesItemTree":
-		ret.Data = s.instancesService.GetItemTree(reqData.Id)
+		ret.Data = s.instancesService.GetItemTree(uint(reqData.Id))
 	case "getResInstancesItem":
 		ret.Data = s.instancesService.GetItem(reqData.Id)
 	case "createResInstancesItem":
@@ -483,14 +483,14 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ownerId := reqData.DomainId
 		item, err = s.instancesService.CreateItem(ownerId, reqData.Id, reqData.Mode)
 
-		ret.Data = s.instancesService.GetItemTree(ownerId)
+		ret.Data = s.instancesService.GetItemTree(uint(ownerId))
 		ret.Model = item
 	case "saveInstancesItem":
 		rangesItem := serverUtils.ConvertInstancesItem(reqData.Data)
 		ret.Data = s.instancesService.SaveItem(&rangesItem)
 	case "removeResInstancesItem":
 		err = s.instancesService.RemoveItem(reqData.Id)
-		ret.Data = s.instancesService.GetItemTree(reqData.DomainId)
+		ret.Data = s.instancesService.GetItemTree(uint(reqData.DomainId))
 
 	case "listExcel":
 		ret.Data, ret.Total = s.excelService.List(reqData.Keywords, reqData.Page)

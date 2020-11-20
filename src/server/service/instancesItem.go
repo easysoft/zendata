@@ -5,7 +5,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 )
 
-func (s *InstancesService) GetItemTree(instancesId int) (root model.ZdInstancesItem) {
+func (s *InstancesService) GetItemTree(instancesId uint) (root model.ZdInstancesItem) {
 	root = s.instancesRepo.GetItemTree(uint(instancesId))
 	return
 }

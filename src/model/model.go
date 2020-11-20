@@ -145,16 +145,11 @@ func (*ZdRangesItem) TableName() string {
 }
 
 type ZdInstances struct {
-	Model
-	Title  string `gorm:"column:title" json:"title"`
-	Name  string `gorm:"column:name" json:"name"`
-	Desc   string `gorm:"column:desc" json:"desc"`
-	Field string `gorm:"column:field" json:"field"`
-	Note string `gorm:"column:note" json:"note"`
-	Prefix string `gorm:"column:prefix" json:"prefix"`
-	Postfix string `gorm:"column:postfix" json:"postfix"`
-	Format string `gorm:"column:format" json:"format"`
-	Instances []ZdInstancesItem `gorm:"ForeignKey:instancesID" json:"instances"`
+	Model `yaml:"-"`
+	Title  string `gorm:"column:title" json:"title" yaml:"title,omitempty"`
+	Name  string `gorm:"column:name" json:"name" yaml:"-"`
+	Desc   string `gorm:"column:desc" json:"desc" yaml:"desc,omitempty"`
+	Instances []ZdInstancesItem `gorm:"ForeignKey:instancesID" json:"instances" yaml:"instances"`
 
 	Yaml   string `gorm:"yaml" json:"yaml" yaml:"-"`
 	Path   string `gorm:"column:path" json:"path" yaml:"-"`
@@ -165,46 +160,46 @@ func (*ZdInstances) TableName() string {
 }
 
 type ZdInstancesItem struct {
-	Model
-	InstancesID uint `gorm:"column:instancesID" json:"instancesID"`
-	ParentID uint `gorm:"column:parentID" json:"parentID"`
-	Field string `gorm:"column:field" json:"field"`
-	Note string `gorm:"column:note" json:"note"`
-	Instance string `gorm:"column:instance" json:"instance"`
+	Model `yaml:"-"`
+	InstancesID uint `gorm:"column:instancesID" json:"instancesID" yaml:"-"`
+	ParentID uint `gorm:"column:parentID" json:"parentID" yaml:"-"`
+	Field string `gorm:"column:field" json:"field" yaml:"field,omitempty"`
+	Note string `gorm:"column:note" json:"note" yaml:"note,omitempty"`
+	Instance string `gorm:"column:instance" json:"instance" yaml:"instance,omitempty"`
 
-	Range string `gorm:"column:range" json:"range"`
-	Exp  string `gorm:"column:exp" json:"exp"`
-	Prefix string `gorm:"column:prefix" json:"prefix"`
-	Postfix string `gorm:"column:postfix" json:"postfix"`
-	Loop string `gorm:"column:loop" json:"loop"`
-	Loopfix string `gorm:"column:loopfix" json:"loopfix"`
-	Format string `gorm:"column:format" json:"format"`
-	Type string `gorm:"column:type" json:"type"`
-	Mode string `gorm:"column:mode" json:"mode"`
-	Length int `gorm:"column:length" json:"length"`
-	LeftPad string `gorm:"column:leftPad" json:"leftPad"`
-	RightPad string `gorm:"column:rightPad" json:"rightPad"`
-	Rand bool `gorm:"column:rand" json:"rand"`
+	Range string `gorm:"column:range" json:"range" yaml:"range,omitempty"`
+	Exp  string `gorm:"column:exp" json:"exp" yaml:"exp,omitempty"`
+	Prefix string `gorm:"column:prefix" json:"prefix" yaml:"prefix,omitempty"`
+	Postfix string `gorm:"column:postfix" json:"postfix" yaml:"postfix,omitempty"`
+	Loop string `gorm:"column:loop" json:"loop" yaml:"loop,omitempty"`
+	Loopfix string `gorm:"column:loopfix" json:"loopfix" yaml:"loopfix,omitempty"`
+	Format string `gorm:"column:format" json:"format" yaml:"format,omitempty"`
+	Type string `gorm:"column:type" json:"type" yaml:"type,omitempty"`
+	Mode string `gorm:"column:mode" json:"mode" yaml:"mode,omitempty"`
+	Length int `gorm:"column:length" json:"length" yaml:"length,omitempty"`
+	LeftPad string `gorm:"column:leftPad" json:"leftPad" yaml:"leftPad,omitempty"`
+	RightPad string `gorm:"column:rightPad" json:"rightPad" yaml:"rightPad,omitempty"`
+	Rand bool `gorm:"column:rand" json:"rand" yaml:"rand,omitempty"`
 
-	ConfigID	uint `gorm:"column:configID" json:"configID"`
-	Config	string `gorm:"column:config" json:"config"`
-	Use	string `gorm:"column:use" json:"use"`
-	UseID	uint `gorm:"column:useID" json:"useID"`
-	From	string `gorm:"column:fromCol" json:"fromCol"`
-	Select	string `gorm:"column:selectCol" json:"selectCol"`
-	Where	string `gorm:"column:whereCol" json:"whereCol"`
-	Limit	int `gorm:"column:limitCol" json:"limitCol"`
+	ConfigID	uint `gorm:"column:configID" json:"configID" yaml:"-"`
+	Config	string `gorm:"column:config" json:"config" yaml:"config,omitempty"`
+	Use	string `gorm:"column:use" json:"use" yaml:"use,omitempty"`
+	UseID	uint `gorm:"column:useID" json:"useID" yaml:"-"`
+	From	string `gorm:"column:fromCol" json:"fromCol" yaml:"from,omitempty"`
+	Select	string `gorm:"column:selectCol" json:"selectCol" yaml:"select,omitempty"`
+	Where	string `gorm:"column:whereCol" json:"whereCol" yaml:"where,omitempty"`
+	Limit	int `gorm:"column:limitCol" json:"limitCol" yaml:"limit,omitempty"`
 
-	Ord    int                `gorm:"column:ord;default:1" json:"ord"`
-	Fields []*ZdInstancesItem `gorm:"-" json:"fields"`
-	Froms  []*ZdInstancesItem `gorm:"-" json:"froms"`
+	Ord    int                `gorm:"column:ord;default:1" json:"ord" yaml:"-"`
+	Fields []*ZdInstancesItem `gorm:"-" json:"fields" yaml:"fields,omitempty"`
+	Froms  []*ZdInstancesItem `gorm:"-" json:"froms" yaml:"froms,omitempty"`
 
 	// for range edit
-	IsRange bool         `gorm:"column:isRange;default:true" json:"isRange"`
-	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections"`
+	IsRange bool         `gorm:"column:isRange;default:true" json:"isRange" yaml:"-"`
+	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections" yaml:"-"`
 
 	// for refer edit
-	Refer ZdRefer `gorm:"ForeignKey:fieldID" json:"refer"`
+	Refer ZdRefer `gorm:"ForeignKey:fieldID" json:"refer" yaml:"-"`
 }
 func (*ZdInstancesItem) TableName() string {
 	return constant.TablePrefix + "instances_item"

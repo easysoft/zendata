@@ -2,48 +2,6 @@ package serverService
 
 import "github.com/easysoft/zendata/src/model"
 
-func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst model.ResInst) {
-	inst.Note = item.Note
-
-	for _, child := range item.Fields {
-		childField := model.DefField{}
-		instancesItemToResFieldForExport(*child, &childField)
-
-		inst.Fields = append(inst.Fields, childField)
-	}
-
-	if len(inst.Fields) == 0 {
-		inst.Fields = nil
-	}
-	if len(inst.Froms) == 0 {
-		inst.Froms = nil
-	}
-
-	return
-}
-func instancesItemToResFieldForExport(item model.ZdInstancesItem, field *model.DefField) {
-	for _, item := range item.Fields {
-		childField := model.DefField{}
-		instancesItemToResFieldForExport(*item, &childField)
-
-		field.Fields = append(field.Fields, childField)
-	}
-
-	for _, from := range item.Froms { // only one level
-		childField := model.DefField{}
-		genFieldFromZdInstancesItem(*from, &childField)
-
-		field.Froms = append(field.Froms, childField)
-	}
-
-	if len(field.Fields) == 0 {
-		field.Fields = nil
-	}
-	if len(field.Froms) == 0 {
-		field.Froms = nil
-	}
-}
-
 func zdFieldToFieldForExport(treeNode model.ZdField, field *model.DefField) {
 	genFieldFromZdField(treeNode, field)
 
@@ -97,28 +55,70 @@ func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
 	field.Limit = treeNode.Limit
 }
 
-func genFieldFromZdInstancesItem(item model.ZdInstancesItem, field *model.DefField) () {
-	field.Field = item.Field
-	field.Note = item.Note
-
-	field.Range = item.Range
-	field.Value = item.Exp
-	field.Prefix = item.Prefix
-	field.Postfix = item.Postfix
-	field.Loop = item.Loop
-	field.Loopfix = item.Loopfix
-	field.Format = item.Format
-	field.Type = item.Type
-	field.Mode = item.Mode
-	field.Length = item.Length
-	field.LeftPad = item.LeftPad
-	field.RightPad = item.RightPad
-	field.Rand = item.Rand
-
-	field.Config = item.Config
-	field.Use = item.Use
-	field.From = item.From
-	field.Select = item.Select
-	field.Where = item.Where
-	field.Limit = item.Limit
-}
+//func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst model.ResInst) {
+	//	inst.Note = item.Note
+	//
+	//	for _, child := range item.Fields {
+	//		childField := model.DefField{}
+	//		instancesItemToResFieldForExport(*child, &childField)
+	//
+	//		inst.Fields = append(inst.Fields, childField)
+	//	}
+	//
+	//	if len(inst.Fields) == 0 {
+	//		inst.Fields = nil
+	//	}
+	//	if len(inst.Froms) == 0 {
+	//		inst.Froms = nil
+	//	}
+	//
+	//	return
+	//}
+	//func instancesItemToResFieldForExport(item model.ZdInstancesItem, field *model.DefField) {
+	//	for _, item := range item.Fields {
+	//		childField := model.DefField{}
+	//		instancesItemToResFieldForExport(*item, &childField)
+	//
+	//		field.Fields = append(field.Fields, childField)
+	//	}
+	//
+	//	for _, from := range item.Froms { // only one level
+	//		childField := model.DefField{}
+	//		genFieldFromZdInstancesItem(*from, &childField)
+	//
+	//		field.Froms = append(field.Froms, childField)
+	//	}
+	//
+	//	if len(field.Fields) == 0 {
+	//		field.Fields = nil
+	//	}
+	//	if len(field.Froms) == 0 {
+	//		field.Froms = nil
+	//	}
+	//}
+//}
+//func genFieldFromZdInstancesItem(item model.ZdInstancesItem, field *model.DefField) () {
+//	field.Field = item.Field
+//	field.Note = item.Note
+//
+//	field.Range = item.Range
+//	field.Value = item.Exp
+//	field.Prefix = item.Prefix
+//	field.Postfix = item.Postfix
+//	field.Loop = item.Loop
+//	field.Loopfix = item.Loopfix
+//	field.Format = item.Format
+//	field.Type = item.Type
+//	field.Mode = item.Mode
+//	field.Length = item.Length
+//	field.LeftPad = item.LeftPad
+//	field.RightPad = item.RightPad
+//	field.Rand = item.Rand
+//
+//	field.Config = item.Config
+//	field.Use = item.Use
+//	field.From = item.From
+//	field.Select = item.Select
+//	field.Where = item.Where
+//	field.Limit = item.Limit
+//}

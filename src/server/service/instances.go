@@ -90,21 +90,25 @@ func (s *InstancesService) updateYaml(id uint) (err error) {
 	return
 }
 func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
-	items, err := s.instancesRepo.GetItems(instances.ID)
-	if err != nil {
-		return
+	//items, err := s.instancesRepo.GetItems(instances.ID)
+	//if err != nil {
+	//	return
+	//}
+	//
+	//yamlObj := model.ResInsts{}
+	//s.instancesRepo.GenInst(*instances, &yamlObj)
+	//
+	//for _, item := range items {
+	//	inst := instancesItemToResInstForExport(*item)
+	//
+	//	yamlObj.Instances = append(yamlObj.Instances, inst)
+	//}
+
+	root := s.GetItemTree(instances.ID)
+	for _, item := range root.Fields {
+		instances.Instances = append(instances.Instances, *item)
 	}
-
-	yamlObj := model.ResInsts{}
-	s.instancesRepo.GenInst(*instances, &yamlObj)
-
-	for _, item := range items {
-		inst := instancesItemToResInstForExport(*item)
-
-		yamlObj.Instances = append(yamlObj.Instances, inst)
-	}
-
-	bytes, err := yaml.Marshal(yamlObj)
+	bytes, _ := yaml.Marshal(instances)
 	instances.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
 
 	return
