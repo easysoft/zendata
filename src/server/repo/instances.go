@@ -127,7 +127,7 @@ func (r *InstancesRepo) haveChild(Data []*model.ZdInstancesItem,
 	return
 }
 
-func (r *InstancesRepo) GenInst(po model.ZdInstances, res *model.ResInsts) {
+func (r *InstancesRepo) GenInst(po model.ZdInstances, res *model.ResInstances) {
 	res.Title = po.Title
 	res.Desc = po.Desc
 }

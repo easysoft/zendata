@@ -95,7 +95,7 @@ func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
 	//	return
 	//}
 	//
-	//yamlObj := model.ResInsts{}
+	//yamlObj := model.ResInstances{}
 	//s.instancesRepo.GenInst(*instances, &yamlObj)
 	//
 	//for _, item := range items {

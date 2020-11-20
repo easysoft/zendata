@@ -32,7 +32,8 @@ func (s *FieldService) Save(field *model.ZdField) (err error) {
 	return
 }
 func (s *FieldService) Create(defId, targetId uint, name string, mode string) (field *model.ZdField, err error) {
-	field = &model.ZdField{Field: name, DefID: defId}
+	field = &model.ZdField{DefID: defId}
+	field.Field = name
 	if mode == "root" {
 		field.DefID = defId
 		field.ParentID = 0

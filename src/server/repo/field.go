@@ -31,7 +31,8 @@ func (r *FieldRepo) GetDefFieldTree(defId uint) (root *model.ZdField, err error)
 }
 
 func (r *FieldRepo) CreateTreeNode(defId, targetId uint, name string, mode string) (field *model.ZdField, err error) {
-	field = &model.ZdField{Field: name, DefID: defId}
+	field = &model.ZdField{DefID: defId}
+	field.Field = name
 	if mode == "root" {
 		field.DefID = defId
 		field.ParentID = 0

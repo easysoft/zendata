@@ -3,15 +3,21 @@ desc: 实例测试
 instances:
 - field: instant1
   note: 测试
+  range: ""
   instance: instant1
   fields:
   - field: field1
     note: 测试
+    range: ""
+    instance: ""
     fields:
     - field: field1-1
       range: 0-9
       postfix: ','
+      instance: ""
     - field: field1-2
       range: a-z
+      instance: ""
   - field: field2
     range: A-Z
+    instance: ""

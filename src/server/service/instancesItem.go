@@ -15,7 +15,9 @@ func (s *InstancesService) GetItem(id int) (item model.ZdInstancesItem) {
 }
 
 func (s *InstancesService) CreateItem(domainId, targetId int, mode string) (item *model.ZdInstancesItem, err error) {
-	item = &model.ZdInstancesItem{Field: "instances_", Note: "", InstancesID: uint(domainId)}
+	item = &model.ZdInstancesItem{InstancesID: uint(domainId)}
+	item.Field = "instances_"
+
 	item.Ord = s.instancesRepo.GetMaxOrder(domainId)
 
 	err = s.instancesRepo.SaveItem(item)

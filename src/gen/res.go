@@ -127,7 +127,7 @@ func getResFromYaml(resFile string) (valueMap map[string][]string, resName strin
 		return
 	}
 
-	insts := model.ResInsts{}
+	insts := model.ResInstances{}
 	err = yaml.Unmarshal(yamlContent, &insts)
 	if err == nil && insts.Instances != nil && len(insts.Instances) > 0 { // instances
 		valueMap = getResFromInstances(insts)
@@ -154,7 +154,7 @@ func getResFromYaml(resFile string) (valueMap map[string][]string, resName strin
 	return
 }
 
-func getResFromInstances(insts model.ResInsts) (groupedValue map[string][]string) {
+func getResFromInstances(insts model.ResInstances) (groupedValue map[string][]string) {
 	groupedValue = map[string][]string{}
 
 	for _, inst := range insts.Instances {
@@ -184,7 +184,7 @@ func getResFromRanges(ranges model.ResRanges) map[string][]string {
 	return groupedValue
 }
 
-func prepareNestedInstanceRes(insts model.ResInsts, inst model.ResInst, instField model.DefField) {
+func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesItem, instField model.DefField) {
 	// set "from" val from parent if needed
 	if instField.From == "" {
 		if insts.From != "" { instField.From = insts.From }
@@ -222,7 +222,7 @@ func prepareNestedInstanceRes(insts model.ResInsts, inst model.ResInst, instFiel
 	}
 }
 
-func getreferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInsts) {
+func getreferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
 	resFile, _, _ := fileUtils.GetResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
@@ -245,7 +245,7 @@ func getreferencedRangeOrInstant(inst model.DefField) (referencedRanges model.Re
 	return
 }
 
-func convertInstantToField(insts model.ResInsts, inst model.ResInst) (field model.DefField) {
+func convertInstantToField(insts model.ResInstances, inst model.ResInstancesItem) (field model.DefField) {
 	field.Field = insts.Field
 	field.From = insts.From
 

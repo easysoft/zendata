@@ -55,7 +55,7 @@ func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
 	field.Limit = treeNode.Limit
 }
 
-//func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst model.ResInst) {
+//func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst model.ResInstancesItem) {
 	//	inst.Note = item.Note
 	//
 	//	for _, child := range item.Fields {

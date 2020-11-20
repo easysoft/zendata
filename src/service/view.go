@@ -28,7 +28,7 @@ func ViewRes(res string) {
 	}
 }
 
-func ReadYamlData(path string) (typ string, insts model.ResInsts, ranges model.ResRanges) {
+func ReadYamlData(path string) (typ string, insts model.ResInstances, ranges model.ResRanges) {
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -46,7 +46,7 @@ func ReadYamlData(path string) (typ string, insts model.ResInsts, ranges model.R
 	return
 }
 
-func printInst(inst model.ResInsts) {
+func printInst(inst model.ResInstances) {
 	msg := ""
 	msg = msg + inst.Title + " " + inst.Desc + "\n"
 

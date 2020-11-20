@@ -20,25 +20,24 @@ type ResConfig struct {
 	FieldSimple `yaml:",inline"`
 }
 
-// instance res
-type ResInsts struct {
-	ClsBase   `yaml:",inline"`
-	Field string        `yaml:"field"`
-	Instances []ResInst `yaml:"instances,flow"`
-}
-type ResInst struct {
-	FieldBase   `yaml:",inline"`
-	Instance string  `yaml:"instance"`
-	Fields  []DefField `yaml:"fields,flow"`
-
-	Froms []DefField `yaml:"froms,flow"`
-}
-
 // range res
 type ResRanges struct {
 	ClsInfo   `yaml:",inline"`
 	Field string        `yaml:"field"`
 	Ranges map[string]string  `yaml:"ranges"`
+}
+
+// instance res
+type ResInstances struct {
+	ClsInfo   `yaml:",inline"`
+	Field string                 `yaml:"field"`
+	Instances []ResInstancesItem `yaml:"instances,flow"`
+}
+type ResInstancesItem struct {
+	FieldBase   `yaml:",inline"`
+	Instance string  `yaml:"instance"`
+	Fields  []DefField `yaml:"fields,flow"`
+	Froms []DefField `yaml:"froms,flow"`
 }
 
 // common item
