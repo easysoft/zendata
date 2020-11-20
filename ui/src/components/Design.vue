@@ -184,14 +184,20 @@ export default {
       console.log('time changed', this.time)
       this.loadTree()
     })
+    this.$watch('visible', () => {
+      console.log('visible changed', this.visible)
+      if (this.visible) {
+        document.addEventListener("click", this.clearMenu)
+      } else {
+        document.removeEventListener('click', this.clearMenu);
+      }
+    })
   },
   mounted: function () {
     console.log('mounted')
-    window.addEventListener("click", this.clearMenu)
   },
   beforeDestroy() {
     console.log('beforeDestroy')
-    window.removeEventListener('click', this.clearMenu);
   },
   methods: {
     onModelSave() {

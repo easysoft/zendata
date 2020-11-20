@@ -2,6 +2,9 @@
   <div class="all">
     <div class="left">
       <Menu></Menu>
+      <div class="sync">
+        <a-button @click="syncData" size="small" type="primary">同步数据</a-button>
+      </div>
     </div>
     <div class="content">
       <router-view />
@@ -28,6 +31,9 @@ export default {
   mounted () {
   },
   methods: {
+    syncData() {
+      console.log("syncData")
+    }
   }
 }
 </script>
@@ -41,10 +47,16 @@ export default {
   .left {
     width: 200px;
     border-right: 1px solid #e9f2fb;
+    position: relative;
   }
   .content {
     flex: 1;
     padding: 0 10px;
   }
+}
+
+.sync {
+  margin-top: 10px;
+  text-align: center;
 }
 </style>

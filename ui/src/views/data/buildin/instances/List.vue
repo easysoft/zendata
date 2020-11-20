@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <a-table :columns="columns" :data-source="models" rowKey="id">
+    <a-table :columns="columns" :data-source="models" :pagination="false" rowKey="id">
       <span slot="folderWithPath" slot-scope="text, record">
         <a-tooltip placement="top" overlayClassName="tooltip-light">
           <template slot="title">
@@ -119,6 +119,7 @@ export default {
       listInstances(this.keywords, this.page).then(json => {
         console.log('listInstances', json)
         this.models = json.data
+        this.total = json.total
       })
     },
     edit(record) {

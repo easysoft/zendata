@@ -109,10 +109,10 @@ export default {
   },
   methods: {
     loadData() {
-      listDef(this.keywords, this.page).then(res => {
-        console.log('listDefs', res)
-        this.defs = res.data
-        this.total = res.total
+      listDef(this.keywords, this.page).then(json => {
+        console.log('listDefs', json)
+        this.defs = json.data
+        this.total = json.total
       })
     },
     create() {
@@ -132,12 +132,7 @@ export default {
       console.log(record)
       removeDef(record.id).then(json => {
         console.log('removeDef', json)
-        if (json.code == 1) {
-          listDef().then(res => {
-            console.log('listDefs', res)
-            this.defs = res.data
-          })
-        }
+        this.loadData()
       })
     },
 
