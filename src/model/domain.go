@@ -29,7 +29,7 @@ type ResRanges struct {
 
 // instance res
 type ResInstances struct {
-	ClsInfo   `yaml:",inline"`
+	ClsBase   `yaml:",inline"`
 	Field string                 `yaml:"field"`
 	Instances []ResInstancesItem `yaml:"instances,flow"`
 }
