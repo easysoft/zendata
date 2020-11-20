@@ -22,12 +22,7 @@ type InstancesService struct {
 }
 
 func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInstances, total int) {
-	instances := s.resService.LoadRes("instances")
-	list, _, _ = s.instancesRepo.List("", -1)
-
-	s.importResToDB(instances, list)
 	list, total, _ = s.instancesRepo.List(strings.TrimSpace(keywords), page)
-
 	return
 }
 

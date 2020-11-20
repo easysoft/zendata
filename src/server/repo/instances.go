@@ -11,7 +11,7 @@ type InstancesRepo struct {
 }
 
 func (r *InstancesRepo) ListAll() (models []*model.ZdInstances) {
-	r.db.Find(&models)
+	r.db.Select("id,title,folder,path,updatedAt").Find(&models)
 	return
 }
 

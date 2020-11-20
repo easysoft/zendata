@@ -5,6 +5,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	_ "github.com/mattn/go-sqlite3"
 	"gopkg.in/yaml.v3"
 	"path"
@@ -76,13 +77,7 @@ func convertSentYaml(filePath, dist string) (yamlPaths []string) {
 			}
 
 			bytes, _ := yaml.Marshal(&conf)
-			content := string(bytes)
-
-			// convert yaml format by using a map
-			m := make(map[string]interface{})
-			yaml.Unmarshal([]byte(content), &m)
-			bytes, _ = yaml.Marshal(&m)
-			content = string(bytes)
+			content := stringUtils.ConvertYamlStringToMapFormat(bytes)
 			content = strings.Replace(content, "xfields", "\nfields", -1)
 
 			yamlPath := fileUtils.AddSepIfNeeded(dist) +

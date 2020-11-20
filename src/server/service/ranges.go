@@ -21,12 +21,7 @@ type RangesService struct {
 }
 
 func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges, total int) {
-	ranges := s.resService.LoadRes("ranges")
-	list, _, _ = s.rangesRepo.List("", -1)
-
-	s.importResToDB(ranges, list)
 	list, total, _ = s.rangesRepo.List(strings.TrimSpace(keywords), page)
-
 	return
 }
 

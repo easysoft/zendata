@@ -26,7 +26,6 @@ func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
 	}
 
 	defs := fileMap["yaml"]
-
 	s.defService.Sync(defs)
 }
 

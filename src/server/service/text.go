@@ -19,10 +19,6 @@ type TextService struct {
 }
 
 func (s *TextService) List(keywords string, page int) (list []*model.ZdText, total int) {
-	texts := s.resService.LoadRes("text")
-	list, _, _ = s.textRepo.List("", -1)
-
-	s.importResToDB(texts, list)
 	list, total, _ = s.textRepo.List(strings.TrimSpace(keywords), page)
 
 	return

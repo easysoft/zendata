@@ -21,12 +21,7 @@ type ConfigService struct {
 }
 
 func (s *ConfigService) List(keywords string, page int) (list []*model.ZdConfig, total int) {
-	config := s.resService.LoadRes("config")
-	list, _, _ = s.configRepo.List("", -1)
-
-	s.importResToDB(config, list)
 	list, total, _ = s.configRepo.List(strings.TrimSpace(keywords), page)
-
 	return
 }
 

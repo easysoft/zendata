@@ -149,7 +149,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile)  {
 				continue
 			}
 
-			file := model.ResFile{Path: pth + constant.PthSep + name}
+			file := model.ResFile{Path: pth + constant.PthSep + name, UpdatedAt: fi.ModTime()}
 			(*res)[typ] = append((*res)[typ], file)
 		}
 	}

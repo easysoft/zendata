@@ -12,6 +12,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
+	"gopkg.in/yaml.v2"
 	"strconv"
 	"strings"
 	"unicode"
@@ -267,4 +268,13 @@ func ReplaceSpecialChars(bytes []byte) []byte {
 	}
 
 	return []byte(ret)
+}
+
+func ConvertYamlStringToMapFormat(bytes []byte) (ret string) {
+	m := yaml.MapSlice{}
+	yaml.Unmarshal(bytes, &m)
+	bytesReturn, _ := yaml.Marshal(&m)
+	ret = string(bytesReturn)
+
+	return
 }

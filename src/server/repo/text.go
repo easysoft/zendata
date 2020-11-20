@@ -11,7 +11,7 @@ type TextRepo struct {
 }
 
 func (r *TextRepo) ListAll() (models []*model.ZdText) {
-	r.db.Find(&models)
+	r.db.Select("id,title,folder,path,updatedAt").Find(&models)
 	return
 }
 

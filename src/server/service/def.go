@@ -52,9 +52,8 @@ func (s *DefService) Create(def *model.ZdDef) (err error) {
 
 	rootField, err := s.fieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
 	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
-
-	s.dataToYaml(def)
 	err = s.defRepo.Update(def)
+	s.updateYaml(def.ID)
 
 	return
 }
@@ -69,8 +68,8 @@ func (s *DefService) Update(def *model.ZdDef) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	s.dataToYaml(def)
 	err = s.defRepo.Update(def)
+	s.updateYaml(def.ID)
 
 	return
 }
@@ -87,17 +86,18 @@ func (s *DefService) Remove(id int) (err error) {
 	return
 }
 
-func (s *DefService) UpdateYaml(defId uint) (err error) {
+func (s *DefService) updateYaml(defId uint) (err error) {
 	var def model.ZdDef
 	def, _ = s.defRepo.Get(defId)
 
-	s.dataToYaml(&def)
+	s.genYaml(&def)
 	err = s.defRepo.UpdateYaml(def)
+	fileUtils.WriteFile(def.Path, def.Yaml)
 
 	return
 }
 
-func (s *DefService) dataToYaml(def *model.ZdDef) (str string) {
+func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 	root, err := s.fieldRepo.GetDefFieldTree(def.ID)
 	if err != nil {
 		return
@@ -114,7 +114,7 @@ func (s *DefService) dataToYaml(def *model.ZdDef) (str string) {
 	}
 
 	bytes, err := yaml.Marshal(defData)
-	def.Yaml = string(bytes)
+	def.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }
@@ -129,11 +129,13 @@ func (s *DefService) Sync(files []model.ResFile) (err error) {
 
 	for _, fi := range files {
 		_, found := defMap[fi.Path]
-		if found {
-			s.defRepo.Remove(defMap[fi.Path].ID)
-		}
-		if !found || fi.UpdatedAt.Unix() > defMap[fi.Path].UpdatedAt.Unix() {
+		if !found { // no record
 			s.SyncToDB(fi)
+		} else if fi.UpdatedAt.Unix() > defMap[fi.Path].UpdatedAt.Unix() { // db is old
+			s.defRepo.Remove(defMap[fi.Path].ID)
+			s.SyncToDB(fi)
+		} else { // db is new
+
 		}
 	}
 
@@ -169,10 +171,6 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 		field.Ord = i + 1
 		s.saveFieldToDB(&field, rootField.ID, defPo.ID)
 	}
-
-	return
-}
-func (s *DefService) SyncFromDB(files []model.ResFile) (err error) {
 
 	return
 }

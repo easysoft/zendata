@@ -19,12 +19,7 @@ type ExcelService struct {
 }
 
 func (s *ExcelService) List(keywords string, page int) (list []*model.ZdExcel, total int) {
-	excel := s.resService.LoadRes("excel")
-	list, _, _ = s.excelRepo.List("", -1)
-
-	s.importResToDB(excel, list)
 	list, total, _ = s.excelRepo.List(strings.TrimSpace(keywords), page)
-
 	return
 }
 
