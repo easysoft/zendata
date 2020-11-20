@@ -10,6 +10,11 @@ type ConfigRepo struct {
 	db *gorm.DB
 }
 
+func (r *ConfigRepo) ListAll() (models []*model.ZdConfig) {
+	r.db.Find(&models)
+	return
+}
+
 func (r *ConfigRepo) List(keywords string, page int) (models []*model.ZdConfig, total int, err error) {
 	query := r.db.Select("id,title,folder,path").Order("id ASC")
 	if keywords != "" {

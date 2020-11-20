@@ -378,3 +378,13 @@ export function removeExcel (id) {
     data: data
   })
 }
+
+export function syncData () {
+  const data = {'action': 'syncData', mode: ''}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}

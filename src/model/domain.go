@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type ClsBase struct {
 	Title   string `yaml:"title"`
 	Desc    string `yaml:"desc"`
@@ -156,6 +158,7 @@ type ResFile struct {
 	Title string `json:"title"`
 	Desc   string `json:"desc"`
 	ResType string `json:"resType"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 type ResField struct {
 	Index int `json:"index"`

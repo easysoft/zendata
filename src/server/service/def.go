@@ -22,12 +22,7 @@ type DefService struct {
 }
 
 func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total int) {
-	defs := s.resService.LoadRes("yaml")
-	list, _, _ = s.defRepo.List("", -1)
-	s.saveDataToDB(defs, list)
-
 	list, total, _ = s.defRepo.List(strings.TrimSpace(keywords), page)
-
 	return
 }
 
@@ -124,33 +119,21 @@ func (s *DefService) dataToYaml(def *model.ZdDef) (str string) {
 	return
 }
 
-func (s *DefService) saveDataToDB(defs []model.ResFile, list []*model.ZdDef) (err error) {
-	names := make([]string, 0)
-	for _, item := range list {
-		names = append(names, item.Path)
+func (s *DefService) Sync(files []model.ResFile) (err error) {
+	defList := s.defRepo.ListAll()
+
+	defMap := map[string]*model.ZdDef{}
+	for _, item := range defList {
+		defMap[item.Path] = item
 	}
 
-	for _, def := range defs {
-		if !stringUtils.FindInArrBool(def.Path, names) {
-			content, _ := ioutil.ReadFile(def.Path)
-			yamlContent := stringUtils.ReplaceSpecialChars(content)
-			defPo := model.ZdDef{}
-			err = yaml.Unmarshal(yamlContent, &defPo)
-			defPo.Title = def.Title
-			defPo.Type = def.ResType
-			defPo.Desc = def.Desc
-			defPo.Path = def.Path
-			defPo.Folder = serverUtils.GetRelativePath(defPo.Path)
-			defPo.Yaml = string(content)
-
-			s.defRepo.Create(&defPo)
-
-			rootField, _ := s.fieldRepo.CreateTreeNode(defPo.ID, 0, "字段", "root")
-			s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
-			for i, field := range defPo.Fields {
-				field.Ord = i + 1
-				s.saveFieldToDB(&field, rootField.ID, defPo.ID)
-			}
+	for _, fi := range files {
+		_, found := defMap[fi.Path]
+		if found {
+			s.defRepo.Remove(defMap[fi.Path].ID)
+		}
+		if !found || fi.UpdatedAt.Unix() > defMap[fi.Path].UpdatedAt.Unix() {
+			s.SyncToDB(fi)
 		}
 	}
 
@@ -164,6 +147,34 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
 	for _, child := range item.Fields {
 		s.saveFieldToDB(child, item.ID, defID)
 	}
+}
+
+func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
+	content, _ := ioutil.ReadFile(fi.Path)
+	yamlContent := stringUtils.ReplaceSpecialChars(content)
+	defPo := model.ZdDef{}
+	err = yaml.Unmarshal(yamlContent, &defPo)
+	defPo.Title = fi.Title
+	defPo.Type = fi.ResType
+	defPo.Desc = fi.Desc
+	defPo.Path = fi.Path
+	defPo.Folder = serverUtils.GetRelativePath(defPo.Path)
+	defPo.Yaml = string(content)
+
+	s.defRepo.Create(&defPo)
+
+	rootField, _ := s.fieldRepo.CreateTreeNode(defPo.ID, 0, "字段", "root")
+	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
+	for i, field := range defPo.Fields {
+		field.Ord = i + 1
+		s.saveFieldToDB(&field, rootField.ID, defPo.ID)
+	}
+
+	return
+}
+func (s *DefService) SyncFromDB(files []model.ResFile) (err error) {
+
+	return
 }
 
 func NewDefService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo,

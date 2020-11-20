@@ -19,7 +19,7 @@ type ZdDef struct {
 
 	Yaml   string `gorm:"yaml" json:"yaml"`
 	Path   string `gorm:"column:path" json:"path" yaml:"-"`
-	Folder string `gorm:"folder" json:"folder" yaml:"-"`
+	Folder string `gorm:"column:folder" json:"folder" yaml:"-"`
 }
 func (*ZdDef) TableName() string {
 	return constant.TablePrefix + "def"

@@ -10,6 +10,11 @@ type RangesRepo struct {
 	db *gorm.DB
 }
 
+func (r *RangesRepo) ListAll() (models []*model.ZdRanges) {
+	r.db.Find(&models)
+	return
+}
+
 func (r *RangesRepo) List(keywords string, page int) (models []*model.ZdRanges, total int, err error) {
 	query := r.db.Select("id,title,folder,path").Order("id ASC")
 	if keywords != "" {

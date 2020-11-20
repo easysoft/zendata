@@ -279,6 +279,7 @@ type Server struct {
 	sectionService *serverService.SectionService
 	referService *serverService.ReferService
 	resService *serverService.ResService
+	syncService *serverService.SyncService
 
 	rangesService *serverService.RangesService
 	instancesService *serverService.InstancesService
@@ -305,8 +306,6 @@ func Init() (err error) {
 	defService := serverService.NewDefService(defRepo, fieldRepo, referRepo)
 	fieldService := serverService.NewFieldService(defRepo, fieldRepo, referRepo)
 	sectionService := serverService.NewSectionService(fieldRepo, sectionRepo)
-	referService := serverService.NewReferService(fieldRepo, referRepo)
-
 	rangesService := serverService.NewRangesService(rangesRepo)
 	instancesService := serverService.NewInstancesService(instancesRepo, referRepo)
 	textService := serverService.NewTextService(textRepo)
@@ -315,8 +314,13 @@ func Init() (err error) {
 	resService := serverService.NewResService(rangesRepo, instancesRepo,
 		configRepo, excelRepo, textRepo, defRepo)
 
+	referService := serverService.NewReferService(fieldRepo, referRepo)
+	syncService := serverService.NewSyncService(defService,
+		fieldService, rangesService, instancesService, configService, excelService, textService,
+		referService, resService)
+
 	server := NewServer(config, defService, fieldService, sectionService, referService,
-		rangesService, instancesService, textService, excelService, configService, resService)
+		rangesService, instancesService, textService, excelService, configService, resService, syncService)
 	server.Run()
 
 	return
@@ -358,6 +362,8 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	ret := model.ResData{ Code: 1, Msg: "success"}
 	switch reqData.Action {
 	// def
+	case "syncData":
+		s.syncService.SyncData(reqData.Mode)
 	case "listDef":
 		ret.Data, ret.Total = s.defService.List(reqData.Keywords, reqData.Page)
 	case "getDef":
@@ -533,7 +539,7 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 	referService *serverService.ReferService, rangesService *serverService.RangesService,
 	instancesService *serverService.InstancesService, textService *serverService.TextService,
 	excelService *serverService.ExcelService, configService *serverService.ConfigService,
-	resService *serverService.ResService) *Server {
+	resService *serverService.ResService, syncService *serverService.SyncService) *Server {
 	return &Server{
 		config:        config,
 		defService: defService,
@@ -546,6 +552,7 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 		excelService: excelService,
 		configService: configService,
 		resService: resService,
+		syncService: syncService,
 	}
 }
 

@@ -14,6 +14,7 @@
 
 <script>
 import Menu from "./Menu";
+import {syncData} from "../api/manage";
 
 export default {
   name: 'ColLayout',
@@ -33,6 +34,9 @@ export default {
   methods: {
     syncData() {
       console.log("syncData")
+      syncData().then(json => {
+        console.log('syncData', json)
+      })
     }
   }
 }

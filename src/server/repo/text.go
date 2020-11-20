@@ -10,6 +10,11 @@ type TextRepo struct {
 	db *gorm.DB
 }
 
+func (r *TextRepo) ListAll() (models []*model.ZdText) {
+	r.db.Find(&models)
+	return
+}
+
 func (r *TextRepo) List(keywords string, page int) (models []*model.ZdText, total int, err error) {
 	query := r.db.Select("id,title,folder,path").Order("id ASC")
 	if keywords != "" {

@@ -10,6 +10,11 @@ type ExcelRepo struct {
 	db *gorm.DB
 }
 
+func (r *ExcelRepo) ListAll() (models []*model.ZdExcel) {
+	r.db.Find(&models)
+	return
+}
+
 func (r *ExcelRepo) List(keywords string, page int) (models []*model.ZdExcel, total int, err error) {
 	query := r.db.Select("id,title,folder,path").Order("id ASC")
 	if keywords != "" {

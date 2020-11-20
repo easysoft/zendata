@@ -10,6 +10,11 @@ type DefRepo struct {
 	db *gorm.DB
 }
 
+func (r *DefRepo) ListAll() (models []*model.ZdDef) {
+	r.db.Find(&models)
+	return
+}
+
 func (r *DefRepo) List(keywords string, page int) (models []*model.ZdDef, total int, err error) {
 	query := r.db.Select("id,title,folder,path").Order("id ASC")
 	if keywords != "" {

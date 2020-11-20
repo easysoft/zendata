@@ -10,6 +10,11 @@ type InstancesRepo struct {
 	db *gorm.DB
 }
 
+func (r *InstancesRepo) ListAll() (models []*model.ZdInstances) {
+	r.db.Find(&models)
+	return
+}
+
 func (r *InstancesRepo) List(keywords string, page int) (models []*model.ZdInstances, total int, err error) {
 	query := r.db.Select("id,title,folder,path").Order("id ASC")
 	if keywords != "" {
