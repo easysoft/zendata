@@ -27,10 +27,33 @@ func (*ZdDef) TableName() string {
 
 type ZdField struct {
 	Model
-	DefField
+	Field string `gorm:"column:field" json:"field"`
+	Note string `gorm:"column:note" json:"note"`
+
+	Range string `gorm:"column:range" json:"range"`
+	Prefix string `gorm:"column:prefix" json:"prefix"`
+	Postfix string `gorm:"column:postfix" json:"postfix"`
+	Loop string `gorm:"column:loop" json:"loop"`
+	Loopfix string `gorm:"column:loopfix" json:"loopfix"`
+	Format string `gorm:"column:format" json:"format"`
+	Type string `gorm:"column:type" json:"type"`
+	Mode string `gorm:"column:mode" json:"mode"`
+	Length int `gorm:"column:length" json:"length"`
+	LeftPad string `gorm:"column:leftPad" json:"leftPad"`
+	RightPad string `gorm:"column:rightPad" json:"rightPad"`
+	Rand bool `gorm:"column:rand" json:"rand"`
+	Config	string `gorm:"column:config" json:"config"`
+	Use	string `gorm:"column:use" json:"use"`
+	From	string `gorm:"column:fromCol" json:"fromCol"`
+	Select	string `gorm:"column:selectCol" json:"selectCol"`
+	Where	string `gorm:"column:whereCol" json:"whereCol"`
+	Limit	int `gorm:"column:limitCol" json:"limitCol"`
+
 	Exp  string `gorm:"column:exp" json:"exp"`
 	DefID uint `gorm:"column:defID" json:"defID"`
 	ParentID uint `gorm:"column:parentID" json:"parentID"`
+	UseID	uint `gorm:"column:useID" json:"useID"`
+	ConfigID	uint `gorm:"column:configID" json:"configID"`
 
 	Ord int `gorm:"column:ord;default:1" json:"ord"`
 	Fields []*ZdField `gorm:"-" json:"fields"`
@@ -138,8 +161,32 @@ func (*ZdInstances) TableName() string {
 
 type ZdInstancesItem struct {
 	Model            `yaml:"-"`
-	FieldBase   `yaml:",inline"`
-	Instance string  `yaml:"instance"`
+
+	Instance string `gorm:"column:instance" json:"instance" yaml:"instance,omitempty"`
+	Note string `gorm:"column:note" json:"note" yaml:"note,omitempty"`
+
+	Field string `gorm:"column:field" json:"field" yaml:"field,omitempty"`
+	Range string `gorm:"column:range" json:"range" yaml:"range,omitempty"`
+	Prefix string `gorm:"column:prefix" json:"prefix" yaml:"prefix,omitempty"`
+	Postfix string `gorm:"column:postfix" json:"postfix" yaml:"postfix,omitempty"`
+	Loop string `gorm:"column:loop" json:"loop" yaml:"loop,omitempty"`
+	Loopfix string `gorm:"column:loopfix" json:"loopfix" yaml:"loopfix,omitempty"`
+	Format string `gorm:"column:format" json:"format" yaml:"format,omitempty"`
+	Type string `gorm:"column:type" json:"type" yaml:"type,omitempty"`
+	Mode string `gorm:"column:mode" json:"mode" yaml:"mode,omitempty"`
+	Length int `gorm:"column:length" json:"length" yaml:"length,omitempty"`
+	LeftPad string `gorm:"column:leftPad" json:"leftPad" yaml:"leftPad,omitempty"`
+	RightPad string `gorm:"column:rightPad" json:"rightPad" yaml:"rightPad,omitempty"`
+	Rand bool `gorm:"column:rand" json:"rand" yaml:"rand,omitempty"`
+
+	Config	string `gorm:"column:config" json:"config" yaml:"config,omitempty"`
+	Use	string `gorm:"column:use" json:"use" yaml:"use,omitempty"`
+	From	string `gorm:"column:fromCol" json:"fromCol" yaml:"from,omitempty"`
+	Select	string `gorm:"column:selectCol" json:"selectCol" yaml:"select,omitempty"`
+	Where	string `gorm:"column:whereCol" json:"whereCol" yaml:"where,omitempty"`
+	Limit	int `gorm:"column:limitCol" json:"limitCol" yaml:"limit,omitempty"`
+
+	Exp  string `gorm:"column:exp" json:"exp" yaml:"exp,omitempty"`
 	InstancesID      uint `gorm:"column:instancesID" json:"instancesID" yaml:"-"`
 	ParentID         uint `gorm:"column:parentID" json:"parentID" yaml:"-"`
 	ConfigID         uint `gorm:"column:configID" json:"configID" yaml:"-"`

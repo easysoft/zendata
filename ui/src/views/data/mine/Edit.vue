@@ -4,6 +4,7 @@
       <div class="title">
         测试数据<span v-if="id!=0">编辑</span><span v-if="id==0">新建</span>
       </div>
+      <div class="filter"></div>
       <div class="buttons">
         <a-button type="primary" @click="back()">返回</a-button>
       </div>

@@ -64,6 +64,8 @@ func (s *InstancesService) Update(instances *model.ZdInstances) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
+	err = s.instancesRepo.Update(instances)
+
 	return
 }
 
