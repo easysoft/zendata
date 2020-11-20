@@ -8,11 +8,11 @@ const api = {
 
 export default api
 
-export function listDef () {
+export function listDef (keywords, page) {
   return request({
     url: api.admin,
     method: 'post',
-    data: {'action': 'listDef'}
+    data: {'action': 'listDef', keywords: keywords, page: page}
   })
 }
 export function getDef (id) {
@@ -103,8 +103,8 @@ export function moveDefField (src, dist, mode) {
   })
 }
 
-export function listRanges () {
-  const data = {'action': 'listRanges'}
+export function listRanges (keywords, page) {
+  const data = {'action': 'listRanges', keywords: keywords, page: page}
 
   return request({
     url: api.admin,
@@ -185,6 +185,43 @@ export function saveRangesItem (model) {
   })
 }
 
+export function listInstances (keywords, page) {
+  const data = {'action': 'listInstances', keywords: keywords, page: page}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getInstances (id) {
+  const data = {'action': 'getInstances', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function saveInstances (model) {
+  const data = {'action': 'saveInstances', data: model}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function removeInstances (id) {
+  const data = {'action': 'removeInstances', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
 export function getResInstancesItemTree (id) {
   const data = {'action': 'getResInstancesItemTree', id: id}
 
@@ -231,8 +268,8 @@ export function removeResInstancesItem (itemId, rangesId) {
   })
 }
 
-export function listText () {
-  const data = {'action': 'listText'}
+export function listText (keywords, page) {
+  const data = {'action': 'listText', keywords: keywords, page: page}
 
   return request({
     url: api.admin,
@@ -268,8 +305,8 @@ export function removeText (id) {
   })
 }
 
-export function listConfig () {
-  const data = {'action': 'listConfig'}
+export function listConfig (keywords, page) {
+  const data = {'action': 'listConfig', keywords: keywords, page: page}
 
   return request({
     url: api.admin,
@@ -305,8 +342,8 @@ export function removeConfig (id) {
   })
 }
 
-export function listExcel () {
-  const data = {'action': 'listExcel'}
+export function listExcel (keywords, page) {
+  const data = {'action': 'listExcel', keywords: keywords, page: page}
 
   return request({
     url: api.admin,
@@ -334,43 +371,6 @@ export function saveExcel (model) {
 }
 export function removeExcel (id) {
   const data = {'action': 'removeExcel', id: id}
-
-  return request({
-    url: api.admin,
-    method: 'post',
-    data: data
-  })
-}
-
-export function listInstances () {
-  const data = {'action': 'listInstances'}
-
-  return request({
-    url: api.admin,
-    method: 'post',
-    data: data
-  })
-}
-export function getInstances (id) {
-  const data = {'action': 'getInstances', id: id}
-
-  return request({
-    url: api.admin,
-    method: 'post',
-    data: data
-  })
-}
-export function saveInstances (model) {
-  const data = {'action': 'saveInstances', data: model}
-
-  return request({
-    url: api.admin,
-    method: 'post',
-    data: data
-  })
-}
-export function removeInstances (id) {
-  const data = {'action': 'removeInstances', id: id}
 
   return request({
     url: api.admin,

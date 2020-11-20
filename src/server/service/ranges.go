@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"strings"
 )
 
 type RangesService struct {
@@ -19,12 +20,12 @@ type RangesService struct {
 	resService *ResService
 }
 
-func (s *RangesService) List() (list []*model.ZdRanges) {
+func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges, total int) {
 	ranges := s.resService.LoadRes("ranges")
-	list, _ = s.rangesRepo.List()
+	list, _, _ = s.rangesRepo.List("", -1)
 
 	s.importResToDB(ranges, list)
-	list, _ = s.rangesRepo.List()
+	list, total, _ = s.rangesRepo.List(strings.TrimSpace(keywords), page)
 
 	return
 }

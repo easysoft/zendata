@@ -11,6 +11,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"strings"
 )
 
 type DefService struct {
@@ -20,12 +21,13 @@ type DefService struct {
 	resService *ResService
 }
 
-func (s *DefService) List() (list []*model.ZdDef) {
+func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total int) {
 	defs := s.resService.LoadRes("yaml")
-	list, _ = s.defRepo.List()
-
+	list, _, _ = s.defRepo.List("", -1)
 	s.saveDataToDB(defs, list)
-	list, _ = s.defRepo.List()
+
+	list, total, _ = s.defRepo.List(strings.TrimSpace(keywords), page)
+
 	return
 }
 

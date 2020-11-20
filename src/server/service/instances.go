@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"strings"
 )
 
 type InstancesService struct {
@@ -20,12 +21,12 @@ type InstancesService struct {
 	resService *ResService
 }
 
-func (s *InstancesService) List() (list []*model.ZdInstances) {
+func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInstances, total int) {
 	instances := s.resService.LoadRes("instances")
-	list, _ = s.instancesRepo.List()
+	list, _, _ = s.instancesRepo.List("", -1)
 
 	s.importResToDB(instances, list)
-	list, _ = s.instancesRepo.List()
+	list, total, _ = s.instancesRepo.List(strings.TrimSpace(keywords), page)
 
 	return
 }

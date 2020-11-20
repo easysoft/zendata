@@ -2,6 +2,9 @@
   <div>
     <div class="head">
       <div class="title">表格列表</div>
+      <div class="filter">
+        <a-input-search v-model="keywords" @change="onSearch" :allowClear="true" placeholder="输入关键字检索" style="width: 300px" />
+      </div>
       <div class="buttons">
         <a-button type="primary" @click="create()">新建</a-button>
       </div>
@@ -31,12 +34,18 @@
       </span>
     </a-table>
 
+    <div class="pagination-wrapper">
+      <a-pagination @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
+    </div>
+
   </div>
 </template>
 
 <script>
 
 import {listExcel, removeExcel} from "../../../../api/manage";
+import {PageSize} from "../../../../api/utils";
+import debounce from "lodash.debounce"
 
 const columns = [
   {
@@ -71,6 +80,11 @@ export default {
       designVisible: false,
       designModel: {},
       time: 0,
+
+      keywords: '',
+      page: 1,
+      total: 0,
+      pageSize: PageSize,
     };
   },
   computed: {
@@ -86,7 +100,7 @@ export default {
       this.$router.push({path: '/data/buildin/excel/edit/0'});
     },
     loadData() {
-      listExcel().then(json => {
+      listExcel(this.keywords, this.page).then(json => {
         console.log('listExcel', json)
         this.models = json.data
       })
@@ -111,6 +125,15 @@ export default {
       console.log('handleDesignCancel')
       this.designVisible = false
     },
+
+    onPageChange() {
+      console.log('onPageChange')
+      this.loadData()
+    },
+    onSearch: debounce(function() {
+      console.log('onSearch', this.keywords)
+      this.loadData()
+    }, 500),
   }
 }
 </script>

@@ -45,17 +45,17 @@ func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 
 func (s *ResService) ListReferForSelection(resType string) (ret interface{}) {
 	if resType == "ranges" {
-		ret, _ = s.rangesRepo.List()
+		ret, _, _ = s.rangesRepo.List("",-1)
 	} else if resType == "instances" {
-		ret, _ = s.instancesRepo.List()
+		ret, _, _ = s.instancesRepo.List("",-1)
 	} else if resType == "config" {
-		ret, _ = s.configRepo.List()
+		ret, _, _ = s.configRepo.List("",-1)
 	} else if resType == "yaml" {
-		ret, _ = s.defRepo.List()
+		ret, _, _ = s.defRepo.List("",-1)
 	} else if resType == "excel" {
-		ret, _ = s.excelRepo.List()
+		ret, _, _ = s.excelRepo.List("",-1)
 	} else if resType == "text" {
-		ret, _ = s.textRepo.List()
+		ret, _, _ = s.textRepo.List("",-1)
 	}
 
 	return

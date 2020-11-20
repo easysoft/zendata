@@ -2,6 +2,7 @@ package serverRepo
 
 import (
 	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/jinzhu/gorm"
 )
 
@@ -9,8 +10,19 @@ type ConfigRepo struct {
 	db *gorm.DB
 }
 
-func (r *ConfigRepo) List() (models []*model.ZdConfig, err error) {
-	err = r.db.Select("id,title,name,folder,path").Where("true").Order("id ASC").Find(&models).Error
+func (r *ConfigRepo) List(keywords string, page int) (models []*model.ZdConfig, total int, err error) {
+	query := r.db.Select("id,title,folder,path").Order("id ASC")
+	if keywords != "" {
+		query = query.Where("title LIKE ?", "%"+keywords+"%")
+	}
+	if page > 0 {
+		query = query.Offset((page-1) * constant.PageSize).Limit(constant.PageSize)
+	}
+
+	err = query.Find(&models).Error
+
+	err = r.db.Model(&model.ZdConfig{}).Count(&total).Error
+
 	return
 }
 

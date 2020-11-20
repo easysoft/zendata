@@ -13,6 +13,9 @@ type ReqData struct {
 
 	Src int `json:"src"`
 	Dist int `json:"dist"`
+
+	Keywords string `json:"keywords"`
+	Page int `json:"page"`
 }
 
 type ResData struct {
@@ -21,6 +24,8 @@ type ResData struct {
 	Data  interface{} `json:"data"`
 	Model interface{} `json:"model"`
 	Res   interface{} `json:"res"`
+
+	Total int `json:"total"`
 }
 
 type Model struct {

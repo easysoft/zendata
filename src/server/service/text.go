@@ -10,6 +10,7 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
+	"strings"
 )
 
 type TextService struct {
@@ -17,12 +18,12 @@ type TextService struct {
 	resService *ResService
 }
 
-func (s *TextService) List() (list []*model.ZdText) {
+func (s *TextService) List(keywords string, page int) (list []*model.ZdText, total int) {
 	texts := s.resService.LoadRes("text")
-	list, _ = s.textRepo.List()
+	list, _, _ = s.textRepo.List("", -1)
 
 	s.importResToDB(texts, list)
-	list, _ = s.textRepo.List()
+	list, total, _ = s.textRepo.List(strings.TrimSpace(keywords), page)
 
 	return
 }

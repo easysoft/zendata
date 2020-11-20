@@ -64,6 +64,9 @@ import 'ant-design-vue/lib/tooltip/style';
 import TreeSelect from "ant-design-vue/lib/tree-select";
 import 'ant-design-vue/lib/tree-select/style';
 
+import Pagination from "ant-design-vue/lib/pagination";
+import 'ant-design-vue/lib/pagination/style';
+
 import zhCN from './assets/lang/zh-CN'
 import router from "./router"
 
@@ -95,6 +98,7 @@ Vue.use(Spin)
 Vue.use(Popover)
 Vue.use(Tooltip)
 Vue.use(TreeSelect)
+Vue.use(Pagination)
 
 const i18n = new VueI18n({
   locale: 'zh-CN',

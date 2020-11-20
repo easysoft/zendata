@@ -2,12 +2,15 @@
   <div>
     <div class="head">
       <div class="title">测试数据列表</div>
+      <div class="filter">
+        <a-input-search v-model="keywords" @change="onSearch" :allowClear="true" placeholder="输入关键字检索" style="width: 300px" />
+      </div>
       <div class="buttons">
         <a-button type="primary" @click="create()">新建</a-button>
       </div>
     </div>
 
-    <a-table :columns="columns" :data-source="defs" rowKey="id">
+    <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id">
       <span slot="folderWithPath" slot-scope="text, record">
         <a-tooltip placement="top" overlayClassName="tooltip-light">
           <template slot="title">
@@ -32,6 +35,10 @@
       </span>
     </a-table>
 
+    <div class="pagination-wrapper">
+      <a-pagination @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
+    </div>
+
     <div class="full-screen-modal">
       <design-component
           ref="designPage"
@@ -51,7 +58,8 @@
 
 import { listDef, removeDef } from "../../../api/manage";
 import { DesignComponent } from '../../../components'
-import {ResTypeDef} from "../../../api/utils";
+import {PageSize, ResTypeDef} from "../../../api/utils";
+import debounce from "lodash.debounce"
 
 const columns = [
   {
@@ -84,21 +92,29 @@ export default {
       designModel: {},
       type: ResTypeDef,
       time: 0,
+
+      keywords: '',
+      page: 1,
+      total: 0,
+      pageSize: PageSize,
     };
   },
   computed: {
 
   },
   created () {
-    console.log('===')
-    listDef().then(res => {
-      console.log('listDefs', res)
-      this.defs = res.data
-    })
+    this.loadData()
   },
   mounted () {
   },
   methods: {
+    loadData() {
+      listDef(this.keywords, this.page).then(res => {
+        console.log('listDefs', res)
+        this.defs = res.data
+        this.total = res.total
+      })
+    },
     create() {
       this.$router.push({path: '/data/mine/edit/0'});
     },
@@ -133,6 +149,15 @@ export default {
       console.log('handleDesignCancel')
       this.designVisible = false
     },
+
+    onPageChange() {
+      console.log('onPageChange')
+      this.loadData()
+    },
+    onSearch: debounce(function() {
+      console.log('onSearch', this.keywords)
+      this.loadData()
+    }, 500),
   }
 }
 </script>

@@ -359,7 +359,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	switch reqData.Action {
 	// def
 	case "listDef":
-		ret.Data = s.defService.List()
+		ret.Data, ret.Total = s.defService.List(reqData.Keywords, reqData.Page)
 	case "getDef":
 		var def model.ZdDef
 		def, ret.Res = s.defService.Get(reqData.Id)
@@ -398,6 +398,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	// field or instances section
 	case "listSection":
 		ret.Data, err = s.sectionService.List(uint(reqData.Id), reqData.Mode)
+
 	case "createSection":
 		paramMap := serverUtils.ConvertParams(reqData.Data)
 		ownerType, _ := paramMap["ownerType"]
@@ -431,7 +432,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 
 	// resource
 	case "listRanges":
-		ret.Data = s.rangesService.List()
+		ret.Data, ret.Total = s.rangesService.List(reqData.Keywords, reqData.Page)
 	case "getRanges":
 		ret.Data, ret.Res = s.rangesService.Get(reqData.Id)
 	case "saveRanges":
@@ -459,7 +460,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.rangesService.GetItemTree(reqData.DomainId)
 
 	case "listInstances":
-		ret.Data = s.instancesService.List()
+		ret.Data, ret.Total = s.instancesService.List(reqData.Keywords, reqData.Page)
 	case "getInstances":
 		ret.Data, ret.Res = s.instancesService.Get(reqData.Id)
 	case "saveInstances":
@@ -486,7 +487,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.instancesService.GetItemTree(reqData.DomainId)
 
 	case "listExcel":
-		ret.Data = s.excelService.List()
+		ret.Data, ret.Total = s.excelService.List(reqData.Keywords, reqData.Page)
 	case "getExcel":
 		ret.Data, ret.Res = s.excelService.Get(reqData.Id)
 	case "saveExcel":
@@ -496,7 +497,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		err = s.excelService.Remove(reqData.Id)
 
 	case "listText":
-		ret.Data = s.textService.List()
+		ret.Data, ret.Total = s.textService.List(reqData.Keywords, reqData.Page)
 	case "getText":
 		ret.Data, ret.Res = s.textService.Get(reqData.Id)
 	case "saveText":
@@ -506,7 +507,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		err = s.textService.Remove(reqData.Id)
 
 	case "listConfig":
-		ret.Data = s.configService.List()
+		ret.Data, ret.Total = s.configService.List(reqData.Keywords, reqData.Page)
 	case "getConfig":
 		ret.Data, ret.Res = s.configService.Get(reqData.Id)
 	case "saveConfig":

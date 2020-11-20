@@ -2,6 +2,9 @@
   <div>
     <div class="head">
       <div class="title">实例列表</div>
+      <div class="filter">
+        <a-input-search v-model="keywords" @change="onSearch" :allowClear="true" placeholder="输入关键字检索" style="width: 300px" />
+      </div>
       <div class="buttons">
         <a-button type="primary" @click="create()">新建</a-button>
       </div>
@@ -32,6 +35,10 @@
       </span>
     </a-table>
 
+    <div class="pagination-wrapper">
+      <a-pagination @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
+    </div>
+
     <div class="full-screen-modal">
       <design-component
           ref="designPage"
@@ -51,7 +58,8 @@
 
 import {listInstances, removeInstances} from "../../../../api/manage";
 import { DesignComponent } from '../../../../components'
-import {ResTypeInstances} from "../../../../api/utils";
+import {PageSize, ResTypeInstances} from "../../../../api/utils";
+import debounce from "lodash.debounce"
 
 const columns = [
   {
@@ -88,6 +96,11 @@ export default {
       designModel: {},
       type: ResTypeInstances,
       time: 0,
+
+      keywords: '',
+      page: 1,
+      total: 0,
+      pageSize: PageSize,
     };
   },
   computed: {
@@ -103,7 +116,7 @@ export default {
       this.$router.push({path: '/data/buildin/instances/edit/0'});
     },
     loadData() {
-      listInstances().then(json => {
+      listInstances(this.keywords, this.page).then(json => {
         console.log('listInstances', json)
         this.models = json.data
       })
@@ -134,6 +147,15 @@ export default {
       console.log('handleDesignCancel')
       this.designVisible = false
     },
+
+    onPageChange() {
+      console.log('onPageChange')
+      this.loadData()
+    },
+    onSearch: debounce(function() {
+      console.log('onSearch', this.keywords)
+      this.loadData()
+    }, 500),
   }
 }
 </script>

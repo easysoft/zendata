@@ -89,4 +89,5 @@ var (
 	ExcelHeader  = `{"fill":{"type":"pattern","pattern":1,"color":["E0EBF5"]}}`
 
 	TablePrefix = "zd_"
+	PageSize = 15
 )

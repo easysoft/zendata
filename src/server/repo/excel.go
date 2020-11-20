@@ -2,6 +2,7 @@ package serverRepo
 
 import (
 	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/jinzhu/gorm"
 )
 
@@ -9,8 +10,19 @@ type ExcelRepo struct {
 	db *gorm.DB
 }
 
-func (r *ExcelRepo) List() (models []*model.ZdExcel, err error) {
-	err = r.db.Select("id,title,name,folder,path").Where("true").Order("id ASC").Find(&models).Error
+func (r *ExcelRepo) List(keywords string, page int) (models []*model.ZdExcel, total int, err error) {
+	query := r.db.Select("id,title,folder,path").Order("id ASC")
+	if keywords != "" {
+		query = query.Where("title LIKE ?", "%"+keywords+"%")
+	}
+	if page > 0 {
+		query = query.Offset((page-1) * constant.PageSize).Limit(constant.PageSize)
+	}
+
+	err = query.Find(&models).Error
+
+	err = r.db.Model(&model.ZdExcel{}).Count(&total).Error
+
 	return
 }
 

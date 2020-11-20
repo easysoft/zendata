@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"strings"
 )
 
 type ConfigService struct {
@@ -19,12 +20,12 @@ type ConfigService struct {
 	resService *ResService
 }
 
-func (s *ConfigService) List() (list []*model.ZdConfig) {
+func (s *ConfigService) List(keywords string, page int) (list []*model.ZdConfig, total int) {
 	config := s.resService.LoadRes("config")
-	list, _ = s.configRepo.List()
+	list, _, _ = s.configRepo.List("", -1)
 
 	s.importResToDB(config, list)
-	list, _ = s.configRepo.List()
+	list, total, _ = s.configRepo.List(strings.TrimSpace(keywords), page)
 
 	return
 }

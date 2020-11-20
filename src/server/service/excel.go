@@ -10,6 +10,7 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
+	"strings"
 )
 
 type ExcelService struct {
@@ -17,12 +18,12 @@ type ExcelService struct {
 	resService *ResService
 }
 
-func (s *ExcelService) List() (list []*model.ZdExcel) {
+func (s *ExcelService) List(keywords string, page int) (list []*model.ZdExcel, total int) {
 	excel := s.resService.LoadRes("excel")
-	list, _ = s.excelRepo.List()
+	list, _, _ = s.excelRepo.List("", -1)
 
 	s.importResToDB(excel, list)
-	list, _ = s.excelRepo.List()
+	list, total, _ = s.excelRepo.List(strings.TrimSpace(keywords), page)
 
 	return
 }
