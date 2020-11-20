@@ -45,12 +45,12 @@ func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
 	} else {
 		err = s.Update(instances)
 	}
+	s.updateYaml(instances.ID)
 
 	return
 }
 func (s *InstancesService) Create(instances *model.ZdInstances) (err error) {
 	err = s.instancesRepo.Create(instances)
-	s.updateYaml(instances.ID)
 
 	return
 }
@@ -63,8 +63,6 @@ func (s *InstancesService) Update(instances *model.ZdInstances) (err error) {
 	if instances.Path != old.Path {
 		fileUtils.RemoveExist(old.Path)
 	}
-
-	s.updateYaml(instances.ID)
 
 	return
 }
@@ -91,37 +89,66 @@ func (s *InstancesService) updateYaml(id uint) (err error) {
 
 	return
 }
-func (s *InstancesService) genYaml(config *model.ZdInstances) (str string) {
+func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
+	items, err := s.instancesRepo.GetItems(instances.ID)
+	if err != nil {
+		return
+	}
+
+	yamlObj := model.ResInsts{}
+	s.instancesRepo.GenInst(*instances, &yamlObj)
+
+	for _, item := range items {
+		inst := instancesItemToResInstForExport(*item)
+
+		yamlObj.Instances = append(yamlObj.Instances, *inst)
+	}
+
+	bytes, err := yaml.Marshal(yamlObj)
+	instances.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }
 
-func (s *InstancesService) importResToDB(instances []model.ResFile, list []*model.ZdInstances) (err error) {
-	names := make([]string, 0)
+func (s *InstancesService) Sync(files []model.ResFile) {
+	list := s.instancesRepo.ListAll()
+
+	mp := map[string]*model.ZdInstances{}
 	for _, item := range list {
-		names = append(names, item.Path)
+		mp[item.Path] = item
 	}
 
-	for _, inst := range instances {
-		if !stringUtils.FindInArrBool(inst.Path, names) {
-			content, _ := ioutil.ReadFile(inst.Path)
-			yamlContent := stringUtils.ReplaceSpecialChars(content)
-			instPo := model.ZdInstances{}
-			err = yaml.Unmarshal(yamlContent, &instPo)
-			instPo.Title = inst.Title
-			instPo.Name = inst.Name
-			instPo.Desc = inst.Desc
-			instPo.Path = inst.Path
-			instPo.Folder = serverUtils.GetRelativePath(instPo.Path)
-			instPo.Yaml = string(content)
-
-			s.instancesRepo.Create(&instPo)
-
-			for i, item := range instPo.Instances {
-				item.Ord = i + 1
-				s.saveItemToDB(&item, 0, instPo.ID)
-			}
+	for _, fi := range files {
+		_, found := mp[fi.Path]
+		if !found { // no record
+			s.SyncToDB(fi)
+		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
+			s.instancesRepo.Remove(mp[fi.Path].ID)
+			s.SyncToDB(fi)
 		}
+	}
+
+	return
+}
+
+func (s *InstancesService) SyncToDB(file model.ResFile) (err error) {
+	content, _ := ioutil.ReadFile(file.Path)
+	yamlContent := stringUtils.ReplaceSpecialChars(content)
+	po := model.ZdInstances{}
+	err = yaml.Unmarshal(yamlContent, &po)
+
+	po.Title = file.Title
+	po.Name = file.Name
+	po.Desc = file.Desc
+	po.Path = file.Path
+	po.Folder = serverUtils.GetRelativePath(po.Path)
+	po.Yaml = string(content)
+
+	s.instancesRepo.Create(&po)
+
+	for i, item := range po.Instances {
+		item.Ord = i + 1
+		s.saveItemToDB(&item, 0, po.ID)
 	}
 
 	return

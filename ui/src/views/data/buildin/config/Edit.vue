@@ -4,6 +4,7 @@
       <div class="title">
         配置<span v-if="id!=0">编辑</span><span v-if="id==0">新建</span>
       </div>
+      <div class="filter"></div>
       <div class="buttons">
         <a-button type="primary" @click="back()">返回</a-button>
       </div>
@@ -86,8 +87,8 @@
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-form-model-item label="描述" prop="note" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.note" type="textarea" rows="3" />
+        <a-form-model-item label="描述" prop="desc" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-input v-model="model.desc" type="textarea" rows="3" />
         </a-form-model-item>
       </a-row>
 

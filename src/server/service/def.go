@@ -44,6 +44,8 @@ func (s *DefService) Save(def *model.ZdDef) (err error) {
 	} else {
 		err = s.Update(def)
 	}
+	s.updateYaml(def.ID)
+
 	return
 }
 
@@ -54,9 +56,6 @@ func (s *DefService) Create(def *model.ZdDef) (err error) {
 	rootField, err := s.fieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
 	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
 	err = s.defRepo.Update(def)
-
-	// update  yaml
-	s.updateYaml(def.ID)
 
 	return
 }
@@ -72,7 +71,6 @@ func (s *DefService) Update(def *model.ZdDef) (err error) {
 	}
 
 	err = s.defRepo.Update(def)
-	s.updateYaml(def.ID)
 
 	return
 }
@@ -106,17 +104,17 @@ func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 		return
 	}
 
-	defData := model.DefData{}
-	s.defRepo.GenDef(*def, &defData)
+	yamlObj := model.DefData{}
+	s.defRepo.GenDef(*def, &yamlObj)
 
 	for _, child := range root.Fields { // ignore the root
 		defField := model.DefField{}
-		convertToConfModel(*child, &defField)
+		zdFieldToFieldForExport(*child, &defField)
 
-		defData.Fields = append(defData.Fields, defField)
+		yamlObj.Fields = append(yamlObj.Fields, defField)
 	}
 
-	bytes, err := yaml.Marshal(defData)
+	bytes, err := yaml.Marshal(yamlObj)
 	def.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
 
 	return
@@ -137,23 +135,11 @@ func (s *DefService) Sync(files []model.ResFile) (err error) {
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
 			s.defRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
-		} else { // db is new
-
 		}
 	}
 
 	return
 }
-func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
-	item.DefID = defID
-	item.ParentID = parentID
-	s.fieldRepo.Save(item)
-
-	for _, child := range item.Fields {
-		s.saveFieldToDB(child, item.ID, defID)
-	}
-}
-
 func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	content, _ := ioutil.ReadFile(fi.Path)
 	yamlContent := stringUtils.ReplaceSpecialChars(content)
@@ -176,6 +162,15 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	}
 
 	return
+}
+func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
+	item.DefID = defID
+	item.ParentID = parentID
+	s.fieldRepo.Save(item)
+
+	for _, child := range item.Fields {
+		s.saveFieldToDB(child, item.ID, defID)
+	}
 }
 
 func NewDefService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo,

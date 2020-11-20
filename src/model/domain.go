@@ -2,14 +2,22 @@ package model
 
 import "time"
 
-type ClsBase struct {
+type ClsInfo struct {
 	Title   string `yaml:"title"`
 	Desc    string `yaml:"desc"`
 	Author  string `yaml:"author,omitempty"`
 	Version string `yaml:"version,omitempty"`
-
+}
+type ClsBase struct {
+	ClsInfo `yaml:",inline"`
 	From string        `yaml:"from,omitempty"`
 	Type  string  `yaml:"type,omitempty"`
+}
+
+// config res
+type ResConfig struct {
+	ClsInfo `yaml:",inline"`
+	FieldSimple `yaml:",inline"`
 }
 
 // instance res
@@ -17,7 +25,6 @@ type ResInsts struct {
 	ClsBase   `yaml:",inline"`
 	Field string        `yaml:"field"`
 	Instances []ResInst `yaml:"instances,flow"`
-
 }
 type ResInst struct {
 	FieldBase   `yaml:",inline"`
@@ -29,7 +36,7 @@ type ResInst struct {
 
 // range res
 type ResRanges struct {
-	ClsBase   `yaml:",inline"`
+	ClsInfo   `yaml:",inline"`
 	Field string        `yaml:"field"`
 	Ranges map[string]string  `yaml:"ranges"`
 }

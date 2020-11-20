@@ -29,8 +29,8 @@ func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
 	}
 
 	s.defService.Sync(fileMap[constant.ResTypeYaml])
-	//s.rangesService.Sync(fileMap[constant.ResTypeRanges])
-	//s.instancesService.Sync(fileMap[constant.ResTypeInstances])
+	s.rangesService.Sync(fileMap[constant.ResTypeRanges])
+	s.instancesService.Sync(fileMap[constant.ResTypeInstances])
 	s.configService.Sync(fileMap[constant.ResTypeConfig])
 }
 

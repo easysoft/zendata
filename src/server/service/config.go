@@ -7,6 +7,7 @@ import (
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
@@ -97,6 +98,11 @@ func (s *ConfigService) updateYaml(id uint) (err error) {
 	return
 }
 func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
+	yamlObj := model.ResConfig{}
+	s.configRepo.GenConfig(*config, &yamlObj)
+
+	bytes, _ := yaml.Marshal(yamlObj)
+	config.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }
@@ -111,6 +117,7 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 
 	for _, fi := range files {
 		_, found := mp[fi.Path]
+		logUtils.PrintTo(fi.UpdatedAt.String() + ", " + mp[fi.Path].UpdatedAt.String())
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old

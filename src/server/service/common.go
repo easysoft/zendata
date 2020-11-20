@@ -2,21 +2,56 @@ package serverService
 
 import "github.com/easysoft/zendata/src/model"
 
-func convertToConfModel(treeNode model.ZdField, field *model.DefField) {
-	genField(treeNode, field)
+func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst *model.ResInst) {
+	inst.Note = item.Note
+
+	for _, child := range item.Fields {
+		childField := model.DefField{}
+		instancesItemToResFieldForExport(*child, &childField)
+
+		inst.Fields = append(inst.Fields, childField)
+	}
+
+	return
+}
+func instancesItemToResFieldForExport(item model.ZdInstancesItem, field *model.DefField) {
+	for _, item := range item.Fields {
+		childField := model.DefField{}
+		instancesItemToResFieldForExport(*item, &childField)
+
+		field.Fields = append(field.Fields, childField)
+	}
+
+	for _, from := range item.Froms { // only one level
+		childField := model.DefField{}
+		genFieldFromZdInstancesItem(*from, &childField)
+
+		field.Froms = append(field.Froms, childField)
+	}
+
+	if len(field.Fields) == 0 {
+		field.Fields = nil
+	}
+	if len(field.Froms) == 0 {
+		field.Froms = nil
+	}
+}
+
+func zdFieldToFieldForExport(treeNode model.ZdField, field *model.DefField) {
+	genFieldFromZdField(treeNode, field)
 
 	for _, child := range treeNode.Fields {
-		defField := model.DefField{}
-		convertToConfModel(*child, &defField)
+		childField := model.DefField{}
+		zdFieldToFieldForExport(*child, &childField)
 
-		field.Fields = append(field.Fields, defField)
+		field.Fields = append(field.Fields, childField)
 	}
 
 	for _, from := range treeNode.Froms { // only one level
-		defField := model.DefField{}
-		genField(*from, &defField)
+		childField := model.DefField{}
+		genFieldFromZdField(*from, &childField)
 
-		field.Froms = append(field.Froms, defField)
+		field.Froms = append(field.Froms, childField)
 	}
 
 	if len(field.Fields) == 0 {
@@ -29,7 +64,7 @@ func convertToConfModel(treeNode model.ZdField, field *model.DefField) {
 	return
 }
 
-func genField(treeNode model.ZdField, field *model.DefField) () {
+func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
 	field.Field = treeNode.Field
 	field.Note = treeNode.Note
 
@@ -53,4 +88,30 @@ func genField(treeNode model.ZdField, field *model.DefField) () {
 	field.Select = treeNode.Select
 	field.Where = treeNode.Where
 	field.Limit = treeNode.Limit
+}
+
+func genFieldFromZdInstancesItem(item model.ZdInstancesItem, field *model.DefField) () {
+	field.Field = item.Field
+	field.Note = item.Note
+
+	field.Range = item.Range
+	field.Value = item.Exp
+	field.Prefix = item.Prefix
+	field.Postfix = item.Postfix
+	field.Loop = item.Loop
+	field.Loopfix = item.Loopfix
+	field.Format = item.Format
+	field.Type = item.Type
+	field.Mode = item.Mode
+	field.Length = item.Length
+	field.LeftPad = item.LeftPad
+	field.RightPad = item.RightPad
+	field.Rand = item.Rand
+
+	field.Config = item.Config
+	field.Use = item.Use
+	field.From = item.From
+	field.Select = item.Select
+	field.Where = item.Where
+	field.Limit = item.Limit
 }

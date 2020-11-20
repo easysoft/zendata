@@ -62,7 +62,7 @@ func (s *ResService) ListReferForSelection(resType string) (ret interface{}) {
 }
 func (s *ResService) ListReferFieldForSelection(resId int, resType string) (ret []model.ResField) {
 	if resType == "instances" {
-		items, _ := s.instancesRepo.GetItems(resId)
+		items, _ := s.instancesRepo.GetItems(uint(resId))
 		for i, item := range items {
 			if item.ParentID != 0 { return } // ignore sub nodes
 			field := model.ResField{Name: item.Instance, Index: i+1}
@@ -72,7 +72,7 @@ func (s *ResService) ListReferFieldForSelection(resId int, resType string) (ret 
 		items, _ := s.rangesRepo.GetItems(resId)
 		for i, item := range items {
 			if item.ParentID != 0 { return } // ignore sub nodes
-			field := model.ResField{Name: item.Name, Index: i+1}
+			field := model.ResField{Name: item.Field, Index: i+1}
 			ret = append(ret, field)
 		}
 	} else if resType == "excel" {

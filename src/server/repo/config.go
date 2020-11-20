@@ -58,6 +58,21 @@ func (r *ConfigRepo) UpdateYaml(po model.ZdConfig) (err error) {
 	return
 }
 
+func (r *ConfigRepo) GenConfig(config model.ZdConfig, data *model.ResConfig) {
+	data.Title = config.Title
+	data.Desc = config.Desc
+	//data.Author = config.Author
+	//data.Version = config.Version
+
+	data.Field = config.Field
+
+	data.Prefix = config.Prefix
+	data.Postfix = config.Postfix
+	data.Loop = config.Loop
+	data.Loopfix = config.Loopfix
+	data.Format = config.Format
+}
+
 func NewConfigRepo(db *gorm.DB) *ConfigRepo {
 	return &ConfigRepo{db: db}
 }

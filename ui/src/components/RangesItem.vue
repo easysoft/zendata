@@ -9,8 +9,8 @@
     <div>
       <a-form-model ref="editForm" :model="model" :rules="rules">
         <a-row :gutter="colsFull">
-            <a-form-model-item label="名称" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-              <a-input v-model="model.name" />
+            <a-form-model-item label="名称" prop="field" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+              <a-input v-model="model.field" />
             </a-form-model-item>
         </a-row>
 

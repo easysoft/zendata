@@ -10,6 +10,8 @@ type FieldService struct {
 	defRepo *serverRepo.DefRepo
 	fieldRepo *serverRepo.FieldRepo
 	referRepo *serverRepo.ReferRepo
+
+	defService *DefService
 }
 
 func (s *FieldService) GetTree(defId uint) (root *model.ZdField, err error) {
@@ -25,6 +27,7 @@ func (s *FieldService) Get(fieldId int) (field model.ZdField, err error) {
 
 func (s *FieldService) Save(field *model.ZdField) (err error) {
 	err = s.fieldRepo.Save(field)
+	s.defService.updateYaml(field.DefID)
 
 	return
 }
@@ -49,6 +52,9 @@ func (s *FieldService) Create(defId, targetId uint, name string, mode string) (f
 
 	err = s.fieldRepo.Save(field)
 	s.referRepo.CreateDefault(field.ID, constant.ResTypeDef)
+
+	s.defService.updateYaml(field.DefID)
+
 	return
 }
 
@@ -57,12 +63,16 @@ func (s *FieldService) Remove(id int) (defId int, err error) {
 	defId = int(field.DefID)
 
 	err = s.deleteFieldAndChildren(field.DefID, field.ID)
+
+	s.defService.updateYaml(field.DefID)
+
 	return
 }
 
-func (s *FieldService) Move(srcId, targetId uint, mode string) (defId int, srcField model.ZdField, err error) {
+func (s *FieldService) Move(srcId, targetId uint, mode string) (defId uint, srcField model.ZdField, err error) {
 	srcField, err = s.fieldRepo.Get(srcId)
 	targetField, err := s.fieldRepo.Get(targetId)
+	defId = srcField.DefID
 
 	if "0" == mode {
 		srcField.ParentID = targetId
@@ -87,6 +97,8 @@ func (s *FieldService) Move(srcId, targetId uint, mode string) (defId int, srcFi
 
 	err = s.fieldRepo.UpdateOrdAndParent(srcField)
 
+	s.defService.updateYaml(defId)
+
 	return
 }
 
@@ -102,6 +114,9 @@ func (s *FieldService) deleteFieldAndChildren(defId, fieldId uint) (err error) {
 	return
 }
 
-func NewFieldService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo, referRepo *serverRepo.ReferRepo) *FieldService {
-	return &FieldService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo}
+func NewFieldService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo,
+	referRepo *serverRepo.ReferRepo,
+	defService *DefService) *FieldService {
+	return &FieldService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo,
+		defService: defService}
 }

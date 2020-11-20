@@ -44,12 +44,12 @@ func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 	} else {
 		err = s.Update(ranges)
 	}
+	s.updateYaml(ranges.ID)
 
 	return
 }
 func (s *RangesService) Create(ranges *model.ZdRanges) (err error) {
 	err = s.rangesRepo.Create(ranges)
-	s.updateYaml(ranges.ID)
 
 	return
 }
@@ -64,7 +64,6 @@ func (s *RangesService) Update(ranges *model.ZdRanges) (err error) {
 	}
 
 	err = s.rangesRepo.Update(ranges)
-	s.updateYaml(ranges.ID)
 
 	return
 }
@@ -81,6 +80,56 @@ func (s *RangesService) Remove(id int) (err error) {
 	return
 }
 
+func (s *RangesService) Sync(files []model.ResFile) (err error) {
+	list := s.rangesRepo.ListAll()
+
+	mp := map[string]*model.ZdRanges{}
+	for _, item := range list {
+		mp[item.Path] = item
+	}
+
+	for _, fi := range files {
+		_, found := mp[fi.Path]
+		if !found { // no record
+			s.SyncToDB(fi)
+		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
+			s.rangesRepo.Remove(mp[fi.Path].ID)
+			s.SyncToDB(fi)
+		}
+	}
+
+	return
+}
+
+func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
+	content, _ := ioutil.ReadFile(fi.Path)
+	yamlContent := stringUtils.ReplaceSpecialChars(content)
+	po := model.ZdRanges{}
+	err = yaml.Unmarshal(yamlContent, &po)
+
+	po.Title = fi.Title
+	po.Name = fi.Name
+	po.Desc = fi.Desc
+	po.Path = fi.Path
+	po.Folder = serverUtils.GetRelativePath(po.Path)
+	po.Field = fi.Title
+	po.Note = fi.Desc
+	po.Yaml = string(content)
+
+	s.rangesRepo.Create(&po)
+
+	i := 1
+	for k, v := range po.RangeMap {
+		item := model.ZdRangesItem{Field: k, Value: v}
+		item.RangesID = po.ID
+		item.Ord = i
+		s.rangesRepo.SaveItem(&item)
+		i += 1
+	}
+
+	return
+}
+
 func (s *RangesService) updateYaml(id uint) (err error) {
 	var po model.ZdRanges
 	po, _ = s.rangesRepo.Get(id)
@@ -91,44 +140,22 @@ func (s *RangesService) updateYaml(id uint) (err error) {
 
 	return
 }
-func (s *RangesService) genYaml(config *model.ZdRanges) (str string) {
-
-	return
-}
-
-func (s *RangesService) importResToDB(ranges []model.ResFile, list []*model.ZdRanges) (err error) {
-	names := make([]string, 0)
-	for _, item := range list {
-		names = append(names, item.Path)
+func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
+	items, err := s.rangesRepo.GetItems(int(ranges.ID))
+	if err != nil {
+		return
 	}
 
-	for _, item := range ranges {
-		if !stringUtils.FindInArrBool(item.Path, names) {
-			content, _ := ioutil.ReadFile(item.Path)
-			yamlContent := stringUtils.ReplaceSpecialChars(content)
-			ranges := model.ZdRanges{}
-			err = yaml.Unmarshal(yamlContent, &ranges)
-			ranges.Title = item.Title
-			ranges.Name = item.Name
-			ranges.Desc = item.Desc
-			ranges.Path = item.Path
-			ranges.Folder = serverUtils.GetRelativePath(ranges.Path)
-			ranges.Field = item.Title
-			ranges.Note = item.Desc
-			ranges.Yaml = string(content)
+	yamlObj := model.ResRanges{}
+	yamlObj.Ranges = map[string]string{}
+	s.rangesRepo.GenRanges(*ranges, &yamlObj)
 
-			s.rangesRepo.Create(&ranges)
-
-			i := 1
-			for k, v := range ranges.RangeMap {
-				item := model.ZdRangesItem{Name: k, Value: v}
-				item.RangesID = ranges.ID
-				item.Ord = i
-				s.rangesRepo.SaveItem(&item)
-				i += 1
-			}
-		}
+	for _, item := range items {
+		yamlObj.Ranges[item.Field] = item.Value
 	}
+
+	bytes, err := yaml.Marshal(yamlObj)
+	ranges.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func (s *InstancesService) GetItemTree(instancesId int) (root model.ZdInstancesItem) {
-	root = s.instancesRepo.GetItemTree(instancesId)
+	root = s.instancesRepo.GetItemTree(uint(instancesId))
 	return
 }
 func (s *InstancesService) GetItem(id int) (item model.ZdInstancesItem) {

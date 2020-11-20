@@ -140,7 +140,7 @@ export default {
       selectedKeys: [],
       targetModel: 0,
       treeNode: null,
-      fieldMap: {key:'id', value: 'id', children: 'fields'},
+      fieldMap: {title: 'field', key:'id', value: 'id', children: 'fields'},
     };
   },
   props: {
@@ -170,15 +170,6 @@ export default {
   },
   created () {
     console.log('created')
-
-    if (this.type === 'def') {
-      this.fieldMap.title = 'field'
-    } else if (this.type === 'ranges') {
-      this.fieldMap.title = 'name'
-    } else if (this.type === 'instances') {
-      this.fieldMap.title = 'field'
-    }
-
     this.loadTree()
     this.$watch('time', () => {
       console.log('time changed', this.time)

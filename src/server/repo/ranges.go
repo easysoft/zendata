@@ -93,6 +93,13 @@ func (r *RangesRepo) UpdateYaml(po model.ZdRanges) (err error) {
 	return
 }
 
+func (r *RangesRepo) GenRanges(ranges model.ZdRanges, res *model.ResRanges) {
+	res.Title = ranges.Title
+	res.Desc = ranges.Desc
+	res.Field = ranges.Field
+
+}
+
 func NewRangesRepo(db *gorm.DB) *RangesRepo {
 	return &RangesRepo{db: db}
 }

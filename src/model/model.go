@@ -132,13 +132,13 @@ func (*ZdRanges) TableName() string {
 type ZdRangesItem struct {
 	Model
 	RangesID uint `gorm:"column:rangesID" json:"rangesID"`
-	Name string `gorm:"column:name" json:"name"`
+	Field string `gorm:"column:name" json:"field"`
 	Value string `gorm:"column:value" json:"value"`
 	Ord int `gorm:"column:ord" json:"ord"`
 
 	// for tree node
 	ParentID uint `gorm:"-" json:"parentID"`
-	Children []*ZdRangesItem `gorm:"-" json:"children"`
+	Fields []*ZdRangesItem `gorm:"-" json:"fields"`
 }
 func (*ZdRangesItem) TableName() string {
 	return constant.TablePrefix + "ranges_item"
@@ -156,7 +156,7 @@ type ZdInstances struct {
 	Format string `gorm:"column:format" json:"format"`
 	Instances []ZdInstancesItem `gorm:"ForeignKey:instancesID" json:"instances"`
 
-	Yaml   string `gorm:"yaml" json:"yaml"`
+	Yaml   string `gorm:"yaml" json:"yaml" yaml:"-"`
 	Path   string `gorm:"column:path" json:"path" yaml:"-"`
 	Folder string `gorm:"folder" json:"folder" yaml:"-"`
 }

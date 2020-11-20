@@ -1,0 +1,9 @@
+title: _test-config
+desc: 配置测试
+field: _test-config
+range: ""
+prefix: "\t"
+postfix: "\t"
+loop: "2"
+loopfix: ','
+

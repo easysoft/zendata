@@ -8,10 +8,10 @@ func (s *RangesService) GetItemTree(rangesId int) (root model.ZdRangesItem) {
 	items, _ := s.rangesRepo.GetItems(rangesId)
 
 	root.ID = 0
-	root.Name = "序列"
+	root.Field = "序列"
 	for _, item := range items {
 		item.ParentID = root.ID
-		root.Children = append(root.Children, item)
+		root.Fields = append(root.Fields, item)
 	}
 
 	return
@@ -22,7 +22,7 @@ func (s *RangesService) GetItem(id int) (item model.ZdRangesItem) {
 }
 
 func (s *RangesService) CreateItem(domainId, targetId int, mode string) (item *model.ZdRangesItem, err error) {
-	item = &model.ZdRangesItem{Name: "ranges_", RangesID: uint(domainId)}
+	item = &model.ZdRangesItem{Field: "ranges_", RangesID: uint(domainId)}
 	item.Ord = s.rangesRepo.GetMaxOrder(domainId)
 
 	err = s.rangesRepo.SaveItem(item)
@@ -31,10 +31,12 @@ func (s *RangesService) CreateItem(domainId, targetId int, mode string) (item *m
 }
 func (s *RangesService) SaveItem(item *model.ZdRangesItem) (err error) {
 	err = s.rangesRepo.SaveItem(item)
+	s.updateYaml(item.RangesID)
 	return
 }
 
-func (s *RangesService) RemoveItem(id int) (err error) {
+func (s *RangesService) RemoveItem(id, domainId int) (err error) {
 	err = s.rangesRepo.RemoveItem(uint(id))
+	s.updateYaml(uint(domainId))
 	return
 }

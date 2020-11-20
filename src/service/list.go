@@ -228,14 +228,14 @@ func SortByName(arr []model.ResFile) []model.ResFile {
 }
 
 func GetYamlResType(def model.DefInfo) string {
-	if def.Range != "" {
-		return constant.ResTypeConfig
-	} else if def.Ranges != nil {
+	if def.Ranges != nil {
 		return constant.ResTypeRanges
 	} else if def.Instances != nil {
 		return constant.ResTypeInstances
 	} else if def.Fields != nil {
 		return constant.ResTypeYaml
+	} else {
+		return constant.ResTypeConfig
 	}
 
 	return ""

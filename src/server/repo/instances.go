@@ -59,7 +59,7 @@ func (r *InstancesRepo) Remove(id uint) (err error) {
 	return
 }
 
-func (r *InstancesRepo) GetItems(instancesId int) (items []*model.ZdInstancesItem, err error) {
+func (r *InstancesRepo) GetItems(instancesId uint) (items []*model.ZdInstancesItem, err error) {
 	err = r.db.Where("instancesId=?", instancesId).Order("parentID ASC, ord ASC").Find(&items).Error
 	return
 }
@@ -92,7 +92,7 @@ func (r *InstancesRepo) GetMaxOrder(instancesId int) (ord int) {
 	return
 }
 
-func (r *InstancesRepo) GetItemTree(instancesId int) (root model.ZdInstancesItem) {
+func (r *InstancesRepo) GetItemTree(instancesId uint) (root model.ZdInstancesItem) {
 	items, _ := r.GetItems(instancesId)
 
 	root.ID = 0
@@ -125,6 +125,12 @@ func (r *InstancesRepo) haveChild(Data []*model.ZdInstancesItem,
 		yes = true
 	}
 	return
+}
+
+func (r *InstancesRepo) GenInst(po model.ZdInstances, res *model.ResInsts) {
+	res.Title = po.Title
+	res.Desc = po.Desc
+	res.Field = po.Field
 }
 
 func NewInstancesRepo(db *gorm.DB) *InstancesRepo {

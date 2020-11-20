@@ -304,7 +304,7 @@ func Init() (err error) {
 	configRepo := serverRepo.NewConfigRepo(gormDb)
 
 	defService := serverService.NewDefService(defRepo, fieldRepo, referRepo)
-	fieldService := serverService.NewFieldService(defRepo, fieldRepo, referRepo)
+	fieldService := serverService.NewFieldService(defRepo, fieldRepo, referRepo, defService)
 	sectionService := serverService.NewSectionService(fieldRepo, sectionRepo)
 	rangesService := serverService.NewRangesService(rangesRepo)
 	instancesService := serverService.NewInstancesService(instancesRepo, referRepo)
@@ -397,9 +397,9 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		defId, err = s.fieldService.Remove(reqData.Id)
 		ret.Data, err = s.fieldService.GetTree(uint(defId))
 	case "moveDefField":
-		var defId int
+		var defId uint
 		defId, ret.Model, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
-		ret.Data, err = s.fieldService.GetTree(uint(defId))
+		ret.Data, err = s.fieldService.GetTree(defId)
 
 	// field or instances section
 	case "listSection":
@@ -462,7 +462,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		rangesItem := serverUtils.ConvertRangesItem(reqData.Data)
 		ret.Data = s.rangesService.SaveItem(&rangesItem)
 	case "removeResRangesItem":
-		err = s.rangesService.RemoveItem(reqData.Id)
+		err = s.rangesService.RemoveItem(reqData.Id, reqData.DomainId)
 		ret.Data = s.rangesService.GetItemTree(reqData.DomainId)
 
 	case "listInstances":
