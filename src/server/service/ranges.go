@@ -48,8 +48,8 @@ func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 	return
 }
 func (s *RangesService) Create(ranges *model.ZdRanges) (err error) {
-	s.dataToYaml(ranges)
 	err = s.rangesRepo.Create(ranges)
+	s.updateYaml(ranges.ID)
 
 	return
 }
@@ -63,8 +63,8 @@ func (s *RangesService) Update(ranges *model.ZdRanges) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	s.dataToYaml(ranges)
 	err = s.rangesRepo.Update(ranges)
+	s.updateYaml(ranges.ID)
 
 	return
 }
@@ -81,7 +81,17 @@ func (s *RangesService) Remove(id int) (err error) {
 	return
 }
 
-func (s *RangesService) dataToYaml(ranges *model.ZdRanges) (str string) {
+func (s *RangesService) updateYaml(id uint) (err error) {
+	var po model.ZdRanges
+	po, _ = s.rangesRepo.Get(id)
+
+	s.genYaml(&po)
+	err = s.rangesRepo.UpdateYaml(po)
+	fileUtils.WriteFile(po.Path, po.Yaml)
+
+	return
+}
+func (s *RangesService) genYaml(config *model.ZdRanges) (str string) {
 
 	return
 }

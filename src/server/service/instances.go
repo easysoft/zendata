@@ -49,8 +49,8 @@ func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
 	return
 }
 func (s *InstancesService) Create(instances *model.ZdInstances) (err error) {
-	s.dataToYaml(instances)
 	err = s.instancesRepo.Create(instances)
+	s.updateYaml(instances.ID)
 
 	return
 }
@@ -64,8 +64,7 @@ func (s *InstancesService) Update(instances *model.ZdInstances) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	s.dataToYaml(instances)
-	err = s.instancesRepo.Update(instances)
+	s.updateYaml(instances.ID)
 
 	return
 }
@@ -82,7 +81,17 @@ func (s *InstancesService) Remove(id int) (err error) {
 	return
 }
 
-func (s *InstancesService) dataToYaml(inst *model.ZdInstances) (str string) {
+func (s *InstancesService) updateYaml(id uint) (err error) {
+	var po model.ZdInstances
+	po, _ = s.instancesRepo.Get(id)
+
+	s.genYaml(&po)
+	err = s.instancesRepo.UpdateYaml(po)
+	fileUtils.WriteFile(po.Path, po.Yaml)
+
+	return
+}
+func (s *InstancesService) genYaml(config *model.ZdInstances) (str string) {
 
 	return
 }

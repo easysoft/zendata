@@ -11,12 +11,12 @@ type RangesRepo struct {
 }
 
 func (r *RangesRepo) ListAll() (models []*model.ZdRanges) {
-	r.db.Select("id,title,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *RangesRepo) List(keywords string, page int) (models []*model.ZdRanges, total int, err error) {
-	query := r.db.Select("id,title,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
@@ -85,6 +85,11 @@ func (r *RangesRepo) GetMaxOrder(rangesId int) (ord int) {
 	}
 	ord = preChild.Ord + 1
 
+	return
+}
+
+func (r *RangesRepo) UpdateYaml(po model.ZdRanges) (err error) {
+	err = r.db.Model(&model.ZdRanges{}).Where("id=?", po.ID).Update("yaml", po.Yaml).Error
 	return
 }
 

@@ -51,8 +51,8 @@ func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
 }
 
 func (s *ConfigService) Create(config *model.ZdConfig) (err error) {
-	s.dataToYaml(config)
 	err = s.configRepo.Create(config)
+	s.updateYaml(config.ID)
 
 	return
 }
@@ -67,8 +67,8 @@ func (s *ConfigService) Update(config *model.ZdConfig) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	s.dataToYaml(config)
 	err = s.configRepo.Update(config)
+	s.updateYaml(config.ID)
 
 	return
 }
@@ -86,35 +86,60 @@ func (s *ConfigService) Remove(id int) (err error) {
 	return
 }
 
-func (s *ConfigService) dataToYaml(config *model.ZdConfig) (str string) {
+func (s *ConfigService) updateYaml(id uint) (err error) {
+	var po model.ZdConfig
+	po, _ = s.configRepo.Get(id)
+
+	s.genYaml(&po)
+	err = s.configRepo.UpdateYaml(po)
+	fileUtils.WriteFile(po.Path, po.Yaml)
+
+	return
+}
+func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
 
 	return
 }
 
-func (s *ConfigService) importResToDB(config []model.ResFile, list []*model.ZdConfig) (err error) {
-	names := make([]string, 0)
+func (s *ConfigService) Sync(files []model.ResFile) (err error) {
+	list := s.configRepo.ListAll()
+
+	mp := map[string]*model.ZdConfig{}
 	for _, item := range list {
-		names = append(names, item.Path)
+		mp[item.Path] = item
 	}
 
-	for _, item := range config {
-		if !stringUtils.FindInArrBool(item.Path, names) {
-			content, _ := ioutil.ReadFile(item.Path)
-			yamlContent := stringUtils.ReplaceSpecialChars(content)
-			config := model.ZdConfig{}
-			err = yaml.Unmarshal(yamlContent, &config)
-			config.Title = item.Title
-			config.Name = item.Name
-			config.Desc = item.Desc
-			config.Path = item.Path
-			config.Folder = serverUtils.GetRelativePath(config.Path)
-			config.Field = item.Title
-			config.Note = item.Desc
-			config.Yaml = string(content)
+	for _, fi := range files {
+		_, found := mp[fi.Path]
+		if !found { // no record
+			s.SyncToDB(fi)
+		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
+			s.configRepo.Remove(mp[fi.Path].ID)
+			s.SyncToDB(fi)
+		} else { // db is new
 
-			s.configRepo.Create(&config)
 		}
 	}
+
+	return
+}
+func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
+	content, _ := ioutil.ReadFile(fi.Path)
+	yamlContent := stringUtils.ReplaceSpecialChars(content)
+	po := model.ZdConfig{}
+	err = yaml.Unmarshal(yamlContent, &po)
+
+	po.Title = fi.Title
+	po.Name = fi.Name
+	po.Desc = fi.Desc
+	po.Path = fi.Path
+	po.Folder = serverUtils.GetRelativePath(po.Path)
+	po.Name = service.PathToName(po.Path, constant.ResDirYaml)
+	po.Field = fi.Title
+	po.Note = fi.Desc
+	po.Yaml = string(content)
+
+	s.configRepo.Create(&po)
 
 	return
 }

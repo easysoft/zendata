@@ -11,12 +11,12 @@ type ConfigRepo struct {
 }
 
 func (r *ConfigRepo) ListAll() (models []*model.ZdConfig) {
-	r.db.Select("id,title,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *ConfigRepo) List(keywords string, page int) (models []*model.ZdConfig, total int, err error) {
-	query := r.db.Select("id,title,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
@@ -50,6 +50,11 @@ func (r *ConfigRepo) Remove(id uint) (err error) {
 	model.ID = id
 	err = r.db.Delete(model).Error
 
+	return
+}
+
+func (r *ConfigRepo) UpdateYaml(po model.ZdConfig) (err error) {
+	err = r.db.Model(&model.ZdConfig{}).Where("id=?", po.ID).Update("yaml", po.Yaml).Error
 	return
 }
 

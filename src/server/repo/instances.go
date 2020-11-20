@@ -11,12 +11,12 @@ type InstancesRepo struct {
 }
 
 func (r *InstancesRepo) ListAll() (models []*model.ZdInstances) {
-	r.db.Select("id,title,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *InstancesRepo) List(keywords string, page int) (models []*model.ZdInstances, total int, err error) {
-	query := r.db.Select("id,title,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
@@ -42,6 +42,10 @@ func (r *InstancesRepo) Create(model *model.ZdInstances) (err error) {
 }
 func (r *InstancesRepo) Update(model *model.ZdInstances) (err error) {
 	err = r.db.Save(model).Error
+	return
+}
+func (r *InstancesRepo) UpdateYaml(po model.ZdInstances) (err error) {
+	err = r.db.Model(&model.ZdInstances{}).Where("id=?", po.ID).Update("yaml", po.Yaml).Error
 	return
 }
 

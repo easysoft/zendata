@@ -59,9 +59,8 @@ func (r *DefRepo) Remove(id uint) (err error) {
 	return
 }
 
-
-func (r *DefRepo) UpdateYaml(def model.ZdDef) (err error) {
-	err = r.db.Model(&model.ZdDef{}).Where("id=?", def.ID).Update("yaml", def.Yaml).Error
+func (r *DefRepo) UpdateYaml(po model.ZdDef) (err error) {
+	err = r.db.Model(&model.ZdDef{}).Where("id=?", po.ID).Update("yaml", po.Yaml).Error
 	return
 }
 

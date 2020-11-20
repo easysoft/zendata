@@ -79,11 +79,6 @@ func (s *TextService) Remove(id int) (err error) {
 	return
 }
 
-func (s *TextService) dataToYaml(text *model.ZdText) (str string) {
-
-	return
-}
-
 func (s *TextService) importResToDB(texts []model.ResFile, list []*model.ZdText) (err error) {
 	names := make([]string, 0)
 	for _, item := range list {

@@ -72,11 +72,6 @@ func (s *ExcelService) Remove(id int) (err error) {
 	return
 }
 
-func (s *ExcelService) dataToYaml(excel *model.ZdExcel) (str string) {
-
-	return
-}
-
 func (s *ExcelService) importResToDB(excel []model.ResFile, list []*model.ZdExcel) (err error) {
 	names := make([]string, 0)
 	for _, item := range list {

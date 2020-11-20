@@ -50,9 +50,12 @@ func (s *DefService) Save(def *model.ZdDef) (err error) {
 func (s *DefService) Create(def *model.ZdDef) (err error) {
 	err = s.defRepo.Create(def)
 
+	// add root field node
 	rootField, err := s.fieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
 	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
 	err = s.defRepo.Update(def)
+
+	// update  yaml
 	s.updateYaml(def.ID)
 
 	return
@@ -86,13 +89,13 @@ func (s *DefService) Remove(id int) (err error) {
 	return
 }
 
-func (s *DefService) updateYaml(defId uint) (err error) {
-	var def model.ZdDef
-	def, _ = s.defRepo.Get(defId)
+func (s *DefService) updateYaml(id uint) (err error) {
+	var po model.ZdDef
+	po, _ = s.defRepo.Get(id)
 
-	s.genYaml(&def)
-	err = s.defRepo.UpdateYaml(def)
-	fileUtils.WriteFile(def.Path, def.Yaml)
+	s.genYaml(&po)
+	err = s.defRepo.UpdateYaml(po)
+	fileUtils.WriteFile(po.Path, po.Yaml)
 
 	return
 }
@@ -120,19 +123,19 @@ func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 }
 
 func (s *DefService) Sync(files []model.ResFile) (err error) {
-	defList := s.defRepo.ListAll()
+	list := s.defRepo.ListAll()
 
-	defMap := map[string]*model.ZdDef{}
-	for _, item := range defList {
-		defMap[item.Path] = item
+	mp := map[string]*model.ZdDef{}
+	for _, item := range list {
+		mp[item.Path] = item
 	}
 
 	for _, fi := range files {
-		_, found := defMap[fi.Path]
+		_, found := mp[fi.Path]
 		if !found { // no record
 			s.SyncToDB(fi)
-		} else if fi.UpdatedAt.Unix() > defMap[fi.Path].UpdatedAt.Unix() { // db is old
-			s.defRepo.Remove(defMap[fi.Path].ID)
+		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
+			s.defRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
 		} else { // db is new
 
@@ -154,22 +157,22 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
 func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	content, _ := ioutil.ReadFile(fi.Path)
 	yamlContent := stringUtils.ReplaceSpecialChars(content)
-	defPo := model.ZdDef{}
-	err = yaml.Unmarshal(yamlContent, &defPo)
-	defPo.Title = fi.Title
-	defPo.Type = fi.ResType
-	defPo.Desc = fi.Desc
-	defPo.Path = fi.Path
-	defPo.Folder = serverUtils.GetRelativePath(defPo.Path)
-	defPo.Yaml = string(content)
+	po := model.ZdDef{}
+	err = yaml.Unmarshal(yamlContent, &po)
+	po.Title = fi.Title
+	po.Type = fi.ResType
+	po.Desc = fi.Desc
+	po.Path = fi.Path
+	po.Folder = serverUtils.GetRelativePath(po.Path)
+	po.Yaml = string(content)
 
-	s.defRepo.Create(&defPo)
+	s.defRepo.Create(&po)
 
-	rootField, _ := s.fieldRepo.CreateTreeNode(defPo.ID, 0, "字段", "root")
+	rootField, _ := s.fieldRepo.CreateTreeNode(po.ID, 0, "字段", "root")
 	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
-	for i, field := range defPo.Fields {
+	for i, field := range po.Fields {
 		field.Ord = i + 1
-		s.saveFieldToDB(&field, rootField.ID, defPo.ID)
+		s.saveFieldToDB(&field, rootField.ID, po.ID)
 	}
 
 	return

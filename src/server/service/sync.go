@@ -1,6 +1,9 @@
 package serverService
 
-import "github.com/easysoft/zendata/src/model"
+import (
+	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
+)
 
 type SyncService struct {
 	defService *DefService
@@ -25,8 +28,10 @@ func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
 		fileMap[fi.ResType] = append(fileMap[fi.ResType], fi)
 	}
 
-	defs := fileMap["yaml"]
-	s.defService.Sync(defs)
+	s.defService.Sync(fileMap[constant.ResTypeYaml])
+	//s.rangesService.Sync(fileMap[constant.ResTypeRanges])
+	//s.instancesService.Sync(fileMap[constant.ResTypeInstances])
+	s.configService.Sync(fileMap[constant.ResTypeConfig])
 }
 
 func NewSyncService(

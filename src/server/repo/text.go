@@ -11,12 +11,12 @@ type TextRepo struct {
 }
 
 func (r *TextRepo) ListAll() (models []*model.ZdText) {
-	r.db.Select("id,title,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *TextRepo) List(keywords string, page int) (models []*model.ZdText, total int, err error) {
-	query := r.db.Select("id,title,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
