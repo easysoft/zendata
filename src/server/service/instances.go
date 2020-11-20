@@ -101,7 +101,7 @@ func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
 	for _, item := range items {
 		inst := instancesItemToResInstForExport(*item)
 
-		yamlObj.Instances = append(yamlObj.Instances, *inst)
+		yamlObj.Instances = append(yamlObj.Instances, inst)
 	}
 
 	bytes, err := yaml.Marshal(yamlObj)

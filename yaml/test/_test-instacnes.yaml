@@ -1,20 +1,31 @@
 title: _test-instacnes
 desc: 实例测试
-author: zentao
-version: 1.0
-
 field: country
 instances:
-  - instance: instant1
-    note: 测试
-    fields:
-      - field: field1
-        note: 测试
-        fields:
-          - field: field1-1
-            range: 0-9
-            postfix: ","
-          - field: field1-2
-            range: a-z
-      - field: field2
-        range: A-Z
+- field: ""
+  note: 测试
+  range: ""
+  instance: ""
+  fields: []
+  froms: []
+- field: ""
+  note: 测试
+  range: ""
+  instance: ""
+  fields: []
+  froms: []
+- field: ""
+  range: ""
+  instance: ""
+  fields: []
+  froms: []
+- field: ""
+  range: ""
+  instance: ""
+  fields: []
+  froms: []
+- field: ""
+  range: ""
+  instance: ""
+  fields: []
+  froms: []

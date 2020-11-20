@@ -2,7 +2,7 @@ package serverService
 
 import "github.com/easysoft/zendata/src/model"
 
-func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst *model.ResInst) {
+func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst model.ResInst) {
 	inst.Note = item.Note
 
 	for _, child := range item.Fields {
@@ -10,6 +10,13 @@ func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst *model.Re
 		instancesItemToResFieldForExport(*child, &childField)
 
 		inst.Fields = append(inst.Fields, childField)
+	}
+
+	if len(inst.Fields) == 0 {
+		inst.Fields = nil
+	}
+	if len(inst.Froms) == 0 {
+		inst.Froms = nil
 	}
 
 	return
