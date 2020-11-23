@@ -32,6 +32,9 @@ func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
 	s.rangesService.Sync(fileMap[constant.ResTypeRanges])
 	s.instancesService.Sync(fileMap[constant.ResTypeInstances])
 	s.configService.Sync(fileMap[constant.ResTypeConfig])
+
+	s.excelService.Sync(fileMap[constant.ResTypeExcel])
+	s.textService.Sync(fileMap[constant.ResTypeText])
 }
 
 func NewSyncService(

@@ -7,7 +7,6 @@ import (
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
 	"strings"
@@ -35,8 +34,8 @@ func (s *TextService) Get(id int) (text model.ZdText, dirTree model.Dir) {
 
 func (s *TextService) Save(text *model.ZdText) (err error) {
 	text.Folder = serverUtils.DealWithPathSepRight(text.Folder)
-	text.Path = vari.WorkDir + text.Folder + serverUtils.AddExt(text.Title, ".txt")
-	text.Name = service.PathToName(text.Path, constant.ResDirYaml)
+	text.Path = vari.WorkDir + text.Folder + serverUtils.AddExt(text.FileName, ".txt")
+	text.ReferName = service.PathToName(text.Path, constant.ResDirYaml)
 
 	if text.ID == 0 {
 		err = s.Create(text)
@@ -79,22 +78,41 @@ func (s *TextService) Remove(id int) (err error) {
 	return
 }
 
-func (s *TextService) importResToDB(texts []model.ResFile, list []*model.ZdText) (err error) {
-	names := make([]string, 0)
+func (s *TextService) Sync(files []model.ResFile) (err error) {
+	list := s.textRepo.ListAll()
+
+	mp := map[string]*model.ZdText{}
 	for _, item := range list {
-		names = append(names, item.Path)
+		mp[item.Path] = item
 	}
 
-	for _, item := range texts {
-		if !stringUtils.FindInArrBool(item.Path, names) {
-			text := model.ZdText{Title: item.Title, Name: item.Name,Path: item.Path}
-			text.Folder = serverUtils.GetRelativePath(text.Path)
-			content := fileUtils.ReadFile(item.Path)
-			text.Content = content
+	for _, fi := range files {
+		_, found := mp[fi.Path]
+		//logUtils.PrintTo(fi.UpdatedAt.String() + ", " + mp[fi.Path].UpdatedAt.String())
+		if !found { // no record
+			s.SyncToDB(fi)
+		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
+			s.textRepo.Remove(mp[fi.Path].ID)
+			s.SyncToDB(fi)
+		} else { // db is new
 
-			s.textRepo.Create(&text)
 		}
 	}
+
+	return
+}
+
+func (s *TextService) SyncToDB(file model.ResFile) (err error) {
+	text := model.ZdText{
+		Title: file.Title,
+		Path: file.Path,
+		Folder: serverUtils.GetRelativePath(file.Path),
+		ReferName: service.PathToName(file.Path, constant.ResDirYaml),
+		FileName: fileUtils.GetFileName(file.Path),
+	}
+	text.Content = fileUtils.ReadFile(file.Path)
+
+	s.textRepo.Create(&text)
 
 	return
 }

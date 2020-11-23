@@ -36,8 +36,17 @@ export default {
       console.log("syncData")
       syncData().then(json => {
         console.log('syncData', json)
+        if (json.code == 1) {
+          this.$notification['success']({
+            message: '提示',
+            description:
+                '成功同步资源和数据！',
+            placement: 'bottomLeft',
+            duration: 0.5,
+          });
+        }
       })
-    }
+    },
   }
 }
 </script>

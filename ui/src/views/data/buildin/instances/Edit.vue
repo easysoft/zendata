@@ -17,11 +17,17 @@
             <a-input v-model="model.title" />
           </a-form-model-item>
         </a-row>
-        <a-row :gutter="colsFull" v-if="id > 0">
-          <a-form-model-item label="引用" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            {{model.name}}
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="文件名" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-input v-model="model.fileName" />
           </a-form-model-item>
         </a-row>
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="引用名" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            {{model.referName}}
+          </a-form-model-item>
+        </a-row>
+
         <a-row :gutter="colsFull">
           <a-form-model-item label="目录" prop="folder" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="model.folder">
@@ -108,6 +114,9 @@ export default {
       rules: {
         title: [
           { required: true, message: '名称不能为空', trigger: 'change' },
+        ],
+        fileName: [
+          { required: true, message: '文件名不能为空', trigger: 'change' },
         ],
         folder: [
           { validator: checkDirIsYaml, trigger: 'change' },

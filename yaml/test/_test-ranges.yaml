@@ -1,6 +1,6 @@
-title: _test-ranges
-desc: 系列测试23
-field: _test-ranges
+title: 系列测试
+desc: 系列测试
+field: ""
 ranges:
   large: 10001-99999
   medium: 101-199

@@ -67,8 +67,8 @@ const columns = [
     dataIndex: 'title',
   },
   {
-    title: '引用',
-    dataIndex: 'name',
+    title: '引用名',
+    dataIndex: 'referName',
   },
   {
     title: '目录',

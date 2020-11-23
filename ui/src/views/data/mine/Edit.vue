@@ -15,6 +15,10 @@
         <a-form-model-item label="名称" prop="title">
           <a-input v-model="model.title" />
         </a-form-model-item>
+        <a-form-model-item label="文件名" prop="fileName">
+          <a-input v-model="model.fileName" />
+        </a-form-model-item>
+
         <a-form-model-item label="目录" prop="folder">
           <a-input v-model="model.folder">
             <a-tree-select
@@ -31,7 +35,7 @@
           </a-input>
         </a-form-model-item>
 
-        <a-form-model-item label="类型">
+        <a-form-model-item label="类型" prop="type">
           <a-select v-model="model.type">
             <a-select-option value="text">字符串</a-select-option>
             <a-select-option value="article">文章</a-select-option>
@@ -40,6 +44,7 @@
         <a-form-model-item label="描述" prop="desc">
           <a-input v-model="model.desc" type="textarea" rows="3" />
         </a-form-model-item>
+
         <a-form-model-item :wrapper-col="{ span: 14, offset: 6 }">
           <a-button @click="save" type="primary">
             保存

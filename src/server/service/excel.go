@@ -7,7 +7,6 @@ import (
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
 	"strings"
@@ -34,8 +33,8 @@ func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirTree model.Dir) {
 
 func (s *ExcelService) Save(excel *model.ZdExcel) (err error) {
 	excel.Folder = serverUtils.DealWithPathSepRight(excel.Folder)
-	excel.Path = vari.WorkDir + excel.Folder + serverUtils.AddExt(excel.Title, ".xlsx")
-	excel.Name = service.PathToName(excel.Path, constant.ResDirData)
+	excel.Path = vari.WorkDir + excel.Folder + serverUtils.AddExt(excel.FileName, ".xlsx")
+	excel.ReferName = service.PathToName(excel.Path, constant.ResDirData)
 
 	if excel.ID == 0 {
 		// excel should not be create on webpage
@@ -72,21 +71,39 @@ func (s *ExcelService) Remove(id int) (err error) {
 	return
 }
 
-func (s *ExcelService) importResToDB(excel []model.ResFile, list []*model.ZdExcel) (err error) {
-	names := make([]string, 0)
+func (s *ExcelService) Sync(files []model.ResFile) (err error) {
+	list := s.excelRepo.ListAll()
+
+	mp := map[string]*model.ZdExcel{}
 	for _, item := range list {
-		names = append(names, item.Path)
+		mp[item.Path] = item
 	}
 
-	for _, item := range excel {
-		if !stringUtils.FindInArrBool(item.Path, names) {
-			excel := model.ZdExcel{Title: item.Title, Name: item.Name,
-				Path: item.Path,
-				Sheet: item.Title}
-			excel.Folder = serverUtils.GetRelativePath(excel.Path)
-			s.excelRepo.Create(&excel)
+	for _, fi := range files {
+		_, found := mp[fi.Path]
+		//logUtils.PrintTo(fi.UpdatedAt.String() + ", " + mp[fi.Path].UpdatedAt.String())
+		if !found { // no record
+			s.SyncToDB(fi)
+		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
+			s.excelRepo.Remove(mp[fi.Path].ID)
+			s.SyncToDB(fi)
+		} else { // db is new
+
 		}
 	}
+
+	return
+}
+func (s *ExcelService) SyncToDB(file model.ResFile) (err error) {
+	excel := model.ZdExcel{
+		Title: file.Title,
+		Sheet: file.Title,
+		Path: file.Path,
+		Folder: serverUtils.GetRelativePath(file.Path),
+		ReferName: service.PathToName(file.Path, constant.ResDirData),
+		FileName: fileUtils.GetFileName(file.Path),
+	}
+	s.excelRepo.Create(&excel)
 
 	return
 }

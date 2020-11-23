@@ -67,6 +67,13 @@ import 'ant-design-vue/lib/tree-select/style';
 import Pagination from "ant-design-vue/lib/pagination";
 import 'ant-design-vue/lib/pagination/style';
 
+import notification from "ant-design-vue/lib/notification";
+import 'ant-design-vue/lib/notification/style';
+import message from "ant-design-vue/lib/message";
+import 'ant-design-vue/lib/message/style';
+Vue.prototype.$message = message;
+Vue.prototype.$notification = notification;
+
 import zhCN from './assets/lang/zh-CN'
 import router from "./router"
 

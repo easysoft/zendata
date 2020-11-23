@@ -160,11 +160,13 @@ type ArticleSent struct {
 
 type ResFile struct {
 	Path string `json:"path"`
-	Name    string `json:"name"`
 	Title string `json:"title"`
 	Desc   string `json:"desc"`
 	ResType string `json:"resType"`
 	UpdatedAt time.Time `json:"updatedAt"`
+
+	FileName string `json:"fileName"`
+	ReferName string `json:"referName"`
 }
 type ResField struct {
 	Index int `json:"index"`

@@ -11,12 +11,12 @@ type InstancesRepo struct {
 }
 
 func (r *InstancesRepo) ListAll() (models []*model.ZdInstances) {
-	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,referName,fileName,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *InstancesRepo) List(keywords string, page int) (models []*model.ZdInstances, total int, err error) {
-	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,referName,fileName,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}

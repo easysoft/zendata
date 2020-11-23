@@ -11,12 +11,12 @@ type ExcelRepo struct {
 }
 
 func (r *ExcelRepo) ListAll() (models []*model.ZdExcel) {
-	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,referName,fileName,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *ExcelRepo) List(keywords string, page int) (models []*model.ZdExcel, total int, err error) {
-	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,referName,fileName,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}

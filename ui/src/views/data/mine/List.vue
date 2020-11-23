@@ -72,6 +72,10 @@ const columns = [
     scopedSlots: { customRender: 'folderWithPath' },
   },
   {
+    title: '引用',
+    dataIndex: 'referName',
+  },
+  {
     title: '操作',
     key: 'action',
     scopedSlots: { customRender: 'action' },

@@ -51,7 +51,7 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 				}
 			}
 
-			item.Name = name
+			item.ReferName = name
 			item.Title = title
 			item.Desc = desc
 			item.ResType = tp
@@ -96,7 +96,7 @@ func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 		arr := res[key]
 
 		for _, item := range arr {
-			name := item.Name
+			name := item.ReferName
 			desc := item.Desc
 			title := item.Title
 			titles := strings.Split(title, "|")
@@ -219,7 +219,7 @@ func PathToName(path, key string) string {
 func SortByName(arr []model.ResFile) []model.ResFile {
 	sort.Slice(arr, func(i, j int) bool {
 		flag := false
-		if arr[i].Name > (arr[j].Name) {
+		if arr[i].ReferName > (arr[j].ReferName) {
 			flag = true
 		}
 		return flag

@@ -36,8 +36,8 @@ func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirTree model.Dir) {
 
 func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 	ranges.Folder = serverUtils.DealWithPathSepRight(ranges.Folder)
-	ranges.Path = vari.WorkDir + ranges.Folder + serverUtils.AddExt(ranges.Title, ".yaml")
-	ranges.Name = service.PathToName(ranges.Path, constant.ResDirYaml)
+	ranges.Path = vari.WorkDir + ranges.Folder + serverUtils.AddExt(ranges.FileName, ".yaml")
+	ranges.ReferName = service.PathToName(ranges.Path, constant.ResDirYaml)
 
 	if ranges.ID == 0 {
 		err = s.Create(ranges)
@@ -108,12 +108,11 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	err = yaml.Unmarshal(yamlContent, &po)
 
 	po.Title = fi.Title
-	po.Name = fi.Name
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	po.Field = fi.Title
-	po.Note = fi.Desc
+	po.ReferName = service.PathToName(po.Path, constant.ResDirYaml)
+	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
 
 	s.rangesRepo.Create(&po)
@@ -148,7 +147,7 @@ func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
 
 	yamlObj := model.ResRanges{}
 	yamlObj.Ranges = map[string]string{}
-	s.rangesRepo.GenRanges(*ranges, &yamlObj)
+	s.rangesRepo.GenRangesRes(*ranges, &yamlObj)
 
 	for _, item := range items {
 		yamlObj.Ranges[item.Field] = item.Value

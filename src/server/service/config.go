@@ -7,7 +7,6 @@ import (
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
@@ -39,8 +38,8 @@ func (s *ConfigService) Get(id int) (config model.ZdConfig, dirTree model.Dir) {
 
 func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
 	config.Folder = serverUtils.DealWithPathSepRight(config.Folder)
-	config.Path = vari.WorkDir + config.Folder + serverUtils.AddExt(config.Title, ".yaml")
-	config.Name = service.PathToName(config.Path, constant.ResDirYaml)
+	config.Path = vari.WorkDir + config.Folder + serverUtils.AddExt(config.FileName, ".yaml")
+	config.ReferName = service.PathToName(config.Path, constant.ResDirYaml)
 
 	if config.ID == 0 {
 		err = s.Create(config)
@@ -99,7 +98,7 @@ func (s *ConfigService) updateYaml(id uint) (err error) {
 }
 func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
 	yamlObj := model.ResConfig{}
-	s.configRepo.GenConfig(*config, &yamlObj)
+	s.configRepo.GenConfigRes(*config, &yamlObj)
 
 	bytes, _ := yaml.Marshal(yamlObj)
 	config.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
@@ -117,7 +116,7 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 
 	for _, fi := range files {
 		_, found := mp[fi.Path]
-		logUtils.PrintTo(fi.UpdatedAt.String() + ", " + mp[fi.Path].UpdatedAt.String())
+		//logUtils.PrintTo(fi.UpdatedAt.String() + ", " + mp[fi.Path].UpdatedAt.String())
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
@@ -137,13 +136,11 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	err = yaml.Unmarshal(yamlContent, &po)
 
 	po.Title = fi.Title
-	po.Name = fi.Name
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	po.Name = service.PathToName(po.Path, constant.ResDirYaml)
-	po.Field = fi.Title
-	po.Note = fi.Desc
+	po.ReferName = service.PathToName(po.Path, constant.ResDirYaml)
+	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
 
 	s.configRepo.Create(&po)

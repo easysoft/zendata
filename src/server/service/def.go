@@ -4,6 +4,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
+	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -37,7 +38,7 @@ func (s *DefService) Get(id int) (def model.ZdDef, dirTree model.Dir) {
 
 func (s *DefService) Save(def *model.ZdDef) (err error) {
 	def.Folder = serverUtils.DealWithPathSepRight(def.Folder)
-	def.Path = vari.WorkDir + def.Folder + serverUtils.AddExt(def.Title, ".yaml")
+	def.Path = vari.WorkDir + def.Folder + serverUtils.AddExt(def.FileName, ".yaml")
 
 	if def.ID == 0 {
 		err = s.Create(def)
@@ -150,6 +151,10 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
+
+	po.ReferName = service.PathToName(po.Path, constant.ResDirUsers)
+	po.FileName = fileUtils.GetFileName(po.Path)
+
 	po.Yaml = string(content)
 
 	s.defRepo.Create(&po)

@@ -11,12 +11,12 @@ type RangesRepo struct {
 }
 
 func (r *RangesRepo) ListAll() (models []*model.ZdRanges) {
-	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,referName,fileName,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *RangesRepo) List(keywords string, page int) (models []*model.ZdRanges, total int, err error) {
-	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,referName,fileName,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
@@ -93,11 +93,9 @@ func (r *RangesRepo) UpdateYaml(po model.ZdRanges) (err error) {
 	return
 }
 
-func (r *RangesRepo) GenRanges(ranges model.ZdRanges, res *model.ResRanges) {
+func (r *RangesRepo) GenRangesRes(ranges model.ZdRanges, res *model.ResRanges) {
 	res.Title = ranges.Title
 	res.Desc = ranges.Desc
-	res.Field = ranges.Field
-
 }
 
 func NewRangesRepo(db *gorm.DB) *RangesRepo {

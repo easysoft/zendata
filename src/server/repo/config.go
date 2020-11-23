@@ -11,12 +11,12 @@ type ConfigRepo struct {
 }
 
 func (r *ConfigRepo) ListAll() (models []*model.ZdConfig) {
-	r.db.Select("id,title,name,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,referName,fileName,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *ConfigRepo) List(keywords string, page int) (models []*model.ZdConfig, total int, err error) {
-	query := r.db.Select("id,title,name,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,referName,fileName,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
@@ -58,19 +58,14 @@ func (r *ConfigRepo) UpdateYaml(po model.ZdConfig) (err error) {
 	return
 }
 
-func (r *ConfigRepo) GenConfig(config model.ZdConfig, data *model.ResConfig) {
-	data.Title = config.Title
-	data.Desc = config.Desc
-	//data.Author = config.Author
-	//data.Version = config.Version
-
-	data.Field = config.Field
-
-	data.Prefix = config.Prefix
-	data.Postfix = config.Postfix
-	data.Loop = config.Loop
-	data.Loopfix = config.Loopfix
-	data.Format = config.Format
+func (r *ConfigRepo) GenConfigRes(config model.ZdConfig, res *model.ResConfig) {
+	res.Title = config.Title
+	res.Desc = config.Desc
+	res.Prefix = config.Prefix
+	res.Postfix = config.Postfix
+	res.Loop = config.Loop
+	res.Loopfix = config.Loopfix
+	res.Format = config.Format
 }
 
 func NewConfigRepo(db *gorm.DB) *ConfigRepo {
