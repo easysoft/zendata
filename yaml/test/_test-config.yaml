@@ -1,9 +1,7 @@
 title: 配置测试
 desc: 配置测试
-field: _test-config
-range: ""
+range: 1-9
 prefix: "\t"
 postfix: "\t"
 loop: "2"
 loopfix: ','
-

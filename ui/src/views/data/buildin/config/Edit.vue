@@ -46,6 +46,12 @@
           </a-form-model-item>
         </a-row>
 
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="定义" prop="range" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-input v-model="model.range" />
+          </a-form-model-item>
+        </a-row>
+
       <a-row :gutter="colsFull">
         <a-col :span="colsHalf">
           <a-form-model-item label="前缀" prop="prefix" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">

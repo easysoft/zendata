@@ -75,7 +75,7 @@ type DefSimple struct {
 	Fields  []FieldSimple `yaml:"fields"`
 }
 type FieldSimple struct {
-	Field  string  `yaml:"field"`
+	Field  string  `yaml:"field,omitempty"`
 	Note     string  `yaml:"note,omitempty"`
 	Range    string  `yaml:"range,omitempty"`
 	Value string  `yaml:"value,omitempty"`

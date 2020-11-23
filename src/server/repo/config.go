@@ -61,6 +61,7 @@ func (r *ConfigRepo) UpdateYaml(po model.ZdConfig) (err error) {
 func (r *ConfigRepo) GenConfigRes(config model.ZdConfig, res *model.ResConfig) {
 	res.Title = config.Title
 	res.Desc = config.Desc
+	res.Range = config.Range
 	res.Prefix = config.Prefix
 	res.Postfix = config.Postfix
 	res.Loop = config.Loop

@@ -217,6 +217,7 @@ type ZdConfig struct {
 	Title    string `gorm:"column:title" json:"title"`
 	Desc     string `gorm:"column:desc" json:"desc"`
 
+	Range string `gorm:"column:range" json:"range"`
 	Prefix string `gorm:"column:prefix" json:"prefix"`
 	Postfix string `gorm:"column:postfix" json:"postfix"`
 	Loop string `gorm:"column:loop" json:"loop"`
