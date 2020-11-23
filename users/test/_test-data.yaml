@@ -1,13 +1,11 @@
 title: 数据测试
 desc: 数据测试
-type: text
 fields:
 - field: field_with_children
-  range: ""
   fields:
   - field: child1
     range: a-z
-    prefix: part1_\t
+    prefix: "part1_\t"
     postfix: '|'
     loop: "3"
   - field: child2
@@ -15,7 +13,6 @@ fields:
     prefix: part2_
     postfix: '|'
   - field: child_with_child
-    range: ""
     prefix: part3_
     fields:
     - field: field_grandson

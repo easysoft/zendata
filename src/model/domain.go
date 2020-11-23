@@ -23,14 +23,12 @@ type ResConfig struct {
 // range res
 type ResRanges struct {
 	ClsInfo   `yaml:",inline"`
-	Field string        `yaml:"field"`
 	Ranges map[string]string  `yaml:"ranges"`
 }
 
 // instance res
 type ResInstances struct {
 	ClsBase   `yaml:",inline"`
-	Field string                 `yaml:"field"`
 	Instances []ResInstancesItem `yaml:"instances,flow"`
 }
 type ResInstancesItem struct {
@@ -79,7 +77,7 @@ type DefSimple struct {
 type FieldSimple struct {
 	Field  string  `yaml:"field"`
 	Note     string  `yaml:"note,omitempty"`
-	Range    string  `yaml:"range"`
+	Range    string  `yaml:"range,omitempty"`
 	Value string  `yaml:"value,omitempty"`
 	Prefix   string  `yaml:"prefix,omitempty"`
 	Postfix  string  `yaml:"postfix,omitempty"`

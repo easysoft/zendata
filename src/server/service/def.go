@@ -130,6 +130,11 @@ func (s *DefService) Sync(files []model.ResFile) (err error) {
 	}
 
 	for _, fi := range files {
+		// for yaml "res", "data" type should be default value text
+		if fi.ResType == "" || fi.ResType == constant.ResTypeYaml {
+			fi.ResType = constant.ResTypeText
+		}
+
 		_, found := mp[fi.Path]
 		if !found { // no record
 			s.SyncToDB(fi)

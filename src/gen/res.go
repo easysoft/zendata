@@ -98,24 +98,24 @@ func getResValue(resFile, resType, sheet string, field *model.DefField) (map[str
 	groupedValues := map[string][]string{}
 
 	if resType == "yaml" {
-		groupedValues, resName = getResFromYaml(resFile)
+		groupedValues = getResFromYaml(resFile)
 	} else if resType == "excel" {
-		groupedValues, resName = getResFromExcel(resFile, sheet, field)
+		groupedValues = getResFromExcel(resFile, sheet, field)
 	}
 
 	return groupedValues, resName
 }
 
-func getResFromExcel(resFile, sheet string, field *model.DefField) (map[string][]string, string) {
-	valueMap, resName := GenerateFieldValuesFromExcel(resFile, sheet, field)
+func getResFromExcel(resFile, sheet string, field *model.DefField) (map[string][]string) { // , string) {
+	valueMap := GenerateFieldValuesFromExcel(resFile, sheet, field)
 
-	return valueMap, resName
+	return valueMap
 }
 
-func getResFromYaml(resFile string) (valueMap map[string][]string, resName string) {
+func getResFromYaml(resFile string) (valueMap map[string][]string) { // , resName string) {
 	if vari.CacheResFileToMap[resFile] != nil {
 		valueMap = vari.CacheResFileToMap[resFile]
-		resName = vari.CacheResFileToName[resFile]
+		//resName = vari.CacheResFileToName[resFile]
 		return
 	}
 
@@ -131,25 +131,25 @@ func getResFromYaml(resFile string) (valueMap map[string][]string, resName strin
 	err = yaml.Unmarshal(yamlContent, &insts)
 	if err == nil && insts.Instances != nil && len(insts.Instances) > 0 { // instances
 		valueMap = getResFromInstances(insts)
-		resName = insts.Field
+		//resName = insts.Field
 	} else {
 		ranges := model.ResRanges{}
 		err = yaml.Unmarshal(yamlContent, &ranges)
 		if err == nil && ranges.Ranges != nil && len(ranges.Ranges) > 0 { // ranges
 			valueMap = getResFromRanges(ranges)
-			resName = ranges.Field
+			//resName = ranges.Field
 		} else {
 			configRes := model.DefField{}
 			err = yaml.Unmarshal(yamlContent, &configRes)
 			if err == nil {                                               // config
 				valueMap = getResForConfig(configRes)
-				resName = configRes.Field
+				//resName = configRes.Field
 			}
 		}
 	}
 
 	vari.CacheResFileToMap[resFile] = valueMap
-	vari.CacheResFileToName[resFile] = resName
+	//vari.CacheResFileToName[resFile] = resName
 
 	return
 }
@@ -246,7 +246,7 @@ func getreferencedRangeOrInstant(inst model.DefField) (referencedRanges model.Re
 }
 
 func convertInstantToField(insts model.ResInstances, inst model.ResInstancesItem) (field model.DefField) {
-	field.Field = insts.Field
+	//field.Field = insts.Field
 	field.From = insts.From
 
 	child := model.DefField{}
@@ -267,7 +267,6 @@ func convertInstantToField(insts model.ResInstances, inst model.ResInstancesItem
 
 func convertRangesToField(ranges model.ResRanges, expression string) (field model.DefField) {
 	copier.Copy(&field, ranges)
-	field.Field = ranges.Field
 	field.Range = expression
 
 	return field

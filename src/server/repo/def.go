@@ -68,6 +68,9 @@ func (r *DefRepo) GenDef(def model.ZdDef, data *model.DefData) () {
 	data.Title = def.Title
 	data.Desc = def.Desc
 	data.Type = def.Type
+	if data.Type == constant.ResTypeText {
+		data.Type = ""
+	}
 }
 
 func NewDefRepo(db *gorm.DB) *DefRepo {

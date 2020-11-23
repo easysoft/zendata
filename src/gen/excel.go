@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField) (map[string][]string, string) {
+func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField) map[string][]string {
 	values := map[string][]string{}
 
 	dbName := getDbName(filePath)
@@ -49,7 +49,7 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 		index = index + 1
 	}
 
-	return values, dbName
+	return values
 }
 
 func getDbName(path string) (dbName string) {
