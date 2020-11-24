@@ -33,7 +33,7 @@ func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []model.Dir) {
 func (s *ExcelService) Save(excel *model.ZdExcel) (err error) {
 	excel.Folder = serverUtils.DealWithPathSepRight(excel.Folder)
 	excel.Path = vari.WorkDir + excel.Folder + serverUtils.AddExt(excel.FileName, ".xlsx")
-	excel.ReferName = service.PathToName(excel.Path, constant.ResDirData)
+	excel.ReferName = service.PathToName(excel.Path, constant.ResDirData, constant.ResTypeExcel)
 
 	if excel.ID == 0 {
 		// excel should not be create on webpage
@@ -99,7 +99,7 @@ func (s *ExcelService) SyncToDB(file model.ResFile) (err error) {
 		Sheet: file.Title,
 		Path: file.Path,
 		Folder: serverUtils.GetRelativePath(file.Path),
-		ReferName: service.PathToName(file.Path, constant.ResDirData),
+		ReferName: service.PathToName(file.Path, constant.ResDirData, constant.ResTypeExcel),
 		FileName: fileUtils.GetFileName(file.Path),
 	}
 	s.excelRepo.Create(&excel)

@@ -35,7 +35,6 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 		for _, item := range res[key] {
 			pth := item.Path
 			fileExt := path.Ext(pth)
-			name := PathToName(pth, key)
 			isArticleFiles := false
 			var title, desc, tp string
 
@@ -51,12 +50,12 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 				}
 			}
 
-			item.ReferName = name
+			item.ReferName = PathToName(pth, key, tp)
 			item.Title = title
 			item.Desc = desc
 			item.ResType = tp
 
-			lent := runewidth.StringWidth(name)
+			lent := runewidth.StringWidth(item.ReferName)
 			if lent > nameWidth {
 				nameWidth = lent
 			}
@@ -199,18 +198,23 @@ func ReadExcelInfo(path string) (title, desc, resType string) {
 }
 
 func ReadTextInfo(path, key string) (title, desc, resType string) {
-	title = PathToName(path, key)
+	title = PathToName(path, key, constant.ResTypeText)
 	desc = i118Utils.I118Prt.Sprintf("text_data")
 	resType = constant.ResTypeText
 	return
 }
 
-func PathToName(path, key string) string {
-	name := strings.ReplaceAll(path, constant.PthSep,".")
-	sep := "." + key + "."
-	name = name[strings.Index(name, sep)+len(sep):]
+func PathToName(path, key, tp string) string {
+	nameSep := "/"
+	if tp != constant.ResTypeText && tp != constant.ResTypeYaml && tp != constant.ResTypeConfig {
+		nameSep = "."
+	}
+	path =  strings.ReplaceAll(path, constant.PthSep, nameSep)
+
+	sep := nameSep + key + nameSep
+	name := path[strings.Index(path, sep)+len(sep):]
 	if key == constant.ResDirData { // remove .xlsx postfix
-		name = name[:strings.LastIndex(name, ".")]
+		name = name[:strings.LastIndex(name, nameSep)]
 	}
 
 	return name

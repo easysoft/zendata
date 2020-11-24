@@ -34,7 +34,7 @@ func (s *TextService) Get(id int) (text model.ZdText, dirs []model.Dir) {
 func (s *TextService) Save(text *model.ZdText) (err error) {
 	text.Folder = serverUtils.DealWithPathSepRight(text.Folder)
 	text.Path = vari.WorkDir + text.Folder + serverUtils.AddExt(text.FileName, ".txt")
-	text.ReferName = service.PathToName(text.Path, constant.ResDirYaml)
+	text.ReferName = service.PathToName(text.Path, constant.ResDirYaml, constant.ResTypeText)
 
 	if text.ID == 0 {
 		err = s.Create(text)
@@ -109,9 +109,9 @@ func (s *TextService) SyncToDB(file model.ResFile) (err error) {
 		FileName: fileUtils.GetFileName(file.Path),
 	}
 	if strings.Index(text.Path, constant.ResDirYaml) > -1 {
-		text.ReferName = service.PathToName(text.Path, constant.ResDirYaml)
+		text.ReferName = service.PathToName(text.Path, constant.ResDirYaml, constant.ResTypeText)
 	} else {
-		text.ReferName = service.PathToName(text.Path, constant.ResDirUsers)
+		text.ReferName = service.PathToName(text.Path, constant.ResDirUsers, constant.ResTypeText)
 	}
 	text.Content = fileUtils.ReadFile(file.Path)
 

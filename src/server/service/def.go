@@ -158,7 +158,7 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
 
-	po.ReferName = service.PathToName(po.Path, constant.ResDirUsers)
+	po.ReferName = service.PathToName(po.Path, constant.ResDirUsers, po.Type)
 	po.FileName = fileUtils.GetFileName(po.Path)
 
 	po.Yaml = string(content)

@@ -37,7 +37,7 @@ func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []mode
 func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
 	instances.Folder = serverUtils.DealWithPathSepRight(instances.Folder)
 	instances.Path = vari.WorkDir + instances.Folder + serverUtils.AddExt(instances.FileName, ".yaml")
-	instances.ReferName = service.PathToName(instances.Path, constant.ResDirYaml)
+	instances.ReferName = service.PathToName(instances.Path, constant.ResDirYaml, constant.ResTypeInstances)
 
 	if instances.ID == 0 {
 		err = s.Create(instances)
@@ -147,9 +147,9 @@ func (s *InstancesService) SyncToDB(file model.ResFile) (err error) {
 	po.Path = file.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
 	if strings.Index(po.Path, constant.ResDirYaml) > -1 {
-		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml)
+		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeInstances)
 	} else {
-		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers)
+		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeInstances)
 	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)

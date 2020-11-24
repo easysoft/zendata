@@ -36,7 +36,7 @@ func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirs []model.Dir) {
 func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 	ranges.Folder = serverUtils.DealWithPathSepRight(ranges.Folder)
 	ranges.Path = vari.WorkDir + ranges.Folder + serverUtils.AddExt(ranges.FileName, ".yaml")
-	ranges.ReferName = service.PathToName(ranges.Path, constant.ResDirYaml)
+	ranges.ReferName = service.PathToName(ranges.Path, constant.ResDirYaml, constant.ResTypeRanges)
 
 	if ranges.ID == 0 {
 		err = s.Create(ranges)
@@ -111,9 +111,9 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
 	if strings.Index(po.Path, constant.ResDirYaml) > -1 {
-		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml)
+		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeRanges)
 	} else {
-		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers)
+		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeRanges)
 	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
