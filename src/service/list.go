@@ -205,11 +205,10 @@ func ReadTextInfo(path, key string) (title, desc, resType string) {
 }
 
 func PathToName(path, key, tp string) string {
-	nameSep := "/"
+	nameSep := constant.PthSep
 	if tp != constant.ResTypeText && tp != constant.ResTypeYaml && tp != constant.ResTypeConfig {
 		nameSep = "."
 	}
-	path =  strings.ReplaceAll(path, constant.PthSep, nameSep)
 
 	sep := nameSep + key + nameSep
 	name := path[strings.Index(path, sep)+len(sep):]

@@ -177,21 +177,7 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentID, defID uint) {
 	refer := model.ZdRefer{OwnerType: "def", OwnerID: item.ID}
 
-	if item.Config != "" { // refer to config
-		refer.Type = constant.ResTypeConfig
-
-		item.Config = strings.TrimSpace(item.Config)
-		rangeSections := gen.ParseRangeProperty(item.Config)
-		if len(rangeSections) == 1 {
-			rangeSection := rangeSections[0]
-			desc, _, count := gen.ParseRangeSection(rangeSection)
-			refer.Count = count
-
-			path := FileToPath(desc, currPath)
-			refer.File = strings.Replace(path, vari.WorkDir, "", 1)
-		}
-
-	} else if item.Select != "" { // refer to excel
+	if item.Select != "" { // refer to excel
 		refer.Type = constant.ResTypeExcel
 
 		refer.ColName = item.Select
@@ -209,6 +195,20 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 		path := FileToPath(item.From, currPath)
 		_, _, refer.Type = service.ReadYamlInfo(path)
 
+	} else if item.Config != "" { // refer to config
+		refer.Type = constant.ResTypeConfig
+
+		item.Config = strings.TrimSpace(item.Config)
+		rangeSections := gen.ParseRangeProperty(item.Config)
+		if len(rangeSections) == 1 {
+			rangeSection := rangeSections[0]
+			desc, _, count := gen.ParseRangeSection(rangeSection)
+			refer.Count = count
+
+			path := FileToPath(desc, currPath)
+			refer.File = GetPathRelatedWithResDir(path)
+		}
+
 	} else if item.Range != "" { // deal with yaml and text refer using range prop
 		item.Range = strings.TrimSpace(item.Range)
 		rangeSections := gen.ParseRangeProperty(item.Range)
@@ -225,7 +225,7 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 				refer.Count = count
 
 				path := FileToPath(desc, currPath)
-				refer.File = strings.Replace(path, vari.WorkDir, "", 1)
+				refer.File = GetPathRelatedWithResDir(path)
 			}
 		}
 	}

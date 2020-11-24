@@ -5,6 +5,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"strings"
 )
 
 func zdFieldToFieldForExport(treeNode model.ZdField, field *model.DefField) {
@@ -80,6 +81,16 @@ func FileToPath(f, currFile string) (path string) {
 		}
 		path = resPath
 	}
+
+	return
+}
+
+func GetPathRelatedWithResDir(p string) (ret string) {
+	rpl := vari.WorkDir + constant.ResDirYaml + constant.PthSep
+	ret = strings.Replace(p, rpl, "", 1)
+
+	rpl = vari.WorkDir + constant.ResDirUsers + constant.PthSep
+	ret = strings.Replace(ret, rpl, "", 1)
 
 	return
 }
