@@ -3,40 +3,47 @@
     <a-form-model ref="editForm" :model="refer" :rules="rules">
       <a-row :gutter="colsFull">
         <a-form-model-item label="类型" prop="type" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-select v-model="refer.type" @change="onTypeChanged">
-            <a-select-option value="ranges">序列（Ranges）</a-select-option>
-            <a-select-option value="instances">实例（Instances）</a-select-option>
-            <a-select-option value="config">配置（Config）</a-select-option>
-            <a-select-option value="yaml">内容（来自YAML）</a-select-option>
-            <a-select-option value="excel">表格（Excel）</a-select-option>
-            <a-select-option value="text">文本（Text）</a-select-option>
+          <a-select v-model="refer.type" @change="onReferTypeChanged">
+            <a-select-option value="config">字段</a-select-option>
+            <a-select-option value="ranges">序列</a-select-option>
+            <a-select-option value="instances">实例</a-select-option>
+            <a-select-option value="yaml">内容</a-select-option>
+            <a-select-option value="excel">表格</a-select-option>
+            <a-select-option value="text">文本</a-select-option>
           </a-select>
         </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
           <a-form-model-item label="文件" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="refer.file">
-              <a-select v-model="referFile" @change="onReferChanged" slot="addonAfter" style="width: 300px">
-                <a-select-option value="">选择</a-select-option>
-                <a-select-option v-for="(f, i) in files" :value="f.id" :key="i">
-                  {{ f.title }}
-                </a-select-option>
-              </a-select>
-            </a-input>
+            <a-select v-model="refer.file" @change="onReferFileChanged">
+              <a-select-option value="">选择</a-select-option>
+              <a-select-option v-for="(f, i) in files" :value="f.id" :key="i">
+                {{ f.title }}
+              </a-select-option>
+            </a-select>
           </a-form-model-item>
+      </a-row>
+
+      <a-row v-if="refer.type==='excel'" :gutter="colsFull">
+        <a-form-model-item label="Excel表格" prop="sheet" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-select v-model="refer.sheet" @change="onReferSheetChanged">
+            <a-select-option value="">选择</a-select-option>
+            <a-select-option v-for="(f, i) in sheets" :value="f.id" :key="i">
+              {{ f.title }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
         <a-form-model-item v-if="!showColSection" label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="refer.colName">
-            <a-select v-model="referFieldName" @change="onFieldNameChanged" slot="addonAfter" style="width: 300px">
+           <a-select v-model="referFieldName">
               <a-select-option value="">选择</a-select-option>
               <a-select-option v-for="f in fields" :key="f.name">
                 {{ f.name }}
               </a-select-option>
             </a-select>
-          </a-input>
         </a-form-model-item>
       </a-row>
 
@@ -66,7 +73,7 @@
 </template>
 
 <script>
-import {listReferForSelection, listReferFieldForSelection, getRefer, updateRefer,
+import {listReferFileForSelection, listReferSheetForSelection, listReferFieldForSelection, getRefer, updateRefer,
 } from "../api/refer";
 
 export default {
@@ -87,8 +94,8 @@ export default {
 
       res: {},
       files: [],
+      sheets: [],
       fields: [],
-      referFile: '',
 
       referFieldName: '',
       referFieldIndex: '',
@@ -131,36 +138,29 @@ export default {
       getRefer(this.model.id, this.type).then(json => {
         console.log('getRefer', json)
         this.refer = json.data
-        this.listReferForSelection(this.refer.type, true)
+        this.listReferFileForSelection(this.refer.type, true)
       })
     },
 
-    onTypeChanged() {
-      console.log('onTypeChanged')
-      this.listReferForSelection(this.refer.type, false)
+    onReferTypeChanged() {
+      console.log('onReferTypeChanged')
+      this.listReferFileForSelection(this.refer.type, false)
     },
-    onReferChanged(value) {
-      console.log("onReferChanged")
+    onReferFileChanged() {
+      console.log("onReferFileChanged")
 
-      let file = {}
-      for (let i = 0; i < this.files.length; i++) {
-        const f = this.files[i]
-        if (f.id === value) {
-          file = f
-          break
-        }
-      }
-      this.refer.file = file.name
-
-      if (this.refer.type != 'yaml' && this.refer.type != 'config' && this.refer.type != 'text') {
-        this.listReferFieldForSelection()
+      if (this.refer.type == 'excel') {
+        this.listReferSheetForSelection()
       } else {
-        this.refer.colName = ''
+        this.listReferFieldForSelection()
       }
     },
-    onFieldNameChanged(value) {
-      console.log("onFieldNameChanged")
-      this.refer.colName = value
+    onReferSheetChanged() {
+      console.log("onReferSheetChanged")
+
+      if (this.refer.type == 'excel') {
+        this.listReferFieldForSelection()
+      }
     },
 
     save() {
@@ -183,27 +183,39 @@ export default {
       this.$refs.editForm.reset()
     },
 
-    listReferForSelection(resType, init) {
-      listReferForSelection(resType).then(json => {
-        console.log('listReferForSelection', json)
+    listReferFileForSelection(resType, init) {
+      listReferFileForSelection(resType).then(json => {
+        console.log('listReferFileForSelection', json)
         this.files = json.data
       })
 
       if (!init) {
         this.refer.file = ''
-        this.referFile = ''
+      }
+    },
+    listReferSheetForSelection(resType, init) {
+      listReferSheetForSelection(resType).then(json => {
+        console.log('listReferSheetForSelection', json)
+        this.files = json.data
+      })
+
+      if (!init) {
+        this.refer.sheet = ''
       }
     },
     listReferFieldForSelection() {
-      listReferFieldForSelection(this.referFile, this.refer.type).then(json => {
+      let referTo = ''
+      if (this.refer.type != 'excel') {
+        referTo = this.refer.file
+      } else {
+        referTo = this.refer.sheet
+      }
+      listReferFieldForSelection(referTo, this.refer.type).then(json => {
         console.log('listReferFieldForSelection', json)
         this.fields = json.data
       })
       this.refer.colName = ''
       this.refer.colIndex = ''
-
-      this.referFieldName = ''
-      this.referFieldIndex = ''
     }
   }
 }

@@ -3,6 +3,8 @@ package serverService
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	"github.com/easysoft/zendata/src/utils/vari"
 )
 
 func zdFieldToFieldForExport(treeNode model.ZdField, field *model.DefField) {
@@ -64,6 +66,22 @@ func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
 	field.Select = treeNode.Select
 	field.Where = treeNode.Where
 	field.Limit = treeNode.Limit
+}
+
+func FileToPath(f, currFile string) (path string) {
+	path = fileUtils.ConvertResYamlPath(f)
+	if path == "" {
+		resPath := fileUtils.GetAbsDir(currFile) + f
+		if !fileUtils.FileExist(resPath) { // in same folder
+			resPath = vari.WorkDir + f
+			if !fileUtils.FileExist(resPath) {  // in res file
+				resPath = ""
+			}
+		}
+		path = resPath
+	}
+
+	return
 }
 
 //func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst model.ResInstancesItem) {

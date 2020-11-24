@@ -170,14 +170,13 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 		resFile = ConvertResYamlPath(from)
 		resType = "text"
 	} else { // excel, like address.cn.v1.china
-		resFile, sheet = convertResExcelPath(from)
+		resFile, sheet = ConvertResExcelPath(from)
 		resType = "excel"
 	}
 
 	if resFile == "" {
 		resPath := vari.ConfigDir + from
-		if !FileExist(resPath) { // in same folder with passed config file
-
+		if !FileExist(resPath) { // in same folder with passed config file, like dir/name.yaml
 			resPath = vari.WorkDir + from
 			if !FileExist(resPath) {  // in res file
 				resPath = ""
@@ -223,7 +222,7 @@ func ConvertResYamlPath(from string) (ret string) {
 	return
 }
 
-func convertResExcelPath(from string) (ret, sheet string) {
+func ConvertResExcelPath(from string) (ret, sheet string) {
 	path1 := from // address.cn.v1
 	index := strings.LastIndex(from, ".")
 	path2 := from[:index] // address.cn.v1.china

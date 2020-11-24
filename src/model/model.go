@@ -52,6 +52,10 @@ type ZdField struct {
 	Where	string `gorm:"column:whereCol" json:"whereCol"`
 	Limit	int `gorm:"column:limitCol" json:"limitCol"`
 
+	// refer to yaml or text by using range prop
+	Step 	string `gorm:"column:step" json:"step"`
+	Repeat	string `gorm:"column:repeat" json:"repeat"`
+
 	Exp  string `gorm:"column:exp" json:"exp"`
 	DefID uint `gorm:"column:defID" json:"defID"`
 	ParentID uint `gorm:"column:parentID" json:"parentID"`
@@ -100,10 +104,15 @@ type ZdRefer struct {
 	OwnerType string   `gorm:"column:ownerType" json:"ownerType"` // field or instances
 	OwnerID   uint   `gorm:"column:ownerID" json:"ownerID"`
 	Type      string `gorm:"column:type" json:"type"`
+
 	File      string `gorm:"column:file" json:"file"`
+	Sheet      string `gorm:"column:sheet" json:"sheet"`
+
 	ColName   string `gorm:"column:colName" json:"colName"`
 	ColIndex  int    `gorm:"column:colIndex" json:"colIndex"`
+	Condition string `gorm:"column:condition" json:"condition"`
 	Count     int    `gorm:"column:count" json:"count"`
+	Rand bool   `gorm:"column:rand" json:"rand"`
 	HasTitle  bool   `gorm:"column:hasTitle" json:"hasTitle"`
 }
 func (*ZdRefer) TableName() string {

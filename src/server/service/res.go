@@ -43,7 +43,7 @@ func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 	return
 }
 
-func (s *ResService) ListReferForSelection(resType string) (ret interface{}) {
+func (s *ResService) ListReferFileForSelection(resType string) (ret interface{}) {
 	if resType == "ranges" {
 		ret = s.rangesRepo.ListAll()
 	} else if resType == "instances" {
@@ -60,6 +60,12 @@ func (s *ResService) ListReferForSelection(resType string) (ret interface{}) {
 
 	return
 }
+
+func (s *ResService) ListReferSheetForSelection(mode string) (ret []model.ResField) {
+
+	return
+}
+
 func (s *ResService) ListReferFieldForSelection(resId int, resType string) (ret []model.ResField) {
 	if resType == "instances" {
 		items, _ := s.instancesRepo.GetItems(uint(resId))

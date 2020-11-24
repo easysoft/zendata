@@ -193,7 +193,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 
 	if instField.Use != "" { // refer to another instances or ranges
 		if vari.Res[instField.From] == nil {
-			referencedRanges, referencedInstants := getreferencedRangeOrInstant(instField)
+			referencedRanges, referencedInstants := getReferencedRangeOrInstant(instField)
 			groupedValueReferenced := map[string][]string{}
 
 			if len(referencedRanges.Ranges) > 0 { // refer to ranges
@@ -222,7 +222,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 	}
 }
 
-func getreferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
+func getReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
 	resFile, _, _ := fileUtils.GetResProp(inst.From)
 
 	yamlContent, err := ioutil.ReadFile(resFile)

@@ -3,18 +3,46 @@ desc: 数据测试
 fields:
 - field: field_with_children
   fields:
-  - field: child1
-    range: a-z
-    prefix: "part1_\t"
-    postfix: '|'
-    loop: "3"
-  - field: child2
-    range: A-Z
-    prefix: part2_
-    postfix: '|'
-  - field: child_with_child
-    prefix: part3_
-    fields:
-    - field: field_grandson
-      range: 10-20
-      prefix: int_
+#  - field: child1
+#    range: a-z
+#    prefix: "part1_\t"
+#    postfix: '|'
+#    loop: "3"
+#  - field: child2
+#    range: A-Z
+#    prefix: part2_
+#    postfix: '|'
+#  - field: child_with_child
+#    prefix: part3_
+#    fields:
+#    - field: field_grandson
+#      range: 10-20
+#      prefix: int_
+  - field: field_text                   # 从一个文件中随机读取。
+    range: users.txt:R                  # 相对当前文件路径。
+    postfix: "\t"
+
+  - field: field_yaml                   # 引用其他的定义文件整体内容。
+    range: test/test-nested2.yaml{3}    # 相对当前文件路径。
+    postfix: "\t"
+
+  - field: field_use_config             # 引用其他的config定义文件。
+    config: dir/config.yaml{2}          # 相对当前文件路径，config内包含单个字段。
+    postfix: "\t"
+
+  - field: field_use_ranges             # 引用內置的定义文件，该文件定义了多个range，他们共享了一些field层面的属性。
+    from: zentao.number.v1.yaml         # 引用yaml/zentao/number/v1.yaml文件里面的ranges定义。
+    use: medium{2}                      # 使用该文件中定义的medium分组。
+    postfix: "\t"
+
+  - field: field_use_instance           # 引用其他的定义文件，该文件定义了多个实例。
+    from: ip.v1.yaml                    # yaml/ip/v1.yaml
+    use: privateC{1},privateB{2}        # 使用该文件中定义的privateC和privateB两个实例。
+    postfix: "\t"
+
+  - field: field_use_excel              # 从excel数据源里面取数据。
+    from: address.cn.v1.china           # 从data/address/v1.xlsx文件中读取名为china的工作簿。
+    select: city                        # 查询city字段。
+    where: state like '%山东%'           # 条件是省份包含山东。
+    rand: true                          # 随机取数据
+    postfix: "\t"

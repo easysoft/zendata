@@ -431,8 +431,10 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "updateRefer":
 		refer := serverUtils.ConvertRefer(reqData.Data)
 		err = s.referService.Update(&refer)
-	case "listReferForSelection":
-		ret.Data = s.resService.ListReferForSelection(reqData.Mode)
+	case "listReferFileForSelection":
+		ret.Data = s.resService.ListReferFileForSelection(reqData.Mode)
+	case "listReferSheetForSelection":
+		ret.Data = s.resService.ListReferSheetForSelection(reqData.Mode)
 	case "listReferFieldForSelection":
 		ret.Data = s.resService.ListReferFieldForSelection(reqData.Id, reqData.Mode)
 

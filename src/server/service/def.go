@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
@@ -12,6 +13,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"path"
 	"strings"
 )
 
@@ -167,12 +169,62 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
 	for i, field := range po.Fields {
 		field.Ord = i + 1
-		s.saveFieldToDB(&field, rootField.ID, po.ID)
+		s.saveFieldToDB(&field, fi.Path, rootField.ID, po.ID)
 	}
 
 	return
 }
-func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
+func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentID, defID uint) {
+	refer := model.ZdRefer{OwnerType: "def", OwnerID: item.ID}
+
+	if item.Config != "" { // refer to config
+		refer.Type = constant.ResTypeConfig
+
+		item.Config = strings.TrimSpace(item.Config)
+		rangeSections := gen.ParseRangeProperty(item.Config)
+		if len(rangeSections) == 1 {
+			rangeSection := rangeSections[0]
+			desc, _, count := gen.ParseRangeSection(rangeSection)
+			refer.File = FileToPath(desc, currPath)
+			refer.Count = count
+		}
+
+	} else if item.Select != "" { // refer to excel
+		refer.Type = constant.ResTypeExcel
+
+		refer.ColName = item.Select
+		refer.Condition = item.Where
+		refer.Rand = item.Rand
+
+		resFile, sheet := fileUtils.ConvertResExcelPath(item.From)
+		refer.File = resFile
+		refer.Sheet = sheet
+
+	} else if item.Use != "" { // refer to ranges or instances
+		refer.File = FileToPath(item.From, currPath)
+
+		refer.ColName, _, refer.Count = gen.ParseRangeSection(item.Use)
+		_, _, refer.Type = service.ReadYamlInfo(refer.File)
+
+	} else if item.Range != "" { // deal with yaml and text refer using range prop
+		item.Range = strings.TrimSpace(item.Range)
+		rangeSections := gen.ParseRangeProperty(item.Range)
+		if len(rangeSections) == 1 {
+			rangeSection := rangeSections[0]
+			desc, _, count := gen.ParseRangeSection(rangeSection)
+
+			if path.Ext(desc) == ".txt" {
+				refer.Type = constant.ResTypeText
+			} else if path.Ext(rangeSection) == ".yaml" {
+				refer.Type = constant.ResTypeYaml
+			}
+			if path.Ext(desc) == ".txt" || path.Ext(rangeSection) == ".yaml" {
+				refer.File = FileToPath(rangeSection, currPath)
+				refer.Count = count
+			}
+		}
+	}
+
 	item.DefID = defID
 	item.ParentID = parentID
 	if item.Type == "" {
@@ -182,9 +234,11 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
 		item.Mode = constant.ModeParallel
 	}
 	s.fieldRepo.Save(item)
+	refer.OwnerID = item.ID
+	s.referRepo.Save(&refer)
 
 	for _, child := range item.Fields {
-		s.saveFieldToDB(child, item.ID, defID)
+		s.saveFieldToDB(child, currPath, item.ID, defID)
 	}
 }
 

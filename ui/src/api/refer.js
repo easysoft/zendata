@@ -21,8 +21,17 @@ export function updateRefer (refer, ownerType) {
 }
 
 // selection input on page
-export function listReferForSelection (resType) {
-  const data = {'action': 'listReferForSelection', mode: resType}
+export function listReferFileForSelection (resType) {
+  const data = {'action': 'listReferFileForSelection', mode: resType}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function listReferSheetForSelection (resType) {
+  const data = {'action': 'listReferSheetForSelection', mode: resType}
 
   return request({
     url: api.admin,
