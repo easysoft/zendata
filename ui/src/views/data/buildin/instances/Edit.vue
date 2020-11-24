@@ -17,32 +17,25 @@
             <a-input v-model="model.title" />
           </a-form-model-item>
         </a-row>
-        <a-row :gutter="colsFull">
-          <a-form-model-item label="文件名" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.fileName" />
-          </a-form-model-item>
-        </a-row>
-        <a-row :gutter="colsFull">
-          <a-form-model-item label="引用名" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            {{model.referName}}
-          </a-form-model-item>
-        </a-row>
 
         <a-row :gutter="colsFull">
           <a-form-model-item label="目录" prop="folder" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="model.folder">
-              <a-tree-select
+              <a-select
                   slot="addonAfter"
                   v-model="model.folder"
                   style="width: 400px"
-                  :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                  :tree-data="dirTreeData"
-                  placeholder="请选择"
-                  tree-default-expand-all
-                  :replaceFields="dirFieldMap"
-              >
-              </a-tree-select>
+                  placeholder="请选择">
+                <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
+                  {{item.name}}</a-select-option>
+              </a-select>
             </a-input>
+          </a-form-model-item>
+        </a-row>
+
+        <a-row :gutter="colsFull">
+          <a-form-model-item label="文件名" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-input v-model="model.fileName" />
           </a-form-model-item>
         </a-row>
 
@@ -125,8 +118,7 @@ export default {
 
       id: 0,
       model: {folder: 'yaml/'},
-      dirTreeData: [],
-      dirFieldMap: {children:'children', title:'name', key:'name', value: 'name' }
+      dirs: [],
     };
   },
 
@@ -147,7 +139,7 @@ export default {
       getInstances(this.id).then(json => {
         console.log('getInstances', json)
         this.model = json.data
-        this.dirTreeData = [json.res]
+        this.dirs = json.res
       })
     },
     save() {

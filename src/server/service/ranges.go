@@ -25,11 +25,10 @@ func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges,
 	return
 }
 
-func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirTree model.Dir) {
+func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirs []model.Dir) {
 	ranges, _ = s.rangesRepo.Get(uint(id))
 
-	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirYaml)}
-	serverUtils.GetDirTree(&dirTree)
+	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
 
 	return
 }
@@ -111,7 +110,11 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	po.ReferName = service.PathToName(po.Path, constant.ResDirYaml)
+	if strings.Index(po.Path, constant.ResDirYaml) > -1 {
+		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml)
+	} else {
+		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers)
+	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
 

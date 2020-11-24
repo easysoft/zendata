@@ -127,8 +127,9 @@ export default {
       this.designVisible = false
     },
 
-    onPageChange() {
-      console.log('onPageChange')
+    onPageChange(page, pageSize) {
+      console.log('onPageChange', page, pageSize)
+      this.page= page
       this.loadData()
     },
     onSearch: debounce(function() {

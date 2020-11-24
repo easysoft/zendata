@@ -174,5 +174,4 @@ type ResField struct {
 type Dir struct {
 	Name string `json:"name"`
 	Path string `json:-`
-	Children []*Dir `json:"children"`
 }

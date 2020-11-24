@@ -23,11 +23,10 @@ func (s *TextService) List(keywords string, page int) (list []*model.ZdText, tot
 	return
 }
 
-func (s *TextService) Get(id int) (text model.ZdText, dirTree model.Dir) {
+func (s *TextService) Get(id int) (text model.ZdText, dirs []model.Dir) {
 	text, _ = s.textRepo.Get(uint(id))
 
-	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirYaml)}
-	serverUtils.GetDirTree(&dirTree)
+	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
 
 	return
 }
@@ -107,8 +106,12 @@ func (s *TextService) SyncToDB(file model.ResFile) (err error) {
 		Title: file.Title,
 		Path: file.Path,
 		Folder: serverUtils.GetRelativePath(file.Path),
-		ReferName: service.PathToName(file.Path, constant.ResDirYaml),
 		FileName: fileUtils.GetFileName(file.Path),
+	}
+	if strings.Index(text.Path, constant.ResDirYaml) > -1 {
+		text.ReferName = service.PathToName(text.Path, constant.ResDirYaml)
+	} else {
+		text.ReferName = service.PathToName(text.Path, constant.ResDirUsers)
 	}
 	text.Content = fileUtils.ReadFile(file.Path)
 

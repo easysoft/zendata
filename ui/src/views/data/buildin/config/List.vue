@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="head">
-      <div class="title">配置列表</div>
+      <div class="title">字段列表</div>
       <div class="filter">
         <a-input-search v-model="keywords" @change="onSearch" :allowClear="true" placeholder="输入关键字检索" style="width: 300px" />
       </div>
@@ -118,8 +118,9 @@ export default {
       })
     },
 
-    onPageChange() {
-      console.log('onPageChange')
+    onPageChange(page, pageSize) {
+      console.log('onPageChange', page, pageSize)
+      this.page= page
       this.loadData()
     },
     onSearch: debounce(function() {

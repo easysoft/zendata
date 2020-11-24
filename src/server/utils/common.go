@@ -2,6 +2,7 @@ package serverUtils
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
@@ -110,8 +111,14 @@ func AddExt(pth, ext string) string {
 	return pth
 }
 
-func GetDirTree(parent *model.Dir) {
-	folder := parent.Name
+func GetDirs(dir string, dirs *[]model.Dir) {
+	if strings.Contains(dir, fmt.Sprintf("yaml%sarticle", constant.PthSep)) {
+		return
+	}
+
+	folder := fileUtils.AddSepIfNeeded(dir)
+	*dirs = append(*dirs, model.Dir{Name: dir})
+
 	files, _ := ioutil.ReadDir(folder)
 	for _, fi := range files {
 		name := fi.Name()
@@ -119,10 +126,8 @@ func GetDirTree(parent *model.Dir) {
 			continue
 		}
 
-		childFolder := fileUtils.AddSepIfNeeded(folder + name)
-		child := &model.Dir{Name: childFolder}
-		parent.Children = append(parent.Children, child)
-		GetDirTree(child)
+		childFolder := folder + name
+		GetDirs(childFolder, dirs)
 	}
 
 	return

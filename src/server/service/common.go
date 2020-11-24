@@ -1,6 +1,9 @@
 package serverService
 
-import "github.com/easysoft/zendata/src/model"
+import (
+	"github.com/easysoft/zendata/src/model"
+	constant "github.com/easysoft/zendata/src/utils/const"
+)
 
 func zdFieldToFieldForExport(treeNode model.ZdField, field *model.DefField) {
 	genFieldFromZdField(treeNode, field)
@@ -40,8 +43,16 @@ func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
 	field.Loop = treeNode.Loop
 	field.Loopfix = treeNode.Loopfix
 	field.Format = treeNode.Format
+
 	field.Type = treeNode.Type
 	field.Mode = treeNode.Mode
+	if field.Type == constant.FieldTypeList {
+		field.Type = ""
+	}
+	if field.Mode == constant.ModeParallel {
+		field.Mode = ""
+	}
+
 	field.Length = treeNode.Length
 	field.LeftPad = treeNode.LeftPad
 	field.RightPad = treeNode.RightPad

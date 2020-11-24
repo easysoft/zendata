@@ -55,7 +55,7 @@
               </div>
             </a-tab-pane>
 
-            <a-tab-pane key="range" tab="配置区间" force-render>
+            <a-tab-pane key="range" tab="取值范围" force-render>
               <div>
                 <field-range-component
                     ref="rangeComp"

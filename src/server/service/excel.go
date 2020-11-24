@@ -22,11 +22,10 @@ func (s *ExcelService) List(keywords string, page int) (list []*model.ZdExcel, t
 	return
 }
 
-func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirTree model.Dir) {
+func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []model.Dir) {
 	excel, _ = s.excelRepo.Get(uint(id))
 
-	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirData)}
-	serverUtils.GetDirTree(&dirTree)
+	serverUtils.GetDirs(constant.ResDirData, &dirs)
 
 	return
 }

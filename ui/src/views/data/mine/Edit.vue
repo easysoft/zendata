@@ -15,32 +15,31 @@
         <a-form-model-item label="名称" prop="title">
           <a-input v-model="model.title" />
         </a-form-model-item>
+
+        <a-form-model-item label="目录" prop="folder">
+          <a-input v-model="model.folder">
+            <a-select
+                slot="addonAfter"
+                v-model="model.folder"
+                style="width: 400px"
+                placeholder="请选择">
+              <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
+                {{item.name}}</a-select-option>
+            </a-select>
+          </a-input>
+        </a-form-model-item>
+
         <a-form-model-item label="文件名" prop="fileName">
           <a-input v-model="model.fileName" />
         </a-form-model-item>
 
-        <a-form-model-item label="目录" prop="folder">
-          <a-input v-model="model.folder">
-            <a-tree-select
-                slot="addonAfter"
-                v-model="model.folder"
-                style="width: 400px"
-                :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                :tree-data="dirTreeData"
-                placeholder="请选择"
-                tree-default-expand-all
-                :replaceFields="dirFieldMap"
-            >
-            </a-tree-select>
-          </a-input>
-        </a-form-model-item>
-
-        <a-form-model-item label="类型" prop="type">
+<!--        <a-form-model-item label="类型" prop="type">
           <a-select v-model="model.type">
             <a-select-option value="text">字符串</a-select-option>
             <a-select-option value="article">文章</a-select-option>
           </a-select>
-        </a-form-model-item>
+        </a-form-model-item>-->
+
         <a-form-model-item label="描述" prop="desc">
           <a-input v-model="model.desc" type="textarea" rows="3" />
         </a-form-model-item>
@@ -80,8 +79,7 @@ export default {
       },
       id: 0,
       model: { folder: 'users/', type: 'text' },
-      dirTreeData: [],
-      dirFieldMap: {children:'children', title:'name', key:'name', value: 'name' }
+      dirs: [],
     };
   },
   computed: {
@@ -95,7 +93,7 @@ export default {
     getDef(this.id).then(json => {
       console.log('getDef', json)
       this.model = json.data
-      this.dirTreeData = [json.res]
+      this.dirs = json.res
     })
   },
   mounted () {

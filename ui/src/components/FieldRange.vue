@@ -26,9 +26,9 @@
         <a-col :span="col">
           <a-form-model-item prop="range" :wrapperCol="wrapperColFull">
             <a-select v-model="item.type">
-              <a-select-option value="scope">范围</a-select-option>
-              <a-select-option value="arr">数组</a-select-option>
-              <a-select-option value="const">字面常量</a-select-option>
+              <a-select-option value="scope">区间</a-select-option>
+              <a-select-option value="arr">列表</a-select-option>
+              <a-select-option value="const">常量</a-select-option>
             </a-select>
           </a-form-model-item>
         </a-col>
@@ -93,7 +93,7 @@
           <div v-if="section.type==='arr'">
             <a-row :gutter="cols">
               <a-col :span="cols">
-                <a-form-model-item label="数组" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                <a-form-model-item label="列表" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
                   <a-input v-model="section.text" type="textarea" rows="3" />
                   每行一个值
                 </a-form-model-item>
@@ -104,7 +104,7 @@
           <div v-if="section.type==='const'">
             <a-row :gutter="cols">
               <a-col :span="cols">
-                <a-form-model-item label="字面常量" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                <a-form-model-item label="常量" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
                   <a-input v-model="section.text" placeholder="" />
                 </a-form-model-item>
               </a-col>

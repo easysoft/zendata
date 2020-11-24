@@ -115,6 +115,7 @@ export default {
       this.$router.push({path: '/data/buildin/ranges/edit/0'});
     },
     loadData() {
+      this.page = this.current
       listRanges(this.keywords, this.page).then(json => {
         console.log('listRanges', json)
         this.models = json.data
@@ -148,8 +149,9 @@ export default {
       this.designVisible = false
     },
 
-    onPageChange() {
-      console.log('onPageChange')
+    onPageChange(page, pageSize) {
+      console.log('onPageChange', page, pageSize)
+      this.page= page
       this.loadData()
     },
     onSearch: debounce(function() {

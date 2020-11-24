@@ -3,7 +3,7 @@
     <div class="left">
       <Menu></Menu>
       <div class="sync">
-        <a-button @click="syncData" size="small" type="primary">同步数据</a-button>
+        <a-button @click="syncData" size="small" type="primary">刷新数据</a-button>
       </div>
     </div>
     <div class="content">
@@ -38,11 +38,9 @@ export default {
         console.log('syncData', json)
         if (json.code == 1) {
           this.$notification['success']({
-            message: '提示',
-            description:
-                '成功同步资源和数据！',
+            message: '成功刷新资源和数据！',
             placement: 'bottomLeft',
-            duration: 0.5,
+            duration: 3,
           });
         }
       })

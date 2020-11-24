@@ -12,20 +12,21 @@
 
       <a-sub-menu key="buildin" @titleClick="titleClick">
         <span slot="title"><span>內置数据</span></span>
+          <a-menu-item key="buildin/config/list">
+            字段
+          </a-menu-item>
           <a-menu-item key="buildin/ranges/list">
-            序列（Ranges）
+            序列
           </a-menu-item>
           <a-menu-item key="buildin/instances/list">
-            实例（Instances）
+            实例
           </a-menu-item>
-          <a-menu-item key="buildin/config/list">
-            配置（Config）
-          </a-menu-item>
+
           <a-menu-item key="buildin/text/list">
-            文本（Text）
+            文本
           </a-menu-item>
           <a-menu-item key="buildin/excel/list">
-            表格（Excel）
+            表格
           </a-menu-item>
       </a-sub-menu>
     </a-menu>

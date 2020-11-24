@@ -26,11 +26,10 @@ func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInst
 	return
 }
 
-func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirTree model.Dir) {
+func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []model.Dir) {
 	instances, _ = s.instancesRepo.Get(uint(id))
 
-	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirYaml)}
-	serverUtils.GetDirTree(&dirTree)
+	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
 
 	return
 }
@@ -144,10 +143,15 @@ func (s *InstancesService) SyncToDB(file model.ResFile) (err error) {
 	err = yaml.Unmarshal(yamlContent, &po)
 
 	po.Title = file.Title
-	po.FileName = file.ReferName
 	po.Desc = file.Desc
 	po.Path = file.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
+	if strings.Index(po.Path, constant.ResDirYaml) > -1 {
+		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml)
+	} else {
+		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers)
+	}
+	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
 
 	s.instancesRepo.Create(&po)
@@ -166,6 +170,13 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, parentID, i
 
 	item.InstancesID = instancesID
 	item.ParentID = parentID
+	if item.Type == "" {
+		item.Type = constant.FieldTypeList
+	}
+	if item.Mode == "" {
+		item.Mode = constant.ModeParallel
+	}
+
 	s.instancesRepo.SaveItem(item)
 
 	for i, child := range item.Fields {

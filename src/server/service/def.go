@@ -27,11 +27,10 @@ func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total
 	return
 }
 
-func (s *DefService) Get(id int) (def model.ZdDef, dirTree model.Dir) {
+func (s *DefService) Get(id int) (def model.ZdDef, dirs []model.Dir) {
 	def, _ = s.defRepo.Get(uint(id))
 
-	dirTree = model.Dir{Name: fileUtils.AddSepIfNeeded(constant.ResDirUsers)}
-	serverUtils.GetDirTree(&dirTree)
+	serverUtils.GetDirs(constant.ResDirUsers, &dirs)
 
 	return
 }
@@ -176,6 +175,12 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 func (s *DefService) saveFieldToDB(item *model.ZdField, parentID, defID uint) {
 	item.DefID = defID
 	item.ParentID = parentID
+	if item.Type == "" {
+		item.Type = constant.FieldTypeList
+	}
+	if item.Mode == "" {
+		item.Mode = constant.ModeParallel
+	}
 	s.fieldRepo.Save(item)
 
 	for _, child := range item.Fields {
