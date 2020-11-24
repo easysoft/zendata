@@ -273,6 +273,11 @@ func ConvertResExcelPath(from string) (ret, sheet string) {
 	return
 }
 
+func ConvertResTextPath(from string) (ret string) {
+
+	return
+}
+
 func GetFilesByExtInDir(folder, ext string, files *[]string) {
 	folder, _ = filepath.Abs(folder)
 

@@ -19,11 +19,11 @@ fields:
 #      range: 10-20
 #      prefix: int_
   - field: field_text                   # 从一个文件中随机读取。
-    range: users.txt:R                  # 相对当前文件路径。
+    range: dir/users.txt:R                  # 相对当前文件路径。
     postfix: "\t"
 
   - field: field_yaml                   # 引用其他的定义文件整体内容。
-    range: test/test-nested2.yaml{3}    # 相对当前文件路径。
+    range: dir/content.yaml{3}    # 相对当前文件路径。
     postfix: "\t"
 
   - field: field_use_config             # 引用其他的config定义文件。

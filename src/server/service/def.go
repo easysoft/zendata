@@ -185,8 +185,10 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 		if len(rangeSections) == 1 {
 			rangeSection := rangeSections[0]
 			desc, _, count := gen.ParseRangeSection(rangeSection)
-			refer.File = desc
 			refer.Count = count
+
+			path := FileToPath(desc, currPath)
+			refer.File = strings.Replace(path, vari.WorkDir, "", 1)
 		}
 
 	} else if item.Select != "" { // refer to excel
@@ -220,8 +222,10 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 				refer.Type = constant.ResTypeYaml
 			}
 			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
-				refer.File = desc
 				refer.Count = count
+
+				path := FileToPath(desc, currPath)
+				refer.File = strings.Replace(path, vari.WorkDir, "", 1)
 			}
 		}
 	}

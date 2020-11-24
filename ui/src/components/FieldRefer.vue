@@ -18,7 +18,7 @@
           <a-form-model-item label="文件" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-select v-model="refer.file" @change="onReferFileChanged">
               <a-select-option value="">选择</a-select-option>
-              <a-select-option v-for="(f, i) in files" :value="f.id" :key="i">
+              <a-select-option v-for="(f, i) in files" :value="f.referName" :key="i">
                 {{ f.title }}
               </a-select-option>
             </a-select>
