@@ -11,12 +11,12 @@ type DefRepo struct {
 }
 
 func (r *DefRepo) ListAll() (models []*model.ZdDef) {
-	r.db.Select("id,title,folder,path,updatedAt").Find(&models)
+	r.db.Select("id,title,folder,path,referName,updatedAt").Find(&models)
 	return
 }
 
 func (r *DefRepo) List(keywords string, page int) (models []*model.ZdDef, total int, err error) {
-	query := r.db.Select("id,title,folder,path").Order("id ASC")
+	query := r.db.Select("id,title,folder,path,referName").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}

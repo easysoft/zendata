@@ -16,7 +16,7 @@
           <template slot="title">
             <span>{{record.path}}</span>
           </template>
-          {{record.folder}}
+          <a>{{record.folder}}</a>
         </a-tooltip>
       </span>
 
@@ -31,7 +31,21 @@
             @confirm="remove(record)"
           >
           <a href="#">删除</a>
-        </a-popconfirm>
+        </a-popconfirm> |
+
+        <a-tooltip placement="top" overlayClassName="tooltip-light">
+          <template slot="title">
+            <div class="content-width">
+              <div class="title">引用文件内容</div>
+              <div class="content">
+                <div>from: {{ record.referName }}</div>
+                <div>use: field_name</div>
+              </div>
+            </div>
+          </template>
+          <a href="#">引用</a>
+        </a-tooltip>
+
       </span>
     </a-table>
 
@@ -70,10 +84,6 @@ const columns = [
     title: '目录',
     dataIndex: 'folder',
     scopedSlots: { customRender: 'folderWithPath' },
-  },
-  {
-    title: '引用',
-    dataIndex: 'referName',
   },
   {
     title: '操作',

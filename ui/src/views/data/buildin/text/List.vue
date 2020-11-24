@@ -16,7 +16,7 @@
           <template slot="title">
             <span>{{record.path}}</span>
           </template>
-          {{record.folder}}
+          <a>{{record.folder}}</a>
         </a-tooltip>
       </span>
 
@@ -30,8 +30,22 @@
             @confirm="remove(record)"
         >
           <a href="#">删除</a>
-        </a-popconfirm>
+        </a-popconfirm> |
+
+        <a-tooltip placement="top" overlayClassName="tooltip-light">
+          <template slot="title">
+            <div class="content-width" style="min-width: 280px;">
+              <div class="title">引用文本</div>
+              <div class="content">
+                <div>range: {{ record.referName }}</div>
+              </div>
+            </div>
+          </template>
+          <a href="#">引用</a>
+        </a-tooltip>
+
       </span>
+
     </a-table>
 
     <div class="pagination-wrapper">
@@ -51,10 +65,6 @@ const columns = [
   {
     title: '名称',
     dataIndex: 'title',
-  },
-  {
-    title: '引用名',
-    dataIndex: 'referName',
   },
   {
     title: '目录',
