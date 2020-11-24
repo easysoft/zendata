@@ -36,9 +36,9 @@
         </a-form-model-item>
       </a-row>
 
-      <a-row :gutter="colsFull">
-        <a-form-model-item v-if="!showColSection" label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-           <a-select v-model="referFieldName">
+      <a-row v-if="showColSection" :gutter="colsFull">
+        <a-form-model-item label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+           <a-select v-model="refer.colName">
               <a-select-option value="">选择</a-select-option>
               <a-select-option v-for="f in fields" :key="f.name">
                 {{ f.name }}
@@ -118,7 +118,7 @@ export default {
 
   computed: {
     showColSection() {
-      return this.refer.type == 'yaml' || this.refer.type == 'text'
+      return this.refer.type != 'text' && this.refer.type != 'config' && this.refer.type != 'yaml'
     }
   },
   created () {
@@ -135,6 +135,8 @@ export default {
   },
   methods: {
     loadData() {
+      if (!this.model.id) return
+
       getRefer(this.model.id, this.type).then(json => {
         console.log('getRefer', json)
         this.refer = json.data

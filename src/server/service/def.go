@@ -185,7 +185,7 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 		if len(rangeSections) == 1 {
 			rangeSection := rangeSections[0]
 			desc, _, count := gen.ParseRangeSection(rangeSection)
-			refer.File = FileToPath(desc, currPath)
+			refer.File = desc
 			refer.Count = count
 		}
 
@@ -196,15 +196,16 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 		refer.Condition = item.Where
 		refer.Rand = item.Rand
 
-		resFile, sheet := fileUtils.ConvertResExcelPath(item.From)
-		refer.File = resFile
+		_, sheet := fileUtils.ConvertResExcelPath(item.From)
+		refer.File = item.From
 		refer.Sheet = sheet
 
 	} else if item.Use != "" { // refer to ranges or instances
-		refer.File = FileToPath(item.From, currPath)
-
+		refer.File = item.From
 		refer.ColName, _, refer.Count = gen.ParseRangeSection(item.Use)
-		_, _, refer.Type = service.ReadYamlInfo(refer.File)
+
+		path := FileToPath(item.From, currPath)
+		_, _, refer.Type = service.ReadYamlInfo(path)
 
 	} else if item.Range != "" { // deal with yaml and text refer using range prop
 		item.Range = strings.TrimSpace(item.Range)
@@ -215,11 +216,11 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 
 			if path.Ext(desc) == ".txt" {
 				refer.Type = constant.ResTypeText
-			} else if path.Ext(rangeSection) == ".yaml" {
+			} else if path.Ext(desc) == ".yaml" {
 				refer.Type = constant.ResTypeYaml
 			}
-			if path.Ext(desc) == ".txt" || path.Ext(rangeSection) == ".yaml" {
-				refer.File = FileToPath(rangeSection, currPath)
+			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
+				refer.File = desc
 				refer.Count = count
 			}
 		}
