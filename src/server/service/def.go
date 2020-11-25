@@ -90,6 +90,13 @@ func (s *DefService) Remove(id int) (err error) {
 	return
 }
 
+func (s *DefService) updateYamlByField(fieldId uint) (err error) {
+	field, _ := s.fieldRepo.Get(fieldId)
+	return s.updateYaml(field.DefID)
+
+	return
+}
+
 func (s *DefService) updateYaml(id uint) (err error) {
 	var po model.ZdDef
 	po, _ = s.defRepo.Get(id)
@@ -112,13 +119,44 @@ func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 
 	for _, child := range root.Fields { // ignore the root
 		defField := model.DefField{}
-		zdFieldToFieldForExport(*child, &defField)
+
+		refer, _ := s.referRepo.GetByOwnerId(child.ID)
+		s.zdFieldToFieldForExport(*child, refer, &defField)
 
 		yamlObj.Fields = append(yamlObj.Fields, defField)
 	}
 
 	bytes, err := yaml.Marshal(yamlObj)
 	def.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
+
+	return
+}
+
+func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model.ZdRefer, field *model.DefField) {
+	genFieldFromZdField(treeNode, refer, field)
+
+	for _, child := range treeNode.Fields {
+		childField := model.DefField{}
+
+		childRefer, _ := s.referRepo.GetByOwnerId(child.ID)
+		s.zdFieldToFieldForExport(*child, childRefer, &childField)
+
+		field.Fields = append(field.Fields, childField)
+	}
+
+	//for _, from := range treeNode.Froms { // only one level
+	//	childField := model.DefField{}
+	//	genFieldFromZdField(*from, &childField)
+	//
+	//	field.Froms = append(field.Froms, childField)
+	//}
+
+	if len(field.Fields) == 0 {
+		field.Fields = nil
+	}
+	if len(field.Froms) == 0 {
+		field.Froms = nil
+	}
 
 	return
 }

@@ -21,7 +21,11 @@ func (r *ReferRepo) Create(refer *model.ZdRefer) (err error) {
 	return
 }
 
-func (r *ReferRepo) Get(fieldId uint, ownerType string) (refer model.ZdRefer, err error) {
+func (r *ReferRepo) GetByOwnerId(fieldId uint) (refer model.ZdRefer, err error) {
+	err = r.db.Where("ownerID=?", fieldId).First(&refer).Error
+	return
+}
+func (r *ReferRepo) GetByOwnerIdAndType(fieldId uint, ownerType string) (refer model.ZdRefer, err error) {
 	err = r.db.Where("ownerID=? AND ownerType=?", fieldId, ownerType).First(&refer).Error
 	return
 }

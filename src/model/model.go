@@ -64,7 +64,7 @@ type ZdField struct {
 
 	Ord int `gorm:"column:ord;default:1" json:"ord"`
 	Fields []*ZdField `gorm:"-" json:"fields"`
-	Froms []*ZdField    `gorm:"-" json:"froms"`
+	//Froms []*ZdField    `gorm:"-" json:"froms"`
 
 	// for range edit
 	IsRange bool         `gorm:"column:isRange;default:true" json:"isRange"`

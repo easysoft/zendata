@@ -157,6 +157,7 @@ export default {
     handleDesignCancel() {
       console.log('handleDesignCancel')
       this.designVisible = false
+      this.designModel = {}
     },
 
     onPageChange(page, pageSize) {

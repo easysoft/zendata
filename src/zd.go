@@ -314,7 +314,7 @@ func Init() (err error) {
 	resService := serverService.NewResService(rangesRepo, instancesRepo,
 		configRepo, excelRepo, textRepo, defRepo)
 
-	referService := serverService.NewReferService(fieldRepo, referRepo)
+	referService := serverService.NewReferService(fieldRepo, referRepo, defService)
 	syncService := serverService.NewSyncService(defService,
 		fieldService, rangesService, instancesService, configService, excelService, textService,
 		referService, resService)

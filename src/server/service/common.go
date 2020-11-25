@@ -1,41 +1,16 @@
 package serverService
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"strings"
 )
 
-func zdFieldToFieldForExport(treeNode model.ZdField, field *model.DefField) {
-	genFieldFromZdField(treeNode, field)
-
-	for _, child := range treeNode.Fields {
-		childField := model.DefField{}
-		zdFieldToFieldForExport(*child, &childField)
-
-		field.Fields = append(field.Fields, childField)
-	}
-
-	for _, from := range treeNode.Froms { // only one level
-		childField := model.DefField{}
-		genFieldFromZdField(*from, &childField)
-
-		field.Froms = append(field.Froms, childField)
-	}
-
-	if len(field.Fields) == 0 {
-		field.Fields = nil
-	}
-	if len(field.Froms) == 0 {
-		field.Froms = nil
-	}
-
-	return
-}
-
-func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
+func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *model.DefField) () {
 	field.Field = treeNode.Field
 	field.Note = treeNode.Note
 
@@ -67,6 +42,30 @@ func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
 	field.Select = treeNode.Select
 	field.Where = treeNode.Where
 	field.Limit = treeNode.Limit
+
+	// deal with refer
+	if refer.Type != "" {
+		logUtils.PrintTo(refer.Type)
+		if refer.Type == "excel" {
+			field.From = refer.File
+			field.Select = refer.ColName
+			field.Where = refer.Condition
+
+		} else if refer.Type == "ranges" { // medium{2}
+			field.From = refer.File
+			field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
+
+		} else if refer.Type == "instances" { // privateC{2}
+			field.From = refer.File
+			field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
+
+		} else if refer.Type == "yaml" { // dir/content.yaml{3}
+			field.Range = fmt.Sprintf("%s{%d}", refer.File, refer.Count)
+
+		} else if refer.Type == "text" { // dir/users.txt:2
+			field.Range = fmt.Sprintf("%s:%d", refer.File, refer.Step)
+		}
+	}
 }
 
 func ConvertReferRangeToPath(f, currFile string) (path string) {

@@ -47,16 +47,24 @@
         </a-form-model-item>
       </a-row>
 
-      <a-row :gutter="colsFull">
+      <a-row v-if="showCount" :gutter="colsFull">
         <a-col :span="colsHalf">
           <a-form-model-item label="取记录数" prop="count" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <a-input v-model="refer.count" />
             0表示取所有记录
           </a-form-model-item>
         </a-col>
-        <a-col :span="colsHalf" v-if="refer.type == 'text'">
-          <a-form-model-item label="是否含标题" prop="hasTitle" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
-            <a-switch v-model="refer.hasTitle" />
+      </a-row>
+
+      <a-row v-if="showStep" :gutter="colsFull">
+        <a-col :span="colsHalf">
+          <a-form-model-item label="步长" prop="step" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+            <a-input v-model="refer.step" :disabled="refer.rand" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="colsHalf">
+          <a-form-model-item label="是否随机" prop="rand" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+            <a-switch v-model="refer.rand" />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -117,8 +125,14 @@ export default {
   },
 
   computed: {
+    showStep() {
+      return this.refer.type === 'text'
+    },
+    showCount() {
+      return this.refer.type === 'yaml' || this.refer.type === 'ranges' || this.refer.type === 'instances'
+    },
     showColSection() {
-      return this.refer.type != 'text' && this.refer.type != 'config' && this.refer.type != 'yaml'
+      return this.refer.type === 'ranges' || this.refer.type === 'instances' || this.refer.type === 'excel'
     }
   },
   created () {
@@ -175,6 +189,7 @@ export default {
         }
 
         this.refer.count = parseInt(this.refer.count)
+        this.refer.step = parseInt(this.refer.step)
         updateRefer(this.refer, this.type).then(json => {
           console.log('updateRefer', json)
         })

@@ -3,46 +3,26 @@ desc: 数据测试
 fields:
 - field: field_with_children
   fields:
-#  - field: child1
-#    range: a-z:2
-#    prefix: "part1_\t"
-#    postfix: '|'
-#    loop: "3"
-#  - field: child2
-#    range: A-Z
-#    prefix: part2_
-#    postfix: '|'
-#  - field: child_with_child
-#    prefix: part3_
-#    fields:
-#    - field: field_grandson
-#      range: 10-20
-#      prefix: int_
   - field: field_text
     range: dir/users.txt:2
     postfix: "\t"
-
   - field: field_yaml
     range: dir/content.yaml{3}
     postfix: "\t"
-
   - field: field_use_config
-    config: dir/config.yaml
     postfix: "\t"
-
+    config: dir/config.yaml
   - field: field_use_ranges
+    postfix: "\t"
     from: zentao.number.v1.yaml
     use: medium{2}
-    postfix: "\t"
-
   - field: field_use_instance
+    postfix: "\t"
     from: ip.v1.yaml
     use: privateC{2}
-    postfix: "\t"
-
   - field: field_use_excel
+    postfix: "\t"
+    rand: true
     from: address.cn.v1.china
     select: city
     where: state like '%山东%'
-    rand: true
-    postfix: "\t"
