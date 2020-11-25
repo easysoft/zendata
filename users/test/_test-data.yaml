@@ -6,12 +6,15 @@ fields:
   - field: field_text
     range: test/dir/users.txt:7
     postfix: "\t"
+
   - field: field_yaml
     range: test/dir/content.yaml{7}
     postfix: "\t"
+
   - field: field_use_config
     postfix: "\t"
-    config: test/dir/config.yaml
+    config: dir/config.yaml
+
   - field: field_use_ranges
     postfix: "\t"
     from: zentao.number.v1.yaml

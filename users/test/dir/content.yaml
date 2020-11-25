@@ -6,5 +6,5 @@ version: 1.0
 fields:
   - field: field1
     range: 1-10
-    prefix: ""
-    postfix: "\t"
+    prefix: "["
+    postfix: "]\t"

@@ -289,7 +289,35 @@ func ConvertResExcelPath(from string) (ret, sheet string) {
 	return
 }
 
-func ConvertResTextPath(from string) (ret string) {
+func ComputerReferFilePath(file string) (resPath string) {
+	resPath = file
+	if filepath.IsAbs(resPath) && FileExist(resPath) {
+		return
+	}
+
+	resPath = vari.ConfigDir + file
+	if FileExist(resPath) {
+		return
+	}
+
+	resPath = vari.DefaultDir + file
+	if FileExist(resPath) {
+		return
+	}
+
+	resPath = vari.WorkDir + constant.ResDirYaml + constant.PthSep + file
+	if FileExist(resPath) {
+		return
+	}
+	resPath = vari.WorkDir + constant.ResDirUsers + constant.PthSep + file
+	if FileExist(resPath) {
+		return
+	}
+
+	resPath = vari.WorkDir + file
+	if FileExist(resPath) {
+		return
+	}
 
 	return
 }

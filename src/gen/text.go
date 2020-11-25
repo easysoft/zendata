@@ -23,7 +23,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 
 	// read from file
 	list := make([]string, 0)
-	realPath := fileUtils.ConvertReferRangeToPath(file, field.Path)
+	realPath := fileUtils.ComputerReferFilePath(file)
 	content, err := ioutil.ReadFile(realPath)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file + " - " +  realPath))
@@ -69,28 +69,3 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 		fieldValue.Values = append(fieldValue.Values, "N/A")
 	}
 }
-
-//func findFilePath(file string) string {
-//	resPath := file
-//	if !filepath.IsAbs(resPath) {
-//
-//		resPath = vari.ConfigDir + file
-//		if !fileUtils.FileExist(resPath) {
-//
-//			resPath = vari.DefaultDir + file
-//			if !fileUtils.FileExist(resPath) {
-//
-//				resPath = vari.WorkDir + file
-//				if !fileUtils.FileExist(resPath) {
-//					resPath = ""
-//				}
-//			}
-//		}
-//	} else {
-//		if !fileUtils.FileExist(resPath) {
-//			resPath = ""
-//		}
-//	}
-//
-//	return resPath
-//}
