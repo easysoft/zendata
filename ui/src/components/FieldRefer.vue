@@ -194,6 +194,8 @@ export default {
           return
         }
 
+        if (this.refer.type === 'excel') this.refer.file = this.refer.file + '.' + this.refer.sheet
+
         this.refer.count = parseInt(this.refer.count)
         this.refer.step = parseInt(this.refer.step)
         updateRefer(this.refer, this.type).then(json => {
