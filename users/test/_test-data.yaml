@@ -13,7 +13,7 @@ fields:
 
   - field: field_use_config
     postfix: "\t"
-    config: dir/config.yaml
+    config: test/dir/config.yaml
 
   - field: field_use_ranges
     postfix: "\t"
@@ -29,3 +29,19 @@ fields:
     from: address.cn.v1.china
     select: city
     where: state like '%山东%'
+
+  - field: child1
+    range: a-z:2
+    prefix: "part1_\t"
+    postfix: '|'
+    loop: "3"
+  - field: child2
+    range: A-Z
+    prefix: part2_
+    postfix: '|'
+  - field: child_with_child
+    prefix: part3_
+    fields:
+    - field: field_grandson
+      range: 10-20
+      prefix: int_

@@ -208,6 +208,8 @@ export default {
     },
 
     listReferFileForSelection(resType, init) {
+      if (!this.refer.type) return
+
       listReferFileForSelection(resType).then(json => {
         console.log('listReferFileForSelection', json)
         this.files = json.data
@@ -224,6 +226,8 @@ export default {
       })
     },
     listReferSheetForSelection(init) {
+      if (!this.refer.type) return
+
       listReferSheetForSelection(this.refer.file + '.' + this.refer.sheet ).then(json => {
         console.log('listReferSheetForSelection', json)
         this.sheets = json.data
@@ -236,6 +240,8 @@ export default {
       })
     },
     listReferResFieldForSelection(init) {
+      if (!this.refer.type) return
+
       let id = 0
       if (this.refer.type === 'excel') {
         listReferExcelColForSelection(this.refer.file + '.' + this.refer.sheet).then(json => {
