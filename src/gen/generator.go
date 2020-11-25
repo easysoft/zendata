@@ -157,7 +157,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 					if num == 0 {
 						valuesFromGroup = groupValues[group]
 					} else {
-						valuesFromGroup = groupValues[group][:num]
+						valuesFromGroup = groupValues[group][:num%len(groupValues[group])]
 					}
 
 					values = append(values, valuesFromGroup...)

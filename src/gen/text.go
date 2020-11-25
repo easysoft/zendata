@@ -8,9 +8,7 @@ import (
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
-	"github.com/easysoft/zendata/src/utils/vari"
 	"io/ioutil"
-	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -25,7 +23,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 
 	// read from file
 	list := make([]string, 0)
-	realPath := findFilePath(file)
+	realPath := fileUtils.ConvertReferRangeToPath(file, field.Path)
 	content, err := ioutil.ReadFile(realPath)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file + " - " +  realPath))
@@ -72,27 +70,27 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 	}
 }
 
-func findFilePath(file string) string {
-	resPath := file
-	if !filepath.IsAbs(resPath) {
-
-		resPath = vari.ConfigDir + file
-		if !fileUtils.FileExist(resPath) {
-
-			resPath = vari.DefaultDir + file
-			if !fileUtils.FileExist(resPath) {
-
-				resPath = vari.WorkDir + file
-				if !fileUtils.FileExist(resPath) {
-					resPath = ""
-				}
-			}
-		}
-	} else {
-		if !fileUtils.FileExist(resPath) {
-			resPath = ""
-		}
-	}
-
-	return resPath
-}
+//func findFilePath(file string) string {
+//	resPath := file
+//	if !filepath.IsAbs(resPath) {
+//
+//		resPath = vari.ConfigDir + file
+//		if !fileUtils.FileExist(resPath) {
+//
+//			resPath = vari.DefaultDir + file
+//			if !fileUtils.FileExist(resPath) {
+//
+//				resPath = vari.WorkDir + file
+//				if !fileUtils.FileExist(resPath) {
+//					resPath = ""
+//				}
+//			}
+//		}
+//	} else {
+//		if !fileUtils.FileExist(resPath) {
+//			resPath = ""
+//		}
+//	}
+//
+//	return resPath
+//}

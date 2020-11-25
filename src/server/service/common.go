@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"strings"
@@ -64,24 +63,10 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 
 		} else if refer.Type == "text" { // dir/users.txt:2
 			field.Range = fmt.Sprintf("%s:%d", refer.File, refer.Step)
+		} else if refer.Type == "config" { // dir/users.txt:2
+			field.Config = fmt.Sprintf("%s", refer.File)
 		}
 	}
-}
-
-func ConvertReferRangeToPath(f, currFile string) (path string) {
-	path = fileUtils.ConvertResYamlPath(f)
-	if path == "" {
-		resPath := fileUtils.GetAbsDir(currFile) + f
-		if !fileUtils.FileExist(resPath) { // in same folder
-			resPath = vari.WorkDir + f
-			if !fileUtils.FileExist(resPath) {  // in res file
-				resPath = ""
-			}
-		}
-		path = resPath
-	}
-
-	return
 }
 
 func GetRelatedPathWithResDir(p string) (ret string) {

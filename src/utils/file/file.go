@@ -192,6 +192,22 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 	return
 }
 
+func ConvertReferRangeToPath(f, currFile string) (path string) {
+	path = ConvertResYamlPath(f)
+	if path == "" {
+		resPath := GetAbsDir(currFile) + f
+		if !FileExist(resPath) { // in same folder
+			resPath = vari.WorkDir + f
+			if !FileExist(resPath) {  // in res file
+				resPath = ""
+			}
+		}
+		path = resPath
+	}
+
+	return
+}
+
 func ConvertResYamlPath(from string) (ret string) {
 	arr := strings.Split(from, ".")
 	for i := 0; i < len(arr); i++ {

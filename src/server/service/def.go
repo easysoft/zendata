@@ -236,7 +236,7 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 			refer.Count = count
 		}
 
-		path := ConvertReferRangeToPath(item.From, currPath)
+		path := fileUtils.ConvertReferRangeToPath(item.From, currPath)
 		_, _, refer.Type = service.ReadYamlInfo(path)
 		refer.File = item.From
 
@@ -249,7 +249,7 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 			desc, _, count := gen.ParseRangeSection(rangeSection)
 			refer.Count = count
 
-			path := ConvertReferRangeToPath(desc, currPath)
+			path := fileUtils.ConvertReferRangeToPath(desc, currPath)
 			refer.File = GetRelatedPathWithResDir(path)
 		}
 
@@ -275,7 +275,7 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 				refer.Count = count
 			}
 			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
-				path := ConvertReferRangeToPath(desc, currPath)
+				path := fileUtils.ConvertReferRangeToPath(desc, currPath)
 				refer.File = GetRelatedPathWithResDir(path)
 			}
 		}

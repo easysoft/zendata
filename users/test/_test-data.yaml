@@ -11,7 +11,7 @@ fields:
     postfix: "\t"
   - field: field_use_config
     postfix: "\t"
-    config: dir/config.yaml
+    config: test/dir/config.yaml
   - field: field_use_ranges
     postfix: "\t"
     from: zentao.number.v1.yaml
