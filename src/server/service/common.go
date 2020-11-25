@@ -69,7 +69,7 @@ func genFieldFromZdField(treeNode model.ZdField, field *model.DefField) () {
 	field.Limit = treeNode.Limit
 }
 
-func FileToPath(f, currFile string) (path string) {
+func ConvertReferRangeToPath(f, currFile string) (path string) {
 	path = fileUtils.ConvertResYamlPath(f)
 	if path == "" {
 		resPath := fileUtils.GetAbsDir(currFile) + f
@@ -85,7 +85,7 @@ func FileToPath(f, currFile string) (path string) {
 	return
 }
 
-func GetPathRelatedWithResDir(p string) (ret string) {
+func GetRelatedPathWithResDir(p string) (ret string) {
 	rpl := vari.WorkDir + constant.ResDirYaml + constant.PthSep
 	ret = strings.Replace(p, rpl, "", 1)
 

@@ -112,6 +112,7 @@ type ZdRefer struct {
 	ColIndex  int    `gorm:"column:colIndex" json:"colIndex"`
 	Condition string `gorm:"column:condition" json:"condition"`
 	Count     int    `gorm:"column:count" json:"count"`
+	Step int   `gorm:"column:step" json:"step"`
 	Rand bool   `gorm:"column:rand" json:"rand"`
 	HasTitle  bool   `gorm:"column:hasTitle" json:"hasTitle"`
 }

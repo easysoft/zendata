@@ -52,8 +52,8 @@ fields:
     postfix: "]\t"
     froms:
       - from: zentao.number.v1.yaml
-        use: small{2}                     # 指定引用个数
+        use: small{2}                   # 指定引用个数
         postfix: "-"
       - from: zentao.number.v1.yaml
-        use: large{3}                     # 指定引用个数
+        use: large{3}                   # 指定引用个数
 

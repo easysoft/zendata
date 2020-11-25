@@ -14,6 +14,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -188,44 +189,56 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 		refer.File = item.From
 		refer.Sheet = sheet
 
-	} else if item.Use != "" { // refer to ranges or instances
-		refer.File = item.From
-		refer.ColName, _, refer.Count = gen.ParseRangeSection(item.Use)
+	} else if item.Use != "" { // refer to ranges or instances, need to read yaml to get the type
+		rangeSections := gen.ParseRangeProperty(item.Use)
+		if len(rangeSections) > 0 { // only get the first one
+			rangeSection := rangeSections[0]
+			desc, _, count := gen.ParseRangeSection(rangeSection) // medium{2}
+			refer.ColName = desc
+			refer.Count = count
+		}
 
-		path := FileToPath(item.From, currPath)
+		path := ConvertReferRangeToPath(item.From, currPath)
 		_, _, refer.Type = service.ReadYamlInfo(path)
+		refer.File = item.From
 
 	} else if item.Config != "" { // refer to config
 		refer.Type = constant.ResTypeConfig
 
-		item.Config = strings.TrimSpace(item.Config)
-		rangeSections := gen.ParseRangeProperty(item.Config)
-		if len(rangeSections) == 1 {
+		rangeSections := gen.ParseRangeProperty(item.Config) // dir/config.yaml
+		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
 			desc, _, count := gen.ParseRangeSection(rangeSection)
 			refer.Count = count
 
-			path := FileToPath(desc, currPath)
-			refer.File = GetPathRelatedWithResDir(path)
+			path := ConvertReferRangeToPath(desc, currPath)
+			refer.File = GetRelatedPathWithResDir(path)
 		}
 
 	} else if item.Range != "" { // deal with yaml and text refer using range prop
 		item.Range = strings.TrimSpace(item.Range)
 		rangeSections := gen.ParseRangeProperty(item.Range)
-		if len(rangeSections) == 1 {
+		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
-			desc, _, count := gen.ParseRangeSection(rangeSection)
+			desc, step, count := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
 
-			if path.Ext(desc) == ".txt" {
+			if path.Ext(desc) == ".txt" { // dir/users.txt:2
 				refer.Type = constant.ResTypeText
-			} else if path.Ext(desc) == ".yaml" {
+
+				if strings.ToLower(step) == "r" {
+					refer.Rand = true
+				} else {
+					refer.Step, _ = strconv.Atoi(step)
+				}
+
+			} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
 				refer.Type = constant.ResTypeYaml
+
+				refer.Count = count
 			}
 			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
-				refer.Count = count
-
-				path := FileToPath(desc, currPath)
-				refer.File = GetPathRelatedWithResDir(path)
+				path := ConvertReferRangeToPath(desc, currPath)
+				refer.File = GetRelatedPathWithResDir(path)
 			}
 		}
 	}
