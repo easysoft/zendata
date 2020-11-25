@@ -157,9 +157,7 @@ export default {
         console.log('getRefer', json)
         this.refer = json.data
 
-        if (this.refer.type == 'excel') {
-          this.refer.file = this.refer.file.substring(0, this.refer.file.lastIndexOf('.'))
-        }
+        this.removeSheet()
         this.listReferFileForSelection(this.refer.type, true)
       })
     },
@@ -194,11 +192,12 @@ export default {
           return
         }
 
-        if (this.refer.type === 'excel') this.refer.file = this.refer.file + '.' + this.refer.sheet
+        let data = JSON.parse(JSON.stringify(this.refer))
+        if (data.type === 'excel') data.file = data.file + '.' + data.sheet
 
-        this.refer.count = parseInt(this.refer.count)
-        this.refer.step = parseInt(this.refer.step)
-        updateRefer(this.refer, this.type).then(json => {
+        data.count = parseInt(data.count)
+        data.step = parseInt(data.step)
+        updateRefer(data, this.type).then(json => {
           console.log('updateRefer', json)
         })
       })
@@ -225,7 +224,7 @@ export default {
       })
     },
     listReferSheetForSelection(init) {
-      listReferSheetForSelection(this.refer.file).then(json => {
+      listReferSheetForSelection(this.refer.file + '.' + this.refer.sheet ).then(json => {
         console.log('listReferSheetForSelection', json)
         this.sheets = json.data
 
@@ -261,6 +260,11 @@ export default {
             this.refer.colName = ''
           }
         })
+      }
+    },
+    removeSheet() {
+      if (this.refer.type == 'excel') {
+        this.refer.file = this.refer.file.substring(0, this.refer.file.lastIndexOf('.'))
       }
     }
   }
