@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
@@ -12,6 +13,9 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"log"
+	"path"
+	"strconv"
 	"strings"
 )
 
@@ -136,15 +140,15 @@ func (s *InstancesService) Sync(files []model.ResFile) {
 	return
 }
 
-func (s *InstancesService) SyncToDB(file model.ResFile) (err error) {
-	content, _ := ioutil.ReadFile(file.Path)
+func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
+	content, _ := ioutil.ReadFile(fi.Path)
 	yamlContent := stringUtils.ReplaceSpecialChars(content)
 	po := model.ZdInstances{}
 	err = yaml.Unmarshal(yamlContent, &po)
 
-	po.Title = file.Title
-	po.Desc = file.Desc
-	po.Path = file.Path
+	po.Title = fi.Title
+	po.Desc = fi.Desc
+	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
 	if strings.Index(po.Path, constant.ResDirYaml) > -1 {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeInstances)
@@ -158,12 +162,13 @@ func (s *InstancesService) SyncToDB(file model.ResFile) (err error) {
 
 	for i, item := range po.Instances {
 		item.Ord = i + 1
-		s.saveItemToDB(&item, 0, po.ID)
+		s.saveItemToDB(&item, fi.Path,0, po.ID)
 	}
 
 	return
 }
-func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, parentID, instancesID uint) {
+func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath string, parentID, instancesID uint) {
+	// update field
 	if item.Instance != "" { // instance node
 		item.Field = item.Instance
 	}
@@ -177,11 +182,89 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, parentID, i
 		item.Mode = constant.ModeParallel
 	}
 
+	// create refer
+	refer := model.ZdRefer{OwnerType: "instances", OwnerID: item.ID}
+
+	if strings.Index(currPath, "_test-instacnes.yaml") > -1 && item.Field == "field1-1" {
+		log.Println("")
+	}
+
+	if item.Select != "" { // refer to excel
+		refer.Type = constant.ResTypeExcel
+
+		refer.ColName = item.Select
+		refer.Condition = item.Where
+		refer.Rand = item.Rand
+
+		_, sheet := fileUtils.ConvertResExcelPath(item.From)
+		refer.File = item.From
+		refer.Sheet = sheet
+
+	} else if item.Use != "" { // refer to ranges or instances, need to read yaml to get the type
+		rangeSections := gen.ParseRangeProperty(item.Use)
+		if len(rangeSections) > 0 { // only get the first one
+			rangeSection := rangeSections[0]
+			desc, _, count := gen.ParseRangeSection(rangeSection) // medium{2}
+			refer.ColName = desc
+			refer.Count = count
+		}
+
+		path := fileUtils.ConvertReferRangeToPath(item.From, currPath)
+		_, _, refer.Type = service.ReadYamlInfo(path)
+		refer.File = item.From
+
+	} else if item.Config != "" { // refer to config
+		refer.Type = constant.ResTypeConfig
+
+		rangeSections := gen.ParseRangeProperty(item.Config) // dir/config.yaml
+		if len(rangeSections) > 0 {                           // only get the first one
+			rangeSection := rangeSections[0]
+			desc, _, count := gen.ParseRangeSection(rangeSection)
+			refer.Count = count
+
+			path := fileUtils.ConvertReferRangeToPath(desc, currPath)
+			refer.File = GetRelatedPathWithResDir(path)
+		}
+
+	} else if item.Range != "" { // deal with yaml and text refer using range prop
+		item.Range = strings.TrimSpace(item.Range)
+		rangeSections := gen.ParseRangeProperty(item.Range)
+		if len(rangeSections) > 0 { // only get the first one
+			rangeSection := rangeSections[0]
+			desc, step, count := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
+
+			if path.Ext(desc) == ".txt" { // dir/users.txt:2
+				refer.Type = constant.ResTypeText
+
+				if strings.ToLower(step) == "r" {
+					refer.Rand = true
+				} else {
+					refer.Step, _ = strconv.Atoi(step)
+				}
+
+			} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
+				refer.Type = constant.ResTypeYaml
+
+				refer.Count = count
+			}
+			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
+				path := fileUtils.ConvertReferRangeToPath(desc, currPath)
+				refer.File = GetRelatedPathWithResDir(path)
+			}
+		}
+	}
+
+	// save item
 	s.instancesRepo.SaveItem(item)
 
+	// save refer
+	refer.OwnerID = item.ID
+	s.referRepo.Save(&refer)
+
+	// deal with field's children
 	for i, child := range item.Fields {
 		child.Ord = i + 1
-		s.saveItemToDB(child, item.ID, instancesID)
+		s.saveItemToDB(child, currPath, item.ID, instancesID)
 	}
 }
 

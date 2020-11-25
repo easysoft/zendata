@@ -213,22 +213,33 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 
 	return
 }
-func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentID, defID uint) {
-	refer := model.ZdRefer{OwnerType: "def", OwnerID: item.ID}
+func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parentID, defID uint) {
+	// update field
+	field.DefID = defID
+	field.ParentID = parentID
+	if field.Type == "" {
+		field.Type = constant.FieldTypeList
+	}
+	if field.Mode == "" {
+		field.Mode = constant.ModeParallel
+	}
 
-	if item.Select != "" { // refer to excel
+	// create refer
+	refer := model.ZdRefer{OwnerType: "def", OwnerID: field.ID}
+
+	if field.Select != "" { // refer to excel
 		refer.Type = constant.ResTypeExcel
 
-		refer.ColName = item.Select
-		refer.Condition = item.Where
-		refer.Rand = item.Rand
+		refer.ColName = field.Select
+		refer.Condition = field.Where
+		refer.Rand = field.Rand
 
-		_, sheet := fileUtils.ConvertResExcelPath(item.From)
-		refer.File = item.From
+		_, sheet := fileUtils.ConvertResExcelPath(field.From)
+		refer.File = field.From
 		refer.Sheet = sheet
 
-	} else if item.Use != "" { // refer to ranges or instances, need to read yaml to get the type
-		rangeSections := gen.ParseRangeProperty(item.Use)
+	} else if field.Use != "" { // refer to ranges or instances, need to read yaml to get the type
+		rangeSections := gen.ParseRangeProperty(field.Use)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
 			desc, _, count := gen.ParseRangeSection(rangeSection) // medium{2}
@@ -236,15 +247,15 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 			refer.Count = count
 		}
 
-		path := fileUtils.ConvertReferRangeToPath(item.From, currPath)
+		path := fileUtils.ConvertReferRangeToPath(field.From, currPath)
 		_, _, refer.Type = service.ReadYamlInfo(path)
-		refer.File = item.From
+		refer.File = field.From
 
-	} else if item.Config != "" { // refer to config
+	} else if field.Config != "" { // refer to config
 		refer.Type = constant.ResTypeConfig
 
-		rangeSections := gen.ParseRangeProperty(item.Config) // dir/config.yaml
-		if len(rangeSections) > 0 { // only get the first one
+		rangeSections := gen.ParseRangeProperty(field.Config) // dir/config.yaml
+		if len(rangeSections) > 0 {                           // only get the first one
 			rangeSection := rangeSections[0]
 			desc, _, count := gen.ParseRangeSection(rangeSection)
 			refer.Count = count
@@ -253,9 +264,9 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 			refer.File = GetRelatedPathWithResDir(path)
 		}
 
-	} else if item.Range != "" { // deal with yaml and text refer using range prop
-		item.Range = strings.TrimSpace(item.Range)
-		rangeSections := gen.ParseRangeProperty(item.Range)
+	} else if field.Range != "" { // deal with yaml and text refer using range prop
+		field.Range = strings.TrimSpace(field.Range)
+		rangeSections := gen.ParseRangeProperty(field.Range)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
 			desc, step, count := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
@@ -281,20 +292,16 @@ func (s *DefService) saveFieldToDB(item *model.ZdField, currPath string, parentI
 		}
 	}
 
-	item.DefID = defID
-	item.ParentID = parentID
-	if item.Type == "" {
-		item.Type = constant.FieldTypeList
-	}
-	if item.Mode == "" {
-		item.Mode = constant.ModeParallel
-	}
-	s.fieldRepo.Save(item)
-	refer.OwnerID = item.ID
+	// save field
+	s.fieldRepo.Save(field)
+
+	// save refer
+	refer.OwnerID = field.ID
 	s.referRepo.Save(&refer)
 
-	for _, child := range item.Fields {
-		s.saveFieldToDB(child, currPath, item.ID, defID)
+	// deal with field's children
+	for _, child := range field.Fields {
+		s.saveFieldToDB(child, currPath, field.ID, defID)
 	}
 }
 
