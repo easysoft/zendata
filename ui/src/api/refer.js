@@ -39,8 +39,18 @@ export function listReferSheetForSelection (resType) {
     data: data
   })
 }
-export function listReferFieldForSelection (referId, referType) {
-  const data = {'action': 'listReferFieldForSelection', id: referId, mode: referType}
+export function listReferResFieldForSelection (id, referType) {
+  const data = {'action': 'listReferResFieldForSelection', id: id, mode: referType}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
+export function listReferExcelColForSelection (referName) {
+  const data = {'action': 'listReferExcelColForSelection', mode: referName}
 
   return request({
     url: api.admin,

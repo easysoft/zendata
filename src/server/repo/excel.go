@@ -31,8 +31,24 @@ func (r *ExcelRepo) List(keywords string, page int) (models []*model.ZdExcel, to
 	return
 }
 
+func (r *ExcelRepo) ListFiles() (models []*model.ZdExcel) {
+	tbl := (&model.ZdExcel{}).TableName()
+	sql := "select id,title,referName,fileName,folder,path from " +
+		tbl + " where id in (select max(id) from " + tbl + " group by referName)"
+	r.db.Raw(sql).Find(&models)
+	return
+}
+func (r *ExcelRepo) ListSheets(referName string) (models []*model.ZdExcel) {
+	r.db.Select("id,sheet").Where("referName=?", referName).Find(&models)
+	return
+}
+
 func (r *ExcelRepo) Get(id uint) (model model.ZdExcel, err error) {
 	err = r.db.Where("id=?", id).First(&model).Error
+	return
+}
+func (r *ExcelRepo) GetBySheet(referName, sheet string) (model model.ZdExcel, err error) {
+	err = r.db.Where("referName=? AND sheet=?", referName, sheet).First(&model).Error
 	return
 }
 

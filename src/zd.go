@@ -435,8 +435,11 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.resService.ListReferFileForSelection(reqData.Mode)
 	case "listReferSheetForSelection":
 		ret.Data = s.resService.ListReferSheetForSelection(reqData.Mode)
-	case "listReferFieldForSelection":
-		ret.Data = s.resService.ListReferFieldForSelection(reqData.Id, reqData.Mode)
+
+	case "listReferExcelColForSelection":
+		ret.Data = s.resService.ListReferExcelColForSelection(reqData.Mode)
+	case "listReferResFieldForSelection":
+		ret.Data = s.resService.ListReferResFieldForSelection(reqData.Id, reqData.Mode)
 
 	// resource
 	case "listRanges":

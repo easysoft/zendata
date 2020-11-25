@@ -51,9 +51,9 @@ func (s *ResService) ListReferFileForSelection(resType string) (ret interface{})
 	} else if resType == "config" {
 		ret = s.configRepo.ListAll()
 	} else if resType == "yaml" {
-		ret = s.defRepo.ListAll()
-	} else if resType == "excel" {
 		ret = s.excelRepo.ListAll()
+	} else if resType == "excel" {
+		ret = s.excelRepo.ListFiles()
 	} else if resType == "text" {
 		ret = s.textRepo.ListAll()
 	}
@@ -61,12 +61,45 @@ func (s *ResService) ListReferFileForSelection(resType string) (ret interface{})
 	return
 }
 
-func (s *ResService) ListReferSheetForSelection(mode string) (ret []model.ResField) {
+func (s *ResService) ListReferSheetForSelection(referName string) (ret []*model.ZdExcel) {
+	index := strings.LastIndex(referName, ".")
+	file := referName[:index]
+
+	ret = s.excelRepo.ListSheets(file)
+
+	return
+}
+func (s *ResService) ListReferExcelColForSelection(referName string) (ret []model.ResField) {
+	index := strings.LastIndex(referName, ".")
+	file := referName[:index]
+	sheet := referName[index+1:]
+
+	res, _ := s.excelRepo.GetBySheet(file, sheet)
+	excel, _ := excelize.OpenFile(res.Path)
+
+	for _, sheet := range excel.GetSheetList() {
+		if res.Sheet != sheet { continue }
+
+		rows, _ := excel.GetRows(sheet)
+
+		for index, row := range rows {
+			if index > 0 { break }
+			for i, col := range row {
+				val := strings.TrimSpace(col)
+				if val == "" {
+					break
+				}
+
+				field := model.ResField{Name: val, Index: i + 1}
+				ret = append(ret, field)
+			}
+		}
+	}
 
 	return
 }
 
-func (s *ResService) ListReferFieldForSelection(resId int, resType string) (ret []model.ResField) {
+func (s *ResService) ListReferResFieldForSelection(resId int, resType string) (ret []model.ResField) {
 	if resType == "instances" {
 		items, _ := s.instancesRepo.GetItems(uint(resId))
 		for i, item := range items {
@@ -80,28 +113,6 @@ func (s *ResService) ListReferFieldForSelection(resId int, resType string) (ret 
 			if item.ParentID != 0 { return } // ignore sub nodes
 			field := model.ResField{Name: item.Field, Index: i+1}
 			ret = append(ret, field)
-		}
-	} else if resType == "excel" {
-		res, _ := s.excelRepo.Get(uint(resId))
-		excel, _ := excelize.OpenFile(res.Path)
-
-		for _, sheet := range excel.GetSheetList() {
-			if res.Sheet != sheet { continue }
-
-			rows, _ := excel.GetRows(sheet)
-
-			for index, row := range rows {
-				if index > 0 { break }
-				for i, col := range row {
-					val := strings.TrimSpace(col)
-					if val == "" {
-						break
-					}
-
-					field := model.ResField{Name: val, Index: i + 1}
-					ret = append(ret, field)
-				}
-			}
 		}
 	}
 

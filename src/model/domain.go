@@ -167,6 +167,7 @@ type ResFile struct {
 	ReferName string `json:"referName"`
 }
 type ResField struct {
+	ID uint `json:"id"`
 	Index int `json:"index"`
 	Name    string `json:"name"`
 }

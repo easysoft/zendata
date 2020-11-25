@@ -19,7 +19,8 @@
             <a-select v-model="refer.file" @change="onReferFileChanged">
               <a-select-option value="">选择</a-select-option>
               <a-select-option v-for="(f, i) in files" :value="f.referName" :key="i">
-                {{ f.title }}
+                <span v-if="refer.type != 'excel'">{{ f.title }}</span>
+                <span v-if="refer.type == 'excel'">{{ f.referName }}</span>
               </a-select-option>
             </a-select>
           </a-form-model-item>
@@ -29,8 +30,8 @@
         <a-form-model-item label="Excel表格" prop="sheet" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-select v-model="refer.sheet" @change="onReferSheetChanged">
             <a-select-option value="">选择</a-select-option>
-            <a-select-option v-for="(f, i) in sheets" :value="f.id" :key="i">
-              {{ f.title }}
+            <a-select-option v-for="(f, i) in sheets" :value="f.sheet" :key="i">
+              {{ f.sheet }}
             </a-select-option>
           </a-select>
         </a-form-model-item>
@@ -81,7 +82,8 @@
 </template>
 
 <script>
-import {listReferFileForSelection, listReferSheetForSelection, listReferFieldForSelection, getRefer, updateRefer,
+import {listReferFileForSelection, listReferSheetForSelection,
+  listReferResFieldForSelection, listReferExcelColForSelection, getRefer, updateRefer,
 } from "../api/refer";
 
 export default {
@@ -154,6 +156,10 @@ export default {
       getRefer(this.model.id, this.type).then(json => {
         console.log('getRefer', json)
         this.refer = json.data
+
+        if (this.refer.type == 'excel') {
+          this.refer.file = this.refer.file.substring(0, this.refer.file.lastIndexOf('.'))
+        }
         this.listReferFileForSelection(this.refer.type, true)
       })
     },
@@ -166,16 +172,16 @@ export default {
       console.log("onReferFileChanged")
 
       if (this.refer.type == 'excel') {
-        this.listReferSheetForSelection()
+        this.listReferSheetForSelection(false)
       } else {
-        this.listReferFieldForSelection()
+        this.listReferResFieldForSelection(false)
       }
     },
     onReferSheetChanged() {
       console.log("onReferSheetChanged")
 
       if (this.refer.type == 'excel') {
-        this.listReferFieldForSelection()
+        this.listReferResFieldForSelection(false)
       }
     },
 
@@ -204,35 +210,56 @@ export default {
       listReferFileForSelection(resType).then(json => {
         console.log('listReferFileForSelection', json)
         this.files = json.data
-      })
 
-      if (!init) {
-        this.refer.file = ''
-      }
+        if (init) {
+          if (this.refer.type === 'excel') {
+            this.listReferSheetForSelection(init)
+          } else {
+            this.listReferResFieldForSelection(init)
+          }
+        } else {
+          this.refer.file = ''
+        }
+      })
     },
-    listReferSheetForSelection(resType, init) {
-      listReferSheetForSelection(resType).then(json => {
+    listReferSheetForSelection(init) {
+      listReferSheetForSelection(this.refer.file).then(json => {
         console.log('listReferSheetForSelection', json)
-        this.files = json.data
-      })
+        this.sheets = json.data
 
-      if (!init) {
-        this.refer.sheet = ''
-      }
-    },
-    listReferFieldForSelection() {
-      let referTo = ''
-      if (this.refer.type != 'excel') {
-        referTo = this.refer.file
-      } else {
-        referTo = this.refer.sheet
-      }
-      listReferFieldForSelection(referTo, this.refer.type).then(json => {
-        console.log('listReferFieldForSelection', json)
-        this.fields = json.data
+        if (init) {
+          this.listReferResFieldForSelection(true)
+        } else {
+          this.refer.sheet = ''
+        }
       })
-      this.refer.colName = ''
-      this.refer.colIndex = ''
+    },
+    listReferResFieldForSelection(init) {
+      let id = 0
+      if (this.refer.type === 'excel') {
+        listReferExcelColForSelection(this.refer.file + '.' + this.refer.sheet).then(json => {
+          console.log('listReferExcelColForSelection', json)
+          this.fields = json.data
+
+          if (!init) {
+            this.refer.colName = ''
+          }
+        })
+
+      } else {
+        this.files.forEach((fi) => {
+          if (fi.referName === this.refer.file) id = fi.id
+        })
+
+        listReferResFieldForSelection(id, this.refer.type).then(json => {
+          console.log('listReferResFieldForSelection', json)
+          this.fields = json.data
+
+          if (!init) {
+            this.refer.colName = ''
+          }
+        })
+      }
     }
   }
 }

@@ -110,7 +110,7 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, constant.ResDirYaml) > -1 {
+	if strings.Index(po.Path, vari.WorkDir + constant.ResDirYaml) > -1 {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeRanges)
 	} else {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeRanges)
