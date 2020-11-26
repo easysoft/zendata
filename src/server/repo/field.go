@@ -83,6 +83,11 @@ func (r *FieldRepo) Save(field *model.ZdField) (err error) {
 	err = r.db.Save(field).Error
 	return
 }
+func (r *FieldRepo) UpdateRange(rang string, id uint) (err error) {
+	err = r.db.Model(&model.ZdField{}).Where("id=?", id).Update("range", rang).Error
+
+	return
+}
 
 func (r *FieldRepo) makeTree(Data []*model.ZdField, node *model.ZdField) { //参数为父节点，添加父节点的子节点指针切片
 	children, _ := r.haveChild(Data, node) //判断节点是否有子节点并返回

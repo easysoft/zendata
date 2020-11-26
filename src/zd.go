@@ -305,16 +305,17 @@ func Init() (err error) {
 
 	defService := serverService.NewDefService(defRepo, fieldRepo, referRepo)
 	fieldService := serverService.NewFieldService(defRepo, fieldRepo, referRepo, defService)
-	sectionService := serverService.NewSectionService(fieldRepo, sectionRepo)
+
+	referService := serverService.NewReferService(fieldRepo, referRepo, defService)
 	rangesService := serverService.NewRangesService(rangesRepo)
 	instancesService := serverService.NewInstancesService(instancesRepo, referRepo)
 	textService := serverService.NewTextService(textRepo)
 	excelService := serverService.NewExcelService(excelRepo)
 	configService := serverService.NewConfigService(configRepo)
+	sectionService := serverService.NewSectionService(fieldRepo, instancesRepo, sectionRepo, defService, instancesService)
 	resService := serverService.NewResService(rangesRepo, instancesRepo,
 		configRepo, excelRepo, textRepo, defRepo)
 
-	referService := serverService.NewReferService(fieldRepo, referRepo, defService)
 	syncService := serverService.NewSyncService(defService,
 		fieldService, rangesService, instancesService, configService, excelService, textService,
 		referService, resService)

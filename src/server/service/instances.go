@@ -84,6 +84,10 @@ func (s *InstancesService) Remove(id int) (err error) {
 	return
 }
 
+func (s *InstancesService) updateYamlByItem(itemId uint) (err error) {
+	item, _ := s.instancesRepo.GetItem(itemId)
+	return s.updateYaml(item.InstancesID)
+}
 func (s *InstancesService) updateYaml(id uint) (err error) {
 	var po model.ZdInstances
 	po, _ = s.instancesRepo.Get(id)
@@ -94,6 +98,7 @@ func (s *InstancesService) updateYaml(id uint) (err error) {
 
 	return
 }
+
 func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
 	//items, err := s.instancesRepo.GetItems(instances.ID)
 	//if err != nil {
@@ -267,6 +272,8 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 		s.saveItemToDB(child, currPath, item.ID, instancesID)
 	}
 }
+
+
 
 func NewInstancesService(instancesRepo *serverRepo.InstancesRepo, referRepo *serverRepo.ReferRepo) *InstancesService {
 	return &InstancesService{instancesRepo: instancesRepo, referRepo: referRepo}

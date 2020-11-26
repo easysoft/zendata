@@ -71,6 +71,17 @@ func (r *InstancesRepo) SaveItem(item *model.ZdInstancesItem) (err error) {
 	err = r.db.Save(item).Error
 	return
 }
+func (r *InstancesRepo) UpdateItemRange(rang string, id uint) (err error) {
+	err = r.db.Model(&model.ZdInstancesItem{}).Where("id=?", id).Update("range", rang).Error
+
+	return
+}
+func (r *InstancesRepo) SetIsRange(id uint, b bool) (err error) {
+	err = r.db.Model(&model.ZdInstancesItem{}).
+		Where("id = ?", id).Update("isRange", b).Error
+
+	return
+}
 func (r *InstancesRepo) RemoveItem(id uint) (err error) {
 	item := model.ZdInstancesItem{}
 	item.ID = id

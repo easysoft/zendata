@@ -93,8 +93,6 @@ func (s *DefService) Remove(id int) (err error) {
 func (s *DefService) updateYamlByField(fieldId uint) (err error) {
 	field, _ := s.fieldRepo.Get(fieldId)
 	return s.updateYaml(field.DefID)
-
-	return
 }
 
 func (s *DefService) updateYaml(id uint) (err error) {
