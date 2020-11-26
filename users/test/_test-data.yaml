@@ -41,3 +41,14 @@ fields:
     - field: field_grandson
       range: 10-20
       prefix: int_
+
+- field: field_from_muti
+  prefix: "["
+  postfix: "]\t"
+  froms:
+    - field: from1
+      from: zentao.number.v1.yaml
+      use: small{2}
+      postfix: "-"
+    - from: zentao.number.v1.yaml
+      use: large{3}

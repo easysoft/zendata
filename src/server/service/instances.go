@@ -173,6 +173,14 @@ func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
 	return
 }
 func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath string, parentID, instancesID uint) {
+	if item.Froms != nil && len(item.Froms) > 0 {
+		for _, from := range item.Froms {
+			s.saveItemToDB(from, currPath, parentID, instancesID)
+		}
+
+		return
+	}
+
 	// update field
 	if item.Instance != "" { // instance node
 		item.Field = item.Instance
