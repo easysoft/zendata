@@ -26,7 +26,7 @@ func (s *SectionService) Create(ownerId, sectionsId uint, ownerType string) (err
 		Start: "0", End: "9"}
 	err = s.sectionRepo.Create(&section)
 
-	if ownerType == "field" {
+	if ownerType == "def" {
 		s.fieldRepo.SetIsRange(section.OwnerID, true)
 	} else if ownerType == "instances" {
 		s.instancesRepo.SetIsRange(section.OwnerID, true)
@@ -42,7 +42,7 @@ func (s *SectionService) Update(section *model.ZdSection) (err error) {
 	ownerType := section.OwnerType
 
 	s.updateFieldRangeProp(ownerId, ownerType)
-	if ownerType == "field" {
+	if ownerType == "def" {
 		s.fieldRepo.SetIsRange(section.OwnerID, true)
 		s.defService.updateYamlByField(section.OwnerID)
 	} else if ownerType == "instances" {
@@ -61,7 +61,7 @@ func (s *SectionService) Remove(sectionId int, ownerType string) (ownerId uint, 
 
 
 	s.updateFieldRangeProp(ownerId, ownerType)
-	if ownerType == "field" {
+	if ownerType == "def" {
 		s.fieldRepo.SetIsRange(section.OwnerID, true)
 		s.defService.updateYamlByField(section.OwnerID)
 	} else if ownerType == "instances" {
@@ -83,7 +83,7 @@ func (s *SectionService) updateFieldRangeProp(ownerId uint, ownerType string) (e
 		rangeStr += sect.Value
 	}
 
-	if ownerType == "field" {
+	if ownerType == "def" {
 		s.fieldRepo.UpdateRange(rangeStr, ownerId)
 	} else if ownerType == "instances" {
 		s.instancesRepo.UpdateItemRange(rangeStr, ownerId)

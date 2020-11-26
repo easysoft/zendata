@@ -88,7 +88,7 @@ type ZdSection struct {
 	// for range
 	Start string `gorm:"column:start" json:"start"`
 	End string `gorm:"column:end" json:"end"`
-	Step string `gorm:"column:step;default:1" json:"step"`
+	Step int `gorm:"column:step;default:1" json:"step"`
 	Repeat string `gorm:"column:repeat;default:1" json:"repeat"`
 	Rand bool `gorm:"column:rand;default:false" json:"rand"`
 

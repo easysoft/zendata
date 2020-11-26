@@ -251,6 +251,7 @@ export default {
           this.section.value = '`' + this.section.text + '`'
         }
 
+        this.section.step = parseInt(this.section.step)
         updateSection(this.section, this.type).then(res => {
           console.log('updateSection', res)
           this.sections = res.data
