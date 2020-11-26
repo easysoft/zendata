@@ -1,0 +1,14 @@
+title: 多Froms测试
+desc:
+fields:
+  - field: field_from_muti
+    prefix: "["
+    postfix: "]\t"
+    froms:
+      - field: from1
+        from: zentao.number.v1.yaml
+        use: small{2}
+        postfix: "-"
+      - from: zentao.number.v1.yaml
+        use: large{3}
+

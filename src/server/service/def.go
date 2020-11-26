@@ -212,6 +212,14 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	return
 }
 func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parentID, defID uint) {
+	if field.Froms != nil && len(field.Froms) > 0 {
+		for _, from := range field.Froms {
+			s.saveFieldToDB(from, currPath, parentID, defID)
+		}
+
+		return
+	}
+
 	// update field
 	field.DefID = defID
 	field.ParentID = parentID
