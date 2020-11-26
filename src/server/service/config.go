@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -131,6 +132,7 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	content, _ := ioutil.ReadFile(fi.Path)
 	yamlContent := stringUtils.ReplaceSpecialChars(content)
+
 	po := model.ZdConfig{}
 	err = yaml.Unmarshal(yamlContent, &po)
 
@@ -145,6 +147,12 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
+
+	reg := regexp.MustCompile(`\t`)
+	if reg.MatchString(po.Prefix) {
+		po.Prefix = strings.ReplaceAll(po.Prefix, "\t", `\t`)
+		po.Prefix = `"` + po.Prefix + `"`
+	}
 
 	s.configRepo.Create(&po)
 

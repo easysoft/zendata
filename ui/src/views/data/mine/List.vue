@@ -125,7 +125,8 @@ export default {
     loadData() {
       listDef(this.keywords, this.page).then(json => {
         console.log('listDefs', json)
-        this.defs = json.data
+        const that = this
+        that.defs = json.data
         this.total = json.total
       })
     },

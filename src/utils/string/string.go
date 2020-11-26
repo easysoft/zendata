@@ -13,6 +13,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v2"
+	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -276,5 +277,10 @@ func ConvertYamlStringToMapFormat(bytes []byte) (ret string) {
 	bytesReturn, _ := yaml.Marshal(&m)
 	ret = string(bytesReturn)
 
+	// replace '"test"' to "test"
+	reg := regexp.MustCompile(`([:\s]+?)'"(.*)"'`)
+	//if reg.MatchString(ret) {
+		ret = reg.ReplaceAllString(ret, `${1}"${2}"`)
+	//}
 	return
 }

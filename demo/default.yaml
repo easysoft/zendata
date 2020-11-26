@@ -81,7 +81,7 @@ fields:
   - field: field_loop                   # 自循环的字段。
     range: a-z                          # a|b|c ...
     loop: 3                             # 循环三次
-    loopfix: "|"                        # 每次循环的连接符。
+    loopfix: _                          # 每次循环的连接符。
     postfix: "\t"
 
   - field: field_repeat                 # 通过{}定义重复的元素。
@@ -89,12 +89,12 @@ fields:
     postfix: "\t"
 
   - field: field_format                 # 通过格式化字符串输出。
-    range: 1-10                         # passwd01,passwd02,passwd03 ... passwd10。
+    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
     format: "passwd%02d"                # 用%02d补零，使密码整体保持8位。
     postfix: "\t"
 
   - field: field_length                 # 指定宽度。
-    range: 1-99                         # 001\t;002\t;003\t...;099\t
+    range: 1-99                         # 01\t,02\t,03\t..., 99\t
     length: 3                           # 包含前后缀的宽度。
     leftpad: 0                          # 宽度不够时，补充的字符。
     postfix: "\t"

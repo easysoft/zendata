@@ -1,34 +1,35 @@
 title: 数据测试
 desc: 数据测试
 fields:
+- field: field_text
+  range: test/dir/users.txt:7
+  postfix: "\t"
+- field: field_yaml
+  range: test/dir/content.yaml{7}
+  postfix: "\t"
+- field: field_use_config
+  prefix: "["
+  postfix: "]\t"
+  config: test/_test-config.yaml
+- field: field_use_ranges
+  postfix: "\t"
+  from: zentao.number.v1.yaml
+  use: medium{33}
+- field: field_use_instance
+  postfix: "\t"
+  from: ip.v1.yaml
+  use: privateC{33}
+- field: field_use_excel
+  postfix: "\t"
+  rand: true
+  from: address.cn.v1.china
+  select: city
+  where: state like '%山东%'
 - field: field_with_children
   fields:
-  - field: field_text
-    range: test/dir/users.txt:7
-    postfix: "\t"
-  - field: field_yaml
-    range: test/dir/content.yaml{7}
-    postfix: "\t"
-  - field: field_use_config
-    postfix: "\t"
-    config: test/dir/config.yaml
-  - field: field_use_ranges
-    postfix: "\t"
-    from: zentao.number.v1.yaml
-    use: medium{33}
-  - field: field_use_instance
-    postfix: "\t"
-    from: ip.v1.yaml
-    use: privateC{33}
-  - field: field_use_excel
-    postfix: "\t"
-    rand: true
-    from: address.cn.v1.china
-    select: city
-    where: state like '%山东%'
   - field: child1
     range: 0-z:5{3},0-9:11
-    prefix: "part1_\t"
+    prefix: "\t"
     postfix: '|'
     loop: "3"
   - field: child2
@@ -41,14 +42,9 @@ fields:
     - field: field_grandson
       range: 10-20
       prefix: int_
-
-- field: field_from_muti
-  prefix: "["
-  postfix: "]\t"
-  froms:
-    - field: from1
-      from: zentao.number.v1.yaml
-      use: small{2}
-      postfix: "-"
-    - from: zentao.number.v1.yaml
-      use: large{3}
+- field: from1
+  postfix: '-'
+  from: zentao.number.v1.yaml
+  use: small{2}
+- from: zentao.number.v1.yaml
+  use: large{3}
