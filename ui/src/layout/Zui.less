@@ -1,0 +1,49 @@
+.zui-input-group-addon {
+  display: table-cell;
+  height: 30px;
+  line-height: 30px;
+  color: #3c495c;
+  text-align: center;
+  background-color: #eee;
+  border-top: 1px solid #dcdcdc;
+  border-bottom: 1px solid #dcdcdc;
+
+  span {
+    line-height: 32px;
+  }
+}
+
+.form-model-item-line {
+  display: flex;
+
+  .ant-form-item {
+    display: inline-block;
+
+    .ant-form-item-label {
+      display: inline-block;
+    }
+    .ant-form-item-control-wrapper {
+      display: inline-block;
+    }
+
+    &.c2-1 {
+      width: 50%;
+      .ant-form-item-label {
+        width: 32%;
+      }
+      .ant-form-item-control-wrapper {
+        width: 68%;
+      }
+    }
+    &.c2-2 {
+      width: 50%;
+
+      .ant-form-item-label {
+        width: 0;
+      }
+      .ant-form-item-control-wrapper {
+        width: 65%;
+      }
+    }
+  }
+}

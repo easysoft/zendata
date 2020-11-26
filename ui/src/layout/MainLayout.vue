@@ -38,6 +38,7 @@ export default {
 
 <style lang="less">
   @import './MainLayout.less';
+  @import './Zui.less';
 </style>
 <style lang="less" scoped>
 .main {

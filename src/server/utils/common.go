@@ -117,7 +117,7 @@ func GetDirs(dir string, dirs *[]model.Dir) {
 	}
 
 	folder := fileUtils.AddSepIfNeeded(dir)
-	*dirs = append(*dirs, model.Dir{Name: dir})
+	*dirs = append(*dirs, model.Dir{Name: folder})
 
 	files, _ := ioutil.ReadDir(folder)
 	for _, fi := range files {

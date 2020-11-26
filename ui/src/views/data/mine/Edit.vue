@@ -17,16 +17,17 @@
         </a-form-model-item>
 
         <a-form-model-item label="目录" prop="folder">
-          <a-input v-model="model.folder">
-            <a-select
-                slot="addonAfter"
-                v-model="model.folder"
-                style="width: 400px"
-                placeholder="请选择">
-              <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
-                {{item.name}}</a-select-option>
-            </a-select>
-          </a-input>
+          <a-select
+              v-model="model.folder"
+              style="width: 60%"
+              placeholder="请选择">
+            <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
+              {{item.name}}</a-select-option>
+          </a-select>
+          <div class="zui-input-group-addon" style="width: 50px;">
+            <span>子目录</span>
+          </div>
+          <a-input v-model="model.subFolder" style="width: calc(40% - 50px);"></a-input>
         </a-form-model-item>
 
         <a-form-model-item label="文件名" prop="fileName">
@@ -108,6 +109,7 @@ export default {
           return
         }
 
+        if (this.model.subFolder && this.model.subFolder != '') this.model.folder += this.model.subFolder
         saveDef(this.model).then(json => {
           console.log('saveDef', json)
           this.back()

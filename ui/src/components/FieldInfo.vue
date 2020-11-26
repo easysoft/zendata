@@ -8,16 +8,21 @@
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="前缀" prop="prefix" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.prefix" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="colsHalf">
-          <a-form-model-item label="后缀" prop="postfix" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.postfix" />
-          </a-form-model-item>
-        </a-col>
+        <a-form-model-item label="定义" prop="range" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-input v-model="model.range" placeholder="此处自由编辑，或使用更方便的设计页面。" />
+        </a-form-model-item>
+      </a-row>
+
+      <a-row class="form-model-item-line">
+        <a-form-model-item label="前缀" prop="prefix" class="c2-1">
+          <a-input v-model="model.prefix" />
+        </a-form-model-item>
+        <div class="zui-input-group-addon" style="width: 50px;">
+          <span>后缀</span>
+        </div>
+        <a-form-model-item label="" prop="postfix" class="c2-2" style="width: calc(50% - 50px);">
+          <a-input v-model="model.postfix" />
+        </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
@@ -119,11 +124,15 @@
 <script>
 import {saveDefField, saveInstancesItem} from "../api/manage";
 import {checkLoop} from "../api/utils";
+import {labelColLarge, wrapperColLarge} from "../utils/const";
 
 export default {
   name: 'FieldInfoComponent',
   data() {
     return {
+      labelCol: labelColLarge,
+      wrapperCol: wrapperColLarge,
+
       colsFull: 24,
       colsHalf: 12,
       labelColFull: { lg: { span: 4 }, sm: { span: 4 } },

@@ -12,8 +12,8 @@ fields:
     postfix: "]\t"
 
   - field: field_loop_range            # 循环支持区间。
-    range: a-z                         # a,b|b,c|c|c,d...
-    loop: 1-3
+    range: a-z                         # a|b,c|d|e,f|g,h|i|j...
+    loop: 2-3
     loopfix: "|"
     prefix: "["
     postfix: "]\t"
