@@ -38,8 +38,7 @@
             <div class="content-width">
               <div class="title">引用文件内容</div>
               <div class="content">
-                <div>from: {{ record.referName }}</div>
-                <div>use: field_name</div>
+                <div>range: {{ record.referName }}</div>
               </div>
             </div>
           </template>
