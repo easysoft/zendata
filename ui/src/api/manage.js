@@ -2,8 +2,6 @@ import request from '../utils/request'
 
 const api = {
   admin: '/admin',
-  res: '/res',
-  def: '/defs',
 }
 
 export default api

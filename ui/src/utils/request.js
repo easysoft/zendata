@@ -14,7 +14,7 @@ function getUrl() {
     console.log('dev env, url is ' + url)
   } else {
     const location = unescape(window.location.href);
-    url = location.split('#')[0].split('index.html')[0] + 'admin';
+    url = location.split('#')[0].split('index.html')[0];
     console.log('prod env, url is ' + url)
   }
 

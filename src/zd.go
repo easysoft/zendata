@@ -343,7 +343,7 @@ func (s *Server) Handler() http.Handler {
 
 	mux.Handle("/",
 		http.FileServer(&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir,
-			AssetInfo: res.AssetInfo, Prefix: "ui/dist", Fallback: "index.html"}))
+			AssetInfo: res.AssetInfo, Prefix: "ui/dist"}))
 	mux.HandleFunc("/data", DataHandler)
 	mux.HandleFunc("/admin", s.admin)
 
