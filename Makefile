@@ -21,7 +21,7 @@ mac: prepare_res compile_mac copy_files package
 prepare_res:
 	@echo 'start prepare res'
 	@cp res/zh/sample.yaml demo/default.yaml
-	@go-bindata -o=res/res.go -pkg=res res/ res/en res/zh
+	@go-bindata -o=res/res.go -pkg=res res/... ui/dist/...
 	@rm -rf ${BIN_DIR}
 
 compile_all: compile_win64 compile_win32 compile_linux compile_mac

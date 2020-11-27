@@ -10,8 +10,10 @@ require (
 	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/akavel/rsrc v0.9.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.9.0 // indirect
+	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
 	github.com/emirpasic/gods v1.12.0
 	github.com/fatih/color v1.10.0
+	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect

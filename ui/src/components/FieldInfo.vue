@@ -13,16 +13,17 @@
         </a-form-model-item>
       </a-row>
 
-      <a-row class="form-model-item-line">
-        <a-form-model-item label="前缀" prop="prefix" class="c2-1">
-          <a-input v-model="model.prefix" />
-        </a-form-model-item>
-        <div class="zui-input-group-addon" style="width: 50px;">
-          <span>后缀</span>
-        </div>
-        <a-form-model-item label="" prop="postfix" class="c2-2" style="width: calc(50% - 50px);">
-          <a-input v-model="model.postfix" />
-        </a-form-model-item>
+      <a-row gutter="colsFull">
+        <a-col :span="colsHalf">
+          <a-form-model-item label="前缀" prop="prefix" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+            <a-input v-model="model.prefix" />
+          </a-form-model-item>
+        </a-col>
+        <a-col :span="colsHalf">
+          <a-form-model-item label="后缀" prop="postfix" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+            <a-input v-model="model.postfix" />
+          </a-form-model-item>
+        </a-col>
       </a-row>
 
       <a-row :gutter="colsFull">
