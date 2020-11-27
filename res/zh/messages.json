@@ -110,7 +110,7 @@
     },
     {
       "id": "start_server",
-      "translation": "正在启动ZenData HTTP服务，按CTRL+C键退出。\n数据管理请访问http://%s:%s。\n数据生成请调用http://%s:%s/data接口，如curl http://%s:%s/?config=demo/default.yaml&lines=10。"
+      "translation": "正在启动ZenData HTTP服务，按CTRL+C键退出。\n数据管理请访问http://%s:%s。\n数据生成请调用http://%s:%s/data接口，如curl http://%s:%s/data?config=demo/default.yaml&lines=10。"
     },
     {
       "id": "start_server_fail",
