@@ -341,21 +341,13 @@ func (s *Server) Run() {
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("/client",
+	mux.Handle("/",
 		http.FileServer(&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir,
 			AssetInfo: res.AssetInfo, Prefix: "ui/dist", Fallback: "index.html"}))
-	mux.HandleFunc("/", DataHandler)
+	mux.HandleFunc("/data", DataHandler)
 	mux.HandleFunc("/admin", s.admin)
 
-	mux.HandleFunc("/dist", s.dist)
-
 	return mux
-}
-func (s *Server) dist(w http.ResponseWriter, r*http.Request) {
-	p := path.Dir("./ui/dist/index.html")
-	// set header
-	w.Header().Set("Content-type", "text/html")
-	http.ServeFile(w, r, p)
 }
 
 func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
