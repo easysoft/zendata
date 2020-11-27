@@ -373,10 +373,8 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "listDef":
 		ret.Data, ret.Total = s.defService.List(reqData.Keywords, reqData.Page)
 	case "getDef":
-		var def model.ZdDef
-		def, ret.Res = s.defService.Get(reqData.Id)
-
-		ret.Data = def
+		ret.Data, ret.Res = s.defService.Get(reqData.Id)
+		ret.WorkDir = vari.WorkDir
 	case "saveDef":
 		def := serverUtils.ConvertDef(reqData.Data)
 		s.defService.Save(&def)
@@ -452,6 +450,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.rangesService.List(reqData.Keywords, reqData.Page)
 	case "getRanges":
 		ret.Data, ret.Res = s.rangesService.Get(reqData.Id)
+		ret.WorkDir = vari.WorkDir
 	case "saveRanges":
 		ranges := serverUtils.ConvertRanges(reqData.Data)
 		ret.Data = s.rangesService.Save(&ranges)
@@ -480,6 +479,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.instancesService.List(reqData.Keywords, reqData.Page)
 	case "getInstances":
 		ret.Data, ret.Res = s.instancesService.Get(reqData.Id)
+		ret.WorkDir = vari.WorkDir
 	case "saveInstances":
 		ranges := serverUtils.ConvertInstances(reqData.Data)
 		ret.Data = s.instancesService.Save(&ranges)
@@ -507,6 +507,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.excelService.List(reqData.Keywords, reqData.Page)
 	case "getExcel":
 		ret.Data, ret.Res = s.excelService.Get(reqData.Id)
+		ret.WorkDir = vari.WorkDir
 	case "saveExcel":
 		ranges := serverUtils.ConvertExcel(reqData.Data)
 		ret.Data = s.excelService.Save(&ranges)
@@ -517,6 +518,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.textService.List(reqData.Keywords, reqData.Page)
 	case "getText":
 		ret.Data, ret.Res = s.textService.Get(reqData.Id)
+		ret.WorkDir = vari.WorkDir
 	case "saveText":
 		ranges := serverUtils.ConvertText(reqData.Data)
 		ret.Data = s.textService.Save(&ranges)
@@ -527,6 +529,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.configService.List(reqData.Keywords, reqData.Page)
 	case "getConfig":
 		ret.Data, ret.Res = s.configService.Get(reqData.Id)
+		ret.WorkDir = vari.WorkDir
 	case "saveConfig":
 		ranges := serverUtils.ConvertConfig(reqData.Data)
 		ret.Data = s.configService.Save(&ranges)

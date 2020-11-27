@@ -16,21 +16,20 @@
           <a-input v-model="model.title" />
         </a-form-model-item>
 
-        <a-form-model-item label="目录" class="zui-input-group">
-          <a-form-model-item prop="folder" :style="{ display: 'inline-block', width: 'calc(50% - 30px)' }">
-            <a-select
-                v-model="model.folder"
-                placeholder="请选择">
+        <a-form-model-item label="目录" class="zui-input-group zui-input-with-tips">
+          <a-form-model-item prop="folder" :style="{ display: 'inline-block', width: 'calc(70% - 30px)' }">
+            <a-select v-model="model.folder" placeholder="请选择">
               <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
                 {{item.name}}</a-select-option>
             </a-select>
+            <span class="zui-input-tips">工作目录：{{workDir}}</span>
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '60px' }">
             <span>子目录</span>
           </span>
 
-          <a-form-model-item :style="{ display: 'inline-block', width: 'calc(50% - 30px)' }">
+          <a-form-model-item :style="{ display: 'inline-block', width: 'calc(30% - 30px)' }">
             <a-input v-model="model.subFolder"></a-input>
           </a-form-model-item>
         </a-form-model-item>
@@ -89,6 +88,7 @@ export default {
       id: 0,
       model: { folder: 'users/', type: 'text' },
       dirs: [],
+      workDir: '',
     };
   },
   computed: {
@@ -103,6 +103,7 @@ export default {
       console.log('getDef', json)
       this.model = json.data
       this.dirs = json.res
+      this.workDir = json.workDir
     })
   },
   mounted () {

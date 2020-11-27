@@ -24,6 +24,7 @@ type ResData struct {
 	Data  interface{} `json:"data"`
 	Model interface{} `json:"model"`
 	Res   interface{} `json:"res"`
+	WorkDir   string `json:"workDir"`
 
 	Total int `json:"total"`
 }

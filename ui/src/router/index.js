@@ -82,12 +82,11 @@ const routes = [
                                 children: [
                                     {
                                         path: 'list',
-                                        alias: "index",
                                         name: 'excel-list',
                                         component: () => import('../views/data/buildin/excel/List')
                                     },
                                     {
-                                        path: 'excel/:id',
+                                        path: 'edit/:id',
                                         name: 'excel-edit',
                                         component: () => import('../views/data/buildin/excel/Edit')
                                     },

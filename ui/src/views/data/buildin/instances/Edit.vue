@@ -19,17 +19,23 @@
         </a-row>
 
         <a-row :gutter="colsFull">
-          <a-form-model-item label="目录" prop="folder" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.folder">
-              <a-select
-                  slot="addonAfter"
-                  v-model="model.folder"
-                  style="width: 400px"
-                  placeholder="请选择">
+          <a-form-model-item label="目录" prop="folder" class="zui-input-group zui-input-with-tips"
+                             :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-form-model-item prop="folder" :style="{ display: 'inline-block', width: 'calc(70% - 30px)' }">
+              <a-select v-model="model.folder" placeholder="请选择">
                 <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
                   {{item.name}}</a-select-option>
               </a-select>
-            </a-input>
+              <span class="zui-input-tips">工作目录：{{workDir}}</span>
+            </a-form-model-item>
+
+            <span class="zui-input-group-addon" :style="{ width: '60px' }">
+              <span>子目录</span>
+            </span>
+
+            <a-form-model-item :style="{ display: 'inline-block', width: 'calc(30% - 30px)' }">
+              <a-input v-model="model.subFolder"></a-input>
+            </a-form-model-item>
           </a-form-model-item>
         </a-row>
 
@@ -119,6 +125,7 @@ export default {
       id: 0,
       model: {folder: 'yaml/'},
       dirs: [],
+      workDir: '',
     };
   },
 
@@ -140,6 +147,7 @@ export default {
         console.log('getInstances', json)
         this.model = json.data
         this.dirs = json.res
+        this.workDir = json.workDir
       })
     },
     save() {
