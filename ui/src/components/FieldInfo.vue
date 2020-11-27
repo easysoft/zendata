@@ -8,67 +8,79 @@
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-form-model-item label="定义" prop="range" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.range" placeholder="此处自由编辑，或使用更方便的设计页面。" />
+        <a-form-model-item label="前缀" :labelCol="labelColFull" class="zui-input-group">
+          <a-form-model-item prop="prefix" :style="{ display: 'inline-block', width: 'calc(40% - 35px)' }">
+            <a-input v-model="model.prefix" />
+          </a-form-model-item>
+
+          <span class="zui-input-group-addon" :style="{ width: '60px' }">
+            <span>后缀</span>
+          </span>
+
+          <a-form-model-item prop="postfix" :style="{ display: 'inline-block', width: 'calc(27% - 30px)' }">
+            <a-input v-model="model.postfix" />
+          </a-form-model-item>
         </a-form-model-item>
       </a-row>
 
-      <a-row gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="前缀" prop="prefix" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.prefix" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="colsHalf">
-          <a-form-model-item label="后缀" prop="postfix" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.postfix" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-
       <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="循环" prop="loop" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+        <a-form-model-item label="循环" :labelCol="labelColFull" class="zui-input-group">
+          <a-form-model-item prop="loop" :style="{ display: 'inline-block', width: 'calc(40% - 35px)' }">
             <a-input v-model="model.loop" placeholder="数字3，或区间1-3" />
           </a-form-model-item>
-        </a-col>
-        <a-col :span="colsHalf">
-          <a-form-model-item label="循环间隔符" prop="loopfix" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+
+          <span class="zui-input-group-addon" :style="{ width: '60px' }">
+              <span>间隔</span>
+            </span>
+
+          <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(27% - 30px)' }">
             <a-input v-model="model.loopfix" />
           </a-form-model-item>
-        </a-col>
+        </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="类型" prop="type" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+        <a-form-model-item label="类型" :labelCol="labelColFull" class="zui-input-group">
+          <a-form-model-item prop="type" :style="{ display: 'inline-block', width: 'calc(40% - 35px)' }">
             <a-select v-model="model.type">
               <a-select-option value="list">列表</a-select-option>
               <a-select-option value="timestamp">时间戳</a-select-option>
             </a-select>
           </a-form-model-item>
-        </a-col>
-        <a-col :span="colsHalf">
-          <a-form-model-item label="模式" prop="mode" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+
+          <span class="zui-input-group-addon" :style="{ width: '60px' }">
+              <span>模式</span>
+          </span>
+
+          <a-form-model-item prop="mode" :style="{ display: 'inline-block', width: 'calc(27% - 30px)' }">
             <a-select v-model="model.mode">
               <a-select-option value="parallel">平行</a-select-option>
               <a-select-option value="recursive">递归</a-select-option>
             </a-select>
           </a-form-model-item>
-        </a-col>
+        </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="宽度" prop="length" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
-            <a-input-number v-model="model.length" :min="0" />
+        <a-form-model-item label="宽度" :labelCol="labelColFull" class="zui-input-group">
+          <a-form-model-item prop="length" :style="{ display: 'inline-block', width: 'calc(40% - 45px)' }">
+            <a-input v-model="model.length" :min="0" />
           </a-form-model-item>
-        </a-col>
-        <a-col :span="colsHalf">
-          <a-form-model-item label="左占位符" prop="leftPad" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+
+          <span class="zui-input-group-addon" :style="{ width: '70px' }">
+            <span>左占位符</span>
+          </span>
+          <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(13% - 45px)' }">
             <a-input v-model="model.leftPad" />
           </a-form-model-item>
-        </a-col>
+
+          <span class="zui-input-group-addon" :style="{ width: '70px' }">
+            <span>右占位符</span>
+          </span>
+          <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(13% - 43px)' }">
+            <a-input v-model="model.rightPad" />
+          </a-form-model-item>
+        </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
@@ -91,15 +103,7 @@
 
         </a-col>
         <a-col :span="colsHalf">
-          <a-form-model-item label="右占位符" prop="rightPad" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
-            <a-input v-model="model.rightPad" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-
-      <a-row :gutter="colsFull">
-        <a-col :span="colsHalf">
-          <a-form-model-item label="是否随机" prop="rand" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+          <a-form-model-item label="右占位符" prop="rand" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
             <a-switch v-model="model.rand" />
           </a-form-model-item>
         </a-col>

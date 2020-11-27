@@ -1,49 +1,20 @@
-.zui-input-group-addon {
-  display: table-cell;
-  height: 30px;
-  line-height: 30px;
-  color: #3c495c;
-  text-align: center;
-  background-color: #eee;
-  border-top: 1px solid #dcdcdc;
-  border-bottom: 1px solid #dcdcdc;
-
-  span {
-    line-height: 32px;
+.zui-input-group {
+  .ant-row.ant-form-item {
+    margin-bottom: 0 !important;
   }
-}
 
-.form-model-item-line {
-  display: flex;
-
-  .ant-form-item {
+  .zui-input-group-addon {
     display: inline-block;
+    height: 32px;
+    line-height: 30px;
+    color: #3c495c;
+    text-align: center;
+    background-color: #eee;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
 
-    .ant-form-item-label {
-      display: inline-block;
-    }
-    .ant-form-item-control-wrapper {
-      display: inline-block;
-    }
-
-    &.c2-1 {
-      width: 50%;
-      .ant-form-item-label {
-        width: 32%;
-      }
-      .ant-form-item-control-wrapper {
-        width: 68%;
-      }
-    }
-    &.c2-2 {
-      width: 50%;
-
-      .ant-form-item-label {
-        width: 0;
-      }
-      .ant-form-item-control-wrapper {
-        width: 65%;
-      }
+    span {
+      line-height: 32px;
     }
   }
 }

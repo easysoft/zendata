@@ -16,18 +16,23 @@
           <a-input v-model="model.title" />
         </a-form-model-item>
 
-        <a-form-model-item label="目录" prop="folder">
-          <a-select
-              v-model="model.folder"
-              style="width: 60%"
-              placeholder="请选择">
-            <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
-              {{item.name}}</a-select-option>
-          </a-select>
-          <div class="zui-input-group-addon" style="width: 50px;">
+        <a-form-model-item label="目录" class="zui-input-group">
+          <a-form-model-item prop="folder" :style="{ display: 'inline-block', width: 'calc(50% - 30px)' }">
+            <a-select
+                v-model="model.folder"
+                placeholder="请选择">
+              <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
+                {{item.name}}</a-select-option>
+            </a-select>
+          </a-form-model-item>
+
+          <span class="zui-input-group-addon" :style="{ width: '60px' }">
             <span>子目录</span>
-          </div>
-          <a-input v-model="model.subFolder" style="width: calc(40% - 50px);"></a-input>
+          </span>
+
+          <a-form-model-item :style="{ display: 'inline-block', width: 'calc(50% - 30px)' }">
+            <a-input v-model="model.subFolder"></a-input>
+          </a-form-model-item>
         </a-form-model-item>
 
         <a-form-model-item label="文件名" prop="fileName">
@@ -73,6 +78,9 @@ export default {
       rules: {
         title: [
           { required: true, message: '名称不能为空', trigger: 'change' },
+        ],
+        fileName: [
+          { required: true, message: '文件名不能为空', trigger: 'change' },
         ],
         folder: [
           { validator: checkDirIsUsers, trigger: 'change' },
