@@ -19,6 +19,7 @@ function getUrl() {
   }
 
   return url
+
 }
 
 const errorHandler = error => {
