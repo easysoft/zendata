@@ -3,9 +3,24 @@ import axios from 'axios'
 import { VueAxios } from './axios'
 
 const request = axios.create({
-  baseURL: 'http://localhost:8848',
+  baseURL: getUrl(),
   timeout: 100000,
 })
+
+function getUrl() {
+  let url = ''
+  if (process.env.NODE_ENV === "development") {
+    url = 'http://localhost:8848'
+    console.log('dev env, url is ' + url)
+  } else {
+    console.log('prod env');
+    const location = unescape(window.location.href);
+    url = location.split('#')[0].split('index.html')[0] + 'admin';
+    console.log('dev env, url is ' + url)
+  }
+
+  return url
+}
 
 const errorHandler = error => {
   if (error.response) {
