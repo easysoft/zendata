@@ -126,6 +126,7 @@ export default {
           return
         }
 
+        if (this.model.subFolder && this.model.subFolder != '') this.model.folder += this.model.subFolder
         saveText(this.model).then(json => {
           console.log('saveText', json)
           this.back()

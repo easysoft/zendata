@@ -159,6 +159,7 @@ export default {
           return
         }
 
+        if (this.model.subFolder && this.model.subFolder != '') this.model.folder += this.model.subFolder
         saveInstances(this.model).then(json => {
           console.log('saveInstances', json)
           this.back()

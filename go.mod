@@ -10,14 +10,14 @@ require (
 	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/akavel/rsrc v0.9.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.9.0 // indirect
-	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
+	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/emirpasic/gods v1.12.0
 	github.com/fatih/color v1.10.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
-	github.com/jinzhu/copier v0.0.0-20201025035756-632e723a6687
+	github.com/jinzhu/copier v0.1.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
@@ -33,13 +33,13 @@ require (
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/ugorji/go v1.1.13 // indirect
 	github.com/xuri/efp v0.0.0-20201016154823-031c29024257 // indirect
-	golang.org/x/crypto v0.0.0-20201117144127-c1f2f97bffc9 // indirect
+	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392 // indirect
 	golang.org/x/image v0.0.0-20200927104501-e162460cd6b5 // indirect
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
-	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect
+	golang.org/x/sys v0.0.0-20201126233918-771906719818 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
-	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
+	gopkg.in/check.v1 v1.0.0-20201128035030-22ab2dfb190c // indirect
 	gopkg.in/ini.v1 v1.62.0
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 )

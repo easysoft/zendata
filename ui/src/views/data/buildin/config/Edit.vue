@@ -179,6 +179,7 @@ export default {
           return
         }
 
+        if (this.model.subFolder && this.model.subFolder != '') this.model.folder += this.model.subFolder
         saveConfig(this.model).then(json => {
           console.log('saveConfig', json)
           this.back()
