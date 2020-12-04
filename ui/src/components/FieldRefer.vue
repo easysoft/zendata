@@ -7,7 +7,7 @@
             <a-select-option value="config">字段</a-select-option>
             <a-select-option value="ranges">序列</a-select-option>
             <a-select-option value="instances">实例</a-select-option>
-            <a-select-option value="yaml">内容</a-select-option>
+            <a-select-option value="yaml">执行</a-select-option>
             <a-select-option value="excel">表格</a-select-option>
             <a-select-option value="text">文本</a-select-option>
             <a-select-option value="value">表达式</a-select-option>

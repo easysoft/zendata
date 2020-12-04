@@ -7,3 +7,4 @@ fields:
   postfix: ']'
   loop: "2"
   loopfix: '|'
+- field: 新字段

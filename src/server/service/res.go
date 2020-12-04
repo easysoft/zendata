@@ -10,12 +10,12 @@ import (
 )
 
 type ResService struct {
-	rangesRepo *serverRepo.RangesRepo
+	rangesRepo    *serverRepo.RangesRepo
 	instancesRepo *serverRepo.InstancesRepo
-	configRepo *serverRepo.ConfigRepo
-	excelRepo *serverRepo.ExcelRepo
-	textRepo *serverRepo.TextRepo
-	defRepo *serverRepo.DefRepo
+	configRepo    *serverRepo.ConfigRepo
+	excelRepo     *serverRepo.ExcelRepo
+	textRepo      *serverRepo.TextRepo
+	defRepo       *serverRepo.DefRepo
 }
 
 func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
@@ -28,14 +28,14 @@ func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 				arr := strings.Split(res.Title, "|")
 
 				res.Title = arr[0]
-				ret = append(ret,  res)
+				ret = append(ret, res)
 
 				var temp interface{} = res // clone
 				res1 := temp.(model.ResFile)
 				res1.Title = arr[1]
-				ret = append(ret,  res1)
+				ret = append(ret, res1)
 			} else {
-				ret = append(ret,  res)
+				ret = append(ret, res)
 			}
 		}
 	}
@@ -51,7 +51,7 @@ func (s *ResService) ListReferFileForSelection(resType string) (ret interface{})
 	} else if resType == "config" {
 		ret = s.configRepo.ListAll()
 	} else if resType == "yaml" {
-		ret = s.excelRepo.ListAll()
+		ret = s.defRepo.ListAll()
 	} else if resType == "excel" {
 		ret = s.excelRepo.ListFiles()
 	} else if resType == "text" {
@@ -78,12 +78,16 @@ func (s *ResService) ListReferExcelColForSelection(referName string) (ret []mode
 	excel, _ := excelize.OpenFile(res.Path)
 
 	for _, sheet := range excel.GetSheetList() {
-		if res.Sheet != sheet { continue }
+		if res.Sheet != sheet {
+			continue
+		}
 
 		rows, _ := excel.GetRows(sheet)
 
 		for index, row := range rows {
-			if index > 0 { break }
+			if index > 0 {
+				break
+			}
 			for i, col := range row {
 				val := strings.TrimSpace(col)
 				if val == "" {
@@ -103,15 +107,19 @@ func (s *ResService) ListReferResFieldForSelection(resId int, resType string) (r
 	if resType == "instances" {
 		items, _ := s.instancesRepo.GetItems(uint(resId))
 		for i, item := range items {
-			if item.ParentID != 0 { return } // ignore sub nodes
-			field := model.ResField{Name: item.Instance, Index: i+1}
+			if item.ParentID != 0 {
+				return
+			} // ignore sub nodes
+			field := model.ResField{Name: item.Instance, Index: i + 1}
 			ret = append(ret, field)
 		}
 	} else if resType == "ranges" {
 		items, _ := s.rangesRepo.GetItems(resId)
 		for i, item := range items {
-			if item.ParentID != 0 { return } // ignore sub nodes
-			field := model.ResField{Name: item.Field, Index: i+1}
+			if item.ParentID != 0 {
+				return
+			} // ignore sub nodes
+			field := model.ResField{Name: item.Field, Index: i + 1}
 			ret = append(ret, field)
 		}
 	}
