@@ -39,9 +39,9 @@ var (
 	defaultFile string
 	configFile  string
 	//count       int
-	fields      string
+	fields string
 
-	root string
+	root   string
 	input  string
 	output string
 	table  string
@@ -50,14 +50,14 @@ var (
 
 	article string
 
-	listRes bool
-	viewRes string
+	listRes    bool
+	viewRes    string
 	viewDetail string
-	md5 string
+	md5        string
 
 	example bool
-	help   bool
-	set   bool
+	help    bool
+	set     bool
 
 	flagSet *flag.FlagSet
 )
@@ -131,7 +131,7 @@ func main() {
 	flagSet.BoolVar(&help, "help", false, "")
 
 	flagSet.BoolVar(&set, "s", false, "")
-    flagSet.BoolVar(&set, "set", false, "")
+	flagSet.BoolVar(&set, "set", false, "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
@@ -153,9 +153,9 @@ func main() {
 				logUtils.PrintUsage()
 				return
 			} else if set {
-                service.Set()
-                return
-            } else if listRes {
+				service.Set()
+				return
+			} else if listRes {
 				service.ListRes()
 				return
 			} else if viewRes != "" {
@@ -195,7 +195,7 @@ func toGen() {
 			}
 			vari.WorkDir = fileUtils.AddSepIfNeeded(vari.WorkDir)
 		}
-		constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:" + vari.WorkDir, 1)
+		constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:"+vari.WorkDir, 1)
 
 		StartServer()
 	} else if vari.RunMode == constant.RunModeServerRequest {
@@ -214,7 +214,7 @@ func toGen() {
 
 			ext := strings.ToLower(path.Ext(output))
 			if len(ext) > 1 {
-				ext = strings.TrimLeft(ext,".")
+				ext = strings.TrimLeft(ext, ".")
 			}
 			if stringUtils.InArray(ext, constant.Formats) {
 				format = ext
@@ -223,7 +223,7 @@ func toGen() {
 			if format == constant.FormatExcel {
 				logUtils.FilePath = output
 			} else {
-				logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR | os.O_CREATE, 0777)
+				logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR|os.O_CREATE, 0777)
 				defer logUtils.FileWriter.Close()
 			}
 		}
@@ -274,20 +274,21 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 
 // for admin server
 type Server struct {
-	config        *serverConfig.Config
+	config *serverConfig.Config
 
-	defService *serverService.DefService
-	fieldService *serverService.FieldService
+	defService     *serverService.DefService
+	fieldService   *serverService.FieldService
+	previewService *serverService.PreviewService
 	sectionService *serverService.SectionService
-	referService *serverService.ReferService
-	resService *serverService.ResService
-	syncService *serverService.SyncService
+	referService   *serverService.ReferService
+	resService     *serverService.ResService
+	syncService    *serverService.SyncService
 
-	rangesService *serverService.RangesService
+	rangesService    *serverService.RangesService
 	instancesService *serverService.InstancesService
-	textService *serverService.TextService
-	excelService *serverService.ExcelService
-	configService *serverService.ConfigService
+	textService      *serverService.TextService
+	excelService     *serverService.ExcelService
+	configService    *serverService.ConfigService
 }
 
 func Init() (err error) {
@@ -321,9 +322,11 @@ func Init() (err error) {
 	syncService := serverService.NewSyncService(defService,
 		fieldService, rangesService, instancesService, configService, excelService, textService,
 		referService, resService)
+	previewService := serverService.NewPreviewService(defRepo, fieldRepo)
 
 	server := NewServer(config, defService, fieldService, sectionService, referService,
-		rangesService, instancesService, textService, excelService, configService, resService, syncService)
+		rangesService, instancesService, textService, excelService, configService, resService,
+		syncService, previewService)
 	server.Run()
 
 	return
@@ -365,7 +368,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ret := model.ResData{ Code: 1, Msg: "success"}
+	ret := model.ResData{Code: 1, Msg: "success"}
 	switch reqData.Action {
 	// def
 	case "syncData":
@@ -404,6 +407,12 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		var defId uint
 		defId, ret.Model, err = s.fieldService.Move(uint(reqData.Src), uint(reqData.Dist), reqData.Mode)
 		ret.Data, err = s.fieldService.GetTree(defId)
+
+	// preview
+	case "previewDefData":
+		ret.Data = s.previewService.PreviewDefData(uint(reqData.Id))
+	case "previewFieldData":
+		ret.Data = s.previewService.PreviewFieldData(uint(reqData.Id))
 
 	// field or instances section
 	case "listSection":
@@ -553,20 +562,21 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 	referService *serverService.ReferService, rangesService *serverService.RangesService,
 	instancesService *serverService.InstancesService, textService *serverService.TextService,
 	excelService *serverService.ExcelService, configService *serverService.ConfigService,
-	resService *serverService.ResService, syncService *serverService.SyncService) *Server {
+	resService *serverService.ResService, syncService *serverService.SyncService, previewService *serverService.PreviewService) *Server {
 	return &Server{
-		config:        config,
-		defService: defService,
-		fieldService: fieldServer,
-		sectionService: sectionService,
-		referService: referService,
-		rangesService: rangesService,
+		config:           config,
+		defService:       defService,
+		fieldService:     fieldServer,
+		sectionService:   sectionService,
+		referService:     referService,
+		rangesService:    rangesService,
 		instancesService: instancesService,
-		textService: textService,
-		excelService: excelService,
-		configService: configService,
-		resService: resService,
-		syncService: syncService,
+		textService:      textService,
+		excelService:     excelService,
+		configService:    configService,
+		resService:       resService,
+		syncService:      syncService,
+		previewService:   previewService,
 	}
 }
 

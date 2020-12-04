@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func Generate(defaultFile string, configFile string, fieldsToExportStr, format, table string) {
+func Generate(defaultFile string, configFile string, fieldsToExportStr, format, table string) (lines []interface{}) {
 	startTime := time.Now().Unix()
 
 	if defaultFile != "" && configFile == "" {
@@ -31,11 +31,13 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 	if format == constant.FormatExcel || format == constant.FormatCsv {
 		gen.Write(rows, format, table, colIsNumArr, fieldsToExport)
 	} else {
-		gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
+		lines = gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
 	}
 
 	entTime := time.Now().Unix()
 	if vari.RunMode == constant.RunModeServerRequest {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", len(rows), entTime - startTime))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", len(rows), entTime-startTime))
 	}
+
+	return
 }

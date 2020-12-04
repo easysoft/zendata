@@ -101,6 +101,25 @@ export function moveDefField (src, dist, mode) {
   })
 }
 
+export function previewDefData (defId) {
+  const data = {'action': 'previewDefData', id: defId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function previewFieldData (fieldId) {
+  const data = {'action': 'previewFieldData', id: fieldId}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
 export function listRanges (keywords, page) {
   const data = {'action': 'listRanges', keywords: keywords, page: page}
 

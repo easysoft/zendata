@@ -33,17 +33,13 @@
           <a href="#">删除</a>
         </a-popconfirm> |
 
-        <a-tooltip placement="top" overlayClassName="tooltip-light">
-          <template slot="title">
-            <div class="content-width">
-              <div class="title">引用文件内容</div>
-              <div class="content">
-                <div>range: {{ record.referName }}</div>
-              </div>
-            </div>
+        <a-popover @visibleChange="preview(record)" title="数据预览" trigger="click"
+                   placement="left" :autoAdjustOverflow="true">
+          <template slot="content">
+            <div v-html="previewData"></div>
           </template>
-          <a href="#">引用</a>
-        </a-tooltip>
+          <a>预览</a>
+        </a-popover>
 
       </span>
     </a-table>
@@ -69,7 +65,7 @@
 
 <script>
 
-import { listDef, removeDef } from "../../../api/manage";
+import { listDef, removeDef, previewDefData } from "../../../api/manage";
 import { DesignComponent } from '../../../components'
 import {PageSize, ResTypeDef} from "../../../api/utils";
 import debounce from "lodash.debounce"
@@ -99,6 +95,7 @@ export default {
   data() {
     return {
       defs: [],
+      previewData: '',
       columns,
 
       designVisible: false,
@@ -147,6 +144,13 @@ export default {
       removeDef(record.id).then(json => {
         console.log('removeDef', json)
         this.loadData()
+      })
+    },
+    preview(record) {
+      console.log(record)
+      previewDefData(record.id).then(json => {
+        console.log('previewDefData', json)
+        this.previewData = json.data
       })
     },
 

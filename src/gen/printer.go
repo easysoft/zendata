@@ -14,7 +14,7 @@ import (
 )
 
 func Print(rows [][]string, format string, table string, colIsNumArr []bool,
-		fields []string) (lines []interface{}) {
+	fields []string) (lines []interface{}) {
 	if format == constant.FormatText {
 		printTextHeader(fields)
 	} else if format == constant.FormatSql {
@@ -51,7 +51,9 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 			rowMap[field.Field] = col
 
 			colVal := stringUtils.ConvertForSql(col)
-			if !colIsNumArr[j] { colVal = "'" + colVal + "'" }
+			if !colIsNumArr[j] {
+				colVal = "'" + colVal + "'"
+			}
 			valuesForSql = append(valuesForSql, colVal)
 		}
 
@@ -88,7 +90,9 @@ func printTextHeader(fields []string) {
 
 func printSqlHeader(fields []string, table string) {
 	fieldNames := make([]string, 0)
-	for _, f := range fields { fieldNames = append(fieldNames, "`" + f + "`") }
+	for _, f := range fields {
+		fieldNames = append(fieldNames, "`"+f+"`")
+	}
 	logUtils.PrintLine(fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", ")))
 }
 
@@ -121,7 +125,7 @@ func genSqlLine(valuesForSql string, i int, length int) string {
 		temp = fmt.Sprintf("         (%s)", valuesForSql)
 	}
 
-	if i < length - 1 {
+	if i < length-1 {
 		temp = temp + ", "
 	} else {
 		temp = temp + "; "
@@ -130,9 +134,9 @@ func genSqlLine(valuesForSql string, i int, length int) string {
 	return temp
 }
 
-func genJsonLine(i int, row []string,  length int, fields []string) string {
+func genJsonLine(i int, row []string, length int, fields []string) string {
 	temp := "  " + RowToJson(row, fields)
-	if i < length - 1 {
+	if i < length-1 {
 		temp = temp + ", "
 	} else {
 		temp = temp + "\n]"
@@ -146,7 +150,7 @@ func getXmlLine(i int, mp map[string]string, length int) string {
 	j := 0
 	for key, val := range mp {
 		str += fmt.Sprintf("    <%s>%s</%s>", key, val, key)
-		if j != len(mp) - 1 {
+		if j != len(mp)-1 {
 			str = str + "\n"
 		}
 
@@ -154,7 +158,7 @@ func getXmlLine(i int, mp map[string]string, length int) string {
 	}
 
 	text := fmt.Sprintf("  <row>\n%s\n  </row>", str)
-	if i == length - 1 {
+	if i == length-1 {
 		text = text + "\n</testdata>"
 	}
 	return text

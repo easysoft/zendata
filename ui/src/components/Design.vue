@@ -43,41 +43,45 @@
       <div class="right" :style="styl">
         <div v-if="rightVisible">
           <div v-if="type=='def' || type=='instances'">
-            <a-tabs :activeKey="tabKey" @change="onChange" type="card">
-            <a-tab-pane key="info" tab="编辑信息">
-              <div>
-                <field-info-component
-                    ref="infoComp"
-                    :type="type"
-                    :model="modelData"
-                    @save="onModelSave">
-                </field-info-component>
-              </div>
-            </a-tab-pane>
+            <a-tabs :activeKey="tabKey" @change="onTabChange" type="card">
+              <a-tab-pane key="info" tab="编辑信息">
+                <div>
+                  <field-info-component
+                      ref="infoComp"
+                      :type="type"
+                      :model="modelData"
+                      @save="onModelSave">
+                  </field-info-component>
+                </div>
+              </a-tab-pane>
 
-            <a-tab-pane key="range" tab="取值范围" force-render>
-              <div>
-                <field-range-component
-                    ref="rangeComp"
-                    :type="type"
-                    :model="modelData"
-                    :time2="time2">
-                </field-range-component>
-              </div>
-            </a-tab-pane>
+              <a-tab-pane key="range" tab="取值范围" force-render>
+                <div>
+                  <field-range-component
+                      ref="rangeComp"
+                      :type="type"
+                      :model="modelData"
+                      :time2="time2">
+                  </field-range-component>
+                </div>
+              </a-tab-pane>
 
-            <a-tab-pane key="refer" tab="配置引用" force-render>
-              <div>
-                <field-refer-component
-                    ref="referComp"
-                    :type="type"
-                    :model="modelData"
-                    :time2="time2">
-                </field-refer-component>
-              </div>
-            </a-tab-pane>
+              <a-tab-pane key="refer" tab="配置引用" force-render>
+                <div>
+                  <field-refer-component
+                      ref="referComp"
+                      :type="type"
+                      :model="modelData"
+                      :time2="time2">
+                  </field-refer-component>
+                </div>
+              </a-tab-pane>
 
-          </a-tabs>
+              <a-tab-pane key="preview" tab="预览" force-render>
+                <div>{{previewData}}</div>
+              </a-tab-pane>
+
+            </a-tabs>
           </div>
 
           <div v-if="type=='ranges'">
@@ -116,6 +120,7 @@ import FieldRangeComponent from "./FieldRange";
 import FieldReferComponent from "./FieldRefer";
 import ResRangesItemComponent from "./RangesItem"
 import {ResTypeDef, ResTypeInstances, ResTypeRanges} from "../api/utils";
+import {previewFieldData} from "../api/manage";
 
 export default {
   name: 'DefDesignComponent',
@@ -134,6 +139,7 @@ export default {
       modelData: {},
       time2: 0,
 
+      previewData: '',
       treeData: [],
       nodeMap: {},
       openKeys: [],
@@ -252,8 +258,8 @@ export default {
       }
 
       const node = this.nodeMap[e.node.eventKey]
-      console.log('node', node.fields)
-      if (node.fields && node.fields.length > 0) {
+      console.log('node', node)
+      if (node.parentID == 0 || (node.fields && node.fields.length > 0)) {
         this.rightVisible = false
         this.modelData = {}
         return
@@ -431,9 +437,16 @@ export default {
       console.log('clearMenu')
       this.treeNode = null
     },
-    onChange(activeKey) {
-      console.log('onChange', activeKey)
+    onTabChange(activeKey) {
+      console.log('onTabChange', activeKey)
       this.tabKey = activeKey
+
+      if (this.tabKey === 'preview') {
+        previewFieldData(this.modelProp.id).then(json => {
+          console.log('getResInstancesItemTree', json)
+          this.previewData = json.data
+        })
+      }
     }
   }
 }

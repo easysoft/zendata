@@ -3,6 +3,5 @@ desc: ""
 fields:
 - field: field1
   range: '`fd`'
-  value: "($field_step_negative * $field_nested_range) * -1 + 1000"
   prefix: '['
   postfix: "]\t"
