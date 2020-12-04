@@ -22,9 +22,9 @@
         <a-col :span="col">
           <a-form-model-item prop="type" :wrapperCol="wrapperColFull">
             <a-select v-model="item.type">
-              <a-select-option value="scope">区间</a-select-option>
-              <a-select-option value="arr">列表</a-select-option>
-              <a-select-option value="const">常量</a-select-option>
+              <a-select-option value="interval">区间</a-select-option>
+              <a-select-option value="literal">常量</a-select-option>
+              <a-select-option value="list">列表</a-select-option>
             </a-select>
           </a-form-model-item>
         </a-col>
@@ -62,7 +62,7 @@
         @cancel="cancelSection">
       <div>
         <a-form-model ref="editForm" :model="section" :rules="rules">
-          <div v-if="section.type==='scope'">
+          <div v-if="section.type==='interval'">
             <a-row :gutter="cols">
               <a-col :span="cols">
                 <a-form-model-item label="开始" prop="start" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
@@ -100,7 +100,7 @@
             </a-row>
           </div>
 
-          <div v-if="section.type==='arr'">
+          <div v-if="section.type==='list'">
             <a-row :gutter="cols">
               <a-col :span="cols">
                 <a-form-model-item label="列表" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
@@ -111,7 +111,7 @@
             </a-row>
           </div>
 
-          <div v-if="section.type==='const'">
+          <div v-if="section.type==='literal'">
             <a-row :gutter="cols">
               <a-col :span="cols">
                 <a-form-model-item label="常量" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
@@ -216,15 +216,15 @@ export default {
     },
 
     editSection (item) {
-      if (item.type === 'scope') {
+      if (item.type === 'interval') {
         this.editTitle = '编辑范围'
-      } else if (item.type === 'arr') {
+      } else if (item.type === 'literal') {
+        this.editTitle = '编辑字面常量'
+        item.text = trimChar(item.value, '`')
+      } else if (item.type === 'list') {
         this.editTitle = '编辑数组'
         item.text = item.value
         item.text = sectionStrToArr(item.value)
-      } else if (item.type === 'const') {
-        this.editTitle = '编辑字面常量'
-        item.text = trimChar(item.value, '`')
       }
 
       this.section = item
@@ -238,7 +238,7 @@ export default {
           return
         }
 
-        if (this.section.type === 'scope') {
+        if (this.section.type === 'interval') {
           this.section.value = this.section.start + '-' + this.section.end
 
           if (this.section.rand) {
@@ -257,12 +257,12 @@ export default {
             this.section.value += '{' + this.section.repeat + '}'
           }
 
-        } else if (this.section.type === 'arr') {
+        } else if (this.section.type === 'literal') {
+          this.section.value = '`' + this.section.text + '`'
+
+        } else if (this.section.type === 'list') {
           const arr = this.section.text.split('\n')
           this.section.value = '[' + arr.join(',') + ']'
-
-        } else if (this.section.type === 'const') {
-          this.section.value = '`' + this.section.text + '`'
         }
 
         this.section.step = parseInt(this.section.step)

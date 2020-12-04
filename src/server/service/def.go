@@ -8,6 +8,7 @@ import (
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
@@ -19,9 +20,11 @@ import (
 )
 
 type DefService struct {
-	defRepo *serverRepo.DefRepo
-	fieldRepo *serverRepo.FieldRepo
-	referRepo *serverRepo.ReferRepo
+	defRepo     *serverRepo.DefRepo
+	fieldRepo   *serverRepo.FieldRepo
+	referRepo   *serverRepo.ReferRepo
+	sectionRepo *serverRepo.SectionRepo
+
 	resService *ResService
 }
 
@@ -220,6 +223,10 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 		return
 	}
 
+	if strings.Index(field.Field, "VVV") > -1 {
+		logUtils.PrintTo("")
+	}
+
 	// update field
 	field.DefID = defID
 	field.ParentID = parentID
@@ -230,9 +237,15 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 		field.Mode = constant.ModeParallel
 	}
 
+	field.Range = strings.TrimSpace(field.Range)
+
+	// save field
+	s.fieldRepo.Save(field)
+
 	// create refer
 	refer := model.ZdRefer{OwnerType: "def", OwnerID: field.ID}
 
+	needToCreateSections := false
 	if field.Select != "" { // refer to excel
 		refer.Type = constant.ResTypeExcel
 
@@ -270,40 +283,48 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 			refer.File = GetRelatedPathWithResDir(path)
 		}
 
-	} else if field.Range != "" { // deal with yaml and text refer using range prop
-		field.Range = strings.TrimSpace(field.Range)
+	} else if field.Range != "" {
+
 		rangeSections := gen.ParseRangeProperty(field.Range)
-		if len(rangeSections) > 0 { // only get the first one
-			rangeSection := rangeSections[0]
+		if len(rangeSections) > 0 {
+			rangeSection := rangeSections[0]                         // deal with yaml and text refer using range prop
 			desc, step, count := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
+			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
+				if path.Ext(desc) == ".txt" { // dir/users.txt:2
+					refer.Type = constant.ResTypeText
 
-			if path.Ext(desc) == ".txt" { // dir/users.txt:2
-				refer.Type = constant.ResTypeText
+					if strings.ToLower(step) == "r" {
+						refer.Rand = true
+					} else {
+						refer.Step, _ = strconv.Atoi(step)
+					}
 
-				if strings.ToLower(step) == "r" {
-					refer.Rand = true
-				} else {
-					refer.Step, _ = strconv.Atoi(step)
+				} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
+					refer.Type = constant.ResTypeYaml
+
+					refer.Count = count
 				}
 
-			} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
-				refer.Type = constant.ResTypeYaml
-
-				refer.Count = count
-			}
-			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
 				path := fileUtils.ConvertReferRangeToPath(desc, currPath)
 				refer.File = GetRelatedPathWithResDir(path)
+			} else { // like 1-9,a-z
+				needToCreateSections = true
 			}
 		}
 	}
 
-	// save field
-	s.fieldRepo.Save(field)
-
 	// save refer
 	refer.OwnerID = field.ID
 	s.referRepo.Save(&refer)
+
+	// gen sections if needed
+	if needToCreateSections {
+		rangeSections := gen.ParseRangeProperty(field.Range)
+
+		for i, rangeSection := range rangeSections {
+			s.saveFieldSectionToDB(rangeSection, i, field.ID, field.DefID)
+		}
+	}
 
 	// deal with field's children
 	for _, child := range field.Fields {
@@ -311,7 +332,32 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 	}
 }
 
-func NewDefService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo,
+func (s *DefService) saveFieldSectionToDB(rangeSection string, ord int, fieldID, defID uint) {
+	descStr, stepStr, count := gen.ParseRangeSection(rangeSection)
+	typ, desc := gen.ParseRangeSectionDesc(descStr)
+
+	if typ == "literal" && desc[:1] == string(constant.LeftBrackets) &&
+		desc[len(desc)-1:] == string(constant.RightBrackets) {
+
+		desc = "[" + desc[1:len(desc)-1] + "]"
+		typ = "list"
+	}
+
+	countStr := strconv.Itoa(count)
+	rand := false
+	step := 1
+	if stepStr == "r" {
+		rand = true
+	} else {
+		step, _ = strconv.Atoi(stepStr)
+	}
+	section := model.ZdSection{OwnerType: "def", OwnerID: fieldID, Type: typ, Value: desc, Ord: ord,
+		Step: step, Repeat: countStr, Rand: rand}
+
+	s.sectionRepo.Create(&section)
+}
+
+func NewDefService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo, sectionRepo *serverRepo.SectionRepo,
 	referRepo *serverRepo.ReferRepo) *DefService {
-	return &DefService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo}
+	return &DefService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo, sectionRepo: sectionRepo}
 }

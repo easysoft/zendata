@@ -14,11 +14,12 @@
             </a-form-model-item>
         </a-row>
 
-        <a-row :gutter="colsFull">
-          <a-form-model-item label="取值" prop="value" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.value" />
-          </a-form-model-item>
-        </a-row>
+        <field-range-component
+            ref="rangeComp"
+            :type="'rangesItem'"
+            :model="model"
+            :time2="time">
+        </field-range-component>
 
         <a-row :gutter="colsFull">
           <a-form-model-item class="center">
@@ -33,9 +34,11 @@
 
 <script>
 import {saveRangesItem} from "../api/manage";
+import FieldRangeComponent from "./FieldRange";
 
 export default {
   name: 'ResRangesItemComponent',
+  components: {FieldRangeComponent},
   data() {
     return {
       colsFull: 24,

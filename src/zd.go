@@ -306,7 +306,7 @@ func Init() (err error) {
 	excelRepo := serverRepo.NewExcelRepo(gormDb)
 	configRepo := serverRepo.NewConfigRepo(gormDb)
 
-	defService := serverService.NewDefService(defRepo, fieldRepo, referRepo)
+	defService := serverService.NewDefService(defRepo, fieldRepo, sectionRepo, referRepo)
 	fieldService := serverService.NewFieldService(defRepo, fieldRepo, referRepo, defService)
 
 	referService := serverService.NewReferService(fieldRepo, referRepo, defService)

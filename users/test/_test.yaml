@@ -1,12 +1,9 @@
 title: 数据测试2
 desc: ""
 fields:
-- field: 新字段
-  range: '[1,2,33]'
+- field: VVV
+  range: a-z,[user1,user-2],`user-3`
   prefix: '['
   postfix: ']'
   loop: "2"
   loopfix: '|'
-  mode: recursive
-  from: test._test-ranges.yaml
-  use: small{1}
