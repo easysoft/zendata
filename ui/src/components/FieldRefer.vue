@@ -75,7 +75,7 @@
         <a-form-model-item label="表达式" prop="value" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-input v-model="refer.value" />
           <span class="input-tips">
-            请输入数值表达式，由相同文件中的字段组成，如"($field_step_negative * $field_nested_range) * -1 + 1000"
+            请输入数学运算表达式，由相同文件中的字段组成，如"($field_step_negative * $field_nested_range) * -1 + 1000"
           </span>
         </a-form-model-item>
       </a-row>

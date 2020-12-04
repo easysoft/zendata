@@ -2,8 +2,8 @@
   <div class="panel">
     <a-form-model ref="editForm">
       <a-row :gutter="cols" class="title">
-        <a-col :span="col">取值</a-col>
         <a-col :span="col">类型</a-col>
+        <a-col :span="col">取值</a-col>
         <a-col :span="col">操作</a-col>
       </a-row>
 
@@ -18,13 +18,9 @@
       </a-row>
 
       <a-row v-for="item in sections" :key="item.id" :gutter="cols">
+
         <a-col :span="col">
-          <a-form-model-item prop="range" :wrapperCol="wrapperColFull">
-            <a-input v-model="item.value" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :span="col">
-          <a-form-model-item prop="range" :wrapperCol="wrapperColFull">
+          <a-form-model-item prop="type" :wrapperCol="wrapperColFull">
             <a-select v-model="item.type">
               <a-select-option value="scope">区间</a-select-option>
               <a-select-option value="arr">列表</a-select-option>
@@ -32,11 +28,25 @@
             </a-select>
           </a-form-model-item>
         </a-col>
+
+        <a-col :span="col">
+          <a-form-model-item prop="value" :wrapperCol="wrapperColFull">
+            <a-input v-model="item.value" />
+          </a-form-model-item>
+        </a-col>
+
         <a-col :span="8">
           <a class="edit">
-            <a @click="insertSection(item)" class="edit">添加</a> |
-            <a @click="editSection(item)" class="edit">编辑</a> |
-            <a @click="removeSection(item)" class="edit">删除</a>
+            <a @click="insertSection(item)" class="edit">添加</a> &nbsp;
+            <a @click="editSection(item)" class="edit">编辑</a> &nbsp;
+            <a-popconfirm
+                title="确认删除？"
+                ok-text="是"
+                cancel-text="否"
+                @confirm="removeSection(item)"
+            >
+              <a class="edit">删除</a>
+            </a-popconfirm>
           </a>
         </a-col>
       </a-row>
@@ -111,6 +121,7 @@
             </a-row>
           </div>
         </a-form-model>
+
       </div>
 
     </a-modal>
@@ -122,6 +133,7 @@
 import {
   listSection, createSection, removeSection, updateSection,
 } from "../api/section";
+import {sectionStrToArr, trimChar} from "../api/utils";
 
 export default {
   name: 'FieldRangeComponent',
@@ -204,13 +216,15 @@ export default {
     },
 
     editSection (item) {
-      console.log(item)
       if (item.type === 'scope') {
         this.editTitle = '编辑范围'
       } else if (item.type === 'arr') {
         this.editTitle = '编辑数组'
+        item.text = item.value
+        item.text = sectionStrToArr(item.value)
       } else if (item.type === 'const') {
         this.editTitle = '编辑字面常量'
+        item.text = trimChar(item.value, '`')
       }
 
       this.section = item

@@ -1,5 +1,12 @@
-title: test1
+title: 数据测试2
 desc: ""
 fields:
 - field: 新字段
-  range: a-z:3{2}
+  range: '[1,2,33]'
+  prefix: '['
+  postfix: ']'
+  loop: "2"
+  loopfix: '|'
+  mode: recursive
+  from: test._test-ranges.yaml
+  use: small{1}

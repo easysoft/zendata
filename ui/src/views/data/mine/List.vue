@@ -21,8 +21,8 @@
       </span>
 
       <span slot="action" slot-scope="record">
-        <a @click="edit(record)">编辑</a> |
-        <a @click="design(record)">设计</a> |
+        <a @click="edit(record)">编辑</a> &nbsp;
+        <a @click="design(record)">设计</a> &nbsp;
 
         <a-popconfirm
             title="确认删除？"
@@ -31,10 +31,10 @@
             @confirm="remove(record)"
           >
           <a href="#">删除</a>
-        </a-popconfirm> |
+        </a-popconfirm> &nbsp;
 
         <a-popover @visibleChange="preview(record)" title="数据预览" trigger="click"
-                   placement="left" :autoAdjustOverflow="true">
+                   placement="bottom" :autoAdjustOverflow="true">
           <template slot="content">
             <div v-html="previewData"></div>
           </template>

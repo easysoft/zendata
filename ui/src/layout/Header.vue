@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <h2 class="left">
-      <a href="https://www.zendata.cn" target="_blank">zd.im</a>
+      <a href="https://www.zendata.cn" target="_blank">ZenData</a>
     </h2>
     <div class="center"></div>
     <div class="right">

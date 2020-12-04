@@ -44,3 +44,25 @@ export function checkDirIsUsers (rule, value, callback){
   callback()
 }
 
+export function sectionStrToArr (str){
+  str = str.substring(1, str.length - 1)
+  let arr = str.split(',')
+  str = arr.join('\n')
+  return str
+}
+
+export function trimChar (str, ch){
+  if (str.substr(0, 1) != ch || str.substr(str.length - 1, 1) != ch) {
+    return str
+  }
+
+  if (str.indexOf(ch) == 0) {
+    str = str.substring(1)
+  }
+
+  if (str.indexOf(ch) == str.length - 1) {
+    str = str.substring(0, str.length - 1)
+  }
+
+  return str
+}

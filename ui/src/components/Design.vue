@@ -15,6 +15,7 @@
             ref="fieldTree"
             class="draggable-tree"
             :show-line="true"
+            :show-icon="false"
             :expandedKeys.sync="openKeys"
             :selectedKeys.sync="selectedKeys"
             :tree-data="treeData"
@@ -259,7 +260,7 @@ export default {
 
       const node = this.nodeMap[e.node.eventKey]
       console.log('node', node)
-      if (node.parentID == 0 || (node.fields && node.fields.length > 0)) {
+      if ((this.type === 'def' && node.parentID == 0) || (node.fields && node.fields.length > 0)) {
         this.rightVisible = false
         this.modelData = {}
         return
