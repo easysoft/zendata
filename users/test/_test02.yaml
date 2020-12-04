@@ -1,10 +1,9 @@
 title: 数据测试2
-desc: ""
+desc: 数据测试2
 fields:
-- field: VVV
-  range: 1-z,[user1,user-2],`user-3`
+- field: field1
+  range: a-z,[user1,user-2],`user-3`
   prefix: '['
   postfix: ']'
   loop: "2"
   loopfix: '|'
-- field: 新字段
