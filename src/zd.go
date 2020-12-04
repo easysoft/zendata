@@ -370,6 +370,10 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 
 	ret := model.ResData{Code: 1, Msg: "success"}
 	switch reqData.Action {
+	// common
+	case "getWorkDir":
+		ret.WorkDir = vari.WorkDir
+
 	// def
 	case "syncData":
 		s.syncService.SyncData(reqData.Mode)

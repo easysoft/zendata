@@ -1,3 +1,5 @@
+import {config} from '../utils/vari'
+
 const PageSize = 15
 const ResTypeDef = "def"
 const ResTypeRanges = "ranges"
@@ -42,6 +44,11 @@ export function checkDirIsUsers (rule, value, callback){
   }
 
   callback()
+}
+
+export function pathToRelated (path){
+  const name = path.substr(config.workDir.length)
+  return name
 }
 
 export function sectionStrToArr (str){

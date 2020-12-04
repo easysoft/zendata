@@ -6,6 +6,14 @@ const api = {
 
 export default api
 
+export function getWorkDir () {
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: {'action': 'getWorkDir'}
+  })
+}
+
 export function listDef (keywords, page) {
   return request({
     url: api.admin,

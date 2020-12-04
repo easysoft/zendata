@@ -16,7 +16,7 @@
           <template slot="title">
             <span>{{record.path}}</span>
           </template>
-          <a>{{record.folder}}</a>
+          <a>{{record.path | pathToRelated}}</a>
         </a-tooltip>
       </span>
 
@@ -73,7 +73,7 @@
 
 import {listInstances, removeInstances} from "../../../../api/manage";
 import { DesignComponent } from '../../../../components'
-import {PageSize, ResTypeInstances} from "../../../../api/utils";
+import {PageSize, ResTypeInstances, pathToRelated} from "../../../../api/utils";
 import debounce from "lodash.debounce"
 
 const columns = [
@@ -82,7 +82,7 @@ const columns = [
     dataIndex: 'title',
   },
   {
-    title: '目录',
+    title: '文件',
     dataIndex: 'folder',
     scopedSlots: { customRender: 'folderWithPath' },
   },
@@ -121,6 +121,11 @@ export default {
     this.loadData()
   },
   mounted () {
+  },
+  filters: {
+    pathToRelated: function (path) {
+      return pathToRelated(path)
+    }
   },
   methods: {
     create() {
