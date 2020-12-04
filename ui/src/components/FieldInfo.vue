@@ -70,14 +70,14 @@
           <span class="zui-input-group-addon" :style="{ width: '70px' }">
             <span>左占位符</span>
           </span>
-          <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(13% - 45px)' }">
+          <a-form-model-item prop="leftPad" :style="{ display: 'inline-block', width: 'calc(13% - 45px)' }">
             <a-input v-model="model.leftPad" />
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '70px' }">
             <span>右占位符</span>
           </span>
-          <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(13% - 43px)' }">
+          <a-form-model-item prop="rightPad" :style="{ display: 'inline-block', width: 'calc(13% - 43px)' }">
             <a-input v-model="model.rightPad" />
           </a-form-model-item>
         </a-form-model-item>
@@ -103,7 +103,7 @@
 
         </a-col>
         <a-col :span="colsHalf">
-          <a-form-model-item label="右占位符" prop="rand" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+          <a-form-model-item label="随机" prop="rand" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
             <a-switch v-model="model.rand" />
           </a-form-model-item>
         </a-col>
