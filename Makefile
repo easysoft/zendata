@@ -12,6 +12,7 @@ BIN_LINUX=${BIN_OUT}linux/zd/
 BIN_MAC=${BIN_OUT}mac/zd/
 
 default: prepare_res compile_all copy_files package
+
 win64: prepare_res compile_win64 copy_files package
 win32: prepare_res compile_win32 copy_files package
 linux: prepare_res compile_linux copy_files package
