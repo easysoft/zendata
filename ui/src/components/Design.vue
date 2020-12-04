@@ -78,7 +78,7 @@
               </a-tab-pane>
 
               <a-tab-pane key="preview" tab="预览" force-render>
-                <div>{{previewData}}</div>
+                <div class="preview-data" v-html="previewData"></div>
               </a-tab-pane>
 
             </a-tabs>
@@ -442,8 +442,8 @@ export default {
       this.tabKey = activeKey
 
       if (this.tabKey === 'preview') {
-        previewFieldData(this.modelProp.id).then(json => {
-          console.log('getResInstancesItemTree', json)
+        previewFieldData(this.modelData.id).then(json => {
+          console.log('previewFieldData', json)
           this.previewData = json.data
         })
       }
@@ -485,6 +485,10 @@ export default {
       line-height: 21px;
     }
   }
+}
+
+.preview-data {
+  padding: 10px;
 }
 
 </style>
