@@ -10,11 +10,12 @@
             <a-select-option value="yaml">内容</a-select-option>
             <a-select-option value="excel">表格</a-select-option>
             <a-select-option value="text">文本</a-select-option>
+            <a-select-option value="value">表达式</a-select-option>
           </a-select>
         </a-form-model-item>
       </a-row>
 
-      <a-row :gutter="colsFull">
+      <a-row v-if="refer.type && refer.type!='value'" :gutter="colsFull">
           <a-form-model-item label="文件" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-select v-model="refer.file" @change="onReferFileChanged">
               <a-select-option value="">选择</a-select-option>
@@ -68,6 +69,15 @@
             <a-switch v-model="refer.rand" />
           </a-form-model-item>
         </a-col>
+      </a-row>
+
+      <a-row v-if="refer.type=='value'" :gutter="colsFull">
+        <a-form-model-item label="表达式" prop="value" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-input v-model="refer.value" />
+          <span class="input-tips">
+            请输入数值表达式，由相同文件中的字段组成，如"($field_step_negative * $field_nested_range) * -1 + 1000"
+          </span>
+        </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
@@ -253,7 +263,7 @@ export default {
           }
         })
 
-      } else {
+      } else if (this.refer.type != 'value') {
         this.files.forEach((fi) => {
           if (fi.referName === this.refer.file) id = fi.id
         })

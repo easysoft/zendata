@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *model.DefField) () {
+func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *model.DefField) {
 	field.Field = treeNode.Field
 	field.Note = treeNode.Note
 
@@ -50,21 +50,23 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 			field.Select = refer.ColName
 			field.Where = refer.Condition
 
-		} else if refer.Type == "ranges" { // medium{2}
+		} else if refer.Type == constant.ResTypeRanges { // medium{2}
 			field.From = refer.File
 			field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
 
-		} else if refer.Type == "instances" { // privateC{2}
+		} else if refer.Type == constant.ResTypeInstances { // privateC{2}
 			field.From = refer.File
 			field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
 
-		} else if refer.Type == "yaml" { // dir/content.yaml{3}
+		} else if refer.Type == constant.ResTypeYaml { // dir/content.yaml{3}
 			field.Range = fmt.Sprintf("%s{%d}", refer.File, refer.Count)
 
-		} else if refer.Type == "text" { // dir/users.txt:2
+		} else if refer.Type == constant.ResTypeText { // dir/users.txt:2
 			field.Range = fmt.Sprintf("%s:%d", refer.File, refer.Step)
-		} else if refer.Type == "config" { // dir/users.txt:2
+		} else if refer.Type == constant.ResTypeConfig { // dir/users.txt:2
 			field.Config = fmt.Sprintf("%s", refer.File)
+		} else if refer.Type == constant.ResTypeValue { // dir/users.txt:2
+			field.Value = fmt.Sprintf("%s", refer.Value)
 		}
 	}
 }
@@ -80,46 +82,46 @@ func GetRelatedPathWithResDir(p string) (ret string) {
 }
 
 //func instancesItemToResInstForExport(item model.ZdInstancesItem) (inst model.ResInstancesItem) {
-	//	inst.Note = item.Note
-	//
-	//	for _, child := range item.Fields {
-	//		childField := model.DefField{}
-	//		instancesItemToResFieldForExport(*child, &childField)
-	//
-	//		inst.Fields = append(inst.Fields, childField)
-	//	}
-	//
-	//	if len(inst.Fields) == 0 {
-	//		inst.Fields = nil
-	//	}
-	//	if len(inst.Froms) == 0 {
-	//		inst.Froms = nil
-	//	}
-	//
-	//	return
-	//}
-	//func instancesItemToResFieldForExport(item model.ZdInstancesItem, field *model.DefField) {
-	//	for _, item := range item.Fields {
-	//		childField := model.DefField{}
-	//		instancesItemToResFieldForExport(*item, &childField)
-	//
-	//		field.Fields = append(field.Fields, childField)
-	//	}
-	//
-	//	for _, from := range item.Froms { // only one level
-	//		childField := model.DefField{}
-	//		genFieldFromZdInstancesItem(*from, &childField)
-	//
-	//		field.Froms = append(field.Froms, childField)
-	//	}
-	//
-	//	if len(field.Fields) == 0 {
-	//		field.Fields = nil
-	//	}
-	//	if len(field.Froms) == 0 {
-	//		field.Froms = nil
-	//	}
-	//}
+//	inst.Note = item.Note
+//
+//	for _, child := range item.Fields {
+//		childField := model.DefField{}
+//		instancesItemToResFieldForExport(*child, &childField)
+//
+//		inst.Fields = append(inst.Fields, childField)
+//	}
+//
+//	if len(inst.Fields) == 0 {
+//		inst.Fields = nil
+//	}
+//	if len(inst.Froms) == 0 {
+//		inst.Froms = nil
+//	}
+//
+//	return
+//}
+//func instancesItemToResFieldForExport(item model.ZdInstancesItem, field *model.DefField) {
+//	for _, item := range item.Fields {
+//		childField := model.DefField{}
+//		instancesItemToResFieldForExport(*item, &childField)
+//
+//		field.Fields = append(field.Fields, childField)
+//	}
+//
+//	for _, from := range item.Froms { // only one level
+//		childField := model.DefField{}
+//		genFieldFromZdInstancesItem(*from, &childField)
+//
+//		field.Froms = append(field.Froms, childField)
+//	}
+//
+//	if len(field.Fields) == 0 {
+//		field.Fields = nil
+//	}
+//	if len(field.Froms) == 0 {
+//		field.Froms = nil
+//	}
+//}
 //}
 //func genFieldFromZdInstancesItem(item model.ZdInstancesItem, field *model.DefField) () {
 //	field.Field = item.Field

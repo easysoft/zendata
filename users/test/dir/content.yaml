@@ -2,6 +2,7 @@ title: 被引用测试
 desc: ""
 fields:
 - field: field1
-  range: 1-10
+  range: '`fd`'
+  value: "($field_step_negative * $field_nested_range) * -1 + 1000"
   prefix: '['
   postfix: "]\t"
