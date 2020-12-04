@@ -315,7 +315,9 @@ func Init() (err error) {
 	textService := serverService.NewTextService(textRepo)
 	excelService := serverService.NewExcelService(excelRepo)
 	configService := serverService.NewConfigService(configRepo, sectionRepo)
-	sectionService := serverService.NewSectionService(fieldRepo, instancesRepo, sectionRepo, defService, instancesService)
+	sectionService := serverService.NewSectionService(
+		fieldRepo, configRepo, rangesRepo, instancesRepo, sectionRepo, defService,
+		instancesService, rangesService, configService)
 	resService := serverService.NewResService(rangesRepo, instancesRepo,
 		configRepo, excelRepo, textRepo, defRepo)
 
@@ -548,6 +550,10 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data = s.configService.Save(&ranges)
 	case "removeConfig":
 		err = s.configService.Remove(reqData.Id)
+
+	case "getResConfigItemTree":
+		ret.Data = s.configService.GConfigItemTree(reqData.Id)
+
 	default:
 		ret.Code = 0
 		ret.Msg = "api not found"

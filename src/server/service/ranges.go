@@ -139,6 +139,10 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	return
 }
 
+func (s *RangesService) updateYamlByItem(itemId uint) (err error) {
+	item, _ := s.rangesRepo.GetItem(itemId)
+	return s.updateYaml(item.RangesID)
+}
 func (s *RangesService) updateYaml(id uint) (err error) {
 	var po model.ZdRanges
 	po, _ = s.rangesRepo.Get(id)
@@ -160,6 +164,7 @@ func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
 	s.rangesRepo.GenRangesRes(*ranges, &yamlObj)
 
 	for _, item := range items {
+
 		yamlObj.Ranges[item.Field] = item.Value
 	}
 

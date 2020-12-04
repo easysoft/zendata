@@ -1,7 +1,7 @@
 title: 系列测试2
 desc: 系列测试
 ranges:
-  large: 10001-99999,a-z,[user1,user-2],`user-3`
+  large: 7-99999,a-z,[user1,user-2],`user-3`
   medium: 101-199
   netmask2: 8,16,24
   small: 1-9

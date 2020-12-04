@@ -6,11 +6,15 @@ import (
 )
 
 type SectionService struct {
-	fieldRepo   *serverRepo.FieldRepo
-	instancesRepo   *serverRepo.InstancesRepo
+	fieldRepo     *serverRepo.FieldRepo
+	configRepo    *serverRepo.ConfigRepo
+	rangesRepo    *serverRepo.RangesRepo
+	instancesRepo *serverRepo.InstancesRepo
 
-	sectionRepo *serverRepo.SectionRepo
-	defService *DefService
+	sectionRepo      *serverRepo.SectionRepo
+	defService       *DefService
+	configService    *ConfigService
+	rangesService    *RangesService
 	instancesService *InstancesService
 }
 
@@ -45,6 +49,12 @@ func (s *SectionService) Update(section *model.ZdSection) (err error) {
 	if ownerType == "def" {
 		s.fieldRepo.SetIsRange(section.OwnerID, true)
 		s.defService.updateYamlByField(section.OwnerID)
+
+	} else if ownerType == "config" {
+		s.configService.updateYaml(section.OwnerID)
+	} else if ownerType == "ranges" {
+		s.rangesService.updateYamlByItem(section.OwnerID)
+
 	} else if ownerType == "instances" {
 		s.instancesRepo.SetIsRange(section.OwnerID, true)
 		s.instancesService.updateYamlByItem(section.OwnerID)
@@ -59,11 +69,15 @@ func (s *SectionService) Remove(sectionId int, ownerType string) (ownerId uint, 
 
 	err = s.sectionRepo.Remove(uint(sectionId), ownerType)
 
-
 	s.updateFieldRangeProp(ownerId, ownerType)
 	if ownerType == "def" {
 		s.fieldRepo.SetIsRange(section.OwnerID, true)
 		s.defService.updateYamlByField(section.OwnerID)
+	} else if ownerType == "config" {
+		s.configService.updateYaml(section.OwnerID)
+	} else if ownerType == "ranges" {
+		s.rangesService.updateYamlByItem(section.OwnerID)
+
 	} else if ownerType == "instances" {
 		s.instancesRepo.SetIsRange(section.OwnerID, true)
 		s.instancesService.updateYamlByItem(section.OwnerID)
@@ -85,6 +99,10 @@ func (s *SectionService) updateFieldRangeProp(ownerId uint, ownerType string) (e
 
 	if ownerType == "def" {
 		s.fieldRepo.UpdateRange(rangeStr, ownerId)
+	} else if ownerType == "config" {
+		s.configRepo.UpdateConfigRange(rangeStr, ownerId)
+	} else if ownerType == "ranges" {
+		s.rangesRepo.UpdateItemRange(rangeStr, ownerId)
 	} else if ownerType == "instances" {
 		s.instancesRepo.UpdateItemRange(rangeStr, ownerId)
 	}
@@ -92,8 +110,18 @@ func (s *SectionService) updateFieldRangeProp(ownerId uint, ownerType string) (e
 	return
 }
 
-func NewSectionService(fieldRepo *serverRepo.FieldRepo, instancesRepo *serverRepo.InstancesRepo,
-	sectionRepo *serverRepo.SectionRepo, defService *DefService, instancesService *InstancesService) *SectionService {
+func NewSectionService(
+	fieldRepo *serverRepo.FieldRepo,
+	configRepo *serverRepo.ConfigRepo, rangesRepo *serverRepo.RangesRepo, instancesRepo *serverRepo.InstancesRepo,
+
+	sectionRepo *serverRepo.SectionRepo,
+
+	defService *DefService, instancesService *InstancesService,
+	rangesService *RangesService, configService *ConfigService) *SectionService {
 	return &SectionService{fieldRepo: fieldRepo, sectionRepo: sectionRepo,
-		defService: defService, instancesService: instancesService, instancesRepo: instancesRepo}
+		configRepo: configRepo, rangesRepo: rangesRepo,
+		defService: defService, instancesService: instancesService,
+
+		instancesRepo: instancesRepo,
+		rangesService: rangesService, configService: configService}
 }

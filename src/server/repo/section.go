@@ -6,6 +6,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/jinzhu/gorm"
 	"strconv"
+	"strings"
 )
 
 type SectionRepo struct {
@@ -56,7 +57,19 @@ func (r *SectionRepo) SaveFieldSectionToDB(rangeSection string, ord int, fieldID
 	} else {
 		step, _ = strconv.Atoi(stepStr)
 	}
-	section := model.ZdSection{OwnerType: ownerType, OwnerID: fieldID, Type: typ, Value: desc, Ord: ord,
+
+	start := ""
+	end := ""
+	if typ == "interval" {
+		arr := strings.Split(desc, "-")
+		start = arr[0]
+		if len(arr) > 1 {
+			end = arr[1]
+		}
+	}
+
+	section := model.ZdSection{OwnerType: ownerType, OwnerID: fieldID, Type: typ,
+		Value: desc, Start: start, End: end, Ord: ord,
 		Step: step, Repeat: countStr, Rand: rand}
 
 	r.Create(&section)

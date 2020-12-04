@@ -166,6 +166,17 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	return
 }
 
+func (s *ConfigService) GConfigItemTree(configId int) (root model.ZdRangesItem) {
+	root.ID = 0
+	root.Field = "字段"
+
+	item := model.ZdRangesItem{ParentID: root.ID, Field: "配置"}
+	item.ID = uint(configId)
+	root.Fields = append(root.Fields, &item)
+
+	return
+}
+
 func NewConfigService(configRepo *serverRepo.ConfigRepo, sectionRepo *serverRepo.SectionRepo) *ConfigService {
 	return &ConfigService{configRepo: configRepo, sectionRepo: sectionRepo}
 }

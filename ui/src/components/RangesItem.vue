@@ -13,19 +13,22 @@
               <a-input v-model="model.field" />
             </a-form-model-item>
         </a-row>
-
-        <field-range-component
-            ref="rangeComp"
-            :type="'rangesItem'"
-            :model="model"
-            :time2="time">
-        </field-range-component>
-
         <a-row :gutter="colsFull">
           <a-form-model-item class="center">
             <a-button @click="save" type="primary">保存</a-button>
             <a-button @click="reset" style="margin-left: 10px;">重置</a-button>
           </a-form-model-item>
+        </a-row>
+
+        <a-row :gutter="colsFull">
+          <a-col :offset="2">
+            <field-range-component
+                ref="rangeComp"
+                :type="'ranges'"
+                :model="model"
+                :time2="time">
+            </field-range-component>
+          </a-col>
         </a-row>
       </a-form-model>
     </div>

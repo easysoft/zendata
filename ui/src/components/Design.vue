@@ -43,6 +43,7 @@
 
       <div class="right" :style="styl">
         <div v-if="rightVisible">
+
           <div v-if="type=='def' || type=='instances'">
             <a-tabs :activeKey="tabKey" @change="onTabChange" type="card">
               <a-tab-pane key="info" tab="编辑信息">
@@ -81,7 +82,6 @@
               <a-tab-pane key="preview" tab="预览" force-render>
                 <div class="preview-data" v-html="previewData"></div>
               </a-tab-pane>
-
             </a-tabs>
           </div>
 
@@ -89,9 +89,31 @@
             <res-ranges-item-component
                 ref="rangesItem"
                 :model="modelData"
+                :time="time2"
                 @save="onModelSave">
             </res-ranges-item-component>
           </div>
+
+          <div v-if="type=='config'"> <!-- no item object, show sections page -->
+            <div class="head">
+              <div class="title">
+                字段编辑
+              </div>
+              <div class="buttons"></div>
+            </div>
+
+            <a-row>
+              <a-col :offset="2">
+                <field-range-component
+                    ref="rangeComp"
+                    :type="'config'"
+                    :model="modelData"
+                    :time2="time2">
+                </field-range-component>
+              </a-col>
+            </a-row>
+          </div>
+
         </div>
       </div>
     </div>
@@ -115,12 +137,13 @@
 import { getDefFieldTree, getDefField, createDefField, removeDefField, moveDefField,
          getResRangesItemTree, getResRangesItem, createResRangesItem, removeResRangesItem,
          getResInstancesItemTree, getResInstancesItem, createResInstancesItem, removeResInstancesItem,
+         getResConfigItemTree,
 } from "../api/manage";
 import FieldInfoComponent from "./FieldInfo";
 import FieldRangeComponent from "./FieldRange";
 import FieldReferComponent from "./FieldRefer";
 import ResRangesItemComponent from "./RangesItem"
-import {ResTypeDef, ResTypeInstances, ResTypeRanges} from "../api/utils";
+import {ResTypeDef, ResTypeInstances, ResTypeRanges, ResTypeConfig} from "../api/utils";
 import {previewFieldData} from "../api/manage";
 
 export default {
@@ -227,6 +250,12 @@ export default {
           console.log('getResInstancesItemTree', json)
           this.loadTreeCallback(json, selectedKey)
         })
+      } else if (this.type === ResTypeConfig) {
+        getResConfigItemTree(this.modelProp.id).then(json => {
+          console.log('getResConfigItemTree', json)
+          this.selectedKeys = [this.modelProp.id]
+          this.loadTreeCallback(json, this.modelProp.id)
+        })
       }
     },
     loadTreeCallback(json, selectedKey) {
@@ -260,7 +289,8 @@ export default {
 
       const node = this.nodeMap[e.node.eventKey]
       console.log('node', node)
-      if ((this.type === 'def' && node.parentID == 0) || (node.fields && node.fields.length > 0)) {
+      if ((this.type === 'def' && node.parentID == 0) || (this.type === 'config' && node.id == 0)
+          || (node.fields && node.fields.length > 0)) {
         this.rightVisible = false
         this.modelData = {}
         return
@@ -292,6 +322,9 @@ export default {
           this.modelData = res.data
           this.time2 = Date.now() // trigger data refresh
         })
+      } else if (this.type === 'config') {
+        this.modelData = {id: id}
+        this.time2 = Date.now() // trigger data refresh
       }
     },
     menuClick (e) {

@@ -21,7 +21,7 @@ func (r *RangesRepo) List(keywords string, page int) (models []*model.ZdRanges, 
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
 	if page > 0 {
-		query = query.Offset((page-1) * constant.PageSize).Limit(constant.PageSize)
+		query = query.Offset((page - 1) * constant.PageSize).Limit(constant.PageSize)
 	}
 
 	err = query.Find(&models).Error
@@ -96,6 +96,12 @@ func (r *RangesRepo) UpdateYaml(po model.ZdRanges) (err error) {
 func (r *RangesRepo) GenRangesRes(ranges model.ZdRanges, res *model.ResRanges) {
 	res.Title = ranges.Title
 	res.Desc = ranges.Desc
+}
+
+func (r *RangesRepo) UpdateItemRange(rang string, id uint) (err error) {
+	err = r.db.Model(&model.ZdRangesItem{}).Where("id=?", id).Update("value", rang).Error
+
+	return
 }
 
 func NewRangesRepo(db *gorm.DB) *RangesRepo {

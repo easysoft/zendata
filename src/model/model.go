@@ -83,7 +83,7 @@ type ZdSection struct {
 	Model
 	OwnerType string `gorm:"column:ownerType" json:"ownerType"` // field or instances
 	OwnerID   uint   `gorm:"column:ownerID" json:"ownerID"`
-	Type      string `gorm:"column:type;default:scope" json:"type"`
+	Type      string `gorm:"column:type;default:interval" json:"type"`
 	Value     string `gorm:"column:value" json:"value"`
 	Ord       int    `gorm:"column:ord;default:1" json:"ord"`
 

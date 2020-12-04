@@ -293,6 +293,25 @@ export function removeResInstancesItem (itemId, rangesId) {
   })
 }
 
+export function getResConfigItemTree (id) {
+  const data = {'action': 'getResConfigItemTree', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+export function getResConfigItem (id) {
+  const data = {'action': 'getResConfigItem', id: id}
+
+  return request({
+    url: api.admin,
+    method: 'post',
+    data: data
+  })
+}
+
 export function listText (keywords, page) {
   const data = {'action': 'listText', keywords: keywords, page: page}
 

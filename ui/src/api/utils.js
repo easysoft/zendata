@@ -4,7 +4,8 @@ const PageSize = 15
 const ResTypeDef = "def"
 const ResTypeRanges = "ranges"
 const ResTypeInstances = "instances"
-export { PageSize, ResTypeDef, ResTypeRanges, ResTypeInstances }
+const ResTypeConfig = "config"
+export { PageSize, ResTypeDef, ResTypeRanges, ResTypeInstances, ResTypeConfig }
 
 export function checkLoop (rule, value, callback){
   console.log('checkLoop', value)

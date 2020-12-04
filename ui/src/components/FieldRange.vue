@@ -201,6 +201,7 @@ export default {
   },
   methods: {
     loadData () {
+      console.log('loadData', this.type, this.model)
       if (!this.model.id) return
 
       listSection(this.model.id, this.type).then(res => {
@@ -216,6 +217,8 @@ export default {
     },
 
     editSection (item) {
+      console.log('editSection', item)
+
       if (item.type === 'interval') {
         this.editTitle = '编辑范围'
       } else if (item.type === 'literal') {

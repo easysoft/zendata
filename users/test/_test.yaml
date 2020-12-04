@@ -2,7 +2,7 @@ title: 数据测试2
 desc: ""
 fields:
 - field: VVV
-  range: a-z,[user1,user-2],`user-3`
+  range: 1-z,[user1,user-2],`user-3`
   prefix: '['
   postfix: ']'
   loop: "2"

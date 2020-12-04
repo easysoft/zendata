@@ -21,7 +21,7 @@ func (r *ConfigRepo) List(keywords string, page int) (models []*model.ZdConfig, 
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
 	if page > 0 {
-		query = query.Offset((page-1) * constant.PageSize).Limit(constant.PageSize)
+		query = query.Offset((page - 1) * constant.PageSize).Limit(constant.PageSize)
 	}
 
 	err = query.Find(&models).Error
@@ -61,12 +61,19 @@ func (r *ConfigRepo) UpdateYaml(po model.ZdConfig) (err error) {
 func (r *ConfigRepo) GenConfigRes(config model.ZdConfig, res *model.ResConfig) {
 	res.Title = config.Title
 	res.Desc = config.Desc
-	res.Range = config.Range
 	res.Prefix = config.Prefix
 	res.Postfix = config.Postfix
 	res.Loop = config.Loop
 	res.Loopfix = config.Loopfix
 	res.Format = config.Format
+
+	res.Range = config.Range
+}
+
+func (r *ConfigRepo) UpdateConfigRange(rang string, id uint) (err error) {
+	err = r.db.Model(&model.ZdConfig{}).Where("id=?", id).Update("range", rang).Error
+
+	return
 }
 
 func NewConfigRepo(db *gorm.DB) *ConfigRepo {

@@ -22,6 +22,7 @@
 
       <span slot="action" slot-scope="record">
         <a @click="edit(record)">编辑</a> |
+        <a @click="design(record)">设计</a> |
 
         <a-popconfirm
             title="确认删除？"
@@ -51,6 +52,18 @@
       <a-pagination @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
     </div>
 
+    <div class="full-screen-modal">
+      <design-component
+          ref="designPage"
+          type="config"
+          :visible="designVisible"
+          :modelProp="designModel"
+          :time="time"
+          @ok="handleDesignOk"
+          @cancel="handleDesignCancel" >
+      </design-component>
+    </div>
+
   </div>
 </template>
 
@@ -58,6 +71,7 @@
 
 import {listConfig, removeConfig} from "../../../../api/manage";
 import {PageSize, pathToRelated} from "../../../../api/utils";
+import { DesignComponent } from '../../../../components'
 import debounce from "lodash.debounce"
 
 const columns = [
@@ -80,6 +94,7 @@ const columns = [
 export default {
   name: 'ConfigList',
   components: {
+    DesignComponent
   },
   data() {
     return {
@@ -124,12 +139,27 @@ export default {
       console.log(record)
       this.$router.push({path: `/data/buildin/config/edit/${record.id}`});
     },
+    design(record) {
+      this.time = Date.now() // trigger data refresh
+
+      this.designVisible = true
+      this.designModel = record
+    },
     remove(record) {
       console.log(record)
       removeConfig(record.id).then(json => {
         console.log('removeConfig', json)
         this.loadData()
       })
+    },
+
+    handleDesignOk() {
+      console.log('handleDesignOk')
+      this.designVisible = false
+    },
+    handleDesignCancel() {
+      console.log('handleDesignCancel')
+      this.designVisible = false
     },
 
     onPageChange(page, pageSize) {
