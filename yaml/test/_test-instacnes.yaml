@@ -13,7 +13,7 @@ instances:
     mode: parallel
     fields:
     - field: field1-1
-      range: 3-7:12{3},0-9
+      range: a-z,[user1,user-2],`user-3`
       postfix: ','
       type: list
       mode: parallel

@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
@@ -17,8 +18,9 @@ import (
 )
 
 type ConfigService struct {
-	configRepo *serverRepo.ConfigRepo
-	resService *ResService
+	configRepo  *serverRepo.ConfigRepo
+	resService  *ResService
+	sectionRepo *serverRepo.SectionRepo
 }
 
 func (s *ConfigService) List(keywords string, page int) (list []*model.ZdConfig, total int) {
@@ -140,7 +142,7 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, vari.WorkDir + constant.ResDirYaml) > -1 {
+	if strings.Index(po.Path, vari.WorkDir+constant.ResDirYaml) > -1 {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeConfig)
 	} else {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeConfig)
@@ -156,9 +158,14 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 
 	s.configRepo.Create(&po)
 
+	rangeSections := gen.ParseRangeProperty(po.Range)
+	for i, rangeSection := range rangeSections {
+		s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, po.ID, "config")
+	}
+
 	return
 }
 
-func NewConfigService(configRepo *serverRepo.ConfigRepo) *ConfigService {
-	return &ConfigService{configRepo: configRepo}
+func NewConfigService(configRepo *serverRepo.ConfigRepo, sectionRepo *serverRepo.SectionRepo) *ConfigService {
+	return &ConfigService{configRepo: configRepo, sectionRepo: sectionRepo}
 }

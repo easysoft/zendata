@@ -20,9 +20,11 @@ import (
 )
 
 type InstancesService struct {
-	instancesRepo *serverRepo.InstancesRepo
-	referRepo  *serverRepo.ReferRepo
-	resService *ResService
+	instancesRepo  *serverRepo.InstancesRepo
+	referRepo      *serverRepo.ReferRepo
+	resService     *ResService
+	sectionService *SectionService
+	sectionRepo    *serverRepo.SectionRepo
 }
 
 func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInstances, total int) {
@@ -167,7 +169,7 @@ func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
 
 	for i, item := range po.Instances {
 		item.Ord = i + 1
-		s.saveItemToDB(&item, fi.Path,0, po.ID)
+		s.saveItemToDB(&item, fi.Path, 0, po.ID)
 	}
 
 	return
@@ -194,6 +196,10 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 	if item.Mode == "" {
 		item.Mode = constant.ModeParallel
 	}
+	item.Range = strings.TrimSpace(item.Range)
+
+	// save item
+	s.instancesRepo.SaveItem(item)
 
 	// create refer
 	refer := model.ZdRefer{OwnerType: "instances", OwnerID: item.ID}
@@ -202,6 +208,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 		log.Println("")
 	}
 
+	needToCreateSections := false
 	if item.Select != "" { // refer to excel
 		refer.Type = constant.ResTypeExcel
 
@@ -230,7 +237,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 		refer.Type = constant.ResTypeConfig
 
 		rangeSections := gen.ParseRangeProperty(item.Config) // dir/config.yaml
-		if len(rangeSections) > 0 {                           // only get the first one
+		if len(rangeSections) > 0 {                          // only get the first one
 			rangeSection := rangeSections[0]
 			desc, _, count := gen.ParseRangeSection(rangeSection)
 			refer.Count = count
@@ -240,39 +247,47 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 		}
 
 	} else if item.Range != "" { // deal with yaml and text refer using range prop
-		item.Range = strings.TrimSpace(item.Range)
+
 		rangeSections := gen.ParseRangeProperty(item.Range)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
 			desc, step, count := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
+			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
+				if path.Ext(desc) == ".txt" { // dir/users.txt:2
+					refer.Type = constant.ResTypeText
 
-			if path.Ext(desc) == ".txt" { // dir/users.txt:2
-				refer.Type = constant.ResTypeText
+					if strings.ToLower(step) == "r" {
+						refer.Rand = true
+					} else {
+						refer.Step, _ = strconv.Atoi(step)
+					}
 
-				if strings.ToLower(step) == "r" {
-					refer.Rand = true
-				} else {
-					refer.Step, _ = strconv.Atoi(step)
+				} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
+					refer.Type = constant.ResTypeYaml
+
+					refer.Count = count
 				}
 
-			} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
-				refer.Type = constant.ResTypeYaml
-
-				refer.Count = count
-			}
-			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
 				path := fileUtils.ConvertReferRangeToPath(desc, currPath)
 				refer.File = GetRelatedPathWithResDir(path)
+			} else { // like 1-9,a-z
+				needToCreateSections = true
 			}
 		}
 	}
 
-	// save item
-	s.instancesRepo.SaveItem(item)
-
 	// save refer
 	refer.OwnerID = item.ID
 	s.referRepo.Save(&refer)
+
+	// gen sections if needed
+	if needToCreateSections {
+		rangeSections := gen.ParseRangeProperty(item.Range)
+
+		for i, rangeSection := range rangeSections {
+			s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "instances")
+		}
+	}
 
 	// deal with field's children
 	for i, child := range item.Fields {
@@ -281,8 +296,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 	}
 }
 
-
-
-func NewInstancesService(instancesRepo *serverRepo.InstancesRepo, referRepo *serverRepo.ReferRepo) *InstancesService {
-	return &InstancesService{instancesRepo: instancesRepo, referRepo: referRepo}
+func NewInstancesService(instancesRepo *serverRepo.InstancesRepo, referRepo *serverRepo.ReferRepo,
+	sectionRepo *serverRepo.SectionRepo) *InstancesService {
+	return &InstancesService{instancesRepo: instancesRepo, referRepo: referRepo, sectionRepo: sectionRepo}
 }

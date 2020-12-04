@@ -25,7 +25,8 @@ type DefService struct {
 	referRepo   *serverRepo.ReferRepo
 	sectionRepo *serverRepo.SectionRepo
 
-	resService *ResService
+	resService     *ResService
+	sectionService *SectionService
 }
 
 func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total int) {
@@ -322,7 +323,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 		rangeSections := gen.ParseRangeProperty(field.Range)
 
 		for i, rangeSection := range rangeSections {
-			s.saveFieldSectionToDB(rangeSection, i, field.ID, field.DefID)
+			s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, field.ID, "def")
 		}
 	}
 
@@ -332,32 +333,9 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 	}
 }
 
-func (s *DefService) saveFieldSectionToDB(rangeSection string, ord int, fieldID, defID uint) {
-	descStr, stepStr, count := gen.ParseRangeSection(rangeSection)
-	typ, desc := gen.ParseRangeSectionDesc(descStr)
-
-	if typ == "literal" && desc[:1] == string(constant.LeftBrackets) &&
-		desc[len(desc)-1:] == string(constant.RightBrackets) {
-
-		desc = "[" + desc[1:len(desc)-1] + "]"
-		typ = "list"
-	}
-
-	countStr := strconv.Itoa(count)
-	rand := false
-	step := 1
-	if stepStr == "r" {
-		rand = true
-	} else {
-		step, _ = strconv.Atoi(stepStr)
-	}
-	section := model.ZdSection{OwnerType: "def", OwnerID: fieldID, Type: typ, Value: desc, Ord: ord,
-		Step: step, Repeat: countStr, Rand: rand}
-
-	s.sectionRepo.Create(&section)
-}
-
-func NewDefService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo, sectionRepo *serverRepo.SectionRepo,
+func NewDefService(defRepo *serverRepo.DefRepo,
+	fieldRepo *serverRepo.FieldRepo,
+	sectionRepo *serverRepo.SectionRepo,
 	referRepo *serverRepo.ReferRepo) *DefService {
 	return &DefService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo, sectionRepo: sectionRepo}
 }

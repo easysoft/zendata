@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/server/repo"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
@@ -16,8 +17,9 @@ import (
 )
 
 type RangesService struct {
-	rangesRepo *serverRepo.RangesRepo
-	resService *ResService
+	rangesRepo  *serverRepo.RangesRepo
+	resService  *ResService
+	sectionRepo *serverRepo.SectionRepo
 }
 
 func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges, total int) {
@@ -110,7 +112,7 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, vari.WorkDir + constant.ResDirYaml) > -1 {
+	if strings.Index(po.Path, vari.WorkDir+constant.ResDirYaml) > -1 {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeRanges)
 	} else {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeRanges)
@@ -127,6 +129,11 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 		item.Ord = i
 		s.rangesRepo.SaveItem(&item)
 		i += 1
+
+		rangeSections := gen.ParseRangeProperty(item.Value)
+		for i, rangeSection := range rangeSections {
+			s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "ranges")
+		}
 	}
 
 	return
@@ -162,6 +169,6 @@ func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
 	return
 }
 
-func NewRangesService(rangesRepo *serverRepo.RangesRepo) *RangesService {
-	return &RangesService{rangesRepo: rangesRepo}
+func NewRangesService(rangesRepo *serverRepo.RangesRepo, sectionRepo *serverRepo.SectionRepo) *RangesService {
+	return &RangesService{rangesRepo: rangesRepo, sectionRepo: sectionRepo}
 }

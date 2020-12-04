@@ -149,11 +149,12 @@ func (*ZdRanges) TableName() string {
 
 type ZdRangesItem struct {
 	Model
-	RangesID uint        `gorm:"column:rangesID" json:"rangesID"`
-	Field    string      `gorm:"column:name" json:"field"`
-	Ord      int         `gorm:"column:ord" json:"ord"`
-	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections"`
+	RangesID uint   `gorm:"column:rangesID" json:"rangesID"`
+	Field    string `gorm:"column:name" json:"field"`
+	Ord      int    `gorm:"column:ord" json:"ord"`
+
 	Value    string      `gorm:"column:value" json:"value"`
+	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections"`
 
 	// for tree node
 	ParentID uint            `gorm:"-" json:"parentID"`
@@ -249,6 +250,10 @@ type ZdConfig struct {
 	Folder    string `gorm:"folder" json:"folder" yaml:"-"`
 	FileName  string `gorm:"column:fileName" json:"fileName" yaml:"-"`
 	ReferName string `gorm:"column:referName" json:"referName" yaml:"-"`
+
+	// for range edit
+	IsRange  bool        `gorm:"column:isRange;default:true" json:"isRange" yaml:"-"`
+	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections" yaml:"-"`
 }
 
 func (*ZdConfig) TableName() string {
