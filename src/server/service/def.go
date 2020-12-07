@@ -217,7 +217,10 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 }
 func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parentID, defID uint) {
 	if field.Froms != nil && len(field.Froms) > 0 {
-		for _, from := range field.Froms {
+		for idx, from := range field.Froms {
+			if from.Field == "" {
+				from.Field = "from" + strconv.Itoa(idx+1)
+			}
 			s.saveFieldToDB(from, currPath, parentID, defID)
 		}
 

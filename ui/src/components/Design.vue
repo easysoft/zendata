@@ -1,7 +1,7 @@
 <template>
   <div id="design-page">
     <a-modal
-      :title="$t('title.design.title')"
+      :title="$t('msg.design.title')"
       width="100%"
       dialogClass="full-screen-modal"
       :visible="visible"

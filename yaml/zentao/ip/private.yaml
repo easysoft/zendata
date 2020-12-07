@@ -28,6 +28,7 @@ instances:
       - field: part1
         froms:
           - from: ip.v1.yaml
+            field: from1
             use: privateB{2}
           - from: ip.v1.yaml
             use: privateC{3}

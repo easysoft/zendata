@@ -77,7 +77,6 @@ const locale = {
   'tips.success.to.import': 'Success to import.',
   'tips.zero': '0 means retrieve all records.',
   'tips.expr': 'You use a expression like "($field_step_negative * $field_nested_range) * -1 + 1000".',
-  // 请输入数学运算表达式，由相同文件中的字段组成，如""
 
   'form.name': 'Name',
   'form.file': 'File',
