@@ -14,9 +14,12 @@
     "less": "^2.x",
     "less-loader": "^3.x",
     "lodash.debounce": "^4.0.8",
+    "moment": "^2.29.1",
+    "store": "^2.0.12",
     "vue": "^2.6.11",
     "vue-i18n": "^8.22.1",
-    "vue-router": "^3.4.8"
+    "vue-router": "^3.4.8",
+    "vuex": "^3.6.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

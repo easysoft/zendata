@@ -6,6 +6,9 @@
     <div class="center"></div>
     <div class="right">
       <span class="dir">工作目录：{{workDir}}</span>
+
+      <select-lang :prefixCls="'select-lang'" />
+
       <a href="https://www.zendata.cn/book/zendata/" target="_blank">帮助</a>
     </div>
   </div>
@@ -15,10 +18,12 @@
 
 import {getWorkDir} from "../api/manage";
 import {config} from "../utils/vari";
+import SelectLang from '../components/SelectLang'
 
 export default {
   name: 'Header',
   components: {
+    SelectLang
   },
   data () {
     return {
@@ -70,6 +75,11 @@ export default {
       display: inline-block;
       padding-right: 20px;
     }
+  }
+
+  .select-lang {
+    padding-right: 10px;
+    cursor: pointer;
   }
 }
 </style>

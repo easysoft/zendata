@@ -27,12 +27,14 @@ const routes = [
                             {
                                 path: 'list',
                                 name: 'mine-list',
-                                component: () => import('../views/data/mine/List')
+                                component: () => import('../views/data/mine/List'),
+                                meta: { title: 'menu.data.list' }
                             },
                             {
                                 path: 'edit/:id',
                                 name: 'mine-edit',
-                                component: () => import('../views/data/mine/Edit')
+                                component: () => import('../views/data/mine/Edit'),
+                                meta: { title: 'menu.data.edit' }
                             },
                         ],
                     },
@@ -49,12 +51,14 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'ranges-list',
-                                        component: () => import('../views/data/buildin/ranges/List')
+                                        component: () => import('../views/data/buildin/ranges/List'),
+                                        meta: { title: 'menu.ranges.list' }
                                     },
                                     {
                                         path: 'edit/:id',
                                         name: 'ranges-edit',
-                                        component: () => import('../views/data/buildin/ranges/Edit')
+                                        component: () => import('../views/data/buildin/ranges/Edit'),
+                                        meta: { title: 'menu.ranges.edit' }
                                     },
                                 ],
                             },
@@ -66,12 +70,14 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'instances-list',
-                                        component: () => import('../views/data/buildin/instances/List')
+                                        component: () => import('../views/data/buildin/instances/List'),
+                                        meta: { title: 'menu.instances.list' }
                                     },
                                     {
                                         path: 'edit/:id',
                                         name: 'instances-edit',
-                                        component: () => import('../views/data/buildin/instances/Edit')
+                                        component: () => import('../views/data/buildin/instances/Edit'),
+                                        meta: { title: 'menu.instances.edit' }
                                     },
                                 ],
                             },
@@ -83,12 +89,14 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'excel-list',
-                                        component: () => import('../views/data/buildin/excel/List')
+                                        component: () => import('../views/data/buildin/excel/List'),
+                                        meta: { title: 'menu.excel.list' }
                                     },
                                     {
                                         path: 'edit/:id',
                                         name: 'excel-edit',
-                                        component: () => import('../views/data/buildin/excel/Edit')
+                                        component: () => import('../views/data/buildin/excel/Edit'),
+                                        meta: { title: 'menu.excel.edit' }
                                     },
                                 ],
                             },
@@ -100,12 +108,14 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'config-list',
-                                        component: () => import('../views/data/buildin/config/List')
+                                        component: () => import('../views/data/buildin/config/List'),
+                                        meta: { title: 'menu.config.list' }
                                     },
                                     {
                                         path: 'edit/:id',
                                         name: 'config-edit',
-                                        component: () => import('../views/data/buildin/config/Edit')
+                                        component: () => import('../views/data/buildin/config/Edit'),
+                                        meta: { title: 'menu.config.edit' }
                                     },
                                 ],
                             },
@@ -117,12 +127,14 @@ const routes = [
                                     {
                                         path: 'list',
                                         name: 'text-list',
-                                        component: () => import('../views/data/buildin/text/List')
+                                        component: () => import('../views/data/buildin/text/List'),
+                                        meta: { title: 'menu.text.list' }
                                     },
                                     {
                                         path: 'edit/:id',
                                         name: 'text-edit',
-                                        component: () => import('../views/data/buildin/text/Edit')
+                                        component: () => import('../views/data/buildin/text/Edit'),
+                                        meta: { title: 'menu.text.edit' }
                                     },
                                 ],
                             },

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-
-// import { Button, message } from 'ant-design-vue';
+import store from './store/'
 
 import VueI18n from 'vue-i18n'
 import ConfigProvider from "ant-design-vue/lib/config-provider";
@@ -61,9 +60,6 @@ import 'ant-design-vue/lib/popover/style';
 import Tooltip from "ant-design-vue/lib/tooltip";
 import 'ant-design-vue/lib/tooltip/style';
 
-// import TreeSelect from "ant-design-vue/lib/tree-select";
-// import 'ant-design-vue/lib/tree-select/style';
-
 import Pagination from "ant-design-vue/lib/pagination";
 import 'ant-design-vue/lib/pagination/style';
 
@@ -104,7 +100,6 @@ Vue.use(Radio)
 Vue.use(Spin)
 Vue.use(Popover)
 Vue.use(Tooltip)
-// Vue.use(TreeSelect)
 Vue.use(Pagination)
 
 const i18n = new VueI18n({
@@ -116,6 +111,7 @@ const i18n = new VueI18n({
 
 new Vue({
   router,
+  store,
   i18n,
   render: h => h(App),
 }).$mount('#app')

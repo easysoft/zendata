@@ -8,11 +8,9 @@
 
 <script>
 
-import zh_CN from 'ant-design-vue/lib/locale-provider/zh_CN';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
+import { domTitle, setDocumentTitle } from './utils/dom'
+import { i18nRender } from '@/locales'
 
-moment.locale('zh-cn');
 export default {
   name: 'App',
   components: {
@@ -20,9 +18,16 @@ export default {
 
   data() {
     return {
-      locale: zh_CN,
     };
   },
+  computed: {
+    locale () {
+      // 切换语言时，更新标题
+      const { title } = this.$route.meta
+      title && (setDocumentTitle(`${i18nRender(title)} - ${domTitle}`))
+      return this.$i18n.getLocaleMessage(this.$store.getters.lang).antLocale
+    }
+  }
 }
 </script>
 
