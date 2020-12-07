@@ -1,15 +1,15 @@
 <template>
   <div class="header">
     <h2 class="left">
-      <a href="https://www.zendata.cn" target="_blank">ZenData</a>
+      <a href="https://www.zendata.cn" target="_blank">{{$t('site.title')}}</a>
     </h2>
     <div class="center"></div>
     <div class="right">
-      <span class="dir">工作目录：{{workDir}}</span>
+      <span class="dir">{{$t('msg.workdir')}}: {{workDir}}</span>
 
       <select-lang :prefixCls="'select-lang'" />
 
-      <a href="https://www.zendata.cn/book/zendata/" target="_blank">帮助</a>
+      <a href="https://www.zendata.cn/book/zendata/" target="_blank">{{$t('msg.help')}}</a>
     </div>
   </div>
 </template>

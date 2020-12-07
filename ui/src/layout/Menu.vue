@@ -7,26 +7,26 @@
         @click="handleClick"
     >
       <a-menu-item key="mine/list">
-        我的数据
+        {{ $t('msg.mine') }}
       </a-menu-item>
 
       <a-sub-menu key="buildin" @titleClick="titleClick">
-        <span slot="title"><span>內置数据</span></span>
+        <span slot="title"><span>{{ $t('msg.buildin') }}</span></span>
           <a-menu-item key="buildin/config/list">
-            字段
+            {{ $t('msg.config') }}
           </a-menu-item>
           <a-menu-item key="buildin/ranges/list">
-            序列
+            {{ $t('msg.ranges') }}
           </a-menu-item>
           <a-menu-item key="buildin/instances/list">
-            实例
+            {{ $t('msg.instances') }}
           </a-menu-item>
 
           <a-menu-item key="buildin/text/list">
-            文本
+            {{ $t('msg.text') }}
           </a-menu-item>
           <a-menu-item key="buildin/excel/list">
-            表格
+            {{ $t('msg.excel') }}
           </a-menu-item>
       </a-sub-menu>
     </a-menu>
@@ -41,7 +41,7 @@ export default {
   data () {
     return {
       current: [],
-      openKeys: ['buildin'],
+      openKeys: [],
     };
   },
   watch: {
@@ -58,12 +58,10 @@ export default {
   methods: {
     handleClick (e) {
       console.log('handleClick', e, this.$route.path, e.key)
-      // if (e.key == 'mine' && this.$route.path != '/data/mine/index') {
-      //   this.$router.push('/data/mine/index');
-      // } else {
-        const path = '/data/' + e.key
-        if (this.$route.path != path) this.$router.push(path);
-      // }
+      if (e.key.indexOf('buildin') > -1) this.openKeys = ['buildin']
+
+      const path = '/data/' + e.key
+      if (this.$route.path != path) this.$router.push(path);
     },
     titleClick (e) {
       console.log('titleClick', e)

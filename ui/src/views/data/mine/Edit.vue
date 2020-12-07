@@ -2,31 +2,31 @@
   <div>
     <div class="head">
       <div class="title">
-        测试数据<span v-if="id!=0">编辑</span><span v-if="id==0">新建</span>
+        <span v-if="id==0">{{ $t('title.data.create') }}</span>
+        <span v-if="id!=0">{{ $t('menu.data.edit') }}</span>
       </div>
       <div class="filter"></div>
       <div class="buttons">
-        <a-button type="primary" @click="back()">返回</a-button>
+        <a-button type="primary" @click="back()">{{ $t('action.back') }}</a-button>
       </div>
     </div>
 
     <div>
       <a-form-model ref="editForm" :model="model" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol">
-        <a-form-model-item label="名称" prop="title">
+        <a-form-model-item :label="$t('form.name')" prop="title">
           <a-input v-model="model.title" />
         </a-form-model-item>
 
-        <a-form-model-item label="目录" class="zui-input-group zui-input-with-tips">
+        <a-form-model-item :label="$t('form.dir')" class="zui-input-group zui-input-with-tips">
           <a-form-model-item prop="folder" :style="{ display: 'inline-block', width: 'calc(70% - 30px)' }">
-            <a-select v-model="model.folder" placeholder="请选择">
+            <a-select v-model="model.folder">
               <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
                 {{item.name}}</a-select-option>
             </a-select>
-            <span class="zui-input-tips">工作目录：{{workDir}}</span>
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '60px' }">
-            <span>子目录</span>
+            <span>{{ $t('form.folder') }}</span>
           </span>
 
           <a-form-model-item :style="{ display: 'inline-block', width: 'calc(30% - 30px)' }">
@@ -34,27 +34,20 @@
           </a-form-model-item>
         </a-form-model-item>
 
-        <a-form-model-item label="文件名" prop="fileName">
+        <a-form-model-item :label="$t('form.file.name')" prop="fileName">
           <a-input v-model="model.fileName" />
         </a-form-model-item>
 
-<!--        <a-form-model-item label="类型" prop="type">
-          <a-select v-model="model.type">
-            <a-select-option value="text">字符串</a-select-option>
-            <a-select-option value="article">文章</a-select-option>
-          </a-select>
-        </a-form-model-item>-->
-
-        <a-form-model-item label="描述" prop="desc">
+        <a-form-model-item :label="$t('form.desc')" prop="desc">
           <a-input v-model="model.desc" type="textarea" rows="3" />
         </a-form-model-item>
 
         <a-form-model-item :wrapper-col="{ span: 14, offset: 6 }">
           <a-button @click="save" type="primary">
-            保存
+            {{$t('action.save')}}
           </a-button>
           <a-button @click="reset" style="margin-left: 10px;">
-            重置
+            {{$t('action.reset')}}
           </a-button>
         </a-form-model-item>
       </a-form-model>
@@ -76,10 +69,10 @@ export default {
       wrapperCol: wrapperColLarge,
       rules: {
         title: [
-          { required: true, message: '名称不能为空', trigger: 'change' },
+          { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
         ],
         fileName: [
-          { required: true, message: '文件名不能为空', trigger: 'change' },
+          { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
         ],
         folder: [
           { validator: checkDirIsUsers, trigger: 'change' },

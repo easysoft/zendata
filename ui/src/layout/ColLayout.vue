@@ -3,7 +3,7 @@
     <div class="left">
       <Menu></Menu>
       <div class="sync">
-        <a-button @click="syncData" size="small" type="primary">从文件导入定义</a-button>
+        <a-button @click="syncData" size="small" type="primary">{{ $t('action.import.from.file') }}</a-button>
       </div>
     </div>
     <div class="content">
@@ -38,7 +38,7 @@ export default {
         console.log('syncData', json)
         if (json.code == 1) {
           this.$notification['success']({
-            message: '成功从文件导入定义！',
+            message: this.$i18n.t('tips.success.to.import'),
             placement: 'bottomLeft',
             duration: 3,
           });

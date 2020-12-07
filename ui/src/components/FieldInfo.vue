@@ -2,19 +2,19 @@
   <div>
     <a-form-model ref="editForm" :model="model" :rules="rules">
       <a-row :gutter="colsFull">
-          <a-form-model-item label="名称" prop="field" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-form-model-item :label="$t('form.name')" prop="field" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="model.field" />
           </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-form-model-item label="前缀" :labelCol="labelColFull" class="zui-input-group">
+        <a-form-model-item :label="$t('form.prefix')" :labelCol="labelColFull" class="zui-input-group">
           <a-form-model-item prop="prefix" :style="{ display: 'inline-block', width: 'calc(40% - 35px)' }">
             <a-input v-model="model.prefix" />
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '60px' }">
-            <span>后缀</span>
+            <span>{{$t('form.postfix')}}</span>
           </span>
 
           <a-form-model-item prop="postfix" :style="{ display: 'inline-block', width: 'calc(27% - 30px)' }">
@@ -24,14 +24,14 @@
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-form-model-item label="循环" :labelCol="labelColFull" class="zui-input-group">
+        <a-form-model-item :label="$t('form.loop')" :labelCol="labelColFull" class="zui-input-group">
           <a-form-model-item prop="loop" :style="{ display: 'inline-block', width: 'calc(40% - 35px)' }">
-            <a-input v-model="model.loop" placeholder="数字3，或区间1-3" />
+            <a-input v-model="model.loop" :placeholder="$t('tips.range.int')" />
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '60px' }">
-              <span>间隔</span>
-            </span>
+            <span> :label="$t('form.loopfix')"</span>
+          </span>
 
           <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(27% - 30px)' }">
             <a-input v-model="model.loopfix" />

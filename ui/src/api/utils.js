@@ -7,6 +7,8 @@ const ResTypeInstances = "instances"
 const ResTypeConfig = "config"
 export { PageSize, ResTypeDef, ResTypeRanges, ResTypeInstances, ResTypeConfig }
 
+import {i18nRender} from '../locales'
+
 export function checkLoop (rule, value, callback){
   console.log('checkLoop', value)
 
@@ -23,7 +25,7 @@ export function checkDirIsYaml (rule, value, callback){
   console.log('checkDirIsYaml', value)
 
   if (value.indexOf('yaml/') != 0) {
-    callback('存放资源的目录必须以yaml/')
+    callback(i18nRender('valid.folder.yaml'))
   }
 
   callback()
@@ -32,7 +34,7 @@ export function checkDirIsData (rule, value, callback){
   console.log('checkDirIsData', value)
 
   if (value.indexOf('data/') != 0) {
-    callback('存放Excel的目录必须以data/')
+    callback(i18nRender('valid.folder.data'))
   }
 
   callback()
@@ -41,7 +43,7 @@ export function checkDirIsUsers (rule, value, callback){
   console.log('checkDirIsUsers', value)
 
   if (value.indexOf('users/') != 0) {
-    callback('存放数据的目录必须以users/')
+    callback(i18nRender('valid.folder.users'))
   }
 
   callback()
