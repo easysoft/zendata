@@ -25,3 +25,8 @@ fields:
   - field: field_with_children
     prefix: "{"
     postfix: "}\t"
+
+  - field: chinese
+    range: [`测试`,实测]
+    prefix: "{"
+    postfix: "}\t"

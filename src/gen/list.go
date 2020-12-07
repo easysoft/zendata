@@ -39,19 +39,23 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 		return
 	}
 
-	rangeSections := ParseRangeProperty(rang) // 1
+	rangeSections := ParseRangeProperty(rang) // parse 1
 
 	index := 0
 	for _, rangeSection := range rangeSections {
-		if index >= constant.MaxNumb { break }
-		if rangeSection == "" { continue }
+		if index >= constant.MaxNumb {
+			break
+		}
+		if rangeSection == "" {
+			continue
+		}
 
-		descStr, stepStr, repeat := ParseRangeSection(rangeSection) // 2
+		descStr, stepStr, repeat := ParseRangeSection(rangeSection) // parse 2
 		if strings.ToLower(stepStr) == "r" {
 			(*field).IsRand = true
 		}
 
-		typ, desc := ParseRangeSectionDesc(descStr) // 3
+		typ, desc := ParseRangeSectionDesc(descStr) // parse 3
 
 		items := make([]interface{}, 0)
 		if typ == "literal" {
@@ -145,8 +149,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				rand = true
 			}
 
-			if (strings.Compare(startStr,endStr) > 0 && step.(int) > 0) ||
-					(strings.Compare(startStr,endStr) < 0 && step.(int) < 0) {
+			if (strings.Compare(startStr, endStr) > 0 && step.(int) > 0) ||
+				(strings.Compare(startStr, endStr) < 0 && step.(int) < 0) {
 				step = -1 * step.(int)
 			}
 			return "char", step, 0, rand
@@ -206,7 +210,9 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr
-	if len(elemArr) > 1 { endStr = elemArr[1] }
+	if len(elemArr) > 1 {
+		endStr = elemArr[1]
+	}
 
 	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
 
@@ -236,7 +242,9 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		items = GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat)
 
 	} else if dataType == "string" {
-		if repeat == 0 { repeat = 1 }
+		if repeat == 0 {
+			repeat = 1
+		}
 		for i := 0; i < repeat; i++ {
 			items = append(items, desc)
 		}

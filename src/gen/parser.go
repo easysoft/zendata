@@ -34,7 +34,7 @@ func ParseRangeProperty(rang string) []string {
 			backtickOpen = false
 		}
 
-		if i == len(runeArr) - 1 {
+		if i == len(runeArr)-1 {
 			temp += fmt.Sprintf("%c", c)
 			items = append(items, temp)
 		} else if !bracketsOpen && !backtickOpen && c == ',' {
@@ -62,12 +62,12 @@ func ParseDesc(desc string) (items []string) {
 
 	runeArr := []rune(desc)
 
-	if runeArr[0] == constant.Backtick &&  runeArr[len(runeArr) - 1] == constant.Backtick { 	// `xxx`
-		desc = string(runeArr[1 : len(desc) - 1])
+	if runeArr[0] == constant.Backtick && runeArr[len(runeArr)-1] == constant.Backtick { // `xxx`
+		desc = string(runeArr[1 : len(runeArr)-1])
 		items = append(items, desc)
 
-	} else if runeArr[0] == constant.LeftBrackets &&  runeArr[len(runeArr) - 1] == constant.RightBrackets { // [abc,123]
-		desc = string(runeArr[1 : len(desc) - 1])
+	} else if runeArr[0] == constant.LeftBrackets && runeArr[len(runeArr)-1] == constant.RightBrackets { // [abc,123]
+		desc = string(runeArr[1 : len(runeArr)-1])
 		items = strings.Split(desc, ",")
 
 	} else {
@@ -92,12 +92,14 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 	}
 
 	runeArr := []rune(item)
-	if (runeArr[0] == constant.Backtick &&  runeArr[len(runeArr) - 1] == constant.Backtick) || // `xxx`
-		(string(item[0]) == string(constant.LeftBrackets) && // (xxx)
-			string(item[len(item) - 1]) == string(constant.RightBrackets)) {
+	if (runeArr[0] == constant.Backtick && runeArr[len(runeArr)-1] == constant.Backtick) || // `xxx`
+		(string(runeArr[0]) == string(constant.LeftBrackets) && // (xxx)
+			string(runeArr[len(runeArr)-1]) == string(constant.RightBrackets)) {
 
 		entry = item
-		if repeat == 0 { repeat = 1 }
+		if repeat == 0 {
+			repeat = 1
+		}
 		return
 	}
 
@@ -114,7 +116,9 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 		step = strings.ToLower(sectionArr[1])
 	}
 
-	if repeat == 0 { repeat = 1 }
+	if repeat == 0 {
+		repeat = 1
+	}
 	return entry, step, repeat
 }
 
@@ -127,6 +131,7 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 */
 func ParseRangeSectionDesc(str string) (typ string, desc string) {
 	desc = strings.TrimSpace(str)
+	runeArr := []rune(desc)
 
 	if desc == "" {
 		typ = "literal"
@@ -138,8 +143,8 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		return
 	}
 
-	if string(desc[0]) == string(constant.LeftBrackets) && // [a-z,1-9,userA,UserB]
-		string(desc[len(desc)-1]) == string(constant.RightBrackets) {
+	if string(runeArr[0]) == string(constant.LeftBrackets) && // [a-z,1-9,userA,UserB]
+		string(runeArr[len(runeArr)-1]) == string(constant.RightBrackets) {
 
 		desc = removeBoundary(desc)
 		arr := strings.Split(desc, ",")
@@ -167,7 +172,7 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 
 	if strings.Contains(desc, ",") || strings.Contains(desc, "`") || !strings.Contains(desc, "-") {
 		typ = "literal"
-	} else  {
+	} else {
 		temp := removeBoundary(desc)
 
 		if isScopeStr(temp) {
@@ -197,7 +202,7 @@ func isScopeStr(str string) bool {
 	left := strings.TrimSpace(arr[0])
 	right := strings.TrimSpace(arr[1])
 
-	if len(left) != 1 || len(right) != 1 {
+	if len(left) != 1 || len(right) != 1 { // more than on char, must be number
 		leftRune := []rune(string(left[0]))[0]
 		rightRune := []rune(string(right[0]))[0]
 
@@ -234,4 +239,3 @@ func isCharOrNumberScope(str string) bool {
 
 	return false
 }
-
