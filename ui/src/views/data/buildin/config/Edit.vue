@@ -116,8 +116,8 @@
 
       <a-row :gutter="colsFull">
         <a-form-model-item class="center">
-          <a-button @click="save" type="primary">{{$t('action.save')}}</a-button>
-          <a-button @click="reset" style="margin-left: 10px;">{{$t('action.reset')}}</a-button>
+          <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
+          <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
         </a-form-model-item>
       </a-row>
     </a-form-model>
@@ -148,7 +148,7 @@ export default {
           { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
         ],
         loop: [
-          { validator: checkLoop, message: this.$i18n.t('valid.loop.format'), trigger: 'change' },
+          { validator: checkLoop, message: this.$i18n.t('valid.loop.check'), trigger: 'change' },
         ],
         folder: [
           { validator: checkDirIsYaml, trigger: 'change' },

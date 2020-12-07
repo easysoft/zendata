@@ -2,9 +2,9 @@
   <div class="panel">
     <a-form-model ref="editForm">
       <a-row :gutter="cols" class="title">
-        <a-col :span="col">类型</a-col>
-        <a-col :span="col">取值</a-col>
-        <a-col :span="col">操作</a-col>
+        <a-col :span="col">{{ $t('form.type') }}</a-col>
+        <a-col :span="col">{{ $t('form.value') }}</a-col>
+        <a-col :span="col">{{ $t('form.opt') }}</a-col>
       </a-row>
 
       <a-row v-if="!sections || sections.length == 0" :gutter="cols">
@@ -12,7 +12,7 @@
         <a-col :span="col"></a-col>
         <a-col :span="8">
           <a class="edit">
-            <a @click="insertSection()" class="edit">添加</a>
+            <a @click="insertSection()" class="edit">{{ $t('action.add') }}</a>
           </a>
         </a-col>
       </a-row>
@@ -22,9 +22,9 @@
         <a-col :span="col">
           <a-form-model-item prop="type" :wrapperCol="wrapperColFull">
             <a-select v-model="item.type">
-              <a-select-option value="interval">区间</a-select-option>
-              <a-select-option value="literal">常量</a-select-option>
-              <a-select-option value="list">列表</a-select-option>
+              <a-select-option value="interval">{{ $t('form.type.interval') }}</a-select-option>
+              <a-select-option value="literal">{{ $t('form.type.literal') }}</a-select-option>
+              <a-select-option value="list">{{ $t('form.type.list') }}</a-select-option>
             </a-select>
           </a-form-model-item>
         </a-col>
@@ -37,15 +37,15 @@
 
         <a-col :span="8">
           <a class="edit">
-            <a @click="insertSection(item)" class="edit">添加</a> &nbsp;
-            <a @click="editSection(item)" class="edit">编辑</a> &nbsp;
+            <a @click="insertSection(item)" class="edit">{{ $t('action.add') }}</a> &nbsp;
+            <a @click="editSection(item)" class="edit">{{ $t('action.edit') }}</a> &nbsp;
             <a-popconfirm
-                title="确认删除？"
-                ok-text="是"
-                cancel-text="否"
+                :title="$t('tips.delete')"
+                :okText="$t('msg.yes')"
+                :cancelText="$t('msg.no')"
                 @confirm="removeSection(item)"
             >
-              <a class="edit">删除</a>
+              <a class="edit">{{ $t('action.delete') }}</a>
             </a-popconfirm>
           </a>
         </a-col>
@@ -56,8 +56,8 @@
         :title="editTitle"
         :width="600"
         :visible="editSectionVisible"
-        okText="保存"
-        cancelText="取消"
+        :okText="$t('form.save')"
+        :cancelText="$t('form.cancel')"
         @ok="saveSection"
         @cancel="cancelSection">
       <div>
@@ -65,36 +65,36 @@
           <div v-if="section.type==='interval'">
             <a-row :gutter="cols">
               <a-col :span="cols">
-                <a-form-model-item label="开始" prop="start" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                  <a-input v-model="section.start" placeholder="数字或单个字母" />
+                <a-form-model-item :label="$t('form.start')" prop="start" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.start" :placeholder="$t('tips.number.or.letter')" />
                 </a-form-model-item>
               </a-col>
             </a-row>
             <a-row :gutter="cols">
               <a-col :span="cols">
-                <a-form-model-item label="结束" prop="end" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                  <a-input v-model="section.end" placeholder="数字或单个字母" />
+                <a-form-model-item :label="$t('form.end')" prop="end" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.end" :placeholder="$t('tips.number.or.letter')" />
                 </a-form-model-item>
               </a-col>
             </a-row>
             <a-row :gutter="cols">
               <a-col :span="cols">
-                <a-form-model-item label="重复次数" prop="repeat" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                <a-form-model-item :label="$t('form.repeat')" prop="repeat" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
                   <a-input v-model="section.repeat" :precision="0" :min="1" placeholder="" />
                 </a-form-model-item>
               </a-col>
             </a-row>
             <a-row :gutter="cols">
               <a-col :span="cols">
-                <a-form-model-item label="随机" prop="rand" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                <a-form-model-item :label="$t('form.rand')" prop="rand" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
                   <a-switch v-model="section.rand" />
                 </a-form-model-item>
               </a-col>
             </a-row>
             <a-row :gutter="cols" v-if="!section.rand">
               <a-col :span="cols">
-                <a-form-model-item label="步长" prop="step" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-                  <a-input v-model="section.step" placeholder="数字" />
+                <a-form-model-item :label="$t('form.step')" prop="step" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-input v-model="section.step" :placeholder="$t('tips.number')" />
                 </a-form-model-item>
               </a-col>
             </a-row>

@@ -2,23 +2,23 @@
   <div class="panel">
     <a-form-model ref="editForm" :model="refer" :rules="rules">
       <a-row :gutter="colsFull">
-        <a-form-model-item label="类型" prop="type" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-form-model-item :label="$t('form.type')" prop="type" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-select v-model="refer.type" @change="onReferTypeChanged">
-            <a-select-option value="config">字段</a-select-option>
-            <a-select-option value="ranges">序列</a-select-option>
-            <a-select-option value="instances">实例</a-select-option>
-            <a-select-option value="yaml">执行</a-select-option>
-            <a-select-option value="excel">表格</a-select-option>
-            <a-select-option value="text">文本</a-select-option>
-            <a-select-option value="value">表达式</a-select-option>
+            <a-select-option value="config">{{$t('msg.config')}}</a-select-option>
+            <a-select-option value="ranges">{{$t('msg.ranges')}}</a-select-option>
+            <a-select-option value="instances">{{$t('msg.instances')}}</a-select-option>
+            <a-select-option value="yaml">{{$t('msg.exec')}}</a-select-option>
+            <a-select-option value="excel">{{$t('msg.excel')}}</a-select-option>
+            <a-select-option value="text">{{$t('msg.text')}}</a-select-option>
+            <a-select-option value="value">{{$t('form.expr')}}</a-select-option>
           </a-select>
         </a-form-model-item>
       </a-row>
 
       <a-row v-if="refer.type && refer.type!='value'" :gutter="colsFull">
-          <a-form-model-item label="文件" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-form-model-item :label="$t('form.file')" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-select v-model="refer.file" @change="onReferFileChanged">
-              <a-select-option value="">选择</a-select-option>
+              <a-select-option value="">{{$t('tips.pls.select')}}</a-select-option>
               <a-select-option v-for="(f, i) in files" :value="f.referName" :key="i">
                 <span v-if="refer.type != 'excel'">{{ f.title }}</span>
                 <span v-if="refer.type == 'excel'">{{ f.referName }}</span>
@@ -28,9 +28,9 @@
       </a-row>
 
       <a-row v-if="refer.type==='excel'" :gutter="colsFull">
-        <a-form-model-item label="Excel表格" prop="sheet" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-form-model-item :label="$t('msg.excel.sheet')" prop="sheet" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-select v-model="refer.sheet" @change="onReferSheetChanged">
-            <a-select-option value="">选择</a-select-option>
+            <a-select-option value="">{{$t('tips.pls.select')}}</a-select-option>
             <a-select-option v-for="(f, i) in sheets" :value="f.sheet" :key="i">
               {{ f.sheet }}
             </a-select-option>
@@ -39,9 +39,9 @@
       </a-row>
 
       <a-row v-if="showColSection" :gutter="colsFull">
-        <a-form-model-item label="列名" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-form-model-item :label="$t('form.col')" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
            <a-select v-model="refer.colName">
-              <a-select-option value="">选择</a-select-option>
+              <a-select-option value="">{{$t('tips.pls.select')}}</a-select-option>
               <a-select-option v-for="f in fields" :key="f.name">
                 {{ f.name }}
               </a-select-option>
@@ -51,39 +51,37 @@
 
       <a-row v-if="showCount" :gutter="colsFull">
         <a-col :span="colsHalf">
-          <a-form-model-item label="取记录数" prop="count" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+          <a-form-model-item :label="$t('form.count')" prop="count" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <a-input v-model="refer.count" />
-            0表示取所有记录
+            {{$t('tips.zero')}}
           </a-form-model-item>
         </a-col>
       </a-row>
 
       <a-row v-if="showStep" :gutter="colsFull">
         <a-col :span="colsHalf">
-          <a-form-model-item label="步长" prop="step" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+          <a-form-model-item :label="$t('form.step')" prop="step" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <a-input v-model="refer.step" :disabled="refer.rand" />
           </a-form-model-item>
         </a-col>
         <a-col :span="colsHalf">
-          <a-form-model-item label="是否随机" prop="rand" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+          <a-form-model-item :label="$t('form.rand')" prop="rand" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <a-switch v-model="refer.rand" />
           </a-form-model-item>
         </a-col>
       </a-row>
 
       <a-row v-if="refer.type=='value'" :gutter="colsFull">
-        <a-form-model-item label="表达式" prop="value" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-form-model-item :label="$t('form.expr')" prop="value" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-input v-model="refer.value" />
-          <span class="input-tips">
-            请输入数学运算表达式，由相同文件中的字段组成，如"($field_step_negative * $field_nested_range) * -1 + 1000"
-          </span>
+          <span class="input-tips">{{$t('tips.expr')}}</span>
         </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
         <a-form-model-item class="center">
-          <a-button @click="save" type="primary">保存</a-button>
-          <a-button @click="reset" style="margin-left: 10px;">重置</a-button>
+          <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
+          <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
         </a-form-model-item>
       </a-row>
 
@@ -232,6 +230,8 @@ export default {
           }
         } else {
           this.refer.file = ''
+          this.refer.sheet = ''
+          this.refer.colName = ''
         }
       })
     },
@@ -246,6 +246,7 @@ export default {
           this.listReferResFieldForSelection(true)
         } else {
           this.refer.sheet = ''
+          this.refer.colName = ''
         }
       })
     },

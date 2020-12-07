@@ -1,7 +1,7 @@
 <template>
   <div id="design-page">
     <a-modal
-      title="测试数据设计"
+      :title="$t('title.design.title')"
       width="100%"
       dialogClass="full-screen-modal"
       :visible="visible"
@@ -29,13 +29,14 @@
         <div v-if="treeNode" :style="this.tmpStyle" class="tree-context-menu">
           <a-menu @click="menuClick" mode="inline" class="menu">
             <a-menu-item key="addNeighbor" v-if="!isRoot">
-              <a-icon type="plus" />创建同级
+              <a-icon type="plus" />
+              {{ $t('msg.design.create.brother') }}
             </a-menu-item>
             <a-menu-item key="addChild" v-if="type=='def'|| ((type=='ranges' || type=='instances') && isRoot)">
-              <a-icon type="plus" />创建子级
+              <a-icon type="plus" />{{ $t('msg.design.create.child') }}
             </a-menu-item>
             <a-menu-item key="remove" v-if="!isRoot">
-              <a-icon type="delete" />删除节点
+              <a-icon type="delete" />{{ $t('msg.design.remove.node') }}
             </a-menu-item>
           </a-menu>
         </div>
@@ -46,7 +47,7 @@
 
           <div v-if="type=='def' || type=='instances'">
             <a-tabs :activeKey="tabKey" @change="onTabChange" type="card">
-              <a-tab-pane key="info" tab="编辑信息">
+              <a-tab-pane key="info" :tab="$t('msg.info')">
                 <div>
                   <field-info-component
                       ref="infoComp"
@@ -57,7 +58,7 @@
                 </div>
               </a-tab-pane>
 
-              <a-tab-pane key="range" tab="取值范围" force-render>
+              <a-tab-pane key="range" :tab="$t('msg.range')" force-render>
                 <div>
                   <field-range-component
                       ref="rangeComp"
@@ -68,7 +69,7 @@
                 </div>
               </a-tab-pane>
 
-              <a-tab-pane key="refer" tab="配置引用" force-render>
+              <a-tab-pane key="refer" :tab="$t('msg.reference')" force-render>
                 <div>
                   <field-refer-component
                       ref="referComp"
@@ -79,7 +80,7 @@
                 </div>
               </a-tab-pane>
 
-              <a-tab-pane key="preview" tab="预览" force-render>
+              <a-tab-pane key="preview" :tab="$t('msg.preview')" force-render>
                 <div class="preview-data" v-html="previewData"></div>
               </a-tab-pane>
             </a-tabs>
@@ -517,12 +518,13 @@ export default {
       padding-left: 12px !important;
       height: 22px;
       line-height: 21px;
+      text-align: left;
     }
   }
 }
 
 .preview-data {
-  padding: 10px;
+  padding: 5px 20px;
 }
 
 </style>

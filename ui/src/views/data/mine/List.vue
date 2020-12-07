@@ -39,7 +39,7 @@
           <template slot="content">
             <div v-html="previewData"></div>
           </template>
-          <a>{{ $t('action.preview') }}</a>
+          <a>{{ $t('msg.preview') }}</a>
         </a-popover>
 
       </span>

@@ -30,7 +30,7 @@
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '60px' }">
-            <span> :label="$t('form.loopfix')"</span>
+            <span> {{ $t('form.loopfix') }}</span>
           </span>
 
           <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(27% - 30px)' }">
@@ -40,42 +40,42 @@
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-form-model-item label="类型" :labelCol="labelColFull" class="zui-input-group">
+        <a-form-model-item :label="$t('form.type')" :labelCol="labelColFull" class="zui-input-group">
           <a-form-model-item prop="type" :style="{ display: 'inline-block', width: 'calc(40% - 35px)' }">
             <a-select v-model="model.type">
-              <a-select-option value="list">列表</a-select-option>
-              <a-select-option value="timestamp">时间戳</a-select-option>
+              <a-select-option value="list">{{ $t('form.type.list') }}</a-select-option>
+              <a-select-option value="timestamp">{{ $t('form.type.timestamp') }}</a-select-option>
             </a-select>
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '60px' }">
-              <span>模式</span>
+              <span>{{ $t('form.mode') }}</span>
           </span>
 
           <a-form-model-item prop="mode" :style="{ display: 'inline-block', width: 'calc(27% - 30px)' }">
             <a-select v-model="model.mode">
-              <a-select-option value="parallel">平行</a-select-option>
-              <a-select-option value="recursive">递归</a-select-option>
+              <a-select-option value="parallel">{{ $t('form.mode.parallel') }}</a-select-option>
+              <a-select-option value="recursive">{{ $t('form.mode.recursive') }}</a-select-option>
             </a-select>
           </a-form-model-item>
         </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
-        <a-form-model-item label="宽度" :labelCol="labelColFull" class="zui-input-group">
+        <a-form-model-item :label="$t('form.width')" :labelCol="labelColFull" class="zui-input-group">
           <a-form-model-item prop="length" :style="{ display: 'inline-block', width: 'calc(40% - 45px)' }">
             <a-input v-model="model.length" :min="0" />
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '70px' }">
-            <span>左占位符</span>
+            <span>{{$t('form.left.pad')}}</span>
           </span>
           <a-form-model-item prop="leftPad" :style="{ display: 'inline-block', width: 'calc(13% - 45px)' }">
             <a-input v-model="model.leftPad" />
           </a-form-model-item>
 
           <span class="zui-input-group-addon" :style="{ width: '70px' }">
-            <span>右占位符</span>
+            <span>{{$t('form.right.pad')}}</span>
           </span>
           <a-form-model-item prop="rightPad" :style="{ display: 'inline-block', width: 'calc(13% - 43px)' }">
             <a-input v-model="model.rightPad" />
@@ -85,12 +85,12 @@
 
       <a-row :gutter="colsFull">
         <a-col :span="colsHalf">
-          <a-form-model-item label="格式" prop="format" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
+          <a-form-model-item :label="$t('form.format')" prop="format" :labelCol="labelColHalf" :wrapperCol="wrapperColHalf">
             <div class="inline">
               <a-input v-model="model.format">
                 <a-select v-model="model.format" slot="addonAfter" default-value="" style="width: 100px">
                   <a-select-option value="">
-                    选择函数
+                    {{$t('form.function')}}
                   </a-select-option>
                   <a-select-option value="md5">md5</a-select-option>
                   <a-select-option value="sha1">sha1</a-select-option>
@@ -103,22 +103,22 @@
 
         </a-col>
         <a-col :span="colsHalf">
-          <a-form-model-item label="随机" prop="rand" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
+          <a-form-model-item :label="$t('form.rand')" prop="rand" :labelCol="labelColHalf2" :wrapperCol="wrapperColHalf">
             <a-switch v-model="model.rand" />
           </a-form-model-item>
         </a-col>
       </a-row>
 
       <a-row :gutter="colsFull">
-          <a-form-model-item label="描述" prop="note" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-form-model-item :label="$t('form.desc')" prop="note" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="model.note" type="textarea" rows="3" />
           </a-form-model-item>
       </a-row>
 
       <a-row :gutter="colsFull">
         <a-form-model-item class="center">
-          <a-button @click="save" type="primary">保存</a-button>
-          <a-button @click="reset" style="margin-left: 10px;">重置</a-button>
+          <a-button @click="save" type="primary">{{ $t('form.save') }}</a-button>
+          <a-button @click="reset" style="margin-left: 10px;">{{ $t('form.reset') }}</a-button>
         </a-form-model-item>
       </a-row>
     </a-form-model>
@@ -147,10 +147,10 @@ export default {
       wrapperColHalf: { lg: { span: 12 }, sm: { span: 12 } },
       rules: {
         field: [
-          { required: true, message: '名称不能为空', trigger: 'change' },
+          { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
         ],
         loop: [
-          { validator: checkLoop, message: '需为正整数或其区间', trigger: 'change' },
+          { validator: checkLoop, message: this.$i18n.t('valid.loop.check'), trigger: 'change' },
         ],
       },
     };

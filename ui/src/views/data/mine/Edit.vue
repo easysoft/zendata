@@ -44,10 +44,10 @@
 
         <a-form-model-item :wrapper-col="{ span: 14, offset: 6 }">
           <a-button @click="save" type="primary">
-            {{$t('action.save')}}
+            {{$t('form.save')}}
           </a-button>
           <a-button @click="reset" style="margin-left: 10px;">
-            {{$t('action.reset')}}
+            {{$t('form.reset')}}
           </a-button>
         </a-form-model-item>
       </a-form-model>

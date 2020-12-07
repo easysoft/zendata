@@ -9,3 +9,5 @@ fields:
   fields:
   - field: 新字段
     range: 0-9,0-9,0-9{11}
+    from: zentao.number.v1.yaml
+    use: small{0}
