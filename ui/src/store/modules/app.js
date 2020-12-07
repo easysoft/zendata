@@ -1,6 +1,6 @@
-import { loadLanguageAsync } from '@/locales'
+import { loadLanguageAsync } from '../../locales'
 import storage from 'store'
-import { APP_LANGUAGE } from '@/store/mutation-types'
+import { APP_LANGUAGE } from '../mutation-types'
 
 const app = {
   state: {
