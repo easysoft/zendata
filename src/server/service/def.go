@@ -8,7 +8,6 @@ import (
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
@@ -225,10 +224,6 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 		}
 
 		return
-	}
-
-	if strings.Index(field.Field, "VVV") > -1 {
-		logUtils.PrintTo("")
 	}
 
 	// update field

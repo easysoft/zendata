@@ -29,8 +29,7 @@
         <div v-if="treeNode" :style="this.tmpStyle" class="tree-context-menu">
           <a-menu @click="menuClick" mode="inline" class="menu">
             <a-menu-item key="addNeighbor" v-if="!isRoot">
-              <a-icon type="plus" />
-              {{ $t('msg.design.create.brother') }}
+              <a-icon type="plus" />{{ $t('msg.design.create.brother') }}
             </a-menu-item>
             <a-menu-item key="addChild" v-if="type=='def'|| ((type=='ranges' || type=='instances') && isRoot)">
               <a-icon type="plus" />{{ $t('msg.design.create.child') }}
