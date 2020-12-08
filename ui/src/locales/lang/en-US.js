@@ -65,7 +65,7 @@ const locale = {
   'action.delete': 'Delete',
   'action.design': 'Design',
   'action.back': 'Back',
-  'action.import.from.file': 'Import From Files',
+  'action.import.from.file': 'Refresh Data',
 
   'tips.refer': 'Reference',
   'tips.pls.select': 'Please select',

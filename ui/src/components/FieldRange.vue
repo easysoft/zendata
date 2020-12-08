@@ -23,8 +23,8 @@
           <a-form-model-item prop="type" :wrapperCol="wrapperColFull">
             <a-select v-model="item.type">
               <a-select-option value="interval">{{ $t('form.type.interval') }}</a-select-option>
-              <a-select-option value="literal">{{ $t('form.type.literal') }}</a-select-option>
               <a-select-option value="list">{{ $t('form.type.list') }}</a-select-option>
+              <a-select-option value="literal">{{ $t('form.type.literal') }}</a-select-option>
             </a-select>
           </a-form-model-item>
         </a-col>

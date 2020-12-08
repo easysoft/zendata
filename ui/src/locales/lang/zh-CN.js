@@ -65,7 +65,7 @@ const locale = {
   'action.delete': '删除',
   'action.design': '设计',
   'action.back': '返回',
-  'action.import.from.file': '从文件导入',
+  'action.import.from.file': '刷新数据',
 
   'tips.refer': '引用',
   'tips.pls.select': '请选择',
@@ -95,7 +95,7 @@ const locale = {
   'form.type': '类型',
   'form.type.list': '列表',
   'form.type.timestamp': '时间戳',
-  'form.type.interval': '区间',
+  'form.type.interval': '范围',
   'form.type.literal': '常量',
   'form.width': '宽度',
   'form.mode': '模式',
