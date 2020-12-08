@@ -44,8 +44,9 @@ compile_mac:
 
 copy_files:
 	@echo 'start copy files'
-	@cp -r {data,yaml,users,demo,tmp} bin && rm -rf ${BIN_DIR}/demo/output
-	@rm -rf ${BIN_DIR}/tmp/cache/.data.db-shm && rm -rf ${BIN_DIR}/tmp/cache/.data.db-wal
+	@cp -r {data,yaml,users,demo} bin && rm -rf ${BIN_DIR}/demo/output
+
+	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
 
 	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${subdir}/zd"; done
 
@@ -56,5 +57,3 @@ package:
 
 	@cd ${BIN_OUT} && \
 		for subdir in `ls ./`; do cd $${subdir} && zip -r ${BIN_ZIP_RELAT}$${subdir}/${BINARY}.zip "${BINARY}" && cd ..; done
-	#@cd ${BIN_ZIP_DIR} && zip -r ${PACKAGE}.zip ./
-	#@cd ${BIN_DIR} && rm -rf ${PROJECT}

@@ -18,7 +18,9 @@ func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 	res := map[string]map[string][]string{}
 
 	for index, field := range vari.Def.Fields {
-		if !stringUtils.StrInArr(field.Field, fieldsToExport) { continue }
+		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
+			continue
+		}
 
 		if (field.Use != "" || field.Select != "") && field.From == "" {
 			field.From = vari.Def.From
@@ -89,7 +91,7 @@ func getLastDuplicateVal(preMap map[string][]string, key string) (valMap map[str
 }
 func removeKeyNumber(key string) string {
 	arr := strings.Split(key, "_")
-	ret := strings.Join(arr[:len(arr) - 1], "_")
+	ret := strings.Join(arr[:len(arr)-1], "_")
 	return ret
 }
 
@@ -106,7 +108,7 @@ func getResValue(resFile, resType, sheet string, field *model.DefField) (map[str
 	return groupedValues, resName
 }
 
-func getResFromExcel(resFile, sheet string, field *model.DefField) (map[string][]string) { // , string) {
+func getResFromExcel(resFile, sheet string, field *model.DefField) map[string][]string { // , string) {
 	valueMap := GenerateFieldValuesFromExcel(resFile, sheet, field)
 
 	return valueMap
@@ -141,7 +143,7 @@ func getResFromYaml(resFile string) (valueMap map[string][]string) { // , resNam
 		} else {
 			configRes := model.DefField{}
 			err = yaml.Unmarshal(yamlContent, &configRes)
-			if err == nil {                                               // config
+			if err == nil { // config
 				valueMap = getResForConfig(configRes)
 				//resName = configRes.Field
 			}
@@ -187,8 +189,12 @@ func getResFromRanges(ranges model.ResRanges) map[string][]string {
 func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesItem, instField model.DefField) {
 	// set "from" val from parent if needed
 	if instField.From == "" {
-		if insts.From != "" { instField.From = insts.From }
-		if inst.From != "" { instField.From = inst.From }
+		if insts.From != "" {
+			instField.From = insts.From
+		}
+		if inst.From != "" {
+			instField.From = inst.From
+		}
 	}
 
 	if instField.Use != "" { // refer to another instances or ranges
@@ -252,6 +258,7 @@ func convertInstantToField(insts model.ResInstances, inst model.ResInstancesItem
 	child := model.DefField{}
 	child.Field = inst.Instance
 
+	// some props are from parent instances
 	if child.From == "" && inst.From != "" {
 		child.From = inst.From
 	} else if child.From == "" && insts.From != "" {

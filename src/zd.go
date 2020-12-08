@@ -324,7 +324,7 @@ func Init() (err error) {
 	syncService := serverService.NewSyncService(defService,
 		fieldService, rangesService, instancesService, configService, excelService, textService,
 		referService, resService)
-	previewService := serverService.NewPreviewService(defRepo, fieldRepo)
+	previewService := serverService.NewPreviewService(defRepo, fieldRepo, instancesRepo)
 
 	server := NewServer(config, defService, fieldService, sectionService, referService,
 		rangesService, instancesService, textService, excelService, configService, resService,
@@ -418,7 +418,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	case "previewDefData":
 		ret.Data = s.previewService.PreviewDefData(uint(reqData.Id))
 	case "previewFieldData":
-		ret.Data = s.previewService.PreviewFieldData(uint(reqData.Id))
+		ret.Data = s.previewService.PreviewFieldData(uint(reqData.Id), reqData.Mode)
 
 	// field or instances section
 	case "listSection":

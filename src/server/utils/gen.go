@@ -9,17 +9,17 @@ import (
 )
 
 func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, count int,
-		format, table string, decode bool, input, output string) {
+	format, table string, decode bool, input, output string) {
 	query := req.URL.Query()
 
-	defaultFile = ParserGetParams(query,"default", "d")
-	configFile = ParserGetParams(query,"config", "c")
-	countStr := ParserGetParams(query,"lines", "n")
+	defaultFile = ParserGetParams(query, "default", "d")
+	configFile = ParserGetParams(query, "config", "c")
+	countStr := ParserGetParams(query, "lines", "n")
 	if countStr == "" {
 		countStr = "10"
 	}
 
-	fields = ParserGetParams(query,"field", "F")
+	fields = ParserGetParams(query, "field", "F")
 
 	format = constant.FormatJson
 	table = ""
@@ -32,11 +32,11 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 		configDefContent := ParserPostParams(req, "config", "c", "", true)
 
 		if defaultDefContent != "" {
-			defaultFile = vari.WorkDir + "._default.yaml"
+			defaultFile = vari.WorkDir + "tmp" + constant.PthSep + ".default.yaml"
 			fileUtils.WriteFile(defaultFile, defaultDefContent)
 		}
 		if configDefContent != "" {
-			configFile = vari.WorkDir + "._config.yaml"
+			configFile = vari.WorkDir + "tmp" + constant.PthSep + ".config.yaml"
 			fileUtils.WriteFile(configFile, configDefContent)
 		}
 	}

@@ -118,9 +118,8 @@ export function previewDefData (defId) {
     data: data
   })
 }
-export function previewFieldData (fieldId) {
-  const data = {'action': 'previewFieldData', id: fieldId}
-
+export function previewFieldData (fieldId, type) {
+  const data = {'action': 'previewFieldData', id: fieldId, mode: type}
   return request({
     url: api.admin,
     method: 'post',

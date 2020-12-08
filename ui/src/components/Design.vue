@@ -476,7 +476,7 @@ export default {
       this.tabKey = activeKey
 
       if (this.tabKey === 'preview') {
-        previewFieldData(this.modelData.id).then(json => {
+        previewFieldData(this.modelData.id, this.type).then(json => {
           console.log('previewFieldData', json)
           this.previewData = json.data
         })
