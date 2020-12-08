@@ -209,18 +209,18 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
 	for i, field := range po.Fields {
 		field.Ord = i + 1
-		s.saveFieldToDB(&field, fi.Path, rootField.ID, po.ID)
+		s.saveFieldToDB(&field, po, fi.Path, rootField.ID, po.ID)
 	}
 
 	return
 }
-func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parentID, defID uint) {
+func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPath string, parentID, defID uint) {
 	if field.Froms != nil && len(field.Froms) > 0 {
 		for idx, from := range field.Froms {
 			if from.Field == "" {
 				from.Field = "from" + strconv.Itoa(idx+1)
 			}
-			s.saveFieldToDB(from, currPath, parentID, defID)
+			s.saveFieldToDB(from, def, currPath, parentID, defID)
 		}
 
 		return
@@ -229,6 +229,9 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 	// update field
 	field.DefID = defID
 	field.ParentID = parentID
+	if field.From == "" && def.From != "" {
+		field.From = def.From
+	}
 	if field.Type == "" {
 		field.Type = constant.FieldTypeList
 	}
@@ -327,7 +330,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, currPath string, parent
 
 	// deal with field's children
 	for _, child := range field.Fields {
-		s.saveFieldToDB(child, currPath, field.ID, defID)
+		s.saveFieldToDB(child, def, currPath, field.ID, defID)
 	}
 }
 

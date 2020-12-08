@@ -22,6 +22,7 @@ type ZdDef struct {
 	FileName  string `gorm:"column:fileName" json:"fileName" yaml:"-"`
 	ReferName string `gorm:"column:referName" json:"referName" yaml:"-"`
 
+	From   string    `gorm:"-" json:"from"`
 	Fields []ZdField `gorm:"-" json:"fields"`
 }
 
@@ -177,6 +178,7 @@ type ZdInstances struct {
 	FileName  string `gorm:"column:fileName" json:"fileName" yaml:"-"`
 	ReferName string `gorm:"column:referName" json:"referName" yaml:"-"`
 
+	From      string            `gorm:"-" json:"from"`
 	Instances []ZdInstancesItem `gorm:"ForeignKey:instancesID" json:"instances" yaml:"instances"`
 }
 

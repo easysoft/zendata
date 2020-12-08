@@ -169,18 +169,18 @@ func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
 
 	for i, item := range po.Instances {
 		item.Ord = i + 1
-		s.saveItemToDB(&item, fi.Path, 0, po.ID)
+		s.saveItemToDB(&item, po, fi.Path, 0, po.ID)
 	}
 
 	return
 }
-func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath string, parentID, instancesID uint) {
+func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances model.ZdInstances, currPath string, parentID, instancesID uint) {
 	if item.Froms != nil && len(item.Froms) > 0 {
 		for idx, from := range item.Froms {
 			if from.Field == "" {
 				from.Field = "from" + strconv.Itoa(idx+1)
 			}
-			s.saveItemToDB(from, currPath, parentID, instancesID)
+			s.saveItemToDB(from, instances, currPath, parentID, instancesID)
 		}
 
 		return
@@ -193,6 +193,9 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 
 	item.InstancesID = instancesID
 	item.ParentID = parentID
+	if item.From == "" && instances.From != "" {
+		item.From = instances.From
+	}
 	if item.Type == "" {
 		item.Type = constant.FieldTypeList
 	}
@@ -295,7 +298,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, currPath st
 	// deal with field's children
 	for i, child := range item.Fields {
 		child.Ord = i + 1
-		s.saveItemToDB(child, currPath, item.ID, instancesID)
+		s.saveItemToDB(child, instances, currPath, item.ID, instancesID)
 	}
 }
 

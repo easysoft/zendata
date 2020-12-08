@@ -1,0 +1,11 @@
+title: 数据测试1
+desc: 数据测试1
+
+from: zentao.number.v1.yaml     # 全局From配置
+
+fields:
+- field: refer1 # 使用全局From配置
+  postfix: '-'
+  use: small{2}
+- from: zentao.number.v1.yaml
+  use: large{3}
