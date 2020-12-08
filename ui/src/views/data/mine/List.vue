@@ -34,13 +34,7 @@
           <a href="#">{{ $t('action.delete') }}</a>
         </a-popconfirm> &nbsp;
 
-        <a-popover :title="$t('msg.data')" @visibleChange="preview(record)" trigger="click"
-                   placement="bottom" :autoAdjustOverflow="true">
-          <template slot="content">
-            <div v-html="previewData"></div>
-          </template>
-          <a>{{ $t('msg.preview') }}</a>
-        </a-popover>
+        <a @click="showPreview(record)">{{ $t('msg.preview') }}</a>
 
       </span>
     </a-table>
@@ -60,6 +54,11 @@
           @cancel="handleDesignCancel" >
       </design-component>
     </div>
+
+    <a-modal v-model="previewVisible" :title="$t('msg.data.preview')" @ok="closePreview"
+             dialogClass="preview-popup" width="60%">
+      <div v-html="previewData"></div>
+    </a-modal>
 
   </div>
 </template>
@@ -108,6 +107,8 @@ export default {
       page: 1,
       total: 0,
       pageSize: PageSize,
+
+      previewVisible: false,
     };
   },
   computed: {
@@ -152,12 +153,17 @@ export default {
         this.loadData()
       })
     },
-    preview(record) {
+    showPreview(record) {
       console.log(record)
+      this.previewVisible = true
       previewDefData(record.id).then(json => {
         console.log('previewDefData', json)
         this.previewData = json.data
       })
+    },
+    closePreview() {
+      this.previewVisible = false
+      this.previewData = ''
     },
 
     handleDesignOk() {
@@ -183,6 +189,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+.preview-popup {
+  .ant-modal-body {
+    div {
+    }
+  }
+}
 
 </style>

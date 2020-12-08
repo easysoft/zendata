@@ -36,6 +36,7 @@ const locale = {
   'msg.range': 'Range',
   'msg.reference': 'Reference',
   'msg.preview': 'Preview',
+  'msg.data.preview': 'Data Preview',
 
   'msg.workdir': 'WorkDir',
   'msg.help': 'Help',

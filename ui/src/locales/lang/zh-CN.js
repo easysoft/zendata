@@ -36,6 +36,7 @@ const locale = {
   'msg.range': '区间',
   'msg.reference': '引用',
   'msg.preview': '预览',
+  'msg.data.preview': '数据预览',
 
   'msg.workdir': '工作目录',
   'msg.help': '帮助',
