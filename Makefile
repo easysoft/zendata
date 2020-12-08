@@ -45,6 +45,7 @@ compile_mac:
 copy_files:
 	@echo 'start copy files'
 	@cp -r {data,yaml,users,demo,tmp} bin && rm -rf ${BIN_DIR}/demo/output
+	@rm -rf ${BIN_DIR}/tmp/cache/.data.db-shm && rm -rf ${BIN_DIR}/tmp/cache/.data.db-wal
 
 	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${subdir}/zd"; done
 
