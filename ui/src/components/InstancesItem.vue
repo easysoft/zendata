@@ -2,28 +2,28 @@
   <div>
     <div class="head">
       <div class="title">
-        实例项编辑
+        {{$t('menu.instances.item.edit')}}
       </div>
       <div class="buttons"></div>
     </div>
     <div>
       <a-form-model ref="editForm" :model="model" :rules="rules">
         <a-row :gutter="colsFull">
-            <a-form-model-item label="名称" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-form-model-item :label="$t('form.name')" prop="name" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
               <a-input v-model="model.name" />
             </a-form-model-item>
         </a-row>
 
         <a-row :gutter="colsFull">
-          <a-form-model-item label="取值" prop="value" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-form-model-item :label="$t('form.value')" prop="value" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
             <a-input v-model="model.value" />
           </a-form-model-item>
         </a-row>
 
         <a-row :gutter="colsFull">
           <a-form-model-item class="center">
-            <a-button @click="save" type="primary">保存</a-button>
-            <a-button @click="reset" style="margin-left: 10px;">重置</a-button>
+            <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
+            <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
           </a-form-model-item>
         </a-row>
       </a-form-model>
@@ -44,7 +44,7 @@ export default {
       wrapperColFull: { lg: { span: 16 }, sm: { span: 16 } },
       rules: {
         field: [
-          { required: true, message: '名称不能为空', trigger: 'change' },
+          { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
         ],
       },
     };

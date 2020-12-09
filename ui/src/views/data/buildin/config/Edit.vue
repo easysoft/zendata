@@ -71,7 +71,7 @@
                              :labelCol="labelColFull" :wrapperCol="wrapperColFull">
 
             <a-form-model-item prop="loop" :style="{ display: 'inline-block', width: 'calc(70% - 40px)' }">
-              <a-input v-model="model.loop" placeholder="数字或数字区间" />
+              <a-input v-model="model.loop" :placeholder="$t('tips.range.int')" />
             </a-form-model-item>
 
             <span class="zui-input-group-addon" :style="{ width: '80px' }">

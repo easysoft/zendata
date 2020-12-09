@@ -2,26 +2,26 @@
   <div>
     <div class="head">
       <div class="title">
-        序列项编辑
+        {{$t('menu.ranges.item.edit')}}
       </div>
       <div class="buttons"></div>
     </div>
     <div>
       <a-form-model ref="editForm" :model="model" :rules="rules">
         <a-row :gutter="colsFull">
-            <a-form-model-item label="名称" prop="field" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+            <a-form-model-item :label="$t('form.name')" prop="field" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
               <a-input v-model="model.field" />
             </a-form-model-item>
         </a-row>
         <a-row :gutter="colsFull">
           <a-form-model-item class="center">
-            <a-button @click="save" type="primary">保存</a-button>
-            <a-button @click="reset" style="margin-left: 10px;">重置</a-button>
+            <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
+            <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
           </a-form-model-item>
         </a-row>
 
         <a-row :gutter="colsFull">
-          <a-col :offset="2">
+          <a-col :offset="3">
             <field-range-component
                 ref="rangeComp"
                 :type="'ranges'"
@@ -29,6 +29,7 @@
                 :time2="time">
             </field-range-component>
           </a-col>
+          <a-col :span="2"></a-col>
         </a-row>
       </a-form-model>
     </div>
@@ -50,7 +51,7 @@ export default {
       wrapperColFull: { lg: { span: 16 }, sm: { span: 16 } },
       rules: {
         field: [
-          { required: true, message: '名称不能为空', trigger: 'change' },
+          { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
         ],
       },
     };
