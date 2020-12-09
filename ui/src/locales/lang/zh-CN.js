@@ -75,6 +75,7 @@ const locale = {
   'tips.range.int': '整数或整数区间',
   'tips.number.or.letter': '整数或单个字母',
 
+  'tips.value.each.line': '每行一个值',
   'tips.delete': '确认删除？',
   'tips.search': '输入关键字搜索',
   'tips.success.to.import': '成功导入数据。',

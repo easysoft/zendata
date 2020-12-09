@@ -10,7 +10,7 @@
       <a-row v-if="!sections || sections.length == 0" :gutter="cols">
         <a-col :span="col"></a-col>
         <a-col :span="col"></a-col>
-        <a-col :span="8">
+        <a-col :span="col">
           <a class="edit">
             <a @click="insertSection()" class="edit">{{ $t('action.add') }}</a>
           </a>
@@ -103,9 +103,9 @@
           <div v-if="section.type==='list'">
             <a-row :gutter="cols">
               <a-col :span="cols">
-                <a-form-model-item label="列表" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                <a-form-model-item :label="$t('form.type.list')" prop="text" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
                   <a-input v-model="section.text" type="textarea" rows="3" />
-                  每行一个值
+                  {{$t('tips.value.each.line')}}
                 </a-form-model-item>
               </a-col>
             </a-row>
@@ -144,7 +144,7 @@ export default {
       col: 8,
       labelColFull: { lg: { span: 4 }, sm: { span: 4 } },
       labelColHalf: { lg: { span: 8}, sm: { span: 8 } },
-      wrapperColFull: { lg: { span: 18 }, sm: { span: 18 } },
+      wrapperColFull: { lg: { span: 16 }, sm: { span: 16 } },
       wrapperColHalf: { lg: { span: 12 }, sm: { span: 12 } },
 
       sections: [],

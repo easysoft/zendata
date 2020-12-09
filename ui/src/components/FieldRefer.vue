@@ -93,18 +93,27 @@
 import {listReferFileForSelection, listReferSheetForSelection,
   listReferResFieldForSelection, listReferExcelColForSelection, getRefer, updateRefer,
 } from "../api/refer";
+import {
+  colsFull,
+  colsHalf,
+  labelColFull,
+  labelColHalf,
+  labelColHalf2,
+  wrapperColFull,
+  wrapperColHalf
+} from "@/utils/const";
 
 export default {
   name: 'FieldReferComponent',
   data() {
     return {
-      colsFull: 24,
-      colsHalf: 12,
-      labelColFull: { lg: { span: 4 }, sm: { span: 4 } },
-      wrapperColFull: { lg: { span: 16 }, sm: { span: 16 } },
-      labelColHalf: { lg: { span: 8}, sm: { span: 8 } },
-      labelColHalf2: { lg: { span: 4}, sm: { span: 4 } },
-      wrapperColHalf: { lg: { span: 12 }, sm: { span: 12 } },
+      colsFull: colsFull,
+      colsHalf: colsHalf,
+      labelColFull: labelColFull,
+      wrapperColFull: wrapperColFull,
+      labelColHalf: labelColHalf,
+      labelColHalf2: labelColHalf2,
+      wrapperColHalf: wrapperColHalf,
 
       refer: {},
       rules: {

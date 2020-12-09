@@ -75,6 +75,7 @@ const locale = {
   'tips.range.int': 'Integer or a range of integers',
   'tips.number.or.letter': 'Number or single letter',
 
+  'tips.value.each.line': 'Each line is a value',
   'tips.delete': 'Are you sure to delete?',
   'tips.search': 'Input keywords to search',
   'tips.success.to.import': 'Success to import.',

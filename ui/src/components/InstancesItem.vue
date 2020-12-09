@@ -33,15 +33,17 @@
 
 <script>
 import {saveInstancesItem} from "../api/manage";
+import {colsFull, colsHalf, labelColFull, wrapperColFull} from "@/utils/const";
 
 export default {
   name: 'ResInstancesItemComponent',
   data() {
     return {
-      colsFull: 24,
-      colsHalf: 12,
-      labelColFull: { lg: { span: 4 }, sm: { span: 4 } },
-      wrapperColFull: { lg: { span: 16 }, sm: { span: 16 } },
+      colsFull: colsFull,
+      colsHalf: colsHalf,
+      labelColFull: labelColFull,
+      wrapperColFull: wrapperColFull,
+
       rules: {
         field: [
           { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
