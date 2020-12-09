@@ -47,6 +47,7 @@ copy_files:
 	@cp -r {data,yaml,users,demo} bin && rm -rf ${BIN_DIR}/demo/output
 
 	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
+	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/sql.txt'"
 
 	@for subdir in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${subdir}/zd"; done
 

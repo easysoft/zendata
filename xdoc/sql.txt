@@ -1,0 +1,14 @@
+PRAGMA secure_delete = ON;
+delete from zd_def where 1=1;
+delete from zd_field where 1=1;
+delete from zd_ranges where 1=1;
+delete from zd_ranges_item where 1=1;
+delete from zd_instances where 1=1;
+delete from zd_instances_item where 1=1;
+delete from zd_excel where 1=1;
+delete from zd_text where 1=1;
+delete from zd_config where 1=1;
+delete from zd_refer where 1=1;
+delete from zd_section where 1=1;
+vacuum;
+PRAGMA secure_delete = OFF;
