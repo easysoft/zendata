@@ -17,3 +17,6 @@
 /._config.yaml
 /._default.yaml
 /res/res.go
+/tmp/.temp.yaml
+/tmp/.default.yaml
+/tmp/.config.yaml

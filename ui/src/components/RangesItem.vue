@@ -21,7 +21,8 @@
         </a-row>
 
         <a-row :gutter="colsFull">
-          <a-col :offset="3">
+          <a-col :span="3"></a-col>
+          <a-col :span="17">
             <field-range-component
                 ref="rangeComp"
                 :type="'ranges'"
@@ -29,7 +30,7 @@
                 :time2="time">
             </field-range-component>
           </a-col>
-          <a-col :span="2"></a-col>
+          <a-col :span="4"></a-col>
         </a-row>
       </a-form-model>
     </div>
