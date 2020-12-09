@@ -63,4 +63,4 @@ package:
 upload_to:
 	@echo 'upload'
 	@find ${BIN_DIR}/zip -name ".DS_Store" -type f -delete
-	@qshell qupload2 --src-dir=bin/zip/ --bucket=download --log-file=qshell.log
+	@qshell qupload2 --src-dir=bin/zip/ --bucket=download --thread-count=10 --log-file=qshell.log
