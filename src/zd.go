@@ -346,11 +346,10 @@ func (s *Server) Run() {
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("/",
-		http.FileServer(&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir,
-			AssetInfo: res.AssetInfo, Prefix: "ui/dist"}))
-	mux.HandleFunc("/data", DataHandler)
-	mux.HandleFunc("/admin", s.admin)
+	mux.Handle("/", http.FileServer( // client static
+		&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir, AssetInfo: res.AssetInfo, Prefix: "ui/dist"}))
+	mux.HandleFunc("/admin", s.admin)    // data admin
+	mux.HandleFunc("/data", DataHandler) // data gen
 
 	return mux
 }

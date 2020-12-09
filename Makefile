@@ -1,10 +1,10 @@
-VERSION=1.2.0
+VERSION=1.6
 PROJECT=zendata
 PACKAGE=${PROJECT}-${VERSION}
 BINARY=zd
 BIN_DIR=bin
-BIN_ZIP_DIR=${BIN_DIR}/zip/
-BIN_ZIP_RELAT=../../../zip/
+BIN_ZIP_DIR=${BIN_DIR}/zip/${PROJECT}/${VERSION}/
+BIN_ZIP_RELAT=../../../zip/${PROJECT}/${VERSION}/
 BIN_OUT=${BIN_DIR}/${PROJECT}/${VERSION}/
 BIN_WIN64=${BIN_OUT}win64/zd/
 BIN_WIN32=${BIN_OUT}win32/zd/
@@ -17,6 +17,7 @@ win64: prepare_res compile_win64 copy_files package
 win32: prepare_res compile_win32 copy_files package
 linux: prepare_res compile_linux copy_files package
 mac: prepare_res compile_mac copy_files package
+upload: upload_to
 
 prepare_res:
 	@echo 'start prepare res'
@@ -54,7 +55,12 @@ copy_files:
 package:
 	@echo 'start package'
 	@find . -name .DS_Store -print0 | xargs -0 rm -f
-	@for subdir in `ls ${BIN_OUT}`; do mkdir -p ${BIN_DIR}/zip/$${subdir}; done
+	@for subdir in `ls ${BIN_OUT}`; do mkdir -p ${BIN_DIR}/zip/${PROJECT}/${VERSION}/$${subdir}; done
 
 	@cd ${BIN_OUT} && \
 		for subdir in `ls ./`; do cd $${subdir} && zip -r ${BIN_ZIP_RELAT}$${subdir}/${BINARY}.zip "${BINARY}" && cd ..; done
+
+upload_to:
+	@echo 'upload'
+	@find ${BIN_DIR}/zip -name ".DS_Store" -type f -delete
+	@qshell qupload2 --src-dir=bin/zip/ --bucket=download --log-file=qshell.log
