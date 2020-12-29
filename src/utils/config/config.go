@@ -132,7 +132,12 @@ func CheckConfigPermission() {
 
 func CheckConfigReady() {
 	if !fileUtils.FileExist(constant.ConfigFile) {
-		InputForSet()
+		if vari.RunMode == constant.RunModeServer {
+			conf := model.Config{Language: "zh", Version: 1}
+			SaveConfig(conf)
+		} else {
+			InputForSet()
+		}
 	}
 }
 
@@ -191,10 +196,12 @@ func AddZdToPath() {
 
 func addZdToPathWin(home string) {
 	pathVar := os.Getenv("PATH")
-	if strings.Contains(pathVar, vari.ExeDir) { return }
+	if strings.Contains(pathVar, vari.ExeDir) {
+		return
+	}
 
 	cmd := `setx Path "%%Path%%;` + vari.ExeDir + `"`
-	logUtils.PrintToWithColor("\n" + i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
+	logUtils.PrintToWithColor("\n"+i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
 
 	// TODO: fix the space issue
 	//out, err := shellUtils.ExeShell(cmd)
@@ -212,7 +219,9 @@ func addZdToPathLinux(home string) {
 	path := fmt.Sprintf("%s%s%s", home, constant.PthSep, ".bash_profile")
 
 	content := fileUtils.ReadFile(path)
-	if strings.Contains(content, vari.ExeDir) { return }
+	if strings.Contains(content, vari.ExeDir) {
+		return
+	}
 
 	cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ExeDir, path)
 	out, err := shellUtils.ExeShell(cmd)
@@ -222,7 +231,7 @@ func addZdToPathLinux(home string) {
 		logUtils.PrintToWithColor(msg, color.FgRed)
 	} else {
 		logUtils.PrintToWithColor(
-			i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error() + ": " + out), color.FgRed)
+			i118Utils.I118Prt.Sprintf("fail_to_exec_cmd", cmd, err.Error()+": "+out), color.FgRed)
 	}
 }
 
@@ -236,4 +245,3 @@ func isDataInit(db *sql.DB) bool {
 		return false
 	}
 }
-

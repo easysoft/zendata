@@ -139,6 +139,12 @@ func main() {
 		os.Args = append(os.Args, "-help")
 	}
 
+	flagSet.Parse(os.Args[1:])
+	if vari.Port != 0 {
+		vari.RunMode = constant.RunModeServer
+	}
+	configUtils.InitConfig()
+
 	vari.DB, _ = configUtils.InitDB()
 	defer vari.DB.Close()
 
@@ -197,7 +203,7 @@ func toGen() {
 		}
 		constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:"+vari.WorkDir, 1)
 
-		StartServer()
+		startServer()
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		format = constant.FormatJson
 		action.Generate(defaultFile, configFile, fields, format, table)
@@ -237,7 +243,7 @@ func toGen() {
 	}
 }
 
-func StartServer() {
+func startServer() {
 	if vari.Ip == "" {
 		vari.Ip = commonUtils.GetIp()
 	}
@@ -250,7 +256,7 @@ func StartServer() {
 		vari.Ip, port, vari.Ip, port, vari.Ip, port), color.FgCyan)
 
 	// start admin server
-	err := Init()
+	err := InitServer()
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server_fail", port), color.FgRed)
 	}
@@ -291,7 +297,7 @@ type Server struct {
 	configService    *serverService.ConfigService
 }
 
-func Init() (err error) {
+func InitServer() (err error) {
 	config := serverConfig.NewConfig()
 	gormDb, err := serverConfig.NewGormDB(config)
 	defer gormDb.Close()
@@ -591,7 +597,6 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 
 func init() {
 	cleanup()
-	configUtils.InitConfig()
 }
 
 func cleanup() {
