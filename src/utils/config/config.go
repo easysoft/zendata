@@ -57,7 +57,9 @@ func InitConfig() {
 func SaveConfig(conf model.Config) error {
 	fileUtils.MkDirIfNeeded(filepath.Dir(vari.ConfigFile))
 
-	conf.Version = constant.ConfigVer
+	if conf.Version == 0 {
+		conf.Version = constant.ConfigVer
+	}
 
 	cfg := ini.Empty()
 	cfg.ReflectFrom(&conf)
@@ -131,6 +133,7 @@ func CheckConfigPermission() {
 
 func CheckConfigReady() {
 	if !fileUtils.FileExist(vari.ConfigFile) {
+		logUtils.PrintTo(vari.ConfigFile + "no exist")
 		if vari.RunMode == constant.RunModeServer {
 			conf := model.Config{Language: "zh", Version: 1}
 			SaveConfig(conf)

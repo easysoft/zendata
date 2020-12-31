@@ -342,6 +342,7 @@ func InitServer() (err error) {
 
 	upgradeService := serverService.NewUpgradeService()
 	cronService := serverService.NewCronService(upgradeService)
+	cronService.Init()
 
 	server := NewServer(config, defService, fieldService, sectionService, referService,
 		rangesService, instancesService, textService, excelService, configService, resService,

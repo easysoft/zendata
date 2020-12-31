@@ -164,6 +164,52 @@
     {
       "id": "fail_to_exec_cmd",
       "translation": "Fail to exec command '%s', error is '%s'."
+    },
+
+    {
+      "id": "find_new_ver",
+      "translation": "Find new version %s"
+    },
+    {
+      "id": "success_upgrade",
+      "translation": "Successfully upgrade from version %.1f to %s."
+    },
+    {
+      "id": "fail_upgrade",
+      "translation": "Fail to upgrade from version %.1f to %s., err: %s."
+    },
+
+    {
+      "id": "download_fail",
+      "translation": "Download %s fail, error: %s."
+    },
+    {
+      "id": "download_read_fail",
+      "translation": "Read download file %s fail, error: %s."
+    },
+    {
+      "id": "download_write_fail",
+      "translation": "Write download file %s fail, error: %s."
+    },
+    {
+      "id": "download_success",
+      "translation": "Successfully download %s to %s."
+    },
+    {
+      "id": "success_update_config",
+      "translation": "Successfully update config file %s."
+    },
+    {
+      "id": "perm_deny",
+      "translation": "Permission denied to file %s, please change work dir."
+    },
+    {
+      "id": "fail_unzip",
+      "translation": "Fail to unzip file %s."
+    },
+    {
+      "id": "fail_md5_check",
+      "translation": "Check file %s MD5 failed."
     }
   ]
 }
