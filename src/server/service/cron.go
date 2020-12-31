@@ -1,17 +1,16 @@
-package cron
+package serverService
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/src/server/service"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
 	serverConst "github.com/easysoft/zendata/src/server/utils/const"
 )
 
 type CronService struct {
-	upgradeService *serverService.UpgradeService
+	upgradeService *UpgradeService
 }
 
-func NewCronService(upgradeService *serverService.UpgradeService) *CronService {
+func NewCronService(upgradeService *UpgradeService) *CronService {
 	return &CronService{upgradeService: upgradeService}
 }
 

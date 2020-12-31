@@ -302,6 +302,7 @@ type Server struct {
 	textService      *serverService.TextService
 	excelService     *serverService.ExcelService
 	configService    *serverService.ConfigService
+	cronService      *serverService.CronService
 }
 
 func InitServer() (err error) {
@@ -339,9 +340,12 @@ func InitServer() (err error) {
 		referService, resService)
 	previewService := serverService.NewPreviewService(defRepo, fieldRepo, instancesRepo)
 
+	upgradeService := serverService.NewUpgradeService()
+	cronService := serverService.NewCronService(upgradeService)
+
 	server := NewServer(config, defService, fieldService, sectionService, referService,
 		rangesService, instancesService, textService, excelService, configService, resService,
-		syncService, previewService)
+		syncService, previewService, cronService)
 	server.Run()
 
 	return
@@ -584,7 +588,8 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 	referService *serverService.ReferService, rangesService *serverService.RangesService,
 	instancesService *serverService.InstancesService, textService *serverService.TextService,
 	excelService *serverService.ExcelService, configService *serverService.ConfigService,
-	resService *serverService.ResService, syncService *serverService.SyncService, previewService *serverService.PreviewService) *Server {
+	resService *serverService.ResService, syncService *serverService.SyncService,
+	previewService *serverService.PreviewService, cronService *serverService.CronService) *Server {
 	return &Server{
 		config:           config,
 		defService:       defService,
@@ -599,6 +604,7 @@ func NewServer(config *serverConfig.Config, defService *serverService.DefService
 		resService:       resService,
 		syncService:      syncService,
 		previewService:   previewService,
+		cronService:      cronService,
 	}
 }
 
