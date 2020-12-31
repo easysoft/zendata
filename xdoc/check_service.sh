@@ -37,8 +37,16 @@ for var in 1 2
     if [ -n "$PORT" ]; then
 
       if [ $PORT = $PARAM_PORT ]; then
-        echo Thread is still alive, sleep $interval second the $var time.
-        sleep $interval
+        echo service is still alive
+
+        if [ ! -f "$DIR/.upgraded"]; then
+          echo sleep $interval second the $var time.
+          sleep $interval
+        else
+          echo upgraded, force to restart.
+          PORT="-1" # next round, will cause restart
+        fi
+
       else
         echo kill service on port $PORT.
         ps -ef | grep "$PARAM_NAME" | grep -v "grep" | grep -v ".sh" | awk '{print $2}' | xargs kill -9
