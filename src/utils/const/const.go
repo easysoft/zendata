@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	AppName = "zendata"
+	AppName = "zd"
 )
 
 var (

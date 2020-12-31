@@ -167,6 +167,10 @@
     },
 
     {
+      "id": "no_new_ver",
+      "translation": "Current %s is already the newest version."
+    },
+    {
       "id": "find_new_ver",
       "translation": "Find new version %s"
     },

@@ -42,6 +42,8 @@ func (s *UpgradeService) CheckUpgrade() {
 		if pass && err == nil {
 			s.RestartVersion(versionStr)
 		}
+	} else {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("no_new_ver", content), color.FgCyan)
 	}
 }
 
