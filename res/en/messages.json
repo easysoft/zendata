@@ -167,6 +167,10 @@
     },
 
     {
+      "id": "check_update",
+      "translation": "Check update"
+    },
+    {
       "id": "no_new_ver",
       "translation": "Current %s is already the newest version."
     },
