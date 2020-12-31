@@ -12,12 +12,12 @@ BIN_WIN32=${BIN_OUT}win32/${BINARY}/
 BIN_LINUX=${BIN_OUT}linux/${BINARY}/
 BIN_MAC=${BIN_OUT}mac/${BINARY}/
 
-default: prepare_res compile_all copy_files package
+default: update_version_in_config gen_version_file prepare_res compile_all copy_files package
 
-win64: prepare_res compile_win64 copy_files package
-win32: prepare_res compile_win32 copy_files package
-linux: prepare_res compile_linux copy_files package
-mac: prepare_res compile_mac copy_files package
+win64: update_version_in_config gen_version_file prepare_res compile_win64 copy_files package
+win32: update_version_in_config gen_version_file prepare_res compile_win32 copy_files package
+linux: update_version_in_config gen_version_file prepare_res compile_linux copy_files package
+mac: update_version_in_config gen_version_file prepare_res compile_mac copy_files package
 upload: upload_to
 
 prepare_res:
@@ -46,12 +46,12 @@ compile_mac:
 
 copy_files:
 	@echo 'start copy files'
-	@cp -r {data,yaml,users,demo} ${BIN_DIR} && rm -rf ${BIN_DIR}/demo/output
+	@cp -r {.zd.conf,data,yaml,users,demo} ${BIN_DIR} && rm -rf ${BIN_DIR}/demo/output
 
 	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
 	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
 
-	@for platform in `ls ${BIN_OUT}`; do cp -r {bin/data,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}/${BINARY}"; done
+	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}/${BINARY}"; done
 
 package:
 	@echo 'start package'
@@ -66,6 +66,14 @@ package:
 					xargs echo > ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip.md5 && \
 				cd ..; \
 			done
+
+update_version_in_config:
+	@gsed -i "s/Version.*/Version = ${VERSION}/" .zd.conf
+
+gen_version_file:
+	@echo 'gen version'
+	@mkdir -p ${QINIU_DIR}/${PROJECT}/
+	@echo ${VERSION} > ${QINIU_DIR}/${PROJECT}/version.txt
 
 upload_to:
 	@echo 'upload...'

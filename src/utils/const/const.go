@@ -6,13 +6,15 @@ import (
 	"os/user"
 )
 
+const (
+	AppName = "ztf"
+)
+
 var (
 	PthSep = string(os.PathSeparator)
 
-	ConfigVer      = 1
+	ConfigVer      = 1.0
 	userProfile, _ = user.Current()
-
-	ConfigFile = fmt.Sprintf("%s%s.zd.conf", userProfile.HomeDir, PthSep)
 
 	LanguageDefault = "en"
 	LanguageEN      = "en"

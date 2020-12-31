@@ -7,42 +7,45 @@ import (
 )
 
 var (
-	Config      = model.Config{Version: 1, Language: "en"}
-	DB *sql.DB
+	Config = model.Config{Version: 1, Language: "en"}
+	DB     *sql.DB
 
-	RunMode      constant.RunMode
+	RunMode constant.RunMode
 
-	ExeDir       string
-	WorkDir       string
+	ExeDir     string
+	WorkDir    string
+	ConfigFile string
 
 	LogDir       string
 	ScreenWidth  int
 	ScreenHeight int
 
-	RequestType  string
+	RequestType string
 	Verbose     bool
 	Interpreter string
 
-	Total int
-	WithHead bool
-	Human bool
-	Trim bool
+	Total     int
+	WithHead  bool
+	Human     bool
+	Trim      bool
 	Recursive bool
-	Type string
+	Type      string
 
 	JsonResp string = "[]"
-	Ip string
-	Port int
+	Ip       string
+	Port     int
 
-	ResLoading                      = false
+	ResLoading               = false
 	Def                      = model.DefData{}
 	Res                      = map[string]map[string][]string{}
 	RandFieldNameToValuesMap = map[string]map[string]interface{}{}
 	TopFieldMap              = map[string]model.DefField{}
 
-	CacheResFileToMap  = map[string] map[string][]string {}
-	CacheResFileToName  = map[string]string{}
+	CacheResFileToMap  = map[string]map[string][]string{}
+	CacheResFileToName = map[string]string{}
 
 	DefaultDir string
-	ConfigDir string
+	ConfigDir  string
+
+	AgentLogDir string
 )

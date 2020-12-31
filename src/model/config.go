@@ -1,7 +1,7 @@
 package model
 
 type Config struct {
-	Version  int
+	Version  float64
 	Language string
 	//Server string
 }

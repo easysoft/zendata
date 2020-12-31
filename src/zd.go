@@ -12,6 +12,7 @@ import (
 	serverRepo "github.com/easysoft/zendata/src/server/repo"
 	serverService "github.com/easysoft/zendata/src/server/service"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
+	serverConst "github.com/easysoft/zendata/src/server/utils/const"
 	"github.com/easysoft/zendata/src/service"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	configUtils "github.com/easysoft/zendata/src/utils/config"
@@ -202,6 +203,12 @@ func toGen() {
 			vari.WorkDir = fileUtils.AddSepIfNeeded(vari.WorkDir)
 		}
 		constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:"+vari.WorkDir, 1)
+
+		vari.AgentLogDir = vari.ExeDir + serverConst.AgentLogDir + constant.PthSep
+		err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
+		if err != nil {
+			logUtils.PrintTo(fmt.Sprintf("mkdir %s error %s", vari.AgentLogDir, err.Error()))
+		}
 
 		startServer()
 	} else if vari.RunMode == constant.RunModeServerRequest {

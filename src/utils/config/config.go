@@ -41,6 +41,7 @@ func InitDB() (db *sql.DB, err error) {
 func InitConfig() {
 	vari.ExeDir = fileUtils.GetExeDir()
 	vari.WorkDir = fileUtils.GetWorkDir()
+	vari.ConfigFile = vari.ExeDir + ".zd.conf"
 
 	CheckConfigPermission()
 
@@ -54,14 +55,14 @@ func InitConfig() {
 }
 
 func SaveConfig(conf model.Config) error {
-	fileUtils.MkDirIfNeeded(filepath.Dir(constant.ConfigFile))
+	fileUtils.MkDirIfNeeded(filepath.Dir(vari.ConfigFile))
 
 	conf.Version = constant.ConfigVer
 
 	cfg := ini.Empty()
 	cfg.ReflectFrom(&conf)
 
-	cfg.SaveTo(constant.ConfigFile)
+	cfg.SaveTo(vari.ConfigFile)
 
 	vari.Config = ReadCurrConfig()
 	return nil
@@ -87,16 +88,14 @@ func PrintCurrConfig() {
 func ReadCurrConfig() model.Config {
 	config := model.Config{}
 
-	configPath := constant.ConfigFile
-
-	if !fileUtils.FileExist(configPath) {
+	if !fileUtils.FileExist(vari.ConfigFile) {
 		config.Language = "en"
 		i118Utils.InitI118("en")
 
 		return config
 	}
 
-	ini.MapTo(&config, configPath)
+	ini.MapTo(&config, vari.ConfigFile)
 
 	return config
 }
@@ -107,7 +106,7 @@ func getInst() model.Config {
 		CheckConfigReady()
 	}
 
-	ini.MapTo(&vari.Config, constant.ConfigFile)
+	ini.MapTo(&vari.Config, vari.ConfigFile)
 
 	if vari.Config.Version != constant.ConfigVer { // old config file, re-init
 		if vari.Config.Language != "en" && vari.Config.Language != "zh" {
@@ -122,7 +121,7 @@ func getInst() model.Config {
 
 func CheckConfigPermission() {
 	//err := syscall.Access(vari.ExeDir, syscall.O_RDWR)
-	err := fileUtils.MkDirIfNeeded(filepath.Dir(constant.ConfigFile))
+	err := fileUtils.MkDirIfNeeded(filepath.Dir(vari.ConfigFile))
 	if err != nil {
 		logUtils.PrintToWithColor(
 			fmt.Sprintf("Permission denied, please change the dir %s.", vari.ExeDir), color.FgRed)
@@ -131,7 +130,7 @@ func CheckConfigPermission() {
 }
 
 func CheckConfigReady() {
-	if !fileUtils.FileExist(constant.ConfigFile) {
+	if !fileUtils.FileExist(vari.ConfigFile) {
 		if vari.RunMode == constant.RunModeServer {
 			conf := model.Config{Language: "zh", Version: 1}
 			SaveConfig(conf)

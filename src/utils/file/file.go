@@ -66,6 +66,14 @@ func MkDirIfNeeded(dir string) error {
 
 	return nil
 }
+func RmDir(dir string) error {
+	if FileExist(dir) {
+		err := os.RemoveAll(dir)
+		return err
+	}
+
+	return nil
+}
 
 func IsDir(f string) bool {
 	fi, e := os.Stat(f)
@@ -178,7 +186,7 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 		resPath := vari.ConfigDir + from
 		if !FileExist(resPath) { // in same folder with passed config file, like dir/name.yaml
 			resPath = vari.WorkDir + from
-			if !FileExist(resPath) {  // in res file
+			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
 		}
@@ -186,7 +194,7 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 	}
 
 	if resFile == "" {
-		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from) + "\n")
+		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from)+"\n")
 	}
 
 	return
@@ -198,7 +206,7 @@ func ConvertReferRangeToPath(f, currFile string) (path string) {
 		resPath := GetAbsDir(currFile) + f
 		if !FileExist(resPath) { // in same folder
 			resPath = vari.WorkDir + f
-			if !FileExist(resPath) {  // in res file
+			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
 		}
@@ -283,7 +291,7 @@ func ConvertResExcelPath(from string) (ret, sheet string) {
 	}
 
 	if ret == "" {
-		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from) + "\n")
+		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from)+"\n")
 	}
 
 	return
