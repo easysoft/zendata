@@ -44,7 +44,7 @@ for var in 1 2
           sleep $interval
         else
           echo upgraded, force to restart.
-          PORT="-1" # next round, will cause restart
+          PORT= # next round, will cause restart
         fi
 
       else
@@ -59,6 +59,7 @@ for var in 1 2
       cd $DIR
       nohup ./ztf -P $PARAM_PORT > nohup.log 2&>zenops-agent-$nowDate.log &
 
+      rm -f "$DIR/.upgraded"
       echo ""
       break
 
