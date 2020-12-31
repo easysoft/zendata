@@ -59,10 +59,16 @@ package:
 	@for platform in `ls ${BIN_OUT}`; do mkdir -p ${QINIU_DIST_DIR}$${platform}; done
 
 	@cd ${BIN_OUT} && \
-		for platform in `ls ./`; do cd $${platform} && zip -r ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip "${BINARY}" && cd ..; done
+		for platform in `ls ./`; \
+			do  cd $${platform} && \
+				zip -r ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip "${BINARY}" && \
+				md5sum ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip | awk '{print $$1}' | \
+					xargs echo > ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip.md5 && \
+				cd ..; \
+			done
 
 upload_to:
 	@echo 'upload...'
 	@find ${QINIU_DIR} -name ".DS_Store" -type f -delete
 	@qshell qupload2 --src-dir=${QINIU_DIR} --bucket=download --thread-count=10 --log-file=qshell.log \
-                     --skip-path-prefixes=ztf
+                     --skip-path-prefixes=ztf --rescan-local --overwrite --check-hash
