@@ -26,7 +26,7 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 		if sheet == "" {
 			sheet = firstSheet
 		}
-	} else { // dir
+	} else { // dir, for article generation only
 		ConvertWordExcelsToSQLiteIfNeeded(dbName, filePath)
 	}
 
@@ -53,7 +53,7 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 }
 
 func getDbName(path string) (dbName string) {
-	dbName = strings.Replace(path, vari.WorkDir + constant.ResDirData + constant.PthSep, "", -1)
+	dbName = strings.Replace(path, vari.WorkDir+constant.ResDirData+constant.PthSep, "", -1)
 	dbName = strings.Replace(dbName, constant.PthSep, "_", -1)
 	dbName = strings.Replace(dbName, ".", "_", -1)
 
@@ -248,8 +248,12 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 
 	if !strings.Contains(where, "LIMIT") {
 		total := vari.Total
-		if total > constant.MaxNumb { total = constant.MaxNumb }
-		if field.Limit > 0 && total > field.Limit { total = field.Limit }
+		if total > constant.MaxNumb {
+			total = constant.MaxNumb
+		}
+		if field.Limit > 0 && total > field.Limit {
+			total = field.Limit
+		}
 
 		where = where + fmt.Sprintf(" LIMIT %d", total)
 	}
@@ -302,7 +306,9 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	for _, item := range valMapArr {
 		idx := 0
 		for _, val := range item {
-			if idx > 0 { break }
+			if idx > 0 {
+				break
+			}
 			list = append(list, val)
 			idx++
 		}
@@ -326,7 +332,7 @@ func isExcelChanged(path string) bool {
 	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s WHERE name = '%s';",
 		constant.SqliteTrackTable, path)
 	rows, err := vari.DB.Query(sqlStr)
-	rows.Close()
+	defer rows.Close()
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		return true
@@ -353,7 +359,9 @@ func isExcelChanged(path string) bool {
 		}
 	}
 
-	if !found { changed = true }
+	if !found {
+		changed = true
+	}
 
 	if changed {
 		if !found {
@@ -420,7 +428,7 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 	fileName = strings.TrimSuffix(fileName, "词库")
 
 	colPrefix := fileName // stringUtils.GetPinyin(fileName)
-	*ddlFields = append(*ddlFields, "    `" + colPrefix + "` VARCHAR DEFAULT ''")
+	*ddlFields = append(*ddlFields, "    `"+colPrefix+"` VARCHAR DEFAULT ''")
 
 	for sheetIndex, sheet := range excel.GetSheetList() {
 		rows, _ := excel.GetRows(sheet)
@@ -491,7 +499,9 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 				if colIndex == 0 { // word
 					record["词语"] = val
 				} else {
-					if val != "y" && val != "b" && val != "f" && val != "m" { val = "" }
+					if val != "y" && val != "b" && val != "f" && val != "m" {
+						val = ""
+					}
 
 					colNameArr := strings.Split(colNames, "-")
 					for _, colName := range colNameArr {
@@ -504,7 +514,7 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 			vals := make([]string, 0)
 
 			for key, val := range record {
-				cols = append(cols, "`" + key + "`")
+				cols = append(cols, "`"+key+"`")
 
 				valStr := ""
 				switch val.(type) {

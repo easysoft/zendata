@@ -1,4 +1,4 @@
-VERSION=1.7
+VERSION=1.6
 PROJECT=zd
 QINIU_DIR=/Users/aaron/work/zentao/qiniu/
 QINIU_DIST_DIR=${QINIU_DIR}${PROJECT}/${VERSION}/
