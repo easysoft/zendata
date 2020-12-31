@@ -30,39 +30,36 @@ if [ -z "$PARAM_PORT" ]; then
     fi
 fi
 
+if [ -f "$DIR/.upgraded"]; then
+  echo upgraded, force to restart.
+  PORT="-1" # cause service be killed
+fi
+
 for var in 1 2
+do
 
-	do
+  if [ -z "$PORT" ]; then # is empty, start service
 
-    if [ -n "$PORT" ]; then
+    echo $nowTime start service on port $PARAM_PORT in dir $DIR.
+    cd $DIR
+    nohup ./ztf -P $PARAM_PORT > nohup.log 2&>zenops-agent-$nowDate.log &
 
-      if [ $PORT = $PARAM_PORT ]; then
-        echo service is still alive
+    rm -f "$DIR/.upgraded"
+    echo ""
+    break
 
-        if [ ! -f "$DIR/.upgraded"]; then
-          echo sleep $interval second the $var time.
-          sleep $interval
-        else
-          echo upgraded, force to restart.
-          PORT= # next round, will cause restart
-        fi
+  else
 
-      else
-        echo kill service on port $PORT.
-        ps -ef | grep "$PARAM_NAME" | grep -v "grep" | grep -v ".sh" | awk '{print $2}' | xargs kill -9
-        PORT=
-      fi
-
+    if [ $PORT = $PARAM_PORT ]; then
+      echo service is still alive
+      echo sleep $interval second the $var time.
+      sleep $interval
     else
-
-      echo $nowTime start service on port $PARAM_PORT in dir $DIR.
-      cd $DIR
-      nohup ./ztf -P $PARAM_PORT > nohup.log 2&>zenops-agent-$nowDate.log &
-
-      rm -f "$DIR/.upgraded"
-      echo ""
-      break
-
+      echo kill service on port $PORT.
+      ps -ef | grep "$PARAM_NAME" | grep -v "grep" | grep -v ".sh" | awk '{print $2}' | xargs kill -9
+      PORT="" # cause service started in the next iteration
     fi
 
-  done
+  fi
+
+done
