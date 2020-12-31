@@ -5,7 +5,7 @@
 /tmp/cache/.data.db-wal
 /demo/out/
 /conf/
-/bin2/
+/bin/
 /test/ztf/output/
 /test/ztf/.idea/
 /nohup.out
@@ -21,3 +21,4 @@
 /tmp/.default.yaml
 /tmp/.config.yaml
 /qshell.log
+/log-agent/
