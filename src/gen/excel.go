@@ -329,7 +329,7 @@ func isExcelChanged(path string) bool {
 		fileChangeTime = getDirModTime(path).Unix()
 	}
 
-	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s WHERE name = '%s';",
+	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s WHERE name = '%s' ORDER BY changeTime DESC LIMIT 1;",
 		constant.SqliteTrackTable, path)
 	rows, err := vari.DB.Query(sqlStr)
 	defer rows.Close()
