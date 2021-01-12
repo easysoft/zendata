@@ -23,19 +23,16 @@ import (
 
 func InitDB() (db *sql.DB, err error) {
 	db, err = sql.Open(constant.SqliteDriver, constant.SqliteData)
-	err = db.Ping() // This DOES open a connection if necessary. This makes sure the database is accessible
+	err = db.Ping() // make sure database is accessible
 	if err != nil {
-		if vari.RunMode != constant.RunModeServer {
-			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteData, err.Error()))
-		}
-
+		logUtils.PrintErrMsg(
+			fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteData, err.Error()))
 		return
 	}
 
 	tableInit := isDataInit(db)
 	if tableInit {
-		return
+	} else {
 	}
 
 	return

@@ -146,8 +146,10 @@ func main() {
 	}
 	configUtils.InitConfig()
 
-	vari.DB, _ = configUtils.InitDB()
-	defer vari.DB.Close()
+	if vari.RunMode != constant.RunModeServer {
+		vari.DB, _ = configUtils.InitDB()
+		defer vari.DB.Close()
+	}
 
 	switch os.Args[1] {
 	default:
@@ -194,6 +196,7 @@ func main() {
 
 func toGen() {
 	if vari.RunMode == constant.RunModeServer {
+		// adjust workdir and dbpath according to -R param is needed, then init db
 		if root != "" {
 			if fileUtils.IsAbosutePath(root) {
 				vari.WorkDir = root
