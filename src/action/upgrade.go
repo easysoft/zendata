@@ -1,91 +1,11 @@
 package action
 
 import (
-	"database/sql"
-	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/src/utils/const"
-	i118Utils "github.com/easysoft/zendata/src/utils/i118"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
-	numbUtils "github.com/easysoft/zendata/src/utils/numb"
 	_ "github.com/mattn/go-sqlite3"
 	"hash/crc32"
 	"strconv"
 )
-
-func Upgrade() {
-	// TODO: update date from remote server
-
-	// read data from db
-	db, err := sql.Open(constant.SqliteDriver, constant.SqliteData)
-	defer db.Close()
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_connect_sqlite", constant.SqliteData, err.Error()))
-		return
-	}
-
-	sql := "SELECT id, name, state, zipCode, cityCode FROM city"
-	rows, err := db.Query(sql)
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
-		return
-	}
-
-	sqls := make([]string, 0)
-
-	sheet := "city"
-	excel := excelize.NewFile()
-	excel.SetSheetName("Sheet1", sheet)
-	headerData := []interface{}{"seq", "name", "state", "zipCode", "cityCode", "crc"}
-	colNumb := AddExcelRow(excel, sheet, 1, headerData)
-
-	rowIndex := 1
-	for rows.Next() {
-		var seq string
-		var id int
-		var name string
-		var state string
-		var zipCode string
-		var cityCode string
-
-		err = rows.Scan(&id, &name, &state, &zipCode, &cityCode)
-		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
-			return
-		}
-
-		seq = numbUtils.NumToBHex(id)
-		fmt.Println(seq, name, state, zipCode, cityCode)
-
-		// gen update sql
-		sql := fmt.Sprintf("UPDATE city SET seq = '%s' where id = %d;", numbUtils.NumToBHex(id), id)
-		sqls = append(sqls, sql)
-
-		// gen excel row
-		rowIndex = rowIndex + 1
-		rowData := []interface{}{seq, name, state, zipCode, cityCode}
-		AddExcelRow(excel, sheet, rowIndex, rowData)
-	}
-
-	headerStyle, err := excel.NewStyle(constant.ExcelHeader)
-	excel.SetCellStyle(sheet, "A1", colNumb + "1", headerStyle)
-
-	borderStyle, err := excel.NewStyle(constant.ExcelBorder)
-	excel.SetCellStyle(sheet, "A1", colNumb + strconv.Itoa(rowIndex), borderStyle)
-
-	// update seq column
-	for _, sql := range sqls {
-		_, err := db.Exec(sql)
-		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
-		}
-	}
-
-	err = excel.SaveAs("export.excel")
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_save_excel", err.Error()))
-	}
-}
 
 func AddExcelRow(excel *excelize.File, sheet string, rowIndex int, cols []interface{}) string {
 	start := byte('A')
