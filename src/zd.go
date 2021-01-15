@@ -146,10 +146,10 @@ func main() {
 	}
 	configUtils.InitConfig()
 
-	if vari.RunMode != constant.RunModeServer {
-		vari.DB, _ = configUtils.InitDB()
-		defer vari.DB.Close()
-	}
+	//if vari.RunMode != constant.RunModeServer {
+	vari.DB, _ = configUtils.InitDB()
+	defer vari.DB.Close()
+	//}
 
 	switch os.Args[1] {
 	default:

@@ -1,14 +1,18 @@
 package gen
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"strconv"
 	"strings"
 	"time"
 )
 
 func CreateTimestampField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+	convertTmFormat(field)
+
 	fieldWithValue.Field = field.Field
 
 	rang := strings.Trim(strings.TrimSpace(field.Range), ",")
@@ -26,6 +30,24 @@ func CreateTimestampField(field *model.DefField, fieldWithValue *model.FieldWith
 	fieldWithValue.Values = values
 }
 
+func convertTmFormat(field *model.DefField) { // to 2006-01-02 15:04:05
+	format := field.Format
+
+	if strings.Index(format, "YYYY") > -1 {
+		format = strings.Replace(format, "YYYY", "2006", 1)
+	} else {
+		format = strings.Replace(format, "YY", "06", 1)
+	}
+
+	format = strings.Replace(format, "MM", "01", 1)
+	format = strings.Replace(format, "DD", "02", 1)
+	format = strings.Replace(format, "hh", "15", 1)
+	format = strings.Replace(format, "mm", "04", 1)
+	format = strings.Replace(format, "ss", "05", 1)
+
+	field.Format = format
+}
+
 func createTimestampSectionValue(section string, values *[]interface{}) {
 	desc, step := parseTsSection(section)
 	start, end := parseTsDesc(desc)
@@ -40,7 +62,9 @@ func createTimestampSectionValue(section string, values *[]interface{}) {
 	// generate data by index
 	index := 0
 	for _, numb := range numbs {
-		if index >= constant.MaxNumb { break }
+		if index >= constant.MaxNumb {
+			break
+		}
 
 		*values = append(*values, numb)
 		index = index + 1
@@ -86,6 +110,17 @@ func parseTsDesc(desc string) (start, end int64) {
 	start = parseTsValue(startStr, true)
 	end = parseTsValue(endStr, false)
 
+	if start > end {
+		temp := start
+		start = end
+		end = temp
+	}
+
+	logUtils.PrintTo(
+		fmt.Sprintf("From %s to %s",
+			time.Unix(start, 0).Format("2006-01-02 15:04:05"),
+			time.Unix(end, 0).Format("2006-01-02 15:04:05")))
+
 	return
 }
 
@@ -106,7 +141,8 @@ func parseTsValue(str string, isStart bool) (value int64) {
 		return
 	}
 
-	tm, err := time.Parse("20060102", str)
+	loc, _ := time.LoadLocation("Local")
+	tm, err := time.ParseInLocation("20060102 150405", str, loc)
 	if err != nil {
 		todayStart, todayEnd := getTodayTs()
 		if isStart {

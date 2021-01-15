@@ -15,10 +15,11 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string,
-		) (rows [][]string, colIsNumArr []bool, err error) {
+) (rows [][]string, colIsNumArr []bool, err error) {
 
 	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
 	vari.ConfigDir = fileUtils.GetAbsDir(configFile)
@@ -37,7 +38,7 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 		}
 	}
 
-	vari.ResLoading = true  // not to use placeholder when loading res
+	vari.ResLoading = true // not to use placeholder when loading res
 	vari.Res = LoadResDef(*fieldsToExport)
 	vari.ResLoading = false
 
@@ -150,7 +151,9 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 						values = append(values, valuesFromGroup...)
 
 						i = i - len(valuesFromGroup)
-						if i <= 0 { break }
+						if i <= 0 {
+							break
+						}
 					}
 				} else {
 					valuesFromGroup := make([]string, 0)
@@ -163,7 +166,9 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 					values = append(values, valuesFromGroup...)
 
 					i = i - len(valuesFromGroup)
-					if i <= 0 { break }
+					if i <= 0 {
+						break
+					}
 				}
 			}
 		} else if field.Select != "" { // refer to excel
@@ -211,7 +216,7 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		values = append(values, val)
 
 		count++
-		isRandomAndLoopEnd := !vari.ResLoading &&	//  ignore rand in resource
+		isRandomAndLoopEnd := !vari.ResLoading && //  ignore rand in resource
 			!(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
@@ -232,46 +237,52 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	success := false
 
 	format := strings.TrimSpace(field.Format)
-	switch val.(type) {
-		case int64:
-			if format != "" {
-				str, success = stringUtils.FormatStr(format, val.(int64), 0)
-			}
-			if !success {
-				str = strconv.FormatInt(val.(int64), 10)
-			}
-		case float64:
-			precision := 0
-			if field.Precision > 0 {
-				precision = field.Precision
-			}
-			if format != "" {
-				str, success = stringUtils.FormatStr(format, val.(float64), precision)
-			}
-			if !success {
-				str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
-			}
-		case byte:
-			str = string(val.(byte))
-			if format != "" {
-				str, success = stringUtils.FormatStr(format, str, 0)
-			}
-			if !success {
-				str = string(val.(byte))
-			}
-		case string:
-			str = val.(string)
 
-			match, _ := regexp.MatchString("%[0-9]*d", format)
-			if match {
-				valInt, err := strconv.Atoi(str)
-				if err == nil {
-					str, success = stringUtils.FormatStr(format, valInt, 0)
-				}
-			} else {
-				str, success = stringUtils.FormatStr(format, str, 0)
+	if field.Type == constant.FieldTypeTimestamp && field.Format != "" {
+		str = time.Unix(val.(int64), 0).Format(field.Format)
+		return str
+	}
+
+	switch val.(type) {
+	case int64:
+		if format != "" {
+			str, success = stringUtils.FormatStr(format, val.(int64), 0)
+		}
+		if !success {
+			str = strconv.FormatInt(val.(int64), 10)
+		}
+	case float64:
+		precision := 0
+		if field.Precision > 0 {
+			precision = field.Precision
+		}
+		if format != "" {
+			str, success = stringUtils.FormatStr(format, val.(float64), precision)
+		}
+		if !success {
+			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+		}
+	case byte:
+		str = string(val.(byte))
+		if format != "" {
+			str, success = stringUtils.FormatStr(format, str, 0)
+		}
+		if !success {
+			str = string(val.(byte))
+		}
+	case string:
+		str = val.(string)
+
+		match, _ := regexp.MatchString("%[0-9]*d", format)
+		if match {
+			valInt, err := strconv.Atoi(str)
+			if err == nil {
+				str, success = stringUtils.FormatStr(format, valInt, 0)
 			}
-		default:
+		} else {
+			str, success = stringUtils.FormatStr(format, str, 0)
+		}
+	default:
 	}
 
 	return str
@@ -309,7 +320,7 @@ func loopFieldValues(field *model.DefField, oldValues []string, total int, withF
 }
 
 func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
-		indexOfRow *int, withFix bool) (loopStr string) {
+	indexOfRow *int, withFix bool) (loopStr string) {
 	prefix := field.Prefix
 	postfix := field.Postfix
 
@@ -427,7 +438,7 @@ func randomValues(values []string) (ret []string) {
 	return
 }
 
-func combineChildrenValues(arrOfArr [][]string, recursive bool) (ret []string)  {
+func combineChildrenValues(arrOfArr [][]string, recursive bool) (ret []string) {
 	valueArr := putChildrenToArr(arrOfArr, recursive)
 
 	for _, arr := range valueArr {
