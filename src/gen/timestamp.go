@@ -103,9 +103,6 @@ func parseTsDesc(desc string) (start, end int64) {
 	if len(arr) > 1 {
 		endStr = arr[1]
 	}
-	if endStr == "" {
-		endStr = startStr
-	}
 
 	start = parseTsValue(startStr, true)
 	end = parseTsValue(endStr, false)
