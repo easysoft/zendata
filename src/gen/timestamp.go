@@ -5,6 +5,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"strconv"
 	"strings"
 	"time"
@@ -92,17 +93,12 @@ func parseTsSection(section string) (desc string, step int) {
 func parseTsDesc(desc string) (start, end int64) {
 	desc = strings.TrimSpace(desc)
 
-	if desc == "today" {
+	if strings.Contains(desc, "today") {
 		start, end = getTodayTs()
 		return
 	}
 
-	arr := strings.Split(desc, "-")
-	startStr := arr[0]
-	endStr := ""
-	if len(arr) > 1 {
-		endStr = arr[1]
-	}
+	startStr, endStr := splitTmDesc(desc)
 
 	start = parseTsValue(startStr, true)
 	end = parseTsValue(endStr, false)
@@ -121,19 +117,57 @@ func parseTsDesc(desc string) (start, end int64) {
 	return
 }
 
+func splitTmDesc(desc string) (start, end string) {
+	runeArr := []rune(desc)
+
+	index := -1
+	bracketsOpen := false
+	for i := 0; i < len(runeArr); i++ {
+		c := runeArr[i]
+
+		if c == constant.RightBrackets {
+			bracketsOpen = false
+		} else if c == constant.LeftBrackets {
+			bracketsOpen = true
+		}
+
+		str := fmt.Sprintf("%c", c)
+		if !bracketsOpen && str == "-" {
+			index = i
+			break
+		}
+	}
+
+	if index == -1 {
+		start = desc
+	} else if index == 0 {
+		end = desc[1:]
+	} else if index == len(desc)-1 {
+		start = desc[:index]
+	} else {
+		start = desc[:index]
+		end = desc[index+1:]
+	}
+
+	if len(start) > 0 {
+		start = strings.TrimPrefix(start, string(constant.LeftBrackets))
+		start = strings.TrimSuffix(start, string(constant.RightBrackets))
+	}
+	if len(end) > 0 {
+		end = strings.TrimPrefix(end, string(constant.LeftBrackets))
+		end = strings.TrimSuffix(end, string(constant.RightBrackets))
+	}
+
+	return
+}
+
 func parseTsValue(str string, isStart bool) (value int64) {
 	str = strings.TrimSpace(str)
 
-	if strings.Contains(str, "now") {
+	if strings.HasPrefix(str, "+") || strings.HasPrefix(str, "-") {
 		value = time.Now().Unix()
-		return
-	} else if str == "today" {
-		start, end := getTodayTs()
-		if isStart {
-			value = start
-		} else {
-			value = end
-		}
+
+		value = increment(value, str)
 
 		return
 	}
@@ -162,6 +196,50 @@ func getTodayTs() (start, end int64) {
 
 	start = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location()).Unix()
 	end = time.Date(now.Year(), now.Month(), now.Day(), 23, 59, 59, 0, now.Location()).Unix()
+
+	return
+}
+
+func increment(originalVal int64, incrementStr string) (ret int64) {
+	ret = originalVal
+
+	incrementStr = strings.TrimSpace(incrementStr)
+	if len(incrementStr) < 3 {
+		return
+	}
+
+	units := []string{"Y", "M", "D", "w", "h", "m", "s"}
+
+	unit := string(incrementStr[len(incrementStr)-1])
+	found, _ := stringUtils.FindInArr(unit, units)
+	if !found {
+		return
+	}
+
+	numStr := incrementStr[:len(incrementStr)-1]
+	num, _ := strconv.Atoi(numStr)
+	if num == 0 {
+		return
+	}
+
+	switch unit {
+	case "Y":
+		ret += int64(num) * 365 * 24 * 60 * 60
+	case "M":
+		ret += int64(num) * 30 * 24 * 60 * 60
+	case "D":
+		ret += int64(num) * 24 * 60 * 60
+	case "w":
+		ret += int64(num) * 7 * 24 * 60 * 60
+	case "h":
+		ret += int64(num) * 60 * 60
+	case "m":
+		ret += int64(num) * 60
+	case "s":
+		ret += int64(num)
+	default:
+
+	}
 
 	return
 }

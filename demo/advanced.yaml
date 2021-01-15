@@ -23,9 +23,16 @@ fields:
     prefix: "["
     postfix: "]\t"
 
-  - field: field_timestamp             # 生成时间数据，从早上9点到现在，间隔1分钟（60秒）。
-    range: "20210114 090000-now:60"    # 起始、结束支持now关键字，默认为当天的开始和结束时间。
+  - field: field_timestamp         # 生成时间数据，从早上9点到今天结束，间隔1分钟（60秒）。
+    range: "20210101 000000:60"    # 起始、结束支持now关键字，默认为当天的开始和结束时间。
     prefix: DateTime-
+    type: timestamp
+    format: "YY/MM/DD hh:mm:ss"
+    postfix: "\t"
+
+  - field: field_timestamp_now     # 生成时间数据，从一月前开始到现在。
+    range: "(-1M)-(+1M):60"        # 支持当前时间的运算，Y、M、D、W、h、m、s分别对应年、月、日、周、时、分、秒。
+    prefix: DateTime
     type: timestamp
     format: "YY/MM/DD hh:mm:ss"
 
