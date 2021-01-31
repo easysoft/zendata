@@ -1,21 +1,18 @@
 title: 数据测试1
 desc: 数据测试1
 fields:
+
 - field: field_with_children
-  from: zentao.number.v1.yaml
   fields:
   - field: field_text
     range: test/dir/users.txt:7
     postfix: "\t"
-    from: zentao.number.v1.yaml
   - field: field_yaml
     range: test/dir/content.yaml{7}
     postfix: "\t"
-    from: zentao.number.v1.yaml
   - field: field_use_config
     postfix: "\t"
     config: test/dir/config.yaml
-    from: zentao.number.v1.yaml
   - field: field_use_ranges
     postfix: "\t"
     from: zentao.number.v1.yaml
@@ -35,20 +32,16 @@ fields:
     prefix: "\t"
     postfix: '|'
     loop: "3"
-    from: zentao.number.v1.yaml
   - field: child2
     range: A-Z
     prefix: part2_
     postfix: '|'
-    from: zentao.number.v1.yaml
   - field: child_with_child
     prefix: part3_
-    from: zentao.number.v1.yaml
     fields:
     - field: field_grandson
       range: 10-20
       prefix: int_
-      from: zentao.number.v1.yaml
 - field: refer1
   postfix: '-'
   from: zentao.number.v1.yaml
