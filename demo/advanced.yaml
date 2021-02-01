@@ -24,7 +24,7 @@ fields:
     postfix: "]\t"
 
   - field: field_timestamp         # 生成时间数据，从早上9点到今天结束，间隔1分钟（60秒）。
-    range: "20210101 000000:60"    # 起始、结束支持now关键字，默认为当天的开始和结束时间。
+    range: "20210101 000000:60"    # 起始、结束时间用-分隔，默认为当天的开始和结束时间。
     prefix: DateTime-
     type: timestamp
     format: "YY/MM/DD hh:mm:ss"
