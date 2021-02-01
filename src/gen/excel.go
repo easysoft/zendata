@@ -41,9 +41,6 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 		if index >= constant.MaxNumb {
 			break
 		}
-		//if strings.TrimSpace(item) == "" {
-		//	continue
-		//}
 
 		values[selectCol] = append(values[selectCol], item)
 		index = index + 1
