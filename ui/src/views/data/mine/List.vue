@@ -227,7 +227,7 @@ export default {
         okText: this.$t('msg.yes'),
         cancelText: this.$t('msg.no'),
         cancelType: 'danger',
-        onOk() {
+        onOk: () => {
           this.remove(record)
         },
       });
