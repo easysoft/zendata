@@ -1,16 +1,5 @@
 <template>
-  <div>
-    <div class="head">
-      <div class="title">{{ $t('menu.instances.list') }}</div>
-      <div class="filter">
-        <a-input-search v-model="keywords" @change="onSearch" :allowClear="true"
-                        placeholder="$t('tips.search')" style="width: 300px" />
-      </div>
-      <div class="buttons">
-        <a-button type="primary" @click="create()">{{ $t('action.create') }}</a-button>
-      </div>
-    </div>
-
+  <div class="main-table">
     <a-table :columns="columns" :data-source="models" :pagination="false" rowKey="id">
       <span slot="folderWithPath" slot-scope="text, record">
         <a-tooltip placement="top" overlayClassName="tooltip-light">
@@ -22,8 +11,8 @@
       </span>
 
       <span slot="action" slot-scope="record">
-        <a @click="edit(record)">{{ $t('action.edit') }}</a> |
-        <a @click="design(record)">{{ $t('action.design') }}</a> |
+        <a @click="edit(record)" :title="$t('action.edit')"><a-icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
+        <a @click="design(record)" :title="$t('action.design')"><a-icon type="control" :style="{fontSize: '16px'}" /></a> &nbsp;
 
         <a-popconfirm
             :title="$t('tips.delete')"
@@ -31,8 +20,8 @@
             :cancelText="$t('msg.no')"
             @confirm="remove(record)"
         >
-          <a href="#">{{ $t('action.delete') }}</a>
-        </a-popconfirm> |
+          <a href="#" :title="$t('action.delete')"><a-icon type="delete" :style="{fontSize: '16px'}" /></a> &nbsp;
+        </a-popconfirm> &nbsp;
 
         <a-tooltip placement="top" overlayClassName="tooltip-light">
           <template slot="title">
@@ -44,15 +33,13 @@
               </div>
             </div>
           </template>
-          <a href="#">{{$t('tips.refer')}}</a>
+          <a href="#" :title="$t('tips.refer')">&nbsp; <a-icon type="link" :style="{fontSize: '16px'}" /></a>
         </a-tooltip>
-
       </span>
-
     </a-table>
 
     <div class="pagination-wrapper">
-      <a-pagination @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
+      <a-pagination @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" simple size="small" />
     </div>
 
     <div class="full-screen-modal">
@@ -67,6 +54,20 @@
       </design-component>
     </div>
 
+    <a-modal
+      :visible="editModalVisible"
+      :title="editModalVisible ? editRecord ? `${$t('menu.instances.edit')}: ${editRecord.title}` : $t('title.instances.create') : ''"
+      :footer="false"
+      :centered="true"
+      :width="700"
+      @cancel="handleCancelEditModal"
+    >
+      <Edit
+        :v-if="editModalVisible"
+        :id="editModalVisible ? editID ? editID : 0 : null"
+        :afterSave="handleEditSave"
+      />
+    </a-modal>
   </div>
 </template>
 
@@ -76,11 +77,13 @@ import {listInstances, removeInstances} from "../../../../api/manage";
 import { DesignComponent } from '../../../../components'
 import {PageSize, ResTypeInstances, pathToRelated} from "../../../../api/utils";
 import debounce from "lodash.debounce"
+import Edit from './Edit';
 
 export default {
   name: 'InstanceList',
   components: {
-    DesignComponent
+    DesignComponent,
+    Edit,
   },
   data() {
     const columns = [
@@ -92,11 +95,13 @@ export default {
         title: this.$i18n.t('form.file'),
         dataIndex: 'folder',
         scopedSlots: { customRender: 'folderWithPath' },
+        width: 450
       },
       {
         title: this.$i18n.t('form.opt'),
         key: 'action',
         scopedSlots: { customRender: 'action' },
+        width: 100
       },
     ];
 
@@ -109,14 +114,39 @@ export default {
       type: ResTypeInstances,
       time: 0,
 
-      keywords: '',
       page: 1,
       total: 0,
       pageSize: PageSize,
     };
   },
   computed: {
-
+    keywords: function() {
+      if (this.$route.query && typeof this.$route.query.search === 'string') {
+        return this.$route.query.search;
+      }
+      return '';
+    },
+    editID: function() {
+      if (this.$route.params && this.$route.params.id !== undefined) {
+        return this.$route.params.id;
+      }
+      return null;
+    },
+    editModalVisible: function() {
+      return this.editID !== null;
+    },
+    editRecord: function() {
+      const {editID} = this;
+      if (!editID) {
+        return null;
+      }
+      return this.models.find(x => x.id == editID);
+    }
+  },
+  watch: {
+    keywords: function() {
+      this.onSearch();
+    }
   },
   created () {
     this.loadData()
@@ -139,9 +169,23 @@ export default {
         this.total = json.total
       })
     },
+    handleCancelEditModal() {
+      const {path, query} = this.$route;
+      const newPath = '/data/buildin/instances/list';
+      if (path !== newPath) {
+        this.$router.replace({path: newPath, query});
+      }
+    },
+    handleEditSave() {
+      this.handleCancelEditModal();
+      this.loadData();
+    },
     edit(record) {
-      console.log(record)
-      this.$router.push({path: `/data/buildin/instances/edit/${record.id}`});
+      const {path, query = {}} = this.$router;
+      const newPath = `/data/buildin/instances/list/${record.id}`;
+      if (path !== newPath) {
+        this.$router.replace({path: newPath, query});
+      }
     },
     design(record) {
       this.time = Date.now() // trigger data refresh

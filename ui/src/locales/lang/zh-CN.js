@@ -10,7 +10,7 @@ const components = {
 const locale = {
   'site.title': 'ZenData',
 
-  'menu.data.list': '数据列表',
+  'menu.data.list': '我的数据',
   'menu.data.edit': '数据编辑',
   'menu.config.list': '字段列表',
   'menu.config.edit': '字段编辑',

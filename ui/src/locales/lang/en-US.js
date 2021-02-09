@@ -117,7 +117,7 @@ const locale = {
   'form.col': 'Column',
   'form.count': 'Count',
   'form.expr': 'Expression',
-  'form.opt': 'Operation',
+  'form.opt': 'Actions',
   'form.save': 'Save',
   'form.reset': 'Reset',
   'form.cancel': 'Cancel',

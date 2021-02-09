@@ -21,7 +21,6 @@
           <a-menu-item key="buildin/instances/list">
             {{ $t('msg.instances') }}
           </a-menu-item>
-
           <a-menu-item key="buildin/text/list">
             {{ $t('msg.text') }}
           </a-menu-item>
