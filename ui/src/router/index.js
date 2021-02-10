@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import MainLayout from "../layout/MainLayout";
 import ColLayout from "../layout/ColLayout";
 import BlankLayout from "../layout/BlankLayout";
+import BuildinLayout from "../views/data/buildin/Layout";
 
 Vue.use(VueRouter);
 
@@ -41,7 +42,7 @@ const routes = [
                     {
                         path: 'buildin',
                         name: 'buildin',
-                        component: BlankLayout,
+                        component: BuildinLayout,
                         children: [
                             {
                                 path: 'ranges',
@@ -49,7 +50,7 @@ const routes = [
                                 component: BlankLayout,
                                 children: [
                                     {
-                                        path: 'list',
+                                        path: 'list/:id?',
                                         name: 'ranges-list',
                                         component: () => import('../views/data/buildin/ranges/List'),
                                         meta: { title: 'menu.ranges.list' }
@@ -68,7 +69,7 @@ const routes = [
                                 component: BlankLayout,
                                 children: [
                                     {
-                                        path: 'list',
+                                        path: 'list/:id?',
                                         name: 'instances-list',
                                         component: () => import('../views/data/buildin/instances/List'),
                                         meta: { title: 'menu.instances.list' }
@@ -87,7 +88,7 @@ const routes = [
                                 component: BlankLayout,
                                 children: [
                                     {
-                                        path: 'list',
+                                        path: 'list/:id?',
                                         name: 'excel-list',
                                         component: () => import('../views/data/buildin/excel/List'),
                                         meta: { title: 'menu.excel.list' }
@@ -106,7 +107,7 @@ const routes = [
                                 component: BlankLayout,
                                 children: [
                                     {
-                                        path: 'list',
+                                        path: 'list/:id?',
                                         name: 'config-list',
                                         component: () => import('../views/data/buildin/config/List'),
                                         meta: { title: 'menu.config.list' }
@@ -125,7 +126,7 @@ const routes = [
                                 component: BlankLayout,
                                 children: [
                                     {
-                                        path: 'list',
+                                        path: 'list/:id?',
                                         name: 'text-list',
                                         component: () => import('../views/data/buildin/text/List'),
                                         meta: { title: 'menu.text.list' }

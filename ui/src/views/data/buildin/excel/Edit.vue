@@ -1,60 +1,37 @@
 <template>
   <div>
-    <div class="head">
-      <div class="title">
-        <div class="title">
-          <span v-if="id==0">{{ $t('title.excel.create') }}</span>
-          <span v-if="id!=0">{{ $t('menu.excel.edit') }}</span>
+    <a-form-model ref="editForm" :model="model" :rules="rules">
+      <a-form-model-item :label="$t('form.name')" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-input v-model="model.title" />
+      </a-form-model-item>
+
+      <a-form-model-item :label="$t('form.dir')" prop="folder" class="zui-input-group zui-input-with-tips"
+                          :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <div class="input-group">
+          <a-form-model-item prop="folder">
+            <a-select v-model="model.folder">
+              <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
+                {{item.name}}</a-select-option>
+            </a-select>
+          </a-form-model-item>
+
+          <span class="input-group-addon">{{ $t('form.folder') }}</span>
+
+          <a-form-model-item>
+            <a-input v-model="model.subFolder"></a-input>
+          </a-form-model-item>
         </div>
-      </div>
-      <div class="filter"></div>
-      <div class="buttons">
-        <a-button type="primary" @click="back()">{{ $t('action.back') }}</a-button>
-      </div>
-    </div>
+      </a-form-model-item>
 
-    <div>
-      <a-form-model ref="editForm" :model="model" :rules="rules">
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.name')" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.title" />
-          </a-form-model-item>
-        </a-row>
+      <a-form-model-item :label="$t('form.file.name')" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-input v-model="model.fileName" />
+      </a-form-model-item>
 
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.dir')" prop="folder" class="zui-input-group zui-input-with-tips"
-                             :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-form-model-item prop="folder" :style="{ display: 'inline-block', width: 'calc(70% - 30px)' }">
-              <a-select v-model="model.folder">
-                <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
-                  {{item.name}}</a-select-option>
-              </a-select>
-            </a-form-model-item>
-
-            <span class="zui-input-group-addon" :style="{ width: '60px' }">
-              <span>{{ $t('form.folder') }}</span>
-            </span>
-
-            <a-form-model-item :style="{ display: 'inline-block', width: 'calc(30% - 30px)' }">
-              <a-input v-model="model.subFolder"></a-input>
-            </a-form-model-item>
-          </a-form-model-item>
-        </a-row>
-
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.file.name')" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.fileName" />
-          </a-form-model-item>
-        </a-row>
-
-      <a-row :gutter="colsFull">
-        <a-form-model-item class="center">
-          <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
-          <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
-        </a-form-model-item>
-      </a-row>
-    </a-form-model>
-    </div>
+    <a-form-model-item class="center" :wrapper-col="{ span: 18, offset: 4 }">
+      <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
+      <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
+    </a-form-model-item>
+  </a-form-model>
   </div>
 </template>
 
@@ -73,6 +50,9 @@ import {
 
 export default {
   name: 'TestEdit',
+  props: {
+    afterSave: Function
+  },
   data() {
     return {
       colsFull: colsFull,
@@ -135,16 +115,15 @@ export default {
         if (this.model.subFolder && this.model.subFolder != '') this.model.folder += this.model.subFolder
         saveText(this.model).then(json => {
           console.log('saveText', json)
-          this.back()
+          if (this.afterSave) {
+            this.afterSave(json);
+          }
         })
       })
     },
     reset() {
       console.log('reset')
       this.$refs.editForm.reset()
-    },
-    back() {
-      this.$router.push({path: '/data/buildin/excel/list'});
     },
   }
 }

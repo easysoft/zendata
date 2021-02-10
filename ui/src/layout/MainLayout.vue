@@ -6,20 +6,21 @@
     <div class="content-container">
       <router-view></router-view>
     </div>
-    <div class="footer-container">
+    <!-- <div class="footer-container">
       <Footer></Footer>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import Header from "./Header";
-import Footer from "./Footer";
+// import Footer from "./Footer";
 
 export default {
   name: 'MainLayout',
   components: {
-    Header, Footer
+    Header,
+    // Footer,
   },
   data () {
     return {
@@ -49,19 +50,16 @@ export default {
   .header-container {
     height: 50px;
     color: #fff;
-    background-color: #1183fb;
+    background-color: #0056c9;
     border-bottom: 1px solid #e9f2fb;
-  }
-  .content-container {
-    flex: 1;
-    display:flex;
-    padding: 10px;
-    background: #fff;
   }
   .footer-container {
     height: 40px;
     background: #fff;
     border-top: 1px solid #eff1f7;
+  }
+  .content-container {
+    padding: 0 15px 15px;
   }
 }
 </style>

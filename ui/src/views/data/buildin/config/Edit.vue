@@ -1,127 +1,89 @@
 <template>
   <div>
-    <div class="head">
-      <div class="title">
-        <div class="title">
-          <span v-if="id==0">{{ $t('title.config.create') }}</span>
-          <span v-if="id!=0">{{ $t('menu.config.edit') }}</span>
+    <a-form-model ref="editForm" :model="model" :rules="rules">
+      <a-form-model-item :label="$t('form.name')" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-input v-model="model.title" />
+      </a-form-model-item>
+
+      <a-form-model-item :label="$t('form.dir')"
+                          :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <div class="input-group">
+          <a-form-model-item prop="folder">
+            <a-select v-model="model.folder">
+              <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
+                {{item.name}}</a-select-option>
+            </a-select>
+          </a-form-model-item>
+          <span class="input-group-addon">{{ $t('form.folder') }}</span>
+          <a-form-model-item>
+            <a-input v-model="model.subFolder"></a-input>
+          </a-form-model-item>
         </div>
-      </div>
-      <div class="filter"></div>
-      <div class="buttons">
-        <a-button type="primary" @click="back()">{{ $t('action.back') }}</a-button>
-      </div>
-    </div>
+      </a-form-model-item>
 
-    <div>
-      <a-form-model ref="editForm" :model="model" :rules="rules">
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.name')" prop="title" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.title" />
+      <a-form-model-item :label="$t('form.file.name')" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <a-input v-model="model.fileName" />
+      </a-form-model-item>
+
+      <a-form-model-item :label="$t('form.prefix')"
+                          :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <div class="input-group">
+          <a-form-model-item prop="prefix">
+            <a-input v-model="model.prefix" />
           </a-form-model-item>
-        </a-row>
-
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.dir')" class="zui-input-group zui-input-with-tips"
-                             :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-
-            <a-form-model-item prop="folder" :style="{ display: 'inline-block', width: 'calc(70% - 40px)' }">
-              <a-select v-model="model.folder">
-                <a-select-option v-for="(item, index) in dirs" :value="item.name" :key="index">
-                  {{item.name}}</a-select-option>
-              </a-select>
-            </a-form-model-item>
-
-            <span class="zui-input-group-addon" :style="{ width: '80px' }">
-              <span>{{ $t('form.folder') }}</span>
-            </span>
-
-            <a-form-model-item :style="{ display: 'inline-block', width: 'calc(30% - 40px)' }">
-              <a-input v-model="model.subFolder"></a-input>
-            </a-form-model-item>
-
+          <span class="input-group-addon">{{$t('form.postfix')}}</span>
+          <a-form-model-item prop="postfix">
+            <a-input v-model="model.postfix" />
           </a-form-model-item>
-        </a-row>
+        </div>
+      </a-form-model-item>
 
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.file.name')" prop="fileName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-input v-model="model.fileName" />
+      <a-form-model-item :label="$t('form.loop')"
+                          :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+
+        <div class="input-group">
+          <a-form-model-item prop="loop">
+            <a-input v-model="model.loop" :placeholder="$t('tips.range.int')" />
           </a-form-model-item>
-        </a-row>
 
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.prefix')" class="zui-input-group zui-input-with-tips"
-                             :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-form-model-item prop="prefix" :style="{ display: 'inline-block', width: 'calc(70% - 40px)' }">
-              <a-input v-model="model.prefix" />
-            </a-form-model-item>
+          <span class="input-group-addon">{{$t('form.loopfix')}}</span>
 
-            <span class="zui-input-group-addon" :style="{ width: '80px' }">
-              <span>{{$t('form.postfix')}}</span>
-            </span>
-
-            <a-form-model-item prop="postfix" :style="{ display: 'inline-block', width: 'calc(30% - 40px)' }">
-              <a-input v-model="model.postfix" />
-            </a-form-model-item>
+          <a-form-model-item prop="loopfix">
+            <a-input v-model="model.loopfix" />
           </a-form-model-item>
-        </a-row>
+        </div>
+      </a-form-model-item>
 
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.loop')" class="zui-input-group zui-input-with-tips"
-                             :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-
-            <a-form-model-item prop="loop" :style="{ display: 'inline-block', width: 'calc(70% - 40px)' }">
-              <a-input v-model="model.loop" :placeholder="$t('tips.range.int')" />
-            </a-form-model-item>
-
-            <span class="zui-input-group-addon" :style="{ width: '80px' }">
-              <span>{{$t('form.loopfix')}}</span>
-            </span>
-
-            <a-form-model-item prop="loopfix" :style="{ display: 'inline-block', width: 'calc(30% - 40px)' }">
-              <a-input v-model="model.loopfix" />
-            </a-form-model-item>
+      <a-form-model-item :label="$t('form.format')"
+                          :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+        <div class="input-group">
+          <a-form-model-item prop="format">
+            <a-input v-model="model.format"></a-input>
           </a-form-model-item>
-        </a-row>
 
-        <a-row :gutter="colsFull">
-          <a-form-model-item :label="$t('form.format')" class="zui-input-group zui-input-with-tips"
-                             :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <span class="input-group-addon">{{$t('form.function')}}</span>
 
-            <a-form-model-item prop="format" :style="{ display: 'inline-block', width: 'calc(70% - 40px)' }">
-              <a-input v-model="model.format"></a-input>
-            </a-form-model-item>
-
-            <span class="zui-input-group-addon" :style="{ width: '80px' }">
-              <span>{{$t('form.function')}}</span>
-            </span>
-
-            <a-form-model-item prop="format" :style="{ display: 'inline-block', width: 'calc(30% - 40px)' }">
-              <a-select v-model="model.format">
-                <a-select-option value="md5">md5</a-select-option>
-                <a-select-option value="sha1">sha1</a-select-option>
-                <a-select-option value="base64">base64</a-select-option>
-                <a-select-option value="urlencode">urlencode</a-select-option>
-              </a-select>
-            </a-form-model-item>
-
+          <a-form-model-item prop="format">
+            <a-select v-model="model.format">
+              <a-select-option value="md5">md5</a-select-option>
+              <a-select-option value="sha1">sha1</a-select-option>
+              <a-select-option value="base64">base64</a-select-option>
+              <a-select-option value="urlencode">urlencode</a-select-option>
+            </a-select>
           </a-form-model-item>
-        </a-row>
+        </div>
+      </a-form-model-item>
 
-      <a-row :gutter="colsFull">
-        <a-form-model-item :label="$t('form.desc')" prop="desc" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-          <a-input v-model="model.desc" type="textarea" rows="3" />
-        </a-form-model-item>
-      </a-row>
 
-      <a-row :gutter="colsFull">
-        <a-form-model-item class="center">
-          <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
-          <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
-        </a-form-model-item>
-      </a-row>
-    </a-form-model>
-    </div>
+    <a-form-model-item :label="$t('form.desc')" prop="desc" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+      <a-input v-model="model.desc" type="textarea" rows="3" />
+    </a-form-model-item>
+
+    <a-form-model-item class="center" :wrapper-col="{ span: 18, offset: 4 }">
+      <a-button @click="save" type="primary">{{$t('form.save')}}</a-button>
+      <a-button @click="reset" style="margin-left: 10px;">{{$t('form.reset')}}</a-button>
+    </a-form-model-item>
+  </a-form-model>
   </div>
 </template>
 
@@ -140,6 +102,9 @@ import {
 
 export default {
   name: 'ConfigEdit',
+  props: {
+    afterSave: Function
+  },
   data() {
     return {
       colsFull: colsFull,
@@ -202,17 +167,16 @@ export default {
 
         if (this.model.subFolder && this.model.subFolder != '') this.model.folder += this.model.subFolder
         saveConfig(this.model).then(json => {
-          console.log('saveConfig', json)
-          this.back()
+          console.log('saveConfig', json, this.afterSave)
+          if (this.afterSave) {
+            this.afterSave(json);
+          }
         })
       })
     },
     reset() {
       console.log('reset')
       this.$refs.editForm.reset()
-    },
-    back() {
-      this.$router.push({path: '/data/buildin/config/list'});
     },
   }
 }

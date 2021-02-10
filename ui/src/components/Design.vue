@@ -80,7 +80,7 @@
               </a-tab-pane>
 
               <a-tab-pane key="preview" :tab="$t('msg.preview')" force-render>
-                <div class="preview-data" v-html="previewData"></div>
+                <pre class="preview-data" v-html="previewData" style="margina: 0"></pre>
               </a-tab-pane>
             </a-tabs>
           </div>

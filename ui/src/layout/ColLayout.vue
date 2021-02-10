@@ -1,26 +1,12 @@
 <template>
-  <div class="all">
-    <div class="left">
-      <Menu></Menu>
-      <div class="sync">
-        <a-button @click="syncData" size="small" type="primary">{{ $t('action.import.from.file') }}</a-button>
-      </div>
-    </div>
-    <div class="content">
-      <router-view />
-    </div>
+  <div class="content">
+    <router-view />
   </div>
 </template>
 
 <script>
-import Menu from "./Menu";
-import {syncData} from "../api/manage";
-
 export default {
   name: 'ColLayout',
-  components: {
-    Menu,
-  },
   data () {
     return {
     }
@@ -31,21 +17,6 @@ export default {
   },
   mounted () {
   },
-  methods: {
-    syncData() {
-      console.log("syncData")
-      syncData().then(json => {
-        console.log('syncData', json)
-        if (json.code == 1) {
-          this.$notification['success']({
-            message: this.$i18n.t('tips.success.to.import'),
-            placement: 'bottomLeft',
-            duration: 3,
-          });
-        }
-      })
-    },
-  }
 }
 </script>
 
@@ -61,7 +32,6 @@ export default {
     position: relative;
   }
   .content {
-    flex: 1;
     padding: 0 10px;
   }
 }

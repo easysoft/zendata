@@ -1,47 +1,46 @@
 <template>
-  <div>
+  <div class="container">
     <div class="head">
-      <div class="title">{{ $t('menu.data.list') }}</div>
+      <div class="title"><Icon type="database" :style="{fontSize: '16px'}" /><span>{{$t('menu.data.list')}}</span></div>
       <div class="filter">
-        <a-input-search v-model="keywords" @change="onSearch" :allowClear="true"
-                        :placeholder="$t('tips.search')" style="width: 300px" />
+        <a-input-search v-model="keywords" @change="onSearch" :allowClear="true" :placeholder="$t('tips.search')" style="width: 300px" />
       </div>
       <div class="buttons">
-        <a-button type="primary" @click="create()">{{ $t('action.create') }}</a-button>
+        <a-button type="primary" @click="create()"><Icon type="plus" :style="{fontSize: '16px'}" /> {{$t('action.create')}}</a-button>
       </div>
     </div>
 
-    <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id">
-      <span slot="folderWithPath" slot-scope="text, record">
-        <a-tooltip placement="top" overlayClassName="tooltip-light">
-          <template slot="title">
-            <span>{{record.path}}</span>
-          </template>
-          <a>{{record.path | pathToRelated}}</a>
-        </a-tooltip>
-      </span>
+    <a-row :gutter="10">
+      <a-col :span="hasSelected ? 12 : 24">
+        <div class="main-table">
+          <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id" :custom-row="customRow">
+            <a slot="recordTitle" slot-scope="text, record" @click="design(record)">{{record.title}}</a>
 
-      <span slot="action" slot-scope="record">
-        <a @click="edit(record)">{{ $t('action.edit') }}</a> &nbsp;
-        <a @click="design(record)">{{ $t('action.design') }}</a> &nbsp;
+            <span slot="folderWithPath" slot-scope="text, record">
+              <a-tooltip placement="top" overlayClassName="tooltip-light">
+                <template slot="title">
+                  <span>{{record.path}}</span>
+                </template>
+                <span>{{record.path | pathToRelated}}</span>
+              </a-tooltip>
+            </span>
 
-        <a-popconfirm
-            :title="$t('tips.delete')"
-            :okText="$t('msg.yes')"
-            :cancelText="$t('msg.no')"
-            @confirm="remove(record)"
-          >
-          <a href="#">{{ $t('action.delete') }}</a>
-        </a-popconfirm> &nbsp;
+            <span slot="action" slot-scope="record">
+              <a @click="design(record)" :title="$t('action.design')"><Icon type="control" :style="{fontSize: '16px'}" /></a> &nbsp;
+              <a @click="edit(record)" :title="$t('action.edit')"><Icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
+              <a @click="showDeleteConfirm(record)" :title="$t('action.delete')"><Icon type="delete" :style="{fontSize: '16px'}" /></a>
+            </span>
+          </a-table>
 
-        <a @click="showPreview(record)">{{ $t('msg.preview') }}</a>
-
-      </span>
-    </a-table>
-
-    <div class="pagination-wrapper">
-      <a-pagination @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
-    </div>
+          <div class="pagination-wrapper">
+            <a-pagination size="small" simple @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
+          </div>
+        </div>
+      </a-col>
+      <a-col v-if="hasSelected" :span="12">
+        <Preview :record="selectedRecord" />
+      </a-col>
+    </a-row>
 
     <div class="full-screen-modal">
       <design-component
@@ -55,48 +54,67 @@
       </design-component>
     </div>
 
-    <a-modal v-model="previewVisible" :title="$t('msg.data.preview')" @ok="closePreview"
-             dialogClass="preview-popup" width="60%">
-      <div v-html="previewData"></div>
+    <a-modal
+      :visible="editModalVisible"
+      :title="editModalVisible ? editRecord ? `${$t('menu.data.edit')}: ${editRecord.title}` : $t('title.data.create') : ''"
+      :footer="false"
+      :centered="true"
+      :width="700"
+      @cancel="handleCancelEditModal"
+    >
+      <Edit
+        :v-if="editModalVisible"
+        :id="editModalVisible ? editRecord ? editRecord.id : 0 : null"
+        :afterSave="handleEditSave"
+      />
     </a-modal>
-
   </div>
 </template>
 
 <script>
 
-import { listDef, removeDef, previewDefData } from "../../../api/manage";
-import { DesignComponent } from '../../../components'
+import {Icon, Modal} from 'ant-design-vue'
+import {listDef, removeDef} from "../../../api/manage";
+import {DesignComponent} from '../../../components'
 import {PageSize, ResTypeDef, pathToRelated} from "../../../api/utils";
 import debounce from "lodash.debounce"
+import Preview from './Preview';
+import Edit from './Edit';
 
 export default {
   name: 'Mine',
   components: {
-    DesignComponent
+    DesignComponent,
+    Icon,
+    Preview,
+    Edit,
   },
   data() {
     const columns = [
       {
         title: this.$i18n.t('form.name'),
         dataIndex: 'title',
+        'class': 'title',
+        scopedSlots: { customRender: 'recordTitle' },
       },
       {
         title: this.$i18n.t('form.file'),
         dataIndex: 'folder',
         scopedSlots: { customRender: 'folderWithPath' },
+        width: '300px'
       },
       {
         title: this.$i18n.t('form.opt'),
         key: 'action',
         scopedSlots: { customRender: 'action' },
+        width: '80px'
       },
     ];
 
     return {
       defs: [],
-      previewData: '',
       columns,
+      selected: null,
 
       designVisible: false,
       designModel: {},
@@ -108,11 +126,17 @@ export default {
       total: 0,
       pageSize: PageSize,
 
-      previewVisible: false,
+      editModalVisible: false,
+      editRecord: null,
     };
   },
   computed: {
-
+    hasSelected: function() {
+      return this.defs.some(x => x.id == this.selected);
+    },
+    selectedRecord: function() {
+      return this.defs.find(x => x.id == this.selected);
+    }
   },
   created () {
     this.loadData()
@@ -130,15 +154,24 @@ export default {
         console.log('listDefs', json)
         const that = this
         that.defs = json.data
-        this.total = json.total
+        that.total = json.total
+        that.selected = json.data.length ? json.data[0].id : null
       })
     },
     create() {
-      this.$router.push({path: '/data/mine/edit/0'});
+      this.editRecord = null;
+      this.editModalVisible = true;
     },
     edit(record) {
-      console.log(record)
-      this.$router.push({path: `/data/mine/edit/${record.id}`});
+      this.editRecord = record;
+      this.editModalVisible = true;
+    },
+    handleCancelEditModal() {
+      this.editModalVisible = false;
+    },
+    handleEditSave() {
+      this.editModalVisible = false;
+      this.loadData();
     },
     design(record) {
       this.time = Date.now() // trigger data refresh
@@ -153,19 +186,6 @@ export default {
         this.loadData()
       })
     },
-    showPreview(record) {
-      console.log(record)
-      this.previewVisible = true
-      previewDefData(record.id).then(json => {
-        console.log('previewDefData', json)
-        this.previewData = json.data
-      })
-    },
-    closePreview() {
-      this.previewVisible = false
-      this.previewData = ''
-    },
-
     handleDesignOk() {
       console.log('handleDesignOk')
       this.designVisible = false
@@ -185,16 +205,36 @@ export default {
       console.log('onSearch', this.keywords)
       this.loadData()
     }, 500),
+    handleClickRow: function(event) {
+      const id = event.target.closest('tr').getAttribute('data-row-key');
+      this.selected = id;
+    },
+    customRow: function(record) {
+      const {selected} = this;
+      return {
+        attrs: {
+          'class': record.id == selected ? 'selected' : ''
+        },
+        on: {
+          click: this.handleClickRow
+        }
+      }
+    },
+    showDeleteConfirm: function(record) {
+      Modal.confirm({
+        title: this.$t('tips.delete'),
+        content: (h) => <strong>{record.title}</strong>,
+        okText: this.$t('msg.yes'),
+        cancelText: this.$t('msg.no'),
+        cancelType: 'danger',
+        onOk: () => {
+          this.remove(record)
+        },
+      });
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.preview-popup {
-  .ant-modal-body {
-    div {
-    }
-  }
-}
-
 </style>

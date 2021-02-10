@@ -64,6 +64,9 @@ import 'ant-design-vue/lib/tooltip/style';
 import Pagination from "ant-design-vue/lib/pagination";
 import 'ant-design-vue/lib/pagination/style';
 
+import Card from "ant-design-vue/lib/card";
+import "ant-design-vue/lib/card/style";
+
 import notification from "ant-design-vue/lib/notification";
 import 'ant-design-vue/lib/notification/style';
 import message from "ant-design-vue/lib/message";
@@ -72,6 +75,7 @@ Vue.prototype.$message = message;
 Vue.prototype.$notification = notification;
 
 import router from "./router"
+
 
 Vue.config.productionTip = false
 
@@ -100,6 +104,7 @@ Vue.use(Spin)
 Vue.use(Popover)
 Vue.use(Tooltip)
 Vue.use(Pagination)
+Vue.use(Card)
 
 new Vue({
   router,

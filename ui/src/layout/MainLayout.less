@@ -14,21 +14,37 @@ h1, h2, h3, h4, h5, h6 {
 
 .head {
   display: flex;
+  align-items: center;
+  padding: 5px 0;
+
   .title {
     width: 300px;
-    margin-bottom: 15px;
     padding: 3px 5px;
     line-height: 32px;
     font-weight: bolder;
-    font-size: 16px;
+    font-size: 14px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+
+    .anticon + span {
+      display: inline-block;
+      margin-left: 5px;
+    }
   }
   .filter {
     flex: 1;
     padding: 2px;
+    display: flex;
+    justify-content: center;
   }
   .buttons {
+    flex: 1;
     width: 100px;
     text-align: right;
+  }
+  .ant-menu {
+    flex: 1;
   }
 }
 
@@ -74,8 +90,7 @@ a.common {
 }
 
 .pagination-wrapper {
-  margin-top: 10px;
+  padding: 5px 0;
   width: 100%;
   text-align: right;
 }
-
