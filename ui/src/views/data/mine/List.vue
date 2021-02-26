@@ -21,7 +21,7 @@
                 <template slot="title">
                   <span>{{record.path}}</span>
                 </template>
-                <span>{{record.path | pathToRelated}}</span>
+                <a>{{record.path | pathToRelated}}</a>
               </a-tooltip>
             </span>
 

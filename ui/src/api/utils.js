@@ -50,6 +50,7 @@ export function checkDirIsUsers (rule, value, callback){
 }
 
 export function pathToRelated (path){
+  if (!config.workDir) return ''
   const name = path.substr(config.workDir.length)
   return name
 }
