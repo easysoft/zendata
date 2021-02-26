@@ -16,13 +16,13 @@ Parameters:
   -r  --recursive  Recursive mode. The default mode is parallel, in which each field loops independently.
                    The value of a field in the recursive mode depends on that of the previous field, which enables the random data.
 
-  -p  --port       Run the HTTP on the specified port. The data in JSON format can be obtained via http:\\ip\ port. 
+  -p  --port       Run the HTTP on the specified port. The data in JSON format can be obtained via http:\\ip\ port.
                    Only data generation is supported.
   -b  --bind       Listen IP addresses. All IP addresses are listened by default.
-  -R  --root       The root directory when running HTTP. The client can call the config file under the root directory.
+  -R  --root       The root directory when generate data OR running HTTP. The client can call the config file under the root directory.
                    If not specified, take the directory where the zd executable file is located.
 
-  -i  --input      Specify a sql schema file and output the YAML config file for each table. 
+  -i  --input      Specify a sql schema file and output the YAML config file for each table.
                    You need to specify an output directory by using -o.
   -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
                    Also you can output the readable format via -H.

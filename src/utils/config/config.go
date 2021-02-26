@@ -38,7 +38,7 @@ func InitDB() (db *sql.DB, err error) {
 	return
 }
 
-func InitConfig() {
+func InitConfig(root string) {
 	vari.ExeDir = fileUtils.GetExeDir()
 	vari.WorkDir = fileUtils.GetWorkDir()
 	vari.ConfigFile = vari.ExeDir + ".zd.conf"
@@ -52,6 +52,20 @@ func InitConfig() {
 	vari.Config = getInst()
 
 	i118Utils.InitI118(vari.Config.Language)
+
+	// adjust workdir and dbpath according with -R param if needed
+	if root != "" {
+		if fileUtils.IsAbosutePath(root) {
+			vari.WorkDir = root
+		} else {
+			vari.WorkDir = vari.WorkDir + root
+		}
+		vari.WorkDir = fileUtils.AddSepIfNeeded(vari.WorkDir)
+	}
+
+	logUtils.PrintToWithColor("workdir = "+vari.WorkDir, color.FgCyan)
+	constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:"+vari.WorkDir, 1)
+	logUtils.PrintToWithColor("dbfile = "+constant.SqliteData, color.FgCyan)
 }
 
 func SaveConfig(conf model.Config) error {
