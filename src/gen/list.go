@@ -260,8 +260,8 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
 	rootDef := vari.Def
-	defaultDir := vari.DefaultDir
-	configDir := vari.ConfigDir
+	defaultDir := vari.DefaultFileDir
+	configDir := vari.ConfigFileDir
 	res := vari.Res
 
 	configFile := fileUtils.ComputerReferFilePath(yamlFile)
@@ -282,8 +282,8 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 
 	// rollback root def when finish to deal with refer yaml file
 	vari.Def = rootDef
-	vari.DefaultDir = defaultDir
-	vari.ConfigDir = configDir
+	vari.DefaultFileDir = defaultDir
+	vari.ConfigFileDir = configDir
 	vari.Res = res
 
 	return

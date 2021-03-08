@@ -12,10 +12,11 @@ var (
 
 	RunMode constant.RunMode
 
-	ExeDir     string
-	WorkDir    string
-	ConfigFile string
+	WorkDir      string
+	ZdPath       string
+	CurrFilePath string
 
+	CfgFile      string
 	LogDir       string
 	ScreenWidth  int
 	ScreenHeight int
@@ -44,8 +45,8 @@ var (
 	CacheResFileToMap  = map[string]map[string][]string{}
 	CacheResFileToName = map[string]string{}
 
-	DefaultDir string
-	ConfigDir  string
+	DefaultFileDir string
+	ConfigFileDir  string
 
 	AgentLogDir string
 )

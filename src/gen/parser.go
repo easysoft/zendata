@@ -113,7 +113,16 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 	sectionArr := strings.Split(itemWithoutRepeat, ":")
 	entry = sectionArr[0]
 	if len(sectionArr) == 2 {
-		step = strings.ToLower(sectionArr[1])
+		step = strings.TrimSpace(strings.ToLower(sectionArr[1]))
+	}
+
+	if step != "" {
+		pattern := "\\d+"
+		isNum, _ := regexp.MatchString(pattern, step)
+		if !isNum && step != "r" {
+			entry = item
+			step = ""
+		}
 	}
 
 	if repeat == 0 {

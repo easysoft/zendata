@@ -13,7 +13,7 @@ import (
 )
 
 type TextService struct {
-	textRepo *serverRepo.TextRepo
+	textRepo   *serverRepo.TextRepo
 	resService *ResService
 }
 
@@ -33,7 +33,7 @@ func (s *TextService) Get(id int) (text model.ZdText, dirs []model.Dir) {
 
 func (s *TextService) Save(text *model.ZdText) (err error) {
 	text.Folder = serverUtils.DealWithPathSepRight(text.Folder)
-	text.Path = vari.WorkDir + text.Folder + serverUtils.AddExt(text.FileName, ".txt")
+	text.Path = vari.ZdPath + text.Folder + serverUtils.AddExt(text.FileName, ".txt")
 	text.ReferName = service.PathToName(text.Path, constant.ResDirYaml, constant.ResTypeText)
 
 	if text.ID == 0 {
@@ -103,9 +103,9 @@ func (s *TextService) Sync(files []model.ResFile) (err error) {
 
 func (s *TextService) SyncToDB(file model.ResFile) (err error) {
 	text := model.ZdText{
-		Title: file.Title,
-		Path: file.Path,
-		Folder: serverUtils.GetRelativePath(file.Path),
+		Title:    file.Title,
+		Path:     file.Path,
+		Folder:   serverUtils.GetRelativePath(file.Path),
 		FileName: fileUtils.GetFileName(file.Path),
 	}
 	if strings.Index(text.Path, constant.ResDirYaml) > -1 {

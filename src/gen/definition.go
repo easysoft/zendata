@@ -14,16 +14,13 @@ import (
 	"strings"
 )
 
-func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) model.DefData {
+func LoadDataDef(defaultFile, configFile string, fieldsToExport *[]string) model.DefData {
 	defaultDef := model.DefData{}
 	configDef := model.DefData{}
 
 	// load defaultDef
 	if defaultFile != "" {
-		pathDefaultFile := defaultFile
-		if !fileUtils.IsAbosutePath(pathDefaultFile) {
-			pathDefaultFile = vari.WorkDir + pathDefaultFile
-		}
+		pathDefaultFile := fileUtils.GetAbosutePath(defaultFile)
 
 		defaultContent, err := ioutil.ReadFile(pathDefaultFile)
 		defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
@@ -39,10 +36,7 @@ func LoadConfigDef(defaultFile, configFile string, fieldsToExport *[]string) mod
 	}
 
 	// load configDef
-	pathConfigFile := configFile
-	if !fileUtils.IsAbosutePath(pathConfigFile) {
-		pathConfigFile = vari.WorkDir + pathConfigFile
-	}
+	pathConfigFile := fileUtils.GetAbosutePath(configFile)
 
 	yamlContent, err := ioutil.ReadFile(pathConfigFile)
 	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
@@ -79,7 +73,6 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	configFieldMap := map[string]*model.DefField{}
 	sortedKeys := make([]string, 0)
 
-
 	if configDef.Type != "" {
 		vari.Type = configDef.Type
 	} else if defaultDef.Type != "" {
@@ -100,6 +93,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 
+		defaultDef.Fields[i].FileDir = vari.DefaultFileDir
 		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 	for i, field := range configDef.Fields {
@@ -110,6 +104,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 			}
 		}
 
+		configDef.Fields[i].FileDir = vari.ConfigFileDir
 		CreatePathToFieldMap(&configDef.Fields[i], configFieldMap, &sortedKeys)
 	}
 
@@ -125,7 +120,9 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	// append
 	for _, key := range sortedKeys {
 		field := configFieldMap[key]
-		if field == nil || strings.Index(field.Path, "~~") > -1 { continue } // ignore no-top fields
+		if field == nil || strings.Index(field.Path, "~~") > -1 {
+			continue
+		} // ignore no-top fields
 
 		_, exist := defaultFieldMap[field.Path]
 		if !exist {
@@ -183,20 +180,20 @@ func CopyField(child model.DefField, parent *model.DefField) {
 	}
 
 	//if child.Prefix != "" {
-		(*parent).Prefix = child.Prefix
+	(*parent).Prefix = child.Prefix
 	//}
 	//if child.Postfix != "" {
-		(*parent).Postfix = child.Postfix
+	(*parent).Postfix = child.Postfix
 	//}
 
 	if child.Loop != "" {
 		(*parent).Loop = child.Loop
 	}
 	//if child.Loopfix != "" {
-		(*parent).Loopfix = child.Loopfix
+	(*parent).Loopfix = child.Loopfix
 	//}
 	//if child.Format != "" {
-		(*parent).Format = child.Format
+	(*parent).Format = child.Format
 	//}
 
 	if child.From != "" {
@@ -226,4 +223,3 @@ func CopyField(child model.DefField, parent *model.DefField) {
 		(*parent).Length = child.Length
 	}
 }
-

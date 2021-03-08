@@ -14,8 +14,10 @@ import (
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"gopkg.in/ini.v1"
+	"log"
 	"os"
 	"os/user"
+	"path"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -39,9 +41,26 @@ func InitDB() (db *sql.DB, err error) {
 }
 
 func InitConfig(root string) {
-	vari.ExeDir = fileUtils.GetExeDir()
+	var err error = nil
 	vari.WorkDir = fileUtils.GetWorkDir()
-	vari.ConfigFile = vari.ExeDir + ".zd.conf"
+
+	if root != "" {
+		if !fileUtils.IsAbsPath(root) {
+			if root, err = filepath.Abs(root); err != nil {
+				logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
+				os.Exit(1)
+			}
+		}
+		vari.ZdPath = fileUtils.AddSepIfNeeded(root)
+	} else {
+		vari.ZdPath = fileUtils.GetExeDir()
+	}
+	if !fileUtils.FileExist(path.Join(vari.ZdPath, "tmp", "cache")) {
+		log.Println(fmt.Sprintf("%s is not a vaild ZenData dir.", vari.ZdPath), color.FgRed)
+		os.Exit(1)
+	}
+
+	vari.CfgFile = vari.ZdPath + ".zd.conf"
 
 	CheckConfigPermission()
 
@@ -53,23 +72,13 @@ func InitConfig(root string) {
 
 	i118Utils.InitI118(vari.Config.Language)
 
-	// adjust workdir and dbpath according with -R param if needed
-	if root != "" {
-		if fileUtils.IsAbosutePath(root) {
-			vari.WorkDir = root
-		} else {
-			vari.WorkDir = vari.WorkDir + root
-		}
-		vari.WorkDir = fileUtils.AddSepIfNeeded(vari.WorkDir)
-	}
-
-	logUtils.PrintToWithColor("workdir = "+vari.WorkDir, color.FgCyan)
-	constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:"+vari.WorkDir, 1)
-	logUtils.PrintToWithColor("dbfile = "+constant.SqliteData, color.FgCyan)
+	//logUtils.PrintToWithColor("workdir = "+vari.ZdPath, color.FgCyan)
+	constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:"+vari.ZdPath, 1)
+	//logUtils.PrintToWithColor("dbfile = "+constant.SqliteData, color.FgCyan)
 }
 
 func SaveConfig(conf model.Config) error {
-	fileUtils.MkDirIfNeeded(filepath.Dir(vari.ConfigFile))
+	fileUtils.MkDirIfNeeded(filepath.Dir(vari.CfgFile))
 
 	if conf.Version == 0 {
 		conf.Version = constant.ConfigVer
@@ -78,7 +87,7 @@ func SaveConfig(conf model.Config) error {
 	cfg := ini.Empty()
 	cfg.ReflectFrom(&conf)
 
-	cfg.SaveTo(vari.ConfigFile)
+	cfg.SaveTo(vari.CfgFile)
 
 	vari.Config = ReadCurrConfig()
 	return nil
@@ -104,14 +113,14 @@ func PrintCurrConfig() {
 func ReadCurrConfig() model.Config {
 	config := model.Config{}
 
-	if !fileUtils.FileExist(vari.ConfigFile) {
+	if !fileUtils.FileExist(vari.CfgFile) {
 		config.Language = "en"
 		i118Utils.InitI118("en")
 
 		return config
 	}
 
-	ini.MapTo(&config, vari.ConfigFile)
+	ini.MapTo(&config, vari.CfgFile)
 
 	return config
 }
@@ -122,7 +131,7 @@ func getInst() model.Config {
 		CheckConfigReady()
 	}
 
-	ini.MapTo(&vari.Config, vari.ConfigFile)
+	ini.MapTo(&vari.Config, vari.CfgFile)
 
 	if vari.Config.Version != constant.ConfigVer { // old config file, re-init
 		if vari.Config.Language != "en" && vari.Config.Language != "zh" {
@@ -137,17 +146,17 @@ func getInst() model.Config {
 
 func CheckConfigPermission() {
 	//err := syscall.Access(vari.ExeDir, syscall.O_RDWR)
-	err := fileUtils.MkDirIfNeeded(filepath.Dir(vari.ConfigFile))
+	err := fileUtils.MkDirIfNeeded(filepath.Dir(vari.CfgFile))
 	if err != nil {
 		logUtils.PrintToWithColor(
-			fmt.Sprintf("Permission denied, please change the dir %s.", vari.ExeDir), color.FgRed)
+			fmt.Sprintf("Permission denied, please change the dir %s.", vari.ZdPath), color.FgRed)
 		os.Exit(0)
 	}
 }
 
 func CheckConfigReady() {
-	if !fileUtils.FileExist(vari.ConfigFile) {
-		logUtils.PrintTo(vari.ConfigFile + "no exist")
+	if !fileUtils.FileExist(vari.CfgFile) {
+		logUtils.PrintTo(vari.CfgFile + "no exist")
 		if vari.RunMode == constant.RunModeServer {
 			conf := model.Config{Language: "zh", Version: 1}
 			SaveConfig(conf)
@@ -204,19 +213,19 @@ func AddZdToPath() {
 	home := userProfile.HomeDir
 
 	if commonUtils.IsWin() {
-		addZdToPathWin(home)
+		addZdToPathEnvVarWin(home)
 	} else {
-		addZdToPathLinux(home)
+		addZdToPathEnvVarForLinux(home)
 	}
 }
 
-func addZdToPathWin(home string) {
+func addZdToPathEnvVarWin(home string) {
 	pathVar := os.Getenv("PATH")
-	if strings.Contains(pathVar, vari.ExeDir) {
+	if strings.Contains(pathVar, vari.ZdPath) {
 		return
 	}
 
-	cmd := `setx Path "%%Path%%;` + vari.ExeDir + `"`
+	cmd := `setx Path "%%Path%%;` + vari.ZdPath + `"`
 	logUtils.PrintToWithColor("\n"+i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
 
 	// TODO: fix the space issue
@@ -231,15 +240,15 @@ func addZdToPathWin(home string) {
 	//}
 }
 
-func addZdToPathLinux(home string) {
+func addZdToPathEnvVarForLinux(home string) {
 	path := fmt.Sprintf("%s%s%s", home, constant.PthSep, ".bash_profile")
 
 	content := fileUtils.ReadFile(path)
-	if strings.Contains(content, vari.ExeDir) {
+	if strings.Contains(content, vari.ZdPath) {
 		return
 	}
 
-	cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ExeDir, path)
+	cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ZdPath, path)
 	out, err := shellUtils.ExeShell(cmd)
 
 	if err == nil {

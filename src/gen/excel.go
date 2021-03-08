@@ -50,7 +50,7 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 }
 
 func getDbName(path string) (dbName string) {
-	dbName = strings.Replace(path, vari.WorkDir+constant.ResDirData+constant.PthSep, "", -1)
+	dbName = strings.Replace(path, vari.ZdPath+constant.ResDirData+constant.PthSep, "", -1)
 	dbName = strings.Replace(dbName, constant.PthSep, "_", -1)
 	dbName = strings.Replace(dbName, ".", "_", -1)
 

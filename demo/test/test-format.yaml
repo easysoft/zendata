@@ -21,11 +21,11 @@ fields:
     postfix: "\t"
 
   - field: field_format_func_base64
-    range: pass/?&=word+
+    range: "http://zendata.cn?&=word+"
     format: base64
     postfix: "\t"
 
   - field: field_format_func_urlencode
-    range: pass/?&=word+
+    range: "http://zendata.cn?&=word+"
     format: urlencode
     postfix: "\t"

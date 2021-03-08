@@ -5,9 +5,11 @@ import (
 	"github.com/easysoft/zendata/res"
 	"github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"io/ioutil"
+	"path"
 )
 
 var I118Prt *message.Printer
@@ -28,7 +30,7 @@ func InitI118(lang string) {
 		data, _ := res.Asset(langRes)
 		InitResFromAsset(data)
 	} else {
-		InitRes(langRes)
+		InitRes(path.Join(vari.ZdPath, langRes))
 	}
 
 	if lang == "zh" {

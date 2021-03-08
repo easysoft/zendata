@@ -43,7 +43,7 @@ func (s *DefService) Get(id int) (def model.ZdDef, dirs []model.Dir) {
 
 func (s *DefService) Save(def *model.ZdDef) (err error) {
 	def.Folder = serverUtils.DealWithPathSepRight(def.Folder)
-	def.Path = vari.WorkDir + def.Folder + serverUtils.AddExt(def.FileName, ".yaml")
+	def.Path = vari.ZdPath + def.Folder + serverUtils.AddExt(def.FileName, ".yaml")
 
 	if def.ID == 0 {
 		err = s.Create(def)

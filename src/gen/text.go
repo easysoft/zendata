@@ -9,6 +9,7 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"io/ioutil"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -19,20 +20,23 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 	sectionArr := strings.Split(rang, ":")
 	file := sectionArr[0]
 	stepStr := "1"
-	if len(sectionArr) == 2 { stepStr = sectionArr[1] }
+	if len(sectionArr) == 2 {
+		stepStr = sectionArr[1]
+	}
 
 	// read from file
 	list := make([]string, 0)
 	realPath := fileUtils.ComputerReferFilePath(file)
 	content, err := ioutil.ReadFile(realPath)
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file + " - " +  realPath))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file+" - "+realPath))
 		fieldValue.Values = append(fieldValue.Values, fmt.Sprintf("FILE_NOT_FOUND"))
 		return
 	}
 
 	str := string(content)
-	str = strings.Replace(str, "\\r\\n", "\\n", -1)
+	re := regexp.MustCompile(`\r?\t?\n`)
+	str = re.ReplaceAllString(str, "\n")
 	str = stringUtils.TrimAll(str)
 	list = strings.Split(str, "\n")
 
@@ -52,14 +56,18 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 	}
 
 	// get index for data retrieve
-	numbs := GenerateIntItems(0, (int64)(len(list) - 1), step, rand, 1)
+	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1)
 	// get data by index
 	index := 0
 	for _, numb := range numbs {
 		item := list[numb.(int64)]
 
-		if index >= constant.MaxNumb { break }
-		if strings.TrimSpace(item) == "" { continue }
+		if index >= constant.MaxNumb {
+			break
+		}
+		if strings.TrimSpace(item) == "" {
+			continue
+		}
 
 		fieldValue.Values = append(fieldValue.Values, item)
 		index = index + 1

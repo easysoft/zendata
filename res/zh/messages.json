@@ -209,6 +209,10 @@
     {
       "id": "fail_md5_check",
       "translation": "验证文件%s的MD5失败。"
+    },
+    {
+      "id": "root_invalid",
+      "translation": "ZenData资源路径%s错误。"
     }
   ]
 }

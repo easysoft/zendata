@@ -72,10 +72,10 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 }
 
 func GetRelatedPathWithResDir(p string) (ret string) {
-	rpl := vari.WorkDir + constant.ResDirYaml + constant.PthSep
+	rpl := vari.ZdPath + constant.ResDirYaml + constant.PthSep
 	ret = strings.Replace(p, rpl, "", 1)
 
-	rpl = vari.WorkDir + constant.ResDirUsers + constant.PthSep
+	rpl = vari.ZdPath + constant.ResDirUsers + constant.PthSep
 	ret = strings.Replace(ret, rpl, "", 1)
 
 	return

@@ -40,7 +40,7 @@ func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []model.Dir) {
 
 func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
 	config.Folder = serverUtils.DealWithPathSepRight(config.Folder)
-	config.Path = vari.WorkDir + config.Folder + serverUtils.AddExt(config.FileName, ".yaml")
+	config.Path = vari.ZdPath + config.Folder + serverUtils.AddExt(config.FileName, ".yaml")
 	config.ReferName = service.PathToName(config.Path, constant.ResDirYaml, constant.ResTypeConfig)
 
 	if config.ID == 0 {
@@ -142,7 +142,7 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, vari.WorkDir+constant.ResDirYaml) > -1 {
+	if strings.Index(po.Path, vari.ZdPath+constant.ResDirYaml) > -1 {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeConfig)
 	} else {
 		po.ReferName = service.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeConfig)

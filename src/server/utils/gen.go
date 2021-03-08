@@ -32,11 +32,11 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 		configDefContent := ParserPostParams(req, "config", "c", "", true)
 
 		if defaultDefContent != "" {
-			defaultFile = vari.WorkDir + "tmp" + constant.PthSep + ".default.yaml"
+			defaultFile = vari.ZdPath + "tmp" + constant.PthSep + ".default.yaml"
 			fileUtils.WriteFile(defaultFile, defaultDefContent)
 		}
 		if configDefContent != "" {
-			configFile = vari.WorkDir + "tmp" + constant.PthSep + ".config.yaml"
+			configFile = vari.ZdPath + "tmp" + constant.PthSep + ".config.yaml"
 			fileUtils.WriteFile(configFile, configDefContent)
 		}
 	}

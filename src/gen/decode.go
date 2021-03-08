@@ -12,9 +12,7 @@ import (
 	"strings"
 )
 
-const (
-
-)
+const ()
 
 func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 	if output != "" {
@@ -24,8 +22,8 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 		defer logUtils.FileWriter.Close()
 	}
 
-	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
-	vari.ConfigDir = fileUtils.GetAbsDir(configFile)
+	vari.DefaultFileDir = fileUtils.GetAbsDir(defaultFile)
+	vari.ConfigFileDir = fileUtils.GetAbsDir(configFile)
 
 	vari.Total = 10
 
@@ -34,17 +32,17 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
 
-	vari.Def = LoadConfigDef(defaultFile, configFile, &fieldsToExport)
+	vari.Def = LoadDataDef(defaultFile, configFile, &fieldsToExport)
 	vari.Res = LoadResDef(fieldsToExport)
 
 	data := fileUtils.ReadFile(input)
 
-	var ret  []map[string]interface{}
+	var ret []map[string]interface{}
 	LinesToMap(data, fieldsToExport, &ret)
 	jsonObj, _ := json.Marshal(ret)
 	vari.JsonResp = string(jsonObj)
 
-	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("analyse_success", output ))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("analyse_success", output))
 	logUtils.PrintLine(vari.JsonResp)
 }
 
@@ -66,7 +64,7 @@ func LinesToMap(str string, fieldsToExport []string, ret *[]map[string]interface
 	return
 }
 
-func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]interface{}) () {
+func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]interface{}) {
 
 	left := []rune(line)
 
@@ -78,7 +76,7 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 			left = left[field.Length:]
 		} else {
 			sepStr := ""
-			if j < len(fields) - 1 {
+			if j < len(fields)-1 {
 				sepStr = field.Postfix + fields[j+1].Prefix
 			} else {
 				sepStr = field.Postfix
@@ -88,10 +86,10 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 			if len(sep) > 0 {
 				index := searchRune(left, sep)
 				if index > -1 {
-					col = string(left[: index + len(field.Postfix)])
-					left = left[index + len(field.Postfix):]
+					col = string(left[:index+len(field.Postfix)])
+					left = left[index+len(field.Postfix):]
 				}
-			} else if j == len(fields) - 1 {
+			} else if j == len(fields)-1 {
 				col = string(left)
 				left = []rune{}
 			}
@@ -107,7 +105,7 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 			rowMapChild := map[string]interface{}{}
 			decodeOneLevel(col, children, &rowMapChild)
 
-			(*rowMap)[field.Field + ".fields"] = rowMapChild
+			(*rowMap)[field.Field+".fields"] = rowMapChild
 		}
 	}
 

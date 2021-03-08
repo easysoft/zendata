@@ -11,7 +11,6 @@ import (
 	"github.com/jinzhu/copier"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"strings"
 )
 
 func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
@@ -38,6 +37,7 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 				child.From = field.From
 			}
 
+			child.FileDir = field.FileDir
 			loadResForField(&child, res)
 		}
 	} else if len(field.Froms) > 0 { // multiple from
@@ -46,11 +46,13 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 				child.From = field.From
 			}
 
+			child.FileDir = field.FileDir
 			loadResForField(&child, res)
 		}
+
 	} else if field.From != "" { // refer to res
 		var valueMap map[string][]string
-		resFile, resType, sheet := fileUtils.GetResProp(field.From)
+		resFile, resType, sheet := fileUtils.GetResProp(field.From) // relate to current file
 		valueMap, _ = getResValue(resFile, resType, sheet, field)
 
 		if (*res)[field.From] == nil {
@@ -70,29 +72,6 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 		values, _ := getResValue(resFile, resType, "", field)
 		(*res)[field.Config] = values
 	}
-}
-
-func getLastDuplicateVal(preMap map[string][]string, key string) (valMap map[string][]string) {
-	lastKey := ""
-	for k := range preMap {
-		if key == removeKeyNumber(k) {
-			lastKey = k
-			break
-		}
-	}
-
-	if lastKey == "" || preMap[lastKey] == nil {
-		return nil
-	}
-
-	valMap = map[string][]string{}
-	valMap[key] = preMap[lastKey]
-	return
-}
-func removeKeyNumber(key string) string {
-	arr := strings.Split(key, "_")
-	ret := strings.Join(arr[:len(arr)-1], "_")
-	return ret
 }
 
 func getResValue(resFile, resType, sheet string, field *model.DefField) (map[string][]string, string) {
@@ -287,3 +266,26 @@ func getResForConfig(configRes model.DefField) map[string][]string {
 
 	return groupedValue
 }
+
+//func getLastDuplicateVal(preMap map[string][]string, key string) (valMap map[string][]string) {
+//	lastKey := ""
+//	for k := range preMap {
+//		if key == removeKeyNumber(k) {
+//			lastKey = k
+//			break
+//		}
+//	}
+//
+//	if lastKey == "" || preMap[lastKey] == nil {
+//		return nil
+//	}
+//
+//	valMap = map[string][]string{}
+//	valMap[key] = preMap[lastKey]
+//	return
+//}
+//func removeKeyNumber(key string) string {
+//	arr := strings.Split(key, "_")
+//	ret := strings.Join(arr[:len(arr)-1], "_")
+//	return ret
+//}

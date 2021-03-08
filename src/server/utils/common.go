@@ -44,7 +44,7 @@ func ConvertRanges(data interface{}) (ranges model.ZdRanges) {
 
 	return
 }
-func ConvertRangesItem(data interface{})  (item model.ZdRangesItem) {
+func ConvertRangesItem(data interface{}) (item model.ZdRangesItem) {
 	bytes, _ := json.Marshal(data)
 	json.Unmarshal(bytes, &item)
 
@@ -56,7 +56,7 @@ func ConvertInstances(data interface{}) (ranges model.ZdInstances) {
 
 	return
 }
-func ConvertInstancesItem(data interface{})  (item model.ZdInstancesItem) {
+func ConvertInstancesItem(data interface{}) (item model.ZdInstancesItem) {
 	bytes, _ := json.Marshal(data)
 	json.Unmarshal(bytes, &item)
 
@@ -91,7 +91,7 @@ func ConvertParams(data interface{}) (mp map[string]string) {
 func GetRelativePath(pth string) string {
 	idx := strings.LastIndex(pth, constant.PthSep)
 	folder := pth[:idx+1]
-	folder = strings.Replace(folder, vari.WorkDir, "", 1)
+	folder = strings.Replace(folder, vari.ZdPath, "", 1)
 
 	return folder
 }
@@ -104,7 +104,7 @@ func DealWithPathSepRight(pth string) string {
 }
 
 func AddExt(pth, ext string) string {
-	if strings.LastIndex(pth, ext) != len(pth) - 4 {
+	if strings.LastIndex(pth, ext) != len(pth)-4 {
 		pth += ext
 	}
 

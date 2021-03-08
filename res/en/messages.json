@@ -218,6 +218,11 @@
     {
       "id": "fail_md5_check",
       "translation": "Check file %s MD5 failed."
+    },
+    ,
+    {
+      "id": "root_invalid",
+      "translation": "ZenData Dir %s not right."
     }
   ]
 }

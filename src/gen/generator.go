@@ -18,13 +18,13 @@ import (
 	"time"
 )
 
-func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string,
-) (rows [][]string, colIsNumArr []bool, err error) {
+func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string) (
+	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.DefaultDir = fileUtils.GetAbsDir(defaultFile)
-	vari.ConfigDir = fileUtils.GetAbsDir(configFile)
+	vari.DefaultFileDir = fileUtils.GetAbsDir(defaultFile)
+	vari.ConfigFileDir = fileUtils.GetAbsDir(configFile)
 
-	vari.Def = LoadConfigDef(defaultFile, configFile, fieldsToExport)
+	vari.Def = LoadDataDef(defaultFile, configFile, fieldsToExport)
 	if len(vari.Def.Fields) == 0 {
 		err = errors.New("")
 		return
@@ -89,6 +89,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 				child.From = field.From
 			}
 
+			child.FileDir = field.FileDir
 			childValues := GenerateForField(&child, withFix)
 			arrOfArr = append(arrOfArr, childValues)
 		}
@@ -114,6 +115,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 				child.From = field.From
 			}
 
+			child.FileDir = field.FileDir
 			childValues := GenerateForField(&child, withFix)
 			unionValues = append(unionValues, childValues...)
 		}

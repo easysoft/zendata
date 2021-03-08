@@ -193,10 +193,11 @@ func main() {
 
 func toGen() {
 	if vari.RunMode == constant.RunModeServer {
-		vari.AgentLogDir = vari.ExeDir + serverConst.AgentLogDir + constant.PthSep
+		vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + constant.PthSep
 		err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
 		if err != nil {
-			logUtils.PrintTo(fmt.Sprintf("mkdir %s error %s", vari.AgentLogDir, err.Error()))
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)
+			os.Exit(1)
 		}
 
 		startServer() // will init its own db
@@ -375,7 +376,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 	switch reqData.Action {
 	// common
 	case "getWorkDir":
-		ret.WorkDir = vari.WorkDir
+		ret.WorkDir = vari.ZdPath
 
 	// def
 	case "syncData":
@@ -384,7 +385,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.defService.List(reqData.Keywords, reqData.Page)
 	case "getDef":
 		ret.Data, ret.Res = s.defService.Get(reqData.Id)
-		ret.WorkDir = vari.WorkDir
+		ret.WorkDir = vari.ZdPath
 	case "saveDef":
 		def := serverUtils.ConvertDef(reqData.Data)
 		s.defService.Save(&def)
@@ -466,7 +467,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.rangesService.List(reqData.Keywords, reqData.Page)
 	case "getRanges":
 		ret.Data, ret.Res = s.rangesService.Get(reqData.Id)
-		ret.WorkDir = vari.WorkDir
+		ret.WorkDir = vari.ZdPath
 	case "saveRanges":
 		ranges := serverUtils.ConvertRanges(reqData.Data)
 		ret.Data = s.rangesService.Save(&ranges)
@@ -495,7 +496,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.instancesService.List(reqData.Keywords, reqData.Page)
 	case "getInstances":
 		ret.Data, ret.Res = s.instancesService.Get(reqData.Id)
-		ret.WorkDir = vari.WorkDir
+		ret.WorkDir = vari.ZdPath
 	case "saveInstances":
 		ranges := serverUtils.ConvertInstances(reqData.Data)
 		ret.Data = s.instancesService.Save(&ranges)
@@ -523,7 +524,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.excelService.List(reqData.Keywords, reqData.Page)
 	case "getExcel":
 		ret.Data, ret.Res = s.excelService.Get(reqData.Id)
-		ret.WorkDir = vari.WorkDir
+		ret.WorkDir = vari.ZdPath
 	case "saveExcel":
 		ranges := serverUtils.ConvertExcel(reqData.Data)
 		ret.Data = s.excelService.Save(&ranges)
@@ -534,7 +535,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.textService.List(reqData.Keywords, reqData.Page)
 	case "getText":
 		ret.Data, ret.Res = s.textService.Get(reqData.Id)
-		ret.WorkDir = vari.WorkDir
+		ret.WorkDir = vari.ZdPath
 	case "saveText":
 		ranges := serverUtils.ConvertText(reqData.Data)
 		ret.Data = s.textService.Save(&ranges)
@@ -545,7 +546,7 @@ func (s *Server) admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Data, ret.Total = s.configService.List(reqData.Keywords, reqData.Page)
 	case "getConfig":
 		ret.Data, ret.Res = s.configService.Get(reqData.Id)
-		ret.WorkDir = vari.WorkDir
+		ret.WorkDir = vari.ZdPath
 	case "saveConfig":
 		ranges := serverUtils.ConvertConfig(reqData.Data)
 		ret.Data = s.configService.Save(&ranges)

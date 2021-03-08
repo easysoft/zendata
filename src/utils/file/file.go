@@ -84,22 +84,26 @@ func IsDir(f string) bool {
 }
 
 func GetAbosutePath(pth string) string {
-	if !IsAbosutePath(pth) {
+	if !IsAbsPath(pth) {
 		pth, _ = filepath.Abs(pth)
 	}
 
+	return pth
+}
+func GetAbosuteDir(pth string) string {
+	pth = GetAbosutePath(pth)
 	pth = AddSepIfNeeded(pth)
 
 	return pth
 }
 
 func GetRelatPath(pth string) string {
-	pth = strings.TrimPrefix(pth, vari.WorkDir)
+	pth = strings.TrimPrefix(pth, vari.ZdPath)
 
 	return pth
 }
 
-func IsAbosutePath(pth string) bool {
+func IsAbsPath(pth string) bool {
 	return path.IsAbs(pth) ||
 		strings.Index(pth, ":") == 1 // windows
 }
@@ -138,7 +142,8 @@ func GetExeDir() string { // where zd.exe file in
 			dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
 		}
 	} else { // debug
-		dir, _ = os.Getwd()
+		//dir, _ = os.Getwd()
+		dir = "/Users/aaron/rd/project/zentao/go/zd"
 	}
 
 	dir, _ = filepath.Abs(dir)
@@ -159,12 +164,7 @@ func GetWorkDir() string { // where we run file in
 }
 
 func GetAbsDir(path string) string {
-	abs := ""
-	if !IsAbosutePath(path) {
-		path = vari.WorkDir + path
-	}
-
-	abs, _ = filepath.Abs(filepath.Dir(path))
+	abs, _ := filepath.Abs(filepath.Dir(path))
 	abs = AddSepIfNeeded(abs)
 	return abs
 }
@@ -183,9 +183,9 @@ func GetResProp(from string) (resFile, resType, sheet string) { // from resource
 	}
 
 	if resFile == "" {
-		resPath := vari.ConfigDir + from
+		resPath := vari.ConfigFileDir + from
 		if !FileExist(resPath) { // in same folder with passed config file, like dir/name.yaml
-			resPath = vari.WorkDir + from
+			resPath = vari.ZdPath + from
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -205,7 +205,7 @@ func ConvertReferRangeToPath(f, currFile string) (path string) {
 	if path == "" {
 		resPath := GetAbsDir(currFile) + f
 		if !FileExist(resPath) { // in same folder
-			resPath = vari.WorkDir + f
+			resPath = vari.ZdPath + f
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -232,8 +232,8 @@ func ConvertResYamlPath(from string) (ret string) {
 			relatPath = file
 		}
 
-		realPth1 := vari.WorkDir + constant.ResDirYaml + constant.PthSep + relatPath
-		realPth2 := vari.WorkDir + constant.ResDirUsers + constant.PthSep + relatPath
+		realPth1 := vari.ZdPath + constant.ResDirYaml + constant.PthSep + relatPath
+		realPth2 := vari.ZdPath + constant.ResDirUsers + constant.PthSep + relatPath
 		if FileExist(realPth1) {
 			ret = realPth1
 			break
@@ -270,7 +270,7 @@ func ConvertResExcelPath(from string) (ret, sheet string) {
 				relatPath = tagFile
 			}
 
-			realPth := vari.WorkDir + constant.ResDirData + constant.PthSep + relatPath
+			realPth := vari.ZdPath + constant.ResDirData + constant.PthSep + relatPath
 			if FileExist(realPth) {
 				if index == 1 {
 					sheet = from[strings.LastIndex(from, ".")+1:]
@@ -282,7 +282,7 @@ func ConvertResExcelPath(from string) (ret, sheet string) {
 	}
 
 	if ret == "" { // try excel dir
-		realPth := vari.WorkDir + constant.ResDirData + constant.PthSep +
+		realPth := vari.ZdPath + constant.ResDirData + constant.PthSep +
 			strings.Replace(from, ".", constant.PthSep, -1)
 		if IsDir(realPth) {
 			ret = realPth
@@ -303,26 +303,26 @@ func ComputerReferFilePath(file string) (resPath string) {
 		return
 	}
 
-	resPath = vari.ConfigDir + file
+	resPath = vari.ConfigFileDir + file
 	if FileExist(resPath) {
 		return
 	}
 
-	resPath = vari.DefaultDir + file
+	resPath = vari.DefaultFileDir + file
 	if FileExist(resPath) {
 		return
 	}
 
-	resPath = vari.WorkDir + constant.ResDirYaml + constant.PthSep + file
+	resPath = vari.ZdPath + constant.ResDirYaml + constant.PthSep + file
 	if FileExist(resPath) {
 		return
 	}
-	resPath = vari.WorkDir + constant.ResDirUsers + constant.PthSep + file
+	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
 	if FileExist(resPath) {
 		return
 	}
 
-	resPath = vari.WorkDir + file
+	resPath = vari.ZdPath + file
 	if FileExist(resPath) {
 		return
 	}

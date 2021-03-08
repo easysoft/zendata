@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-func ListRes () {
+func ListRes() {
 	res, nameWidth, titleWidth := LoadRes("")
 	PrintRes(res, nameWidth, titleWidth)
 }
@@ -105,9 +105,9 @@ func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 				if idx2 > 0 {
 					name = ""
 				}
-				name = name + strings.Repeat(" ", nameWidth - runewidth.StringWidth(name))
+				name = name + strings.Repeat(" ", nameWidth-runewidth.StringWidth(name))
 
-				title = title  + strings.Repeat(" ", titleWidth - runewidth.StringWidth(title))
+				title = title + strings.Repeat(" ", titleWidth-runewidth.StringWidth(title))
 				msg := fmt.Sprintf("%s  %s  %s\n", name, title, desc)
 
 				if key == constant.ResDirData {
@@ -128,9 +128,9 @@ func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
 }
 
-func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile)  {
-	if !fileUtils.IsAbosutePath(pth) {
-		pth = vari.WorkDir + pth
+func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
+	if !fileUtils.IsAbsPath(pth) {
+		pth = vari.ZdPath + pth
 	}
 
 	dir, err := ioutil.ReadDir(pth)
@@ -140,7 +140,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile)  {
 
 	for _, fi := range dir {
 		if fi.IsDir() {
-			GetFilesAndDirs(pth + constant.PthSep + fi.Name(), typ, res)
+			GetFilesAndDirs(pth+constant.PthSep+fi.Name(), typ, res)
 		} else {
 			name := fi.Name()
 			fileExt := path.Ext(name)

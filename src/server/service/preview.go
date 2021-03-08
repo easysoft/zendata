@@ -50,7 +50,7 @@ func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data 
 	def.Fields = append(def.Fields, fld)
 	defContent, _ := yaml.Marshal(def)
 
-	configFile := vari.WorkDir + "tmp" + constant.PthSep + ".temp.yaml"
+	configFile := vari.ZdPath + "tmp" + constant.PthSep + ".temp.yaml"
 	fileUtils.WriteFile(configFile, string(defContent))
 
 	lines := action.Generate("", configFile, field.Field, constant.FormatData, "")

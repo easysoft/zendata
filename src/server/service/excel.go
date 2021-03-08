@@ -13,7 +13,7 @@ import (
 )
 
 type ExcelService struct {
-	excelRepo *serverRepo.ExcelRepo
+	excelRepo  *serverRepo.ExcelRepo
 	resService *ResService
 }
 
@@ -32,7 +32,7 @@ func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []model.Dir) {
 
 func (s *ExcelService) Save(excel *model.ZdExcel) (err error) {
 	excel.Folder = serverUtils.DealWithPathSepRight(excel.Folder)
-	excel.Path = vari.WorkDir + excel.Folder + serverUtils.AddExt(excel.FileName, ".xlsx")
+	excel.Path = vari.ZdPath + excel.Folder + serverUtils.AddExt(excel.FileName, ".xlsx")
 	excel.ReferName = service.PathToName(excel.Path, constant.ResDirData, constant.ResTypeExcel)
 
 	if excel.ID == 0 {
@@ -95,12 +95,12 @@ func (s *ExcelService) Sync(files []model.ResFile) (err error) {
 }
 func (s *ExcelService) SyncToDB(file model.ResFile) (err error) {
 	excel := model.ZdExcel{
-		Title: file.Title,
-		Sheet: file.Title,
-		Path: file.Path,
-		Folder: serverUtils.GetRelativePath(file.Path),
+		Title:     file.Title,
+		Sheet:     file.Title,
+		Path:      file.Path,
+		Folder:    serverUtils.GetRelativePath(file.Path),
 		ReferName: service.PathToName(file.Path, constant.ResDirData, constant.ResTypeExcel),
-		FileName: fileUtils.GetFileName(file.Path),
+		FileName:  fileUtils.GetFileName(file.Path),
 	}
 	s.excelRepo.Create(&excel)
 
