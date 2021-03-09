@@ -1,0 +1,18 @@
+from: color.v1.yaml
+fields:
+  - field: rgb
+    use: rgb
+    prefix: 'rgb: ' 
+    postfix: "\t" 
+  - field: hex
+    use: hex
+    prefix: 'hex: ' 
+    postfix: "\t" 
+  - field: english
+    use: english
+    prefix: 'english: ' 
+    postfix: "\t" 
+  - field: chinese
+    use: chinese
+    prefix: 'chinese: ' 
+    postfix: "\t" 

@@ -1,0 +1,15 @@
+fields:
+  - field: mixed_at_common
+    from: domain.domain.v1.yaml
+    use: mixed_at_common
+    postfix: "\t"
+
+  - field: enaccount_at_common
+    from: domain.domain.v1.yaml
+    use: enaccount_at_common
+    postfix: "\t"
+
+  - field: cnaccount_at_cn
+    from: domain.domain.v1.yaml
+    use: cnaccount_at_cn
+    postfix: "\t"

@@ -8,9 +8,9 @@ import (
 
 func TestMod(t *testing.T) {
 	arrOfArr := [3][]string{}
-	arrOfArr[0] = []string{"a","b","c","d","e"}
-	arrOfArr[1] = []string{"1","2"}
-	arrOfArr[2] = []string{"X","Y","Z"}
+	arrOfArr[0] = []string{"a", "b", "c", "d", "e"}
+	arrOfArr[1] = []string{"1", "2"}
+	arrOfArr[2] = []string{"X", "Y", "Z"}
 
 	indexArr := make([]int, 0)
 	for _, _ = range arrOfArr {
@@ -26,7 +26,7 @@ func TestMod(t *testing.T) {
 		indexArr[i] = loop
 	}
 
-	for i := 0; i < 100; i ++ {
+	for i := 0; i < 100; i++ {
 		str := strconv.Itoa(i) + ": "
 		for j := 0; j < len(arrOfArr); j++ {
 			child := arrOfArr[j]

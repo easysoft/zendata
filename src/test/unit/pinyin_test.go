@@ -41,8 +41,8 @@ func TestPinYin(t *testing.T) {
 				t.Error("fail to convert " + name)
 			}
 
-			pinyin = strings.Replace(pinyin," ", "", -1)
-			excel.SetCellValue(sheet, "D" + strconv.Itoa(index + 1), pinyin)
+			pinyin = strings.Replace(pinyin, " ", "", -1)
+			excel.SetCellValue(sheet, "D"+strconv.Itoa(index+1), pinyin)
 
 			//doub := "false"
 			//lent := ChineseCount(name)
@@ -60,8 +60,8 @@ func TestPinYin(t *testing.T) {
 }
 
 func ChineseCount(str1 string) (count int) {
-	for _, char := range str1{
-		if unicode.Is(unicode.Han, char){
+	for _, char := range str1 {
+		if unicode.Is(unicode.Han, char) {
 			count++
 		}
 	}

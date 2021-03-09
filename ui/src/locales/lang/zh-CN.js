@@ -106,7 +106,7 @@ const locale = {
   'form.mode.recursive': '递归',
   'form.left.pad': '左填充',
   'form.right.pad': '右填充',
-  'form.rand': '所及',
+  'form.rand': '随机',
   'form.format': '格式',
   'form.function': '函数',
   'form.start': '开始',

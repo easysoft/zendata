@@ -127,7 +127,7 @@
     },
     {
       "id": "server_request",
-      "translation": "\nGot %s request %s. "
+      "translation": "Got %s request %s. "
     },
     {
       "id": "server_response",

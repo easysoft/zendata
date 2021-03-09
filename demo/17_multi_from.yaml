@@ -1,0 +1,10 @@
+fields:
+  - field: use_mutiple_instances
+    prefix: '  '
+    froms:
+      - from: ip.v1.yaml
+        use: privateB{10}
+      - from: ip.v2.yaml
+        use: ipA{10} 
+
+

@@ -1,0 +1,12 @@
+fields:
+  - field: first
+    range: [1-9]{9}
+    prefix: ' '
+    postfix: ' x '
+
+  - field: second
+    range: 1-9
+    postfix: ' = '
+
+  - field: result
+    value: "$first * $second"

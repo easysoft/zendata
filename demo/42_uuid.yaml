@@ -1,0 +1,9 @@
+from: uuid.v1.yaml
+fields:
+  - field: length32_random_no_separator
+    use: length32_random_no_separator
+    postfix: " "
+
+  - field: length16
+    use: length16
+    postfix: " "

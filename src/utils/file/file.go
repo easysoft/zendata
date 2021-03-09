@@ -142,8 +142,10 @@ func GetExeDir() string { // where zd.exe file in
 			dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
 		}
 	} else { // debug
-		//dir, _ = os.Getwd()
-		dir = "/Users/aaron/rd/project/zentao/go/zd"
+		dir, _ = os.Getwd()
+		if commonUtils.IsMac() {
+			dir = "/Users/aaron/rd/project/zentao/go/zd"
+		}
 	}
 
 	dir, _ = filepath.Abs(dir)
@@ -169,16 +171,15 @@ func GetAbsDir(path string) string {
 	return abs
 }
 
-func GetResProp(from string) (resFile, resType, sheet string) { // from resource
-
+func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // from resource
 	if strings.LastIndex(from, ".yaml") > -1 { // yaml, ip.v1.yaml
-		resFile = ConvertResYamlPath(from)
+		resFile = ConvertResYamlPath(from, currFileDir)
 		resType = "yaml"
 	} else if strings.LastIndex(from, ".txt") > -1 {
-		resFile = ConvertResYamlPath(from)
+		resFile = ConvertResYamlPath(from, currFileDir)
 		resType = "text"
 	} else { // excel, like address.cn.v1.china
-		resFile, sheet = ConvertResExcelPath(from)
+		resFile, sheet = ConvertResExcelPath(from, currFileDir)
 		resType = "excel"
 	}
 
@@ -216,7 +217,7 @@ func ConvertReferRangeToPath(f, currFile string) (path string) {
 	return
 }
 
-func ConvertResYamlPath(from string) (ret string) {
+func ConvertResYamlPath(from, dir string) (ret string) {
 	arr := strings.Split(from, ".")
 	for i := 0; i < len(arr); i++ {
 		dir := ""
@@ -246,7 +247,7 @@ func ConvertResYamlPath(from string) (ret string) {
 	return
 }
 
-func ConvertResExcelPath(from string) (ret, sheet string) {
+func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	path1 := from // address.cn.v1
 	index := strings.LastIndex(from, ".")
 	path2 := from[:index] // address.cn.v1.china
@@ -297,7 +298,7 @@ func ConvertResExcelPath(from string) (ret, sheet string) {
 	return
 }
 
-func ComputerReferFilePath(file string) (resPath string) {
+func ComputerReferFilePath(file, dir string) (resPath string) {
 	resPath = file
 	if filepath.IsAbs(resPath) && FileExist(resPath) {
 		return

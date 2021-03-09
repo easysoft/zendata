@@ -1,0 +1,17 @@
+from: country.v1.yaml
+fields:
+  - field: cnfull
+    use: cnfull
+    prefix: 'cnfull: ' 
+    postfix: "\t" 
+
+  - field: cnshort
+    use: cnshort
+    prefix: 'cnshort: ' 
+    postfix: "\t" 
+
+  - field: asia_enfull
+    use: asia_enfull
+    prefix: 'asia_enfull: ' 
+    postfix: "\t" 
+

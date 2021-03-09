@@ -52,7 +52,7 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 
 	} else if field.From != "" { // refer to res
 		var valueMap map[string][]string
-		resFile, resType, sheet := fileUtils.GetResProp(field.From) // relate to current file
+		resFile, resType, sheet := fileUtils.GetResProp(field.From, field.FileDir) // relate to current file
 		valueMap, _ = getResValue(resFile, resType, sheet, field)
 
 		if (*res)[field.From] == nil {
@@ -68,7 +68,7 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 		}
 
 	} else if field.Config != "" { // refer to config
-		resFile, resType, _ := fileUtils.GetResProp(field.Config)
+		resFile, resType, _ := fileUtils.GetResProp(field.Config, field.FileDir)
 		values, _ := getResValue(resFile, resType, "", field)
 		(*res)[field.Config] = values
 	}
@@ -201,14 +201,14 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 			vari.Res[instField.From] = groupedValueReferenced
 		}
 	} else if instField.Select != "" { // refer to excel
-		resFile, resType, sheet := fileUtils.GetResProp(instField.From)
+		resFile, resType, sheet := fileUtils.GetResProp(instField.From, instField.FileDir)
 		values, _ := getResValue(resFile, resType, sheet, &instField)
 		vari.Res[instField.From] = values
 	}
 }
 
 func getReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
-	resFile, _, _ := fileUtils.GetResProp(inst.From)
+	resFile, _, _ := fileUtils.GetResProp(inst.From, inst.FileDir)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
 	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)

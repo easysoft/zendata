@@ -1,0 +1,15 @@
+fields:
+  - field: date
+    from: time.date.v1.yaml
+    use: date
+    postfix: " "
+
+  - field: cn_date
+    from: time.date.v1.yaml
+    use: chinese
+    postfix: " "
+
+  - field: time
+    from: time.time.v1.yaml
+    use: time
+    postfix: " "

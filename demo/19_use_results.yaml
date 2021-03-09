@@ -1,0 +1,9 @@
+fields:
+  - field: first
+    range: 16_from_instance.yaml{10}
+    prefix: "From 16.yaml\t"
+    postfix: "\t|\t"
+
+  - field: second
+    range: 17_from_excel.yaml{5}
+    prefix: "From 17.yaml: \t"

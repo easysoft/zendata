@@ -1,0 +1,22 @@
+fields:
+  - field: field_common     # 字段名
+    range: 1-5, 30          # 1,2,3,4,5,30,1,2,3,4,5
+    prefix: "int_"          # 前缀
+    postfix: "\t"           # 后缀，特殊字符加引号，否则无法解析。
+
+  - field: field_step       # 区间指定步长。
+    range: 0-10:2, 1-2:0.1  # 步长可以是整数，也可以是小数。
+    postfix: "\t"
+
+  - field: field_random     # 区间指定随机。随机属性R同步长不能同时出现。
+    range: 1-10:R           # 1,5,8...
+    postfix: "\t"
+
+  - field: field_loop       # 自循环的字段。
+    range: a-z              # a|b|c ...
+    loop:  1-10             # 循环1次，2次……
+    loopfix: _              # 每次循环的连接符。
+    postfix: "\t"
+
+
+

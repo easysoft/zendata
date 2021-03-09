@@ -1,0 +1,15 @@
+from: ip.v1.yaml
+fields:
+  - field: privateA
+    use: privateA
+    postfix: "\t"
+
+  - field: privateB
+    use: privateB
+    postfix: "\t"
+
+  - field: privateC
+    use: privateC
+    postfix: "\t"
+
+

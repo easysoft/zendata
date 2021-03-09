@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/easysoft/zendata/src/model"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"os"
@@ -42,7 +41,7 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 	jsonObj, _ := json.Marshal(ret)
 	vari.JsonResp = string(jsonObj)
 
-	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("analyse_success", output))
+	//logUtils.PrintTo(i118Utils.I118Prt.Sprintf("analyse_success", output))
 	logUtils.PrintLine(vari.JsonResp)
 }
 

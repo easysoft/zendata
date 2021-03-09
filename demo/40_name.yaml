@@ -1,0 +1,25 @@
+fields:
+  - field: cnaccount
+    from: name.cnaccount.v1.yaml
+    use: common
+    postfix: "\t"
+
+  - field: two_chinese_name
+    from: name.cnreal.v1.yaml
+    use: two
+    postfix: "\t"
+
+  - field: three_chinese_name
+    from: name.cnreal.v1.yaml
+    use: three
+    postfix: "\t"
+
+  - field: four_chinese_name
+    from: name.cnreal.v1.yaml
+    use: four
+    postfix: "\t"
+
+  - field: english
+    from: name.enaccount.v1.yaml
+    use: common_underline
+    postfix: "\t"

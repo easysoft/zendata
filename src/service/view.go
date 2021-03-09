@@ -7,6 +7,7 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -14,7 +15,7 @@ import (
 )
 
 func ViewRes(res string) {
-	resPath, resType, sheet := fileUtils.GetResProp(res)
+	resPath, resType, sheet := fileUtils.GetResProp(res, vari.ZdPath)
 
 	if resType == "yaml" {
 		typ, inst, ranges := ReadYamlData(resPath)
@@ -59,9 +60,11 @@ func printInst(inst model.ResInstances) {
 	}
 
 	for idx, item := range inst.Instances {
-		if idx > 0 { msg = msg + "\n" }
+		if idx > 0 {
+			msg = msg + "\n"
+		}
 		msg = msg + fmt.Sprintf("%d. %s - %s",
-			idx+1, item.Instance + strings.Repeat(" ", width - runewidth.StringWidth(item.Instance)), item.Note)
+			idx+1, item.Instance+strings.Repeat(" ", width-runewidth.StringWidth(item.Instance)), item.Note)
 	}
 
 	logUtils.PrintTo(msg)
@@ -81,8 +84,10 @@ func printRanges(ranges model.ResRanges) {
 
 	i := 0
 	for name, item := range ranges.Ranges {
-		if i > 0 { msg = msg + "\n" }
-		msg = msg + fmt.Sprintf("%d. %s - %s", i+1, name + strings.Repeat(" ", width -runewidth.StringWidth(name)), item)
+		if i > 0 {
+			msg = msg + "\n"
+		}
+		msg = msg + fmt.Sprintf("%d. %s - %s", i+1, name+strings.Repeat(" ", width-runewidth.StringWidth(name)), item)
 
 		i++
 	}
@@ -115,28 +120,34 @@ func printExcelSheet(path, sheetName string) {
 			}
 
 			widthArr := make([]int, 0)
-			dataArr :=  make([][]string, 0)
+			dataArr := make([][]string, 0)
 			dataArr = append(dataArr, make([]string, 0))
 			rows, _ := excel.GetRows(sheet)
 
 			colCount := 0
 			for index, row := range rows {
-				if index >= 10 { break }
+				if index >= 10 {
+					break
+				}
 
 				if index == 0 { // deal with the title
 					for _, col := range rows[index] {
 						val := strings.TrimSpace(col)
-						if val == "" { break }
+						if val == "" {
+							break
+						}
 
 						widthArr = append(widthArr, runewidth.StringWidth(val))
 
-						dataArr[0]= append(dataArr[0], val)
+						dataArr[0] = append(dataArr[0], val)
 						colCount++
 					}
 				} else {
 					colArr := make([]string, 0)
 					for idx, col := range row {
-						if idx >= colCount { break }
+						if idx >= colCount {
+							break
+						}
 
 						val := strings.TrimSpace(col)
 
@@ -155,7 +166,9 @@ func printExcelSheet(path, sheetName string) {
 			for _, row := range dataArr {
 				line := ""
 				for colIdx, col := range row {
-					if colIdx >= colCount { break }
+					if colIdx >= colCount {
+						break
+					}
 					space := widthArr[colIdx] - runewidth.StringWidth(col)
 					line = line + col + strings.Repeat(" ", space) + " "
 				}

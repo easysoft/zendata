@@ -5,12 +5,12 @@ Parameters:
   -d  --default    The default config file for data format.
   -c  --config     The current config file for data format, and it can override the config in the default file.
   -o  --output     The file name of the data generated. You can specify the output format by the extension name.
-                   For example json, xml and sql.  The text data in the original format is output by default.
+                   For example json, xml, sql, csv and xlsx.  The text data in the original format is output by default.
   -n  --lines      The number of lines of data to be generated. The default is 10.
 
   -F  --field      This parameter can be used to specify the fields, separated by commas. The default is all fields.
   -t  --table      If the output format is sql, using it to specify the table name to insert data to.
-  -T  --trim       Remove the prefix and postfix of every field when outputting data.
+  -T  --trim       Remove the prefix and postfix of every field when outputting data or decode data to json string.
   -H  --human      Output a readable format, print the field name, and use the tab key to split.
 
   -r  --recursive  Recursive mode. The default mode is parallel, in which each field loops independently.

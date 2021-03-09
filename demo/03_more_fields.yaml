@@ -1,0 +1,9 @@
+fields:
+  - field: field_common     # 字段名
+    range: 1-5, 30          # 1,2,3,4,5,30,1,2,3,4,5
+    prefix: "int_"          # 前缀
+    postfix: "\t"           # 后缀，特殊字符加引号，否则无法解析。
+
+  - field: field_step       # 区间指定步长。
+    range: 0-10:2, 1-2:0.1  # 步长可以是整数，也可以是小数。
+    postfix: "\t"

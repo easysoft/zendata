@@ -118,7 +118,7 @@
     },
     {
       "id": "server_request",
-      "translation": "\n收到%s请求 %s。"
+      "translation": "收到%s请求 %s。"
     },
     {
       "id": "server_response",
