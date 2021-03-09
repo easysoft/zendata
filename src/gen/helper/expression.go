@@ -17,7 +17,7 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 	exp := field.Value
 
 	reg := regexp.MustCompile(`\$([_,a-z,A-Z,0-9]+)`)
-	arr := reg.FindAllStringSubmatch(exp,-1)
+	arr := reg.FindAllStringSubmatch(exp, -1)
 
 	total := 1
 	for _, items := range arr { // computer total
@@ -48,7 +48,7 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 			tp := ""
 			var val interface{}
 			if len(referValues) > 0 {
-				valStr = referValues[i % len(referValues)]
+				valStr = referValues[i%len(referValues)]
 				valStr = strings.TrimLeft(valStr, referField.Prefix)
 				valStr = strings.TrimRight(valStr, referField.Postfix)
 
@@ -71,16 +71,17 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 			}
 
 			mask := ""
-			if dataTypeFromValues == "int"  {
+			if dataTypeFromValues == "int" {
 				mask = "%.0f"
 			} else {
 				mask = "%d"
 			}
 
-			str := fmt.Sprintf(field.Prefix + mask + field.Postfix, result)
+			str := fmt.Sprintf(mask, result)
 			if field.Length > runewidth.StringWidth(str) {
 				str = stringUtils.AddPad(str, field)
 			}
+			str = field.Prefix + str + field.Postfix
 			ret = append(ret, str)
 		}
 	}

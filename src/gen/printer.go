@@ -35,7 +35,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 			col = replacePlaceholder(col)
 			field := vari.TopFieldMap[fields[j]]
 			if field.Length > runewidth.StringWidth(col) {
-				col = stringUtils.AddPad(col, field)
+				//col = stringUtils.AddPad(col, field)
 			}
 
 			if j > 0 && vari.Human { // use a tab

@@ -13,6 +13,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v2"
+	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
@@ -72,7 +73,7 @@ func FindInArrBool(str string, arr []string) bool {
 	found, _ := FindInArr(str, arr)
 	return found
 }
-func FindInArr(str string, arr []string) (bool,int) {
+func FindInArr(str string, arr []string) (bool, int) {
 	for index, s := range arr {
 		if str == s {
 			return true, index
@@ -87,8 +88,8 @@ func StrInArr(str string, arr []string) bool {
 	return found
 }
 func InArray(need interface{}, arr []string) bool {
-	for _,v := range arr{
-		if need == v{
+	for _, v := range arr {
+		if need == v {
 			return true
 		}
 	}
@@ -141,7 +142,7 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 	}
 
 	str := fmt.Sprintf(format, val)
-	if strings.Index(str,"%!") == 0 {
+	if strings.Index(str, "%!") == 0 {
 		return "", false
 	}
 
@@ -149,7 +150,7 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 }
 
 func AddPad(str string, field model.DefField) string {
-	if  field.Length > 0 && field.Length > runewidth.StringWidth(str) {
+	if field.Length > 0 && field.Length > runewidth.StringWidth(str) {
 		gap := field.Length - len(str)
 		if field.LeftPad != "" {
 			field.LeftPad = field.LeftPad[:1]
@@ -173,7 +174,7 @@ func StartWith(str, sub string) bool {
 	return strings.Index(str, sub) == 0
 }
 func EndWith(str, sub string) bool {
-	return strings.Contains(str, sub) && strings.LastIndex(str, sub) == len(str) -len(sub)
+	return strings.Contains(str, sub) && strings.LastIndex(str, sub) == len(str)-len(sub)
 }
 
 func ConvertForSql(str string) (ret string) {
@@ -181,10 +182,10 @@ func ConvertForSql(str string) (ret string) {
 
 	count := 0
 	for i, item := range arr {
-		if count % 2 == 1 && string(item) != "'" {
-				ret = ret + "'"
-		} else if i == len(arr) - 1 && count % 2 == 0 && string(item) == "'" {
-				ret = ret + "'"
+		if count%2 == 1 && string(item) != "'" {
+			ret = ret + "'"
+		} else if i == len(arr)-1 && count%2 == 0 && string(item) == "'" {
+			ret = ret + "'"
 		}
 
 		if string(item) != "'" {
@@ -243,7 +244,7 @@ func Base64(str string) (ret string) {
 	return
 }
 func UrlEncode(str string) (ret string) {
-	ret = base64.URLEncoding.EncodeToString([]byte(str))
+	ret = url.QueryEscape(str)
 
 	return
 }
@@ -261,8 +262,8 @@ func ReplaceSpecialChars(bytes []byte) []byte {
 		}
 
 		if strings.Index(strings.TrimSpace(line), "range") == 0 || inRanges {
-			line = strings.ReplaceAll(line,"[", string(constant.LeftBrackets))
-			line = strings.ReplaceAll(line,"]", string(constant.RightBrackets))
+			line = strings.ReplaceAll(line, "[", string(constant.LeftBrackets))
+			line = strings.ReplaceAll(line, "]", string(constant.RightBrackets))
 		}
 
 		ret += line + "\n"
@@ -280,7 +281,7 @@ func ConvertYamlStringToMapFormat(bytes []byte) (ret string) {
 	// replace '"test"' to "test"
 	reg := regexp.MustCompile(`([:\s]+?)'"(.*)"'`)
 	//if reg.MatchString(ret) {
-		ret = reg.ReplaceAllString(ret, `${1}"${2}"`)
+	ret = reg.ReplaceAllString(ret, `${1}"${2}"`)
 	//}
 	return
 }

@@ -94,10 +94,10 @@ fields:
     postfix: "\t"
 
   - field: field_length                 # 指定宽度。
-    range: 1-99                         # 01\t,02\t,03\t..., 99\t
+    range: 1-99                         # 001\n,002\n,003\n..., 099\n
     length: 3                           # 包含前后缀的宽度。
     leftpad: 0                          # 宽度不够时，补充的字符。
-    postfix: "\t"
+    postfix: "-"
 
   - field: field_text                   # 从一个文件中随机读取。
     range: users.txt:R                  # 相对当前文件路径。

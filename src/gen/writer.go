@@ -5,7 +5,6 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/mattn/go-runewidth"
 )
@@ -13,12 +12,13 @@ import (
 const (
 	sheetName = "Sheet1"
 )
+
 var (
 	csvWriter *csv.Writer
 )
 
 func Write(rows [][]string, format string, table string, colIsNumArr []bool,
-		fields []string) (lines []interface{}) {
+	fields []string) (lines []interface{}) {
 
 	f := excelize.NewFile()
 	index := f.NewSheet(sheetName)
@@ -38,11 +38,11 @@ func Write(rows [][]string, format string, table string, colIsNumArr []bool,
 			col = replacePlaceholder(col)
 			field := vari.TopFieldMap[fields[j]]
 			if field.Length > runewidth.StringWidth(col) {
-				col = stringUtils.AddPad(col, field)
+				//col = stringUtils.AddPad(col, field)
 			}
 
 			if format == constant.FormatExcel {
-				colName, _ := excelize.CoordinatesToCellName(j + 1, i + 2)
+				colName, _ := excelize.CoordinatesToCellName(j+1, i+2)
 				f.SetCellValue(sheetName, colName, col)
 
 			} else if format == constant.FormatCsv {
@@ -69,7 +69,7 @@ func Write(rows [][]string, format string, table string, colIsNumArr []bool,
 func printExcelHeader(fields []string, f *excelize.File) {
 	headerLine := ""
 	for idx, field := range fields {
-		colName, _ := excelize.CoordinatesToCellName(idx + 1, 1)
+		colName, _ := excelize.CoordinatesToCellName(idx+1, 1)
 		f.SetCellValue(sheetName, colName, field)
 	}
 
