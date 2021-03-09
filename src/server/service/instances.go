@@ -222,7 +222,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		refer.Condition = item.Where
 		refer.Rand = item.Rand
 
-		_, sheet := fileUtils.ConvertResExcelPath(item.From)
+		_, sheet := fileUtils.ConvertResExcelPath(item.From, currPath)
 		refer.File = item.From
 		refer.Sheet = sheet
 

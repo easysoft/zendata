@@ -1,0 +1,90 @@
+title: 私有IP地址
+desc:
+author: wwccss
+version: 1.0
+
+field: ip
+instances:
+  - instance: privateC
+    note: 私有C类IP地址
+    prefix: 192.168.
+    fields:
+     - field: part3
+       range: 0-254
+       postfix: .
+     - field: part4
+       range: 1-254
+
+  - instance: privateB
+    note: 私有B类IP地址
+    prefix: 172.
+    fields:
+      - field: part2
+        range: 16-31
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254
+
+  - instance: privateA
+    note: 私有A类IP地址
+    prefix: 10.
+    fields:
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254
+
+  - instance: publicC
+    note: 公有C类IP地址
+    mode: r
+    fields:
+      - field: part1
+        range: 192-223
+        postfix: .
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254
+
+  - instance: publicB
+    note: 公有B类IP地址
+    mode: r
+    fields:
+      - field: part1
+        range: 128-191
+        postfix: .
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254
+
+  - instance: publicA
+    note: 公有A类IP地址
+    mode: r
+    fields:
+      - field: part1
+        range: 1-126
+        postfix: .
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254

@@ -255,7 +255,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 		refer.Condition = field.Where
 		refer.Rand = field.Rand
 
-		_, sheet := fileUtils.ConvertResExcelPath(field.From)
+		_, sheet := fileUtils.ConvertResExcelPath(field.From, currPath)
 		refer.File = field.From
 		refer.Sheet = sheet
 

@@ -23,12 +23,14 @@ type ResConfig struct {
 // range res
 type ResRanges struct {
 	ClsInfo `yaml:",inline"`
+	FileDir string            `yaml:"fileDir,omitempty"`
 	Ranges  map[string]string `yaml:"ranges"`
 }
 
 // instance res
 type ResInstances struct {
 	ClsBase   `yaml:",inline"`
+	FileDir   string             `yaml:"fileDir,omitempty"`
 	Instances []ResInstancesItem `yaml:"instances,flow"`
 }
 type ResInstancesItem struct {

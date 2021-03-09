@@ -201,12 +201,14 @@ func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // 
 	return
 }
 
-func ConvertReferRangeToPath(f, currFile string) (path string) {
-	path = ConvertResYamlPath(f)
+func ConvertReferRangeToPath(file, currFile string) (path string) {
+	dir := GetAbsDir(currFile)
+	path = ConvertResYamlPath(file, dir)
+
 	if path == "" {
-		resPath := GetAbsDir(currFile) + f
+		resPath := GetAbsDir(currFile) + file
 		if !FileExist(resPath) { // in same folder
-			resPath = vari.ZdPath + f
+			resPath = vari.ZdPath + file
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -218,6 +220,12 @@ func ConvertReferRangeToPath(f, currFile string) (path string) {
 }
 
 func ConvertResYamlPath(from, dir string) (ret string) {
+	pth := namedFileExistInDir(from, dir)
+	if pth != "" {
+		ret = pth
+		return
+	}
+
 	arr := strings.Split(from, ".")
 	for i := 0; i < len(arr); i++ {
 		dir := ""
@@ -248,6 +256,12 @@ func ConvertResYamlPath(from, dir string) (ret string) {
 }
 
 func ConvertResExcelPath(from, dir string) (ret, sheet string) {
+	pth := namedFileExistInDir(from, dir)
+	if pth != "" {
+		ret = pth
+		return
+	}
+
 	path1 := from // address.cn.v1
 	index := strings.LastIndex(from, ".")
 	path2 := from[:index] // address.cn.v1.china
@@ -298,7 +312,7 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	return
 }
 
-func ComputerReferFilePath(file, dir string) (resPath string) {
+func ComputerReferFilePath(file string) (resPath string) {
 	resPath = file
 	if filepath.IsAbs(resPath) && FileExist(resPath) {
 		return
@@ -420,4 +434,23 @@ func RemovePathSepLeftIfNeeded(pth string) string {
 	}
 
 	return pth
+}
+
+func namedFileExistInDir(file, dir string) (pth string) {
+	if IsAbsPath(file) { // abs path, return it
+		if FileExist(file) {
+			pth = file
+			return
+		} else {
+			return
+		}
+	} else {
+		file = path.Join(dir, file)
+		if FileExist(file) {
+			pth = file
+			return
+		}
+	}
+
+	return
 }

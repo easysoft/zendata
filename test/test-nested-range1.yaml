@@ -9,4 +9,4 @@ fields:
     postfix: ";\t"
 
   - field: part2
-    range: X,test-nested2.yaml{3}
+    range: X,test-nested-range2.yaml{3}

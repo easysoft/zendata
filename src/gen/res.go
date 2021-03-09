@@ -111,6 +111,7 @@ func getResFromYaml(resFile string) (valueMap map[string][]string) { // , resNam
 	insts := model.ResInstances{}
 	err = yaml.Unmarshal(yamlContent, &insts)
 	if err == nil && insts.Instances != nil && len(insts.Instances) > 0 { // instances
+		insts.FileDir = fileUtils.GetAbsDir(resFile)
 		valueMap = getResFromInstances(insts)
 		//resName = insts.Field
 	} else {
@@ -139,7 +140,6 @@ func getResFromInstances(insts model.ResInstances) (groupedValue map[string][]st
 	groupedValue = map[string][]string{}
 
 	for _, inst := range insts.Instances {
-
 		for _, instField := range inst.Fields {
 			prepareNestedInstanceRes(insts, inst, instField)
 		}
@@ -175,6 +175,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 			instField.From = inst.From
 		}
 	}
+	instField.FileDir = insts.FileDir
 
 	if instField.Use != "" { // refer to another instances or ranges
 		if vari.Res[instField.From] == nil {
@@ -185,8 +186,8 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 				groupedValueReferenced = getResFromRanges(referencedRanges)
 
 			} else if len(referencedInstants.Instances) > 0 { // refer to instances
-				for _, referencedInst := range referencedInstants.Instances {
-					for _, referencedInstField := range referencedInst.Fields {
+				for _, referencedInst := range referencedInstants.Instances { // iterate items
+					for _, referencedInstField := range referencedInst.Fields { // if item had children, iterate children
 						prepareNestedInstanceRes(referencedInstants, referencedInst, referencedInstField)
 					}
 
@@ -218,13 +219,16 @@ func getReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.Re
 	}
 
 	err1 := yaml.Unmarshal(yamlContent, &referencedRanges)
-	if err1 != nil || referencedRanges.Ranges == nil || len(referencedRanges.Ranges) == 0 { // instances
-
+	if err1 != nil || referencedRanges.Ranges == nil || len(referencedRanges.Ranges) == 0 { // parse ranges failed
 		err2 := yaml.Unmarshal(yamlContent, &referencedInsts)
-		if err2 != nil || referencedInsts.Instances == nil || len(referencedInsts.Instances) == 0 { // ranges
+		if err2 != nil || referencedInsts.Instances == nil || len(referencedInsts.Instances) == 0 { // parse instances failed
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_file", resFile))
 			return
+		} else { // is instances
+			referencedInsts.FileDir = fileUtils.GetAbsDir(resFile)
 		}
+	} else { // is ranges
+		referencedRanges.FileDir = fileUtils.GetAbsDir(resFile)
 	}
 
 	return
