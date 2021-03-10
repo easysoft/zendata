@@ -127,7 +127,7 @@ instances:
     note: 字母和数字混合的域名
     fields:
       - field: numbers_and_letters
-        range: "[a-z,0-9]:R"
+        range: "[a-z,0-9]"
         loop: 5-8
         postfix: "."
       - field: domain_postfix
@@ -173,4 +173,4 @@ instances:
         postfix: "."
       - field: domain_postfix
         from: domain.postfix.v1.yaml
-        use: new
+        use: cn

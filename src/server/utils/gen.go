@@ -6,14 +6,16 @@ import (
 	"github.com/easysoft/zendata/src/utils/vari"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, count int,
-	format, table string, decode bool, input, output string) {
+	format string, trim bool, table string, decode bool, input, output string) {
 	query := req.URL.Query()
 
 	defaultFile = ParserGetParams(query, "default", "d")
 	configFile = ParserGetParams(query, "config", "c")
+	trimStr := ParserGetParams(query, "trim", "T")
 	countStr := ParserGetParams(query, "lines", "n")
 	if countStr == "" {
 		countStr = "10"
@@ -27,9 +29,10 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 	if req.Method == http.MethodPost {
 		req.ParseForm()
 
-		countStr = ParserPostParams(req, "lines", "n", countStr, false)
 		defaultDefContent := ParserPostParams(req, "default", "d", "", true)
 		configDefContent := ParserPostParams(req, "config", "c", "", true)
+		trimStr = ParserPostParams(req, "trim", "T", trimStr, false)
+		countStr = ParserPostParams(req, "lines", "n", countStr, false)
 
 		if defaultDefContent != "" {
 			defaultFile = vari.ZdPath + "tmp" + constant.PthSep + ".default.yaml"
@@ -41,9 +44,14 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 		}
 	}
 
-	countFromPForm, err := strconv.Atoi(countStr)
+	trimStr = strings.ToLower(strings.TrimSpace(trimStr))
+	if trimStr == "t" || trimStr == "true" {
+		trim = true
+	}
+
+	countFromForm, err := strconv.Atoi(countStr)
 	if err == nil {
-		count = countFromPForm
+		count = countFromForm
 	}
 
 	return

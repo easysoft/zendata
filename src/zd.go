@@ -263,7 +263,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
 	defaultFile, configFile, fields, vari.Total,
-		format, table, decode, input, output = serverUtils.ParseGenParams(req)
+		format, vari.Trim, table, decode, input, output = serverUtils.ParseGenParams(req)
 
 	if decode {
 		gen.Decode(defaultFile, configFile, fields, input, output)
