@@ -86,6 +86,21 @@
             </a-row>
             <a-row :gutter="cols">
               <a-col :span="cols">
+                <a-form-model-item :label="$t('form.repeatTag')" prop="repeatTag" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                  <a-radio-group v-model="section.repeatTag">
+                    <a-radio :value="''">
+                      {{ $t('form.repeatItem') }}
+                    </a-radio>
+                    <a-radio :value="'!'">
+                      {{ $t('form.repeatGroup') }}
+                    </a-radio>
+                  </a-radio-group>
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+
+            <a-row :gutter="cols">
+              <a-col :span="cols">
                 <a-form-model-item :label="$t('form.rand')" prop="rand" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
                   <a-switch v-model="section.rand" />
                 </a-form-model-item>
@@ -257,7 +272,7 @@ export default {
           }
 
           if (this.section.repeat && this.section.repeat != '' && this.section.repeat != '1') {
-            this.section.value += '{' + this.section.repeat + '}'
+            this.section.value += '{' + this.section.repeat + this.section.repeatTag + '}'
           }
 
         } else if (this.section.type === 'literal') {
