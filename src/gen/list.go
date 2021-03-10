@@ -240,7 +240,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItems(startFloat, endFloat, step, rand, repeat, repeatTag)
+		items = GenerateFloatItems(startFloat, endFloat, step, rand, precision, repeat, repeatTag)
 
 	} else if dataType == "char" {
 		items = GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat, repeatTag)

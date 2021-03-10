@@ -7,82 +7,129 @@ import (
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, repeat int, tag string) []interface{} {
+func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, precision, repeat int, repeatTag string) []interface{} {
 	if !rand {
-		return generateFloatItemsByStep(start, end, step.(float64), repeat)
+		return generateFloatItemsByStep(start, end, step.(float64), precision, repeat, repeatTag)
 	} else {
-		return generateFloatItemsRand(start, end, step.(float64), repeat)
+		return generateFloatItemsRand(start, end, step.(float64), precision, repeat, repeatTag)
 	}
 }
 
-func generateFloatItemsByStep(start float64, end float64, step float64, repeat int) []interface{} {
+func generateFloatItemsByStep(start float64, end float64, step float64, precision, repeat int, repeatTag string) []interface{} {
 	arr := make([]interface{}, 0)
 
 	total := 0
 
-	for i := 0; true; {
-		val := start + float64(i)*step
-		if (val > end && step > 0) || (val < end && step < 0) {
-			break
-		}
+	if repeatTag == "" {
+		for i := 0; true; {
+			val := start + float64(i)*step
+			if (val > end && step > 0) || (val < end && step < 0) {
+				break
+			}
 
+			for round := 0; round < repeat; round++ {
+				arr = append(arr, val)
+
+				total++
+				if total > constant.MaxNumb {
+					break
+				}
+			}
+			if total > constant.MaxNumb {
+				break
+			}
+			i++
+		}
+	} else if repeatTag == "!" {
 		for round := 0; round < repeat; round++ {
-			arr = append(arr, val)
+			for i := 0; true; {
+				val := start + float64(i)*step
+				if (val > end && step > 0) || (val < end && step < 0) {
+					break
+				}
+
+				arr = append(arr, val)
+
+				if total > constant.MaxNumb {
+					break
+				}
+				i++
+			}
 
 			total++
 			if total > constant.MaxNumb {
 				break
 			}
 		}
-		if total > constant.MaxNumb {
-			break
-		}
-		i++
 	}
 
 	return arr
 }
 
-func generateFloatItemsRand(start float64, end float64, step float64, repeat int) []interface{} {
+func generateFloatItemsRand(start float64, end float64, step float64, precision, repeat int, repeatTag string) []interface{} {
 	arr := make([]interface{}, 0)
 
 	countInRound := (end - start) / step
 	total := 0
-	for i := float64(0); i < countInRound; {
-		rand := commonUtils.RandNum64(int64(countInRound))
-		if step < 0 {
-			rand = rand * -1
+
+	if repeatTag == "" {
+		for i := float64(0); i < countInRound; {
+			rand := commonUtils.RandNum64(int64(countInRound))
+			if step < 0 {
+				rand = rand * -1
+			}
+
+			val := start + float64(rand)*step
+
+			for round := 0; round < repeat; round++ {
+				arr = append(arr, val)
+
+				total++
+				if total > constant.MaxNumb {
+					break
+				}
+			}
+
+			if total > constant.MaxNumb {
+				break
+			}
+			i++
 		}
-
-		val := start + float64(rand)*step
-
+	} else if repeatTag == "!" {
 		for round := 0; round < repeat; round++ {
-			arr = append(arr, val)
+			for i := float64(0); i < countInRound; {
+				rand := commonUtils.RandNum64(int64(countInRound))
+				if step < 0 {
+					rand = rand * -1
+				}
+
+				val := start + float64(rand)*step
+
+				arr = append(arr, val)
+
+				if total > constant.MaxNumb {
+					break
+				}
+				i++
+			}
 
 			total++
 			if total > constant.MaxNumb {
 				break
 			}
 		}
-
-		if total > constant.MaxNumb {
-			break
-		}
-		i++
 	}
 
 	return arr
 }
 
 func GetPrecision(base float64, step interface{}) (precision int, newStep float64) {
-	val := base
-
-	if step != nil {
-		val += step.(float64)
+	var flt float64 = 1
+	if step == nil {
+		step = flt
 	}
-
 	str1 := strconv.FormatFloat(base, 'f', -1, 64)
-	str2 := strconv.FormatFloat(val, 'f', -1, 64)
+	str2 := strconv.FormatFloat(step.(float64), 'f', -1, 64)
 
 	index1 := strings.LastIndex(str1, ".")
 	index2 := strings.LastIndex(str2, ".")

@@ -159,7 +159,7 @@ export default {
       })
     },
     create() {
-      this.editRecord = null;
+      this.editRecord = {};
       this.editModalVisible = true;
     },
     edit(record) {

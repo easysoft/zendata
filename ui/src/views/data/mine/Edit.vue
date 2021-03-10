@@ -75,7 +75,6 @@ export default {
   },
   watch: {
     id: function() {
-      console.log('watch id ' + this.id)
       this.loadData();
     }
   },
