@@ -115,6 +115,7 @@ export default {
       })
     },
     reset () {
+      this.model = { folder: 'users/', type: 'text' };
       this.$refs.editForm.resetFields()
     },
   }
