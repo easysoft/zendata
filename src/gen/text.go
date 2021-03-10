@@ -56,7 +56,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 	}
 
 	// get index for data retrieve
-	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1)
+	numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1, "")
 	// get data by index
 	index := 0
 	for _, numb := range numbs {

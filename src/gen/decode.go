@@ -6,6 +6,7 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/mattn/go-runewidth"
 	"os"
 	"path/filepath"
 	"strings"
@@ -37,7 +38,7 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 	data := fileUtils.ReadFile(input)
 
 	var ret []map[string]interface{}
-	LinesToMap(data, fieldsToExport, &ret)
+	linesToMap(data, fieldsToExport, &ret)
 	jsonObj, _ := json.Marshal(ret)
 	vari.JsonResp = string(jsonObj)
 
@@ -45,7 +46,7 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
 	logUtils.PrintLine(vari.JsonResp)
 }
 
-func LinesToMap(str string, fieldsToExport []string, ret *[]map[string]interface{}) {
+func linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface{}) {
 	start := 0
 	if vari.WithHead {
 		start = 1
@@ -64,15 +65,16 @@ func LinesToMap(str string, fieldsToExport []string, ret *[]map[string]interface
 }
 
 func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]interface{}) {
-
 	left := []rune(line)
 
 	for j, field := range fields {
 		col := ""
 
 		if field.Length > 0 {
-			col = string(left[:field.Length])
-			left = left[field.Length:]
+			len := field.Length + runewidth.StringWidth(field.Prefix) + runewidth.StringWidth(field.Postfix)
+
+			col = string(left[:len])
+			left = left[len:]
 		} else {
 			sepStr := ""
 			if j < len(fields)-1 {
@@ -94,6 +96,10 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 			}
 		}
 
+		if vari.Trim {
+			col = strings.TrimLeft(col, field.Prefix)
+			col = strings.TrimRight(col, field.Postfix)
+		}
 		(*rowMap)[field.Field] = col
 
 		children := field.Fields

@@ -11,7 +11,7 @@
 /nohup.out
 /test/ztf/conf/
 /test/ztf/log/
-/demo/output/
+/demo/out/
 /test/ztf/._config.yaml
 /test/ztf/._default.yaml
 /._config.yaml
@@ -23,3 +23,5 @@
 /qshell.log
 /log-agent/
 /data/test/
+/test/out/
+/log-agent/

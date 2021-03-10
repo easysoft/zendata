@@ -230,9 +230,10 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		rangeSections := gen.ParseRangeProperty(item.Use)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
-			desc, _, count := gen.ParseRangeSection(rangeSection) // medium{2}
+			desc, _, count, countTag := gen.ParseRangeSection(rangeSection) // medium{2}
 			refer.ColName = desc
 			refer.Count = count
+			refer.CountTag = countTag
 		}
 
 		path := fileUtils.ConvertReferRangeToPath(item.From, currPath)
@@ -245,8 +246,9 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		rangeSections := gen.ParseRangeProperty(item.Config) // dir/config.yaml
 		if len(rangeSections) > 0 {                          // only get the first one
 			rangeSection := rangeSections[0]
-			desc, _, count := gen.ParseRangeSection(rangeSection)
+			desc, _, count, countTag := gen.ParseRangeSection(rangeSection)
 			refer.Count = count
+			refer.CountTag = countTag
 
 			path := fileUtils.ConvertReferRangeToPath(desc, currPath)
 			refer.File = GetRelatedPathWithResDir(path)
@@ -257,7 +259,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		rangeSections := gen.ParseRangeProperty(item.Range)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
-			desc, step, count := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
+			desc, step, count, countTag := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
 			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
 				if path.Ext(desc) == ".txt" { // dir/users.txt:2
 					refer.Type = constant.ResTypeText
@@ -272,6 +274,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 					refer.Type = constant.ResTypeYaml
 
 					refer.Count = count
+					refer.CountTag = countTag
 				}
 
 				path := fileUtils.ConvertReferRangeToPath(desc, currPath)

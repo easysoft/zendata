@@ -83,7 +83,7 @@ func ParseDesc(desc string) (items []string) {
                         step   =>1
                         repeat =>2
 */
-func ParseRangeSection(item string) (entry string, step string, repeat int) {
+func ParseRangeSection(item string) (entry string, step string, repeat int, repeatTag string) {
 	item = strings.TrimSpace(item)
 
 	if item == "" {
@@ -103,11 +103,18 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 		return
 	}
 
-	regx := regexp.MustCompile(`\{(.*)\}`)
+	regx := regexp.MustCompile(`\{(.*)!?\}`)
 	arr := regx.FindStringSubmatch(item)
+	tag := ""
 	if len(arr) == 2 {
-		repeat, _ = strconv.Atoi(arr[1])
+		str := strings.TrimSpace(arr[1])
+		if str[len(str)-1:] == "!" {
+			tag = str[len(str)-1:]
+			str = strings.TrimSpace(str[:len(str)-1])
+		}
+		repeat, _ = strconv.Atoi(str)
 	}
+	repeatTag = tag
 	itemWithoutRepeat := regx.ReplaceAllString(item, "")
 
 	sectionArr := strings.Split(itemWithoutRepeat, ":")
@@ -128,7 +135,7 @@ func ParseRangeSection(item string) (entry string, step string, repeat int) {
 	if repeat == 0 {
 		repeat = 1
 	}
-	return entry, step, repeat
+	return entry, step, repeat, repeatTag
 }
 
 /**
@@ -162,7 +169,7 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		for _, item := range arr {
 			if isScopeStr(item) && isCharOrNumberScope(item) { // only support a-z and 0-9 in []
 				tempField := model.DefField{}
-				values := CreateValuesFromInterval(&tempField, item, "", 1)
+				values := CreateValuesFromInterval(&tempField, item, "", 1, "")
 
 				for _, val := range values {
 					temp += InterfaceToStr(val) + ","

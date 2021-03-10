@@ -5,10 +5,10 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 )
 
-func GenerateByteItems(start byte, end byte, step int, rand bool, repeat int) []interface{} {
+func GenerateByteItems(start byte, end byte, step int, rand bool, repeat int, tag string) []interface{} {
 	if !rand {
 		return generateByteItemsByStep(start, end, step, repeat)
-	} else{
+	} else {
 		return generateByteItemsRand(start, end, step, repeat)
 	}
 }
@@ -19,7 +19,7 @@ func generateByteItemsByStep(start byte, end byte, step int, repeat int) []inter
 	total := 0
 	for i := 0; true; {
 		val := start + byte(int(i)*step)
-		if (val > end && step > 0) || (val < end && step < 0)  {
+		if (val > end && step > 0) || (val < end && step < 0) {
 			break
 		}
 

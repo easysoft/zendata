@@ -50,7 +50,7 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 			continue
 		}
 
-		descStr, stepStr, repeat := ParseRangeSection(rangeSection) // parse 2
+		descStr, stepStr, count, countTag := ParseRangeSection(rangeSection) // parse 2
 		if strings.ToLower(stepStr) == "r" {
 			(*field).IsRand = true
 		}
@@ -59,11 +59,11 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 
 		items := make([]interface{}, 0)
 		if typ == "literal" {
-			items = CreateValuesFromLiteral(field, desc, stepStr, repeat)
+			items = CreateValuesFromLiteral(field, desc, stepStr, count, countTag)
 		} else if typ == "interval" {
-			items = CreateValuesFromInterval(field, desc, stepStr, repeat)
+			items = CreateValuesFromInterval(field, desc, stepStr, count, countTag)
 		} else if typ == "yaml" { // load from a yaml
-			items = CreateValuesFromYaml(field, desc, stepStr, repeat)
+			items = CreateValuesFromYaml(field, desc, stepStr, count, countTag)
 			field.ReferToAnotherYaml = true
 		}
 
@@ -160,7 +160,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 	return "string", 1, 0, false // is string
 }
 
-func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int) (items []interface{}) {
+func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	elemArr := ParseDesc(desc)
 	step, _ := strconv.Atoi(stepStr)
 	if step == 0 {
@@ -170,33 +170,37 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 
 	if field.Path != "" && stepStr == "r" {
 		items = append(items, Placeholder(field.Path))
-		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "", field.Format)
+		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "", field.Format, repeatTag)
 
 		vari.RandFieldNameToValuesMap[field.Path] = mp
 		return
 	}
 
-	for i := 0; i < len(elemArr); {
-		idx := i
-		if field.Path == "" && stepStr == "r" {
-			idx = commonUtils.RandNum(len(elemArr)) // should set random here too
-		}
+	if repeatTag == "" {
+		for i := 0; i < len(elemArr); {
+			idx := i
+			if field.Path == "" && stepStr == "r" {
+				idx = commonUtils.RandNum(len(elemArr)) // should set random here too
+			}
 
-		val := elemArr[idx]
+			val := elemArr[idx]
+			total = appendValues(&items, val, repeat, total)
 
-		for round := 0; round < repeat; round++ {
-			items = append(items, val)
-
-			total++
-			if total > constant.MaxNumb {
+			if total >= constant.MaxNumb {
 				break
 			}
+			i += step
 		}
+	} else if repeatTag == "!" {
+		isRand := field.Path == "" && stepStr == "r"
+		for i := 0; i < repeat; {
+			total = appendArrItems(&items, elemArr, total, isRand)
 
-		if total >= constant.MaxNumb {
-			break
+			if total >= constant.MaxNumb {
+				break
+			}
+			i += step
 		}
-		i += step
 	}
 
 	if field.Path == "" && stepStr == "r" { // for ranges and instances, random
@@ -206,7 +210,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	return
 }
 
-func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repeat int) (items []interface{}) {
+func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr
@@ -219,7 +223,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
 		items = append(items, Placeholder(field.Path))
 
-		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision), field.Format)
+		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision), field.Format, repeatTag)
 		vari.RandFieldNameToValuesMap[field.Path] = mp
 
 		return
@@ -229,17 +233,17 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = GenerateIntItems(startInt, endInt, step.(int), rand, repeat)
+		items = GenerateIntItems(startInt, endInt, step.(int), rand, repeat, repeatTag)
 
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItems(startFloat, endFloat, step, rand, repeat)
+		items = GenerateFloatItems(startFloat, endFloat, step, rand, repeat, repeatTag)
 
 	} else if dataType == "char" {
-		items = GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat)
+		items = GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat, repeatTag)
 
 	} else if dataType == "string" {
 		if repeat == 0 {
@@ -257,7 +261,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	return
 }
 
-func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int) (items []interface{}) {
+func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
 	rootDef := vari.Def
 	defaultDir := vari.DefaultFileDir
@@ -293,18 +297,52 @@ func Placeholder(str string) string {
 	return "${" + str + "}"
 }
 
-func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string) map[string]interface{} {
+func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string, repeatTag string) map[string]interface{} {
 	ret := map[string]interface{}{}
 
 	ret["type"] = tp
 
-	ret["list"] = list // for literal values
+	// for literal values
+	ret["list"] = list
 
-	ret["start"] = start // for interval values
+	// for interval values
+	ret["start"] = start
 	ret["end"] = end
 	ret["step"] = step
 	ret["precision"] = precision
 	ret["format"] = format
+	ret["repeatTag"] = repeatTag
 
 	return ret
+}
+
+func appendValues(items *[]interface{}, val string, repeat int, total int) int {
+	for round := 0; round < repeat; round++ {
+		*items = append(*items, val)
+
+		total++
+		if total > constant.MaxNumb {
+			break
+		}
+	}
+
+	return total
+}
+
+func appendArrItems(items *[]interface{}, arr []string, total int, isRand bool) int {
+	for i := 0; i < len(arr); i++ {
+		idx := i
+		if isRand {
+			idx = commonUtils.RandNum(len(arr)) // should set random here too
+		}
+
+		*items = append(*items, arr[idx])
+
+		total++
+		if total > constant.MaxNumb {
+			break
+		}
+	}
+
+	return total
 }

@@ -26,7 +26,7 @@ func GetRandFromList(list []string, repeatStr string, count int) []string {
 	return ret
 }
 
-func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string, count int, format string) []string {
+func GetRandFromRange(dataType, start, end, step, repeatStr, repeatTag, precisionStr string, count int, format string) []string {
 	repeat, _ := strconv.Atoi(repeatStr)
 	precision, _ := strconv.Atoi(precisionStr)
 
@@ -41,7 +41,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			stepInt = stepInt * -1
 		}
 
-		countInRound := (endInt - startInt) / stepInt + 1
+		countInRound := (endInt-startInt)/stepInt + 1
 
 		for i := 0; i < count; i++ {
 			rand := commonUtils.RandNum64(countInRound)
@@ -54,7 +54,9 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			item := strconv.FormatInt(val, 10)
 			if format != "" {
 				formatVal, success := stringUtils.FormatStr(format, val, 0)
-				if success { item = formatVal }
+				if success {
+					item = formatVal
+				}
 			}
 
 			for round := 0; round < repeat; round++ {
@@ -73,7 +75,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			stepInt = stepInt * -1
 		}
 
-		countInRound := (int64(endChar) - int64(startChar)) / stepInt + 1
+		countInRound := (int64(endChar)-int64(startChar))/stepInt + 1
 
 		for i := 0; i < count; i++ {
 			rand := commonUtils.RandNum64(countInRound)
@@ -86,7 +88,9 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			item := string(val)
 			if format != "" {
 				formatVal, success := stringUtils.FormatStr(format, val, 0)
-				if success { item = formatVal }
+				if success {
+					item = formatVal
+				}
 			}
 
 			for round := 0; round < repeat; round++ {
@@ -106,7 +110,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			stepFloat = stepFloat * -1
 		}
 
-		countInRound := (endFloat - startFloat) / stepFloat + 1
+		countInRound := (endFloat-startFloat)/stepFloat + 1
 
 		for i := 0; i < count; i++ {
 			rand := commonUtils.RandNum64(int64(countInRound))
@@ -121,7 +125,9 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, precisionStr string
 			item := strconv.FormatFloat(val, 'f', precision, 64)
 			if format != "" {
 				formatVal, success := stringUtils.FormatStr(format, val, precision)
-				if success { item = formatVal }
+				if success {
+					item = formatVal
+				}
 			}
 
 			for round := 0; round < repeat; round++ {

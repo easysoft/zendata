@@ -7,10 +7,10 @@ import (
 	"strings"
 )
 
-func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, repeat int) []interface{} {
+func GenerateFloatItems(start float64, end float64, step interface{}, rand bool, repeat int, tag string) []interface{} {
 	if !rand {
 		return generateFloatItemsByStep(start, end, step.(float64), repeat)
-	} else{
+	} else {
 		return generateFloatItemsRand(start, end, step.(float64), repeat)
 	}
 }
@@ -21,8 +21,8 @@ func generateFloatItemsByStep(start float64, end float64, step float64, repeat i
 	total := 0
 
 	for i := 0; true; {
-		val := start + float64(i) * step
-		if (val > end && step > 0) || (val < end && step < 0)  {
+		val := start + float64(i)*step
+		if (val > end && step > 0) || (val < end && step < 0) {
 			break
 		}
 
@@ -54,7 +54,7 @@ func generateFloatItemsRand(start float64, end float64, step float64, repeat int
 			rand = rand * -1
 		}
 
-		val := start + float64(rand) * step
+		val := start + float64(rand)*step
 
 		for round := 0; round < repeat; round++ {
 			arr = append(arr, val)
@@ -109,16 +109,16 @@ func InterfaceToStr(val interface{}) string {
 	str := "n/a"
 
 	switch val.(type) {
-		case int64:
-			str = strconv.FormatInt(val.(int64), 10)
-		case float64:
-			precision, _ := GetPrecision(val.(float64), nil)
-			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
-		case byte:
-			str = string(val.(byte))
-		case string:
-			str = val.(string)
-		default:
+	case int64:
+		str = strconv.FormatInt(val.(int64), 10)
+	case float64:
+		precision, _ := GetPrecision(val.(float64), nil)
+		str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+	case byte:
+		str = string(val.(byte))
+	case string:
+		str = val.(string)
+	default:
 	}
 	return str
 }

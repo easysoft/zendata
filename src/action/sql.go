@@ -23,7 +23,7 @@ func ParseSql(file string, out string) {
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.FieldSimple{}
+			field := model.FieldSimple{Range: " "}
 			field.Init(col)
 			def.Fields = append(def.Fields, field)
 		}
@@ -41,7 +41,7 @@ func ParseSql(file string, out string) {
 	}
 
 	entTime := time.Now().Unix()
-	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statements), out, entTime - startTime ))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statements), out, entTime-startTime))
 }
 
 func getCreateStatement(file string) map[string]string {

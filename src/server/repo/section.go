@@ -39,7 +39,7 @@ func (r *SectionRepo) Remove(id uint, ownerType string) (err error) {
 }
 
 func (r *SectionRepo) SaveFieldSectionToDB(rangeSection string, ord int, fieldID uint, ownerType string) {
-	descStr, stepStr, count := gen.ParseRangeSection(rangeSection)
+	descStr, stepStr, count, countTag := gen.ParseRangeSection(rangeSection)
 	typ, desc := gen.ParseRangeSectionDesc(descStr)
 
 	if typ == "literal" && desc[:1] == string(constant.LeftBrackets) &&
@@ -70,7 +70,7 @@ func (r *SectionRepo) SaveFieldSectionToDB(rangeSection string, ord int, fieldID
 
 	section := model.ZdSection{OwnerType: ownerType, OwnerID: fieldID, Type: typ,
 		Value: desc, Start: start, End: end, Ord: ord,
-		Step: step, Repeat: countStr, Rand: rand}
+		Step: step, Repeat: countStr, RepeatTag: countTag, Rand: rand}
 
 	r.Create(&section)
 }

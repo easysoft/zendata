@@ -58,7 +58,7 @@ func createTimestampSectionValue(section string, values *[]interface{}) {
 	}
 
 	// get index numbers for data retrieve
-	numbs := GenerateIntItems(start, end, step, false, 1)
+	numbs := GenerateIntItems(start, end, step, false, 1, "")
 
 	// generate data by index
 	index := 0

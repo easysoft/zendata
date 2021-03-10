@@ -263,9 +263,10 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 		rangeSections := gen.ParseRangeProperty(field.Use)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
-			desc, _, count := gen.ParseRangeSection(rangeSection) // medium{2}
+			desc, _, count, countTag := gen.ParseRangeSection(rangeSection) // medium{2!}
 			refer.ColName = desc
 			refer.Count = count
+			refer.CountTag = countTag
 		}
 
 		path := fileUtils.ConvertReferRangeToPath(field.From, currPath)
@@ -278,8 +279,9 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 		rangeSections := gen.ParseRangeProperty(field.Config) // dir/config.yaml
 		if len(rangeSections) > 0 {                           // only get the first one
 			rangeSection := rangeSections[0]
-			desc, _, count := gen.ParseRangeSection(rangeSection)
+			desc, _, count, countTag := gen.ParseRangeSection(rangeSection)
 			refer.Count = count
+			refer.CountTag = countTag
 
 			path := fileUtils.ConvertReferRangeToPath(desc, currPath)
 			refer.File = GetRelatedPathWithResDir(path)
@@ -289,8 +291,8 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 
 		rangeSections := gen.ParseRangeProperty(field.Range)
 		if len(rangeSections) > 0 {
-			rangeSection := rangeSections[0]                         // deal with yaml and text refer using range prop
-			desc, step, count := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
+			rangeSection := rangeSections[0]                                   // deal with yaml and text refer using range prop
+			desc, step, count, countTag := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
 			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
 				if path.Ext(desc) == ".txt" { // dir/users.txt:2
 					refer.Type = constant.ResTypeText
@@ -305,6 +307,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 					refer.Type = constant.ResTypeYaml
 
 					refer.Count = count
+					refer.CountTag = countTag
 				}
 
 				path := fileUtils.ConvertReferRangeToPath(desc, currPath)
