@@ -28,7 +28,8 @@ Parameters:
                    Also you can output the readable format via -H.
   -a  --article    Convert article to yaml config file in the dir provided by -o parameter.
 
-  -l  --list       List all supported data formats.
+  -l  --list       List user's data.
+  -l               List build-in data.
   -v  --view       View the detailed definition of a data format.
   -h  --help       Print help.
   -e  --example    Print the data format config file of the example.

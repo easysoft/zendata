@@ -1,14 +1,22 @@
-title: range
+title: test
 desc: 描述
 version: 1.0
 fields:
-  - field: field_length
-    range: 1.11-1.13:0.001
-    length: 3
-    leftpad: 0
-    prefix: "+"
-    postfix: "-"
+#  - field: field_text
+#    range: res/num.txt, ../demo/user.txt:R
+#    postfix: "\t"
 
-  - field: refer1
-    range: '0-3{2!}'
-    postfix: '-'
+#  - field: first
+#    range: ../demo/15_from_range.yaml{3}, ../demo/16_from_instance.yaml{10}
+#    prefix: ""
+#    postfix: "\t"
+
+#  - field: field_use_ranges_small
+#    from: zentao.number.v1.yaml
+#    use: small{3},netmask
+#    postfix: "\t"
+
+  - field: field_use_instance   # 引用其他的定义文件，该文件定义了多个实例。
+    from: ip.v1.yaml            # yaml/ip/v1.yaml
+    use: privateA{3},privateB{5}            # 使用该文件中定义的privateC和privateB两个实例。
+    postfix: "\t"

@@ -51,10 +51,11 @@ var (
 
 	article string
 
-	listRes    bool
-	viewRes    string
-	viewDetail string
-	md5        string
+	listData bool
+	listRes  bool
+	viewData string
+	viewRes  string
+	md5      string
 
 	example bool
 	help    bool
@@ -95,11 +96,13 @@ func main() {
 	flagSet.StringVar(&table, "t", "", "")
 	flagSet.StringVar(&table, "table", "", "")
 
-	flagSet.BoolVar(&listRes, "l", false, "")
-	flagSet.BoolVar(&listRes, "list", false, "")
+	flagSet.BoolVar(&listData, "l", false, "")
+	flagSet.BoolVar(&listData, "list", false, "")
+	flagSet.BoolVar(&listRes, "L", false, "")
 
-	flagSet.StringVar(&viewRes, "v", "", "")
-	flagSet.StringVar(&viewRes, "view", "", "")
+	flagSet.StringVar(&viewData, "v", "", "")
+	flagSet.StringVar(&viewData, "view", "", "")
+	flagSet.StringVar(&viewRes, "V", "", "")
 
 	flagSet.StringVar(&md5, "md5", "", "")
 
@@ -161,8 +164,14 @@ func main() {
 			} else if set {
 				service.Set()
 				return
+			} else if listData {
+				service.ListData()
+				return
 			} else if listRes {
 				service.ListRes()
+				return
+			} else if viewData != "" {
+				service.ViewData(viewData)
 				return
 			} else if viewRes != "" {
 				service.ViewRes(viewRes)

@@ -14,9 +14,17 @@ import (
 	"strings"
 )
 
+func ViewData(res string) {
+	resPath, resType, sheet := fileUtils.GetResProp(res, vari.WorkDir)
+	View(resPath, resType, sheet)
+}
+
 func ViewRes(res string) {
 	resPath, resType, sheet := fileUtils.GetResProp(res, vari.ZdPath)
+	View(resPath, resType, sheet)
+}
 
+func View(resPath, resType, sheet string) {
 	if resType == "yaml" {
 		typ, inst, ranges := ReadYamlData(resPath)
 		if typ == "inst" {

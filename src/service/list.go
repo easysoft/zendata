@@ -17,16 +17,29 @@ import (
 	"strings"
 )
 
-func ListRes() {
-	res, nameWidth, titleWidth := LoadRes("")
+func ListData() {
+	res, nameWidth, titleWidth := LoadRes("work")
 	PrintRes(res, nameWidth, titleWidth)
 }
 
-func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWidth int) {
+func ListRes() {
+	res, nameWidth, titleWidth := LoadRes("zd")
+	PrintRes(res, nameWidth, titleWidth)
+}
+
+func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWidth int) {
 	res = map[string][]model.ResFile{}
 
-	for _, key := range constant.ResKeys {
-		GetFilesAndDirs(key, key, &res)
+	if vari.WorkDir == vari.ZdPath {
+		resSrc = "zd"
+	}
+
+	if resSrc == "work" {
+		GetFilesAndDirs(vari.WorkDir, constant.ResDirUsers, &res)
+	} else {
+		for _, key := range constant.ResKeys {
+			GetFilesAndDirs(key, key, &res)
+		}
 	}
 
 	for _, key := range constant.ResKeys {
@@ -75,7 +88,7 @@ func LoadRes(resType string) (res map[string][]model.ResFile, nameWidth, titleWi
 				}
 			}
 
-			if !isArticleFiles && (resType == "" || resType == item.ResType) {
+			if !isArticleFiles {
 				arr = append(arr, item)
 			}
 		}
@@ -140,7 +153,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 
 	for _, fi := range dir {
 		if fi.IsDir() {
-			GetFilesAndDirs(pth+constant.PthSep+fi.Name(), typ, res)
+			GetFilesAndDirs(path.Join(pth, fi.Name()), typ, res)
 		} else {
 			name := fi.Name()
 			fileExt := path.Ext(name)
@@ -148,7 +161,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 				continue
 			}
 
-			file := model.ResFile{Path: pth + constant.PthSep + name, UpdatedAt: fi.ModTime()}
+			file := model.ResFile{Path: path.Join(pth, name), UpdatedAt: fi.ModTime()}
 			(*res)[typ] = append((*res)[typ], file)
 		}
 	}
@@ -205,10 +218,18 @@ func ReadTextInfo(path, key string) (title, desc, resType string) {
 }
 
 func PathToName(path, key, tp string) string {
+	isWorkData := strings.Index(path, vari.WorkDir) > -1
+	if isWorkData { // user data in workdir
+		path = strings.Replace(path, vari.WorkDir, "", 1)
+	}
+
 	nameSep := constant.PthSep
 	if tp != constant.ResTypeText && tp != constant.ResTypeYaml && tp != constant.ResTypeConfig {
 		nameSep = "."
 		path = strings.ReplaceAll(path, constant.PthSep, nameSep)
+	}
+	if isWorkData {
+		return path
 	}
 
 	sep := nameSep + key + nameSep

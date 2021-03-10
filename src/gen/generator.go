@@ -128,7 +128,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 		values = loopFieldValues(field, unionValues, count, true)
 
 	} else if field.From != "" { // refer to res
-		if field.Use != "" { // refer to instance
+		if field.Use != "" { // refer to ranges or instance
 			groupValues := vari.Res[field.From]
 			groups := strings.Split(field.Use, ",")
 			for _, group := range groups {
@@ -154,7 +154,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 
 						i = i - len(valuesFromGroup)
 						if i <= 0 {
-							break
+							continue
 						}
 					}
 				} else {
@@ -173,7 +173,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 
 					i = i - len(valuesFromGroup)
 					if i <= 0 {
-						break
+						continue
 					}
 				}
 			}
