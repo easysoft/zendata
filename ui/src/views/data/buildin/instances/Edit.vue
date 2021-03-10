@@ -63,7 +63,13 @@ import {
 export default {
   name: 'RangesEdit',
   props: {
-    afterSave: Function
+    afterSave: Function,
+    id: {
+      type: [Number, String],
+      default: function() {
+        return this.$route.params.id;
+      }
+    },
   },
   data() {
     return {
@@ -87,33 +93,39 @@ export default {
         ],
       },
 
-      id: 0,
       model: {folder: 'yaml/'},
       dirs: [],
       workDir: '',
     };
   },
-
-  computed: {
-  },
-  created () {
-    this.id = parseInt(this.$route.params.id)
-    console.log(this.id)
-    this.loadData()
+  watch: {
+    id: function(newId, oldId) {
+      if (newId == oldId) {
+        return;
+      }
+      this.loadData();
+    }
   },
   mounted () {
-
+    this.loadData();
   },
   methods: {
     loadData () {
-      if (!this.id) return
-
-      getInstances(this.id).then(json => {
-        console.log('getInstances', json)
-        this.model = json.data
-        this.dirs = json.res
-        this.workDir = json.workDir
-      })
+      let id = this.id;
+      if (id === null) {
+        return;
+      }
+      if (id) {
+        if (typeof id === 'string') id = Number.parseInt(id);
+        getInstances(id).then(json => {
+          console.log('getInstances', json)
+          this.model = json.data
+          this.dirs = json.res
+          this.workDir = json.workDir
+        })
+      } else {
+        this.reset();
+      }
     },
     save() {
       console.log('save')
@@ -135,6 +147,7 @@ export default {
     },
     reset() {
       console.log('reset')
+      this.model = {folder: 'yaml/'};
       this.$refs.editForm.reset()
     },
   }
