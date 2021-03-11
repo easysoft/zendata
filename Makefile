@@ -12,12 +12,12 @@ BIN_WIN32=${BIN_OUT}win32/${BINARY}/
 BIN_LINUX=${BIN_OUT}linux/${BINARY}/
 BIN_MAC=${BIN_OUT}mac/${BINARY}/
 
-default: update_version_in_config gen_version_file prepare_res compile_all copy_files package
+default: update_version_in_config gen_version_file compile_ui prepare_res compile_all copy_files package
 
-win64: update_version_in_config gen_version_file prepare_res compile_win64 copy_files package
-win32: update_version_in_config gen_version_file prepare_res compile_win32 copy_files package
-linux: update_version_in_config gen_version_file prepare_res compile_linux copy_files package
-mac: update_version_in_config gen_version_file prepare_res compile_mac copy_files package
+win64: update_version_in_config gen_version_file compile_ui prepare_res compile_win64 copy_files package
+win32: update_version_in_config gen_version_file compile_ui prepare_res compile_win32 copy_files package
+linux: update_version_in_config gen_version_file compile_ui prepare_res compile_linux copy_files package
+mac: update_version_in_config gen_version_file compile_ui prepare_res compile_mac copy_files package
 upload: upload_to
 
 prepare_res:
@@ -74,6 +74,10 @@ gen_version_file:
 	@echo 'gen version'
 	@mkdir -p ${QINIU_DIR}/${PROJECT}/
 	@echo ${VERSION} > ${QINIU_DIR}/${PROJECT}/version.txt
+
+compile_ui:
+	@echo 'compile ui'
+	@cd ui && yarn build && cd ..
 
 upload_to:
 	@echo 'upload...'
