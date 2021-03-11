@@ -4,7 +4,7 @@
       <span slot="folderWithPath" slot-scope="text, record">
         <a-tooltip placement="top" overlayClassName="tooltip-light">
           <template slot="title">
-            <span>{{record.path}}</span>
+            <span>{{record.path | replacePathSep}}</span>
           </template>
           <a>{{record.path | pathToRelated}}</a>
         </a-tooltip>
@@ -75,7 +75,7 @@
 
 import {listInstances, removeInstances} from "../../../../api/manage";
 import { DesignComponent } from '../../../../components'
-import {PageSize, ResTypeInstances, pathToRelated} from "../../../../api/utils";
+import {PageSize, ResTypeInstances, pathToRelated, replacePathSep} from "../../../../api/utils";
 import debounce from "lodash.debounce"
 import Edit from './Edit';
 
@@ -154,6 +154,9 @@ export default {
   mounted () {
   },
   filters: {
+    replacePathSep: function (path) {
+      return replacePathSep(path)
+    },
     pathToRelated: function (path) {
       return pathToRelated(path)
     }

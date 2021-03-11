@@ -4,7 +4,7 @@
       <span slot="folderWithPath" slot-scope="text, record">
         <a-tooltip placement="top" overlayClassName="tooltip-light">
           <template slot="title">
-            <span>{{record.path}}</span>
+            <span>{{record.path | replacePathSep}}</span>
           </template>
           <a>{{record.path | pathToRelated}}</a>
         </a-tooltip>
@@ -62,7 +62,7 @@
 <script>
 
 import {listExcel, removeExcel} from "../../../../api/manage";
-import {PageSize, pathToRelated} from "../../../../api/utils";
+import {PageSize, pathToRelated, replacePathSep} from "../../../../api/utils";
 import debounce from "lodash.debounce"
 import Edit from './Edit';
 
@@ -137,6 +137,9 @@ export default {
     this.loadData()
   },
   filters: {
+    replacePathSep: function (path) {
+      return replacePathSep(path)
+    },
     pathToRelated: function (path) {
       return pathToRelated(path)
     }

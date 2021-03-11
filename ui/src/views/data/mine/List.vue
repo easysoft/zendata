@@ -19,7 +19,7 @@
             <span slot="folderWithPath" slot-scope="text, record">
               <a-tooltip placement="top" overlayClassName="tooltip-light">
                 <template slot="title">
-                  <span>{{record.path}}</span>
+                  <span>{{record.path | replacePathSep}}</span>
                 </template>
                 <a>{{record.path | pathToRelated}}</a>
               </a-tooltip>
@@ -76,7 +76,7 @@
 import {Icon, Modal} from 'ant-design-vue'
 import {listDef, removeDef} from "../../../api/manage";
 import {DesignComponent} from '../../../components'
-import {PageSize, ResTypeDef, pathToRelated} from "../../../api/utils";
+import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../../api/utils";
 import debounce from "lodash.debounce"
 import Preview from './Preview';
 import Edit from './Edit';
@@ -144,6 +144,9 @@ export default {
   mounted () {
   },
   filters: {
+    replacePathSep: function (path) {
+      return replacePathSep(path)
+    },
     pathToRelated: function (path) {
       return pathToRelated(path)
     }

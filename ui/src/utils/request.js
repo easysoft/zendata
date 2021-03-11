@@ -10,7 +10,7 @@ const request = axios.create({
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://localhost:8848'
+    url = 'http://172.16.13.3:8848'
     console.log('dev env, url is ' + url)
   } else {
     const location = unescape(window.location.href);

@@ -49,9 +49,15 @@ export function checkDirIsUsers (rule, value, callback){
   callback()
 }
 
+export function replacePathSep (path){
+  const pth = path.replaceAll('\\', "/")
+  return pth
+}
+
 export function pathToRelated (path){
   if (!config.workDir) return ''
-  const name = path.substr(config.workDir.length)
+  let name = path.substr(config.workDir.length)
+  name = replacePathSep(name)
   return name
 }
 

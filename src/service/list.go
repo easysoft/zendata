@@ -13,6 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"path"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -54,7 +55,7 @@ func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWid
 			if key == constant.ResDirData { // data dir contains excel
 				title, desc, tp = ReadExcelInfo(pth)
 			} else if key == constant.ResDirYaml || key == constant.ResDirUsers {
-				isArticleFiles = strings.Contains(pth, fmt.Sprintf("yaml%sarticle", constant.PthSep))
+				isArticleFiles, _ = regexp.MatchString("yaml.article", pth)
 
 				if fileExt == ".txt" { // ignore packaged article text file
 					title, desc, tp = ReadTextInfo(pth, key)

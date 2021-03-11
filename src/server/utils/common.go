@@ -2,12 +2,12 @@ package serverUtils
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"io/ioutil"
+	"regexp"
 	"strings"
 )
 
@@ -112,7 +112,8 @@ func AddExt(pth, ext string) string {
 }
 
 func GetDirs(dir string, dirs *[]model.Dir) {
-	if strings.Contains(dir, fmt.Sprintf("yaml%sarticle", constant.PthSep)) {
+	isArticleFiles, _ := regexp.MatchString("yaml.article", dir)
+	if isArticleFiles {
 		return
 	}
 
