@@ -22,9 +22,10 @@ ZenData是一款通用的数据生成工具，您可以使用yaml文件来定义
   -D  --decode     根据指定的配置文件，将通过-i参数指定的数据文件解析成json格式。
   -a  --article    将指定的文件或目录下扩展名为.txt的文件，转换成文章yaml配置，输出到-o参数指定的目录下。
 
-  -l  --list       列出用户数据。
-  -L               列出內置数据。
-  -v  --view       查看某一个数据格式的详细定义。
+  -l  --list       列出当前目录下所有的用户数据定义。
+  -L               列出ZenData安装目录下所有数据定义。
+  -v  --view       查看当前目录下某个用户数据定义的详细信息。
+  -V               查看ZenData安装目录下某个数据定义的详细信息。
   -h  --help       打印帮助。
   -e  --example    打印示例的数据格式配置文件。
 
@@ -57,6 +58,6 @@ $zd.exe -p 80 -R d:\zd\config                                        # 监听80�
 
 客户端调用：
 
-$curl http://localhost:8848/?d=demo/default.yaml&c=demo/config.yaml&n=100           # 通过GET方式指定服务器端配置文件。
+$curl http://localhost:8848/?d=demo/default.yaml&c=demo/config.yaml&n=100&T=true    # 通过GET方式指定服务器端配置文件。
 $curl http://localhost:8848/?default=demo/default.yaml&output=test.sql&table=user   # 参数名可以用全拼。
 $curl -i -X POST http://localhost:8848?lines=3 -F default=@demo/default.yaml        # 可以通过POST方式上传配置文件。
