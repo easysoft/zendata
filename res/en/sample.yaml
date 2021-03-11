@@ -104,7 +104,7 @@ fields:
     postfix: "\t"
 
   - field: field_yaml                   # use another yaml file's data.
-    range: test/test-nested2.yaml{3}    # related path.
+    range: 01_range.yaml{3}             # related path.
     postfix: "\t"
   
   - field: field_use_config             # Other definition file can be referred.
