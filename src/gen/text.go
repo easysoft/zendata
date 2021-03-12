@@ -16,6 +16,7 @@ import (
 
 func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWithValues) {
 	ranges := strings.Split(strings.TrimSpace(field.Range), ",")
+
 	for _, rang := range ranges {
 		rang = strings.TrimSpace(rang)
 		repeat, repeatTag, rangWithoutRepeat := ParseRepeat(rang)
@@ -30,7 +31,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 
 		// read from file
 		list := make([]string, 0)
-		realPath := fileUtils.ComputerReferFilePath(file)
+		realPath := fileUtils.ComputerReferFilePath(file, field)
 		content, err := ioutil.ReadFile(realPath)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file+" - "+realPath))

@@ -2,6 +2,7 @@ package fileUtils
 
 import (
 	"github.com/easysoft/zendata/res"
+	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
@@ -312,9 +313,14 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	return
 }
 
-func ComputerReferFilePath(file string) (resPath string) {
+func ComputerReferFilePath(file string, field *model.DefField) (resPath string) {
 	resPath = file
-	if filepath.IsAbs(resPath) && FileExist(resPath) {
+	if IsAbsPath(resPath) && FileExist(resPath) {
+		return
+	}
+
+	resPath = field.FileDir + file
+	if FileExist(resPath) {
 		return
 	}
 
@@ -328,11 +334,11 @@ func ComputerReferFilePath(file string) (resPath string) {
 		return
 	}
 
-	resPath = vari.ZdPath + constant.ResDirYaml + constant.PthSep + file
+	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
 	if FileExist(resPath) {
 		return
 	}
-	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
+	resPath = vari.ZdPath + constant.ResDirYaml + constant.PthSep + file
 	if FileExist(resPath) {
 		return
 	}

@@ -145,9 +145,9 @@ func getResFromInstances(insts model.ResInstances) (groupedValue map[string][]st
 		}
 
 		// gen values
-		field := convertInstantToField(insts, inst)
+		fieldFromInsts := convertInstantToField(insts, inst)
 		group := inst.Instance
-		groupedValue[group] = GenerateForField(&field, false)
+		groupedValue[group] = GenerateForField(&fieldFromInsts, false)
 	}
 
 	return groupedValue
@@ -251,6 +251,7 @@ func convertInstantToField(insts model.ResInstances, inst model.ResInstancesItem
 	copier.Copy(&child, inst)
 
 	field.Fields = append(field.Fields, child)
+	field.FileDir = insts.FileDir
 
 	return field
 }

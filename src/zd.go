@@ -204,7 +204,7 @@ func main() {
 func toGen() {
 	tmStart := time.Now()
 	if vari.Verbose {
-		logUtils.PrintTo(fmt.Sprintf("Start at %s", tmStart.Format("2006-01-02 15:04:05")))
+		logUtils.PrintTo(fmt.Sprintf("Start at %s.", tmStart.Format("2006-01-02 15:04:05")))
 	}
 
 	if vari.RunMode == constant.RunModeServer {
@@ -256,10 +256,10 @@ func toGen() {
 
 	tmEnd := time.Now()
 	if vari.Verbose {
-		logUtils.PrintTo(fmt.Sprintf("End at %s", tmEnd.Format("2006-01-02 15:04:05")))
+		logUtils.PrintTo(fmt.Sprintf("End at %s.", tmEnd.Format("2006-01-02 15:04:05")))
 
 		dur := tmEnd.Unix() - tmStart.Unix()
-		logUtils.PrintTo(fmt.Sprintf("Duriation %d", dur))
+		logUtils.PrintTo(fmt.Sprintf("Duriation %d sec.", dur))
 	}
 }
 
