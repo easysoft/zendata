@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"strconv"
 	"strings"
@@ -109,10 +108,10 @@ func parseTsDesc(desc string) (start, end int64) {
 		end = temp
 	}
 
-	logUtils.PrintTo(
-		fmt.Sprintf("From %s to %s",
-			time.Unix(start, 0).Format("2006-01-02 15:04:05"),
-			time.Unix(end, 0).Format("2006-01-02 15:04:05")))
+	//logUtils.PrintTo(
+	//	fmt.Sprintf("From %s to %s",
+	//		time.Unix(start, 0).Format("2006-01-02 15:04:05"),
+	//		time.Unix(end, 0).Format("2006-01-02 15:04:05")))
 
 	return
 }

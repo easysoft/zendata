@@ -17,8 +17,7 @@
 
       <a-row v-if="refer.type && refer.type!='value'" :gutter="colsFull">
           <a-form-model-item :label="$t('form.file')" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-select v-model="refer.file" @change="onReferFileChanged">
-              <a-select-option value="">{{$t('tips.pls.select')}}</a-select-option>
+            <a-select v-model="referFiles" @change="onReferFileChanged" mode="multiple">
               <a-select-option v-for="(f, i) in files" :value="f.referName" :key="i">
                 <span v-if="refer.type != 'excel'">{{ f.title }}</span>
                 <span v-if="refer.type == 'excel'">{{ f.referName }}</span>
@@ -116,6 +115,7 @@ export default {
       wrapperColHalf: wrapperColHalf,
 
       refer: {},
+      referFiles: [], // for range's multi values
       rules: {
       },
 
@@ -173,6 +173,7 @@ export default {
       getRefer(this.model.id, this.type).then(json => {
         console.log('getRefer', json)
         this.refer = json.data
+        this.referFiles = this.refer.file.split(',')
 
         this.removeSheet()
         this.listReferFileForSelection(this.refer.type, true)
@@ -212,6 +213,8 @@ export default {
           return
         }
 
+        this.refer.file = this.referFiles.join(',')
+
         let data = JSON.parse(JSON.stringify(this.refer))
         if (data.type === 'excel') data.file = data.file + '.' + data.sheet
 
@@ -241,6 +244,7 @@ export default {
             this.listReferResFieldForSelection(init)
           }
         } else {
+          this.referFiles = []
           this.refer.file = ''
           this.refer.sheet = ''
           this.refer.colName = ''

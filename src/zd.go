@@ -34,6 +34,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 )
 
 var (
@@ -201,6 +202,11 @@ func main() {
 }
 
 func toGen() {
+	tmStart := time.Now()
+	if vari.Verbose {
+		logUtils.PrintTo(fmt.Sprintf("Start at %s", tmStart.Format("2006-01-02 15:04:05")))
+	}
+
 	if vari.RunMode == constant.RunModeServer {
 		vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + constant.PthSep
 		err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
@@ -246,6 +252,14 @@ func toGen() {
 		}
 
 		action.Generate(defaultFile, configFile, fields, format, table)
+	}
+
+	tmEnd := time.Now()
+	if vari.Verbose {
+		logUtils.PrintTo(fmt.Sprintf("End at %s", tmEnd.Format("2006-01-02 15:04:05")))
+
+		dur := tmStart.Unix() - tmEnd.Unix()
+		logUtils.PrintTo(fmt.Sprintf("Duriation %d", dur))
 	}
 }
 

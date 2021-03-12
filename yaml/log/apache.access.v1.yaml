@@ -1,0 +1,44 @@
+title: test
+desc: Apache访问日志 # 127.0.0.1 - - [10/Jan/2021:14:02:05 +0800] "GET /index.php HTTP/1.1" 200 1404 "-" "<AGENT>"
+version: 1.0
+
+field: logs
+instances:
+  - instance: log
+    fields:
+    - field: host
+      from: ip.v2.yaml
+      use: ipC{10},ipB{10},ipA{10}
+      postfix: " - - "
+
+    - field: date time
+      range: "(-1W):60"        # 支持当前时间的运算，Y、M、D、W、h、m、s分别对应年、月、日、周、时、分、秒。
+      type: timestamp          #    月份、星期几的长、短格式，可用January、Jan、Monday、Mon字符串。
+      format: "DD/Jan/YYYY:hh:mm:ss"
+      prefix: "["
+      postfix: " +0800] "
+
+    - field: request uri
+      range: uri.txt:R
+      prefix: '"GET /'
+      postfix: ' HTTP/1.1" '
+
+    - field: response code
+      range: 200{50},404,500
+      postfix: " "
+      rand: true
+
+    - field: request size
+      range: 100-1900:R{3},10000-99999{10}
+      postfix: " "
+      rand: true
+
+    - field: request-size
+      range: []{8},["-"] # 空或-
+      postfix: " "
+      rand: true
+
+    - field: agent
+      range: agent.txt:R
+      prefix: '"'
+      postfix: '"'
