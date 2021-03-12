@@ -51,8 +51,8 @@ const locale = {
   'msg.instances': 'Instances',
   'msg.excel': 'Excel',
   'msg.excel.sheet': 'Excel Sheet',
-  'msg.text': 'Text',
-  'msg.exec': 'Execution',
+  'msg.text': 'Text Content',
+  'msg.exec': 'Yaml Result',
   'msg.file': 'File',
 
   'msg.design.title': 'TestData Design',

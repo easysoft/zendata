@@ -46,13 +46,13 @@ const locale = {
   'msg.no': '否',
 
   'msg.data': '数据',
-  'msg.config': '字段',
+  'msg.config': '配置',
   'msg.ranges': '序列',
   'msg.instances': '实例',
   'msg.excel': 'Excel',
   'msg.excel.sheet': 'Excel表格',
-  'msg.text': '文本',
-  'msg.exec': '执行',
+  'msg.text': '文本内容',
+  'msg.exec': 'Yaml结果',
   'msg.file': '文件',
 
   'msg.design.title': '测试数据设计',

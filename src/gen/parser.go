@@ -83,41 +83,29 @@ func ParseDesc(desc string) (items []string) {
                         step   =>1
                         repeat =>2
 */
-func ParseRangeSection(item string) (entry string, step string, repeat int, repeatTag string) {
-	item = strings.TrimSpace(item)
+func ParseRangeSection(rang string) (entry string, step string, repeat int, repeatTag string) {
+	rang = strings.TrimSpace(rang)
 
-	if item == "" {
+	if rang == "" {
 		repeat = 1
 		return
 	}
 
-	runeArr := []rune(item)
+	runeArr := []rune(rang)
 	if (runeArr[0] == constant.Backtick && runeArr[len(runeArr)-1] == constant.Backtick) || // `xxx`
 		(string(runeArr[0]) == string(constant.LeftBrackets) && // (xxx)
 			string(runeArr[len(runeArr)-1]) == string(constant.RightBrackets)) {
 
-		entry = item
+		entry = rang
 		if repeat == 0 {
 			repeat = 1
 		}
 		return
 	}
 
-	regx := regexp.MustCompile(`\{(.*)!?\}`)
-	arr := regx.FindStringSubmatch(item)
-	tag := ""
-	if len(arr) == 2 {
-		str := strings.TrimSpace(arr[1])
-		if str[len(str)-1:] == "!" {
-			tag = str[len(str)-1:]
-			str = strings.TrimSpace(str[:len(str)-1])
-		}
-		repeat, _ = strconv.Atoi(str)
-	}
-	repeatTag = tag
-	itemWithoutRepeat := regx.ReplaceAllString(item, "")
+	repeat, repeatTag, rangWithoutRepeat := ParseRepeat(rang)
 
-	sectionArr := strings.Split(itemWithoutRepeat, ":")
+	sectionArr := strings.Split(rangWithoutRepeat, ":")
 	entry = sectionArr[0]
 	if len(sectionArr) == 2 {
 		step = strings.TrimSpace(strings.ToLower(sectionArr[1]))
@@ -127,7 +115,7 @@ func ParseRangeSection(item string) (entry string, step string, repeat int, repe
 		pattern := "\\d+"
 		isNum, _ := regexp.MatchString(pattern, step)
 		if !isNum && step != "r" {
-			entry = item
+			entry = rang
 			step = ""
 		}
 	}
@@ -254,4 +242,24 @@ func isCharOrNumberScope(str string) bool {
 	}
 
 	return false
+}
+
+func ParseRepeat(rang string) (repeat int, repeatTag, rangeWithoutRepeat string) {
+	repeat = 1
+
+	regx := regexp.MustCompile(`\{(.*)!?\}`)
+	arr := regx.FindStringSubmatch(rang)
+	tag := ""
+	if len(arr) == 2 {
+		str := strings.TrimSpace(arr[1])
+		if str[len(str)-1:] == "!" {
+			tag = str[len(str)-1:]
+			str = strings.TrimSpace(str[:len(str)-1])
+		}
+		repeat, _ = strconv.Atoi(str)
+	}
+	repeatTag = tag
+	rangeWithoutRepeat = regx.ReplaceAllString(rang, "")
+
+	return
 }

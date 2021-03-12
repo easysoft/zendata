@@ -7,9 +7,9 @@
             <a-select-option value="config">{{$t('msg.config')}}</a-select-option>
             <a-select-option value="ranges">{{$t('msg.ranges')}}</a-select-option>
             <a-select-option value="instances">{{$t('msg.instances')}}</a-select-option>
-            <a-select-option value="yaml">{{$t('msg.exec')}}</a-select-option>
             <a-select-option value="excel">{{$t('msg.excel')}}</a-select-option>
             <a-select-option value="text">{{$t('msg.text')}}</a-select-option>
+            <a-select-option value="yaml">{{$t('msg.exec')}}</a-select-option>
             <a-select-option value="value">{{$t('form.expr')}}</a-select-option>
           </a-select>
         </a-form-model-item>
@@ -181,6 +181,9 @@ export default {
 
     onReferTypeChanged() {
       console.log('onReferTypeChanged')
+      if (this.refer.type === 'text') {
+        this.refer.step = 1
+      }
       this.listReferFileForSelection(this.refer.type, false)
     },
     onReferFileChanged() {

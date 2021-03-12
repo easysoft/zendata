@@ -1,9 +1,9 @@
 fields:
   - field: first
-    range: 16_from_instance.yaml{10}
+    range: 16_from_instance.yaml{10}  # 注意此处{10}为取10条记录，非重复语法。
     prefix: "From 16.yaml\t"
     postfix: "\t|\t"
 
   - field: second
-    range: 17_from_excel.yaml{5}
+    range: 17_from_excel.yaml{5}      # 注意此处{5}为取5条记录，非重复语法。
     prefix: "From 17.yaml: \t"

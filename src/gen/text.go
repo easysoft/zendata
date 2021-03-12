@@ -18,8 +18,10 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 	ranges := strings.Split(strings.TrimSpace(field.Range), ",")
 	for _, rang := range ranges {
 		rang = strings.TrimSpace(rang)
+		repeat, repeatTag, rangWithoutRepeat := ParseRepeat(rang)
+
 		// get file and step string
-		sectionArr := strings.Split(rang, ":")
+		sectionArr := strings.Split(rangWithoutRepeat, ":")
 		file := sectionArr[0]
 		stepStr := "1"
 		if len(sectionArr) == 2 {
@@ -59,20 +61,50 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 
 		// get index for data retrieve
 		numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1, "")
-		// get data by index
-		index := 0
-		for _, numb := range numbs {
-			item := list[numb.(int64)]
+		// gen data by index
+		count := 0
+		if repeatTag == "" {
+			for _, numb := range numbs {
+				item := list[numb.(int64)]
+				if strings.TrimSpace(item) == "" { // ignore empty line
+					continue
+				}
 
-			if index >= constant.MaxNumb {
-				break
-			}
-			if strings.TrimSpace(item) == "" {
-				continue
-			}
+				for i := 0; i < repeat; i++ {
+					fieldValue.Values = append(fieldValue.Values, item)
 
-			fieldValue.Values = append(fieldValue.Values, item)
-			index = index + 1
+					count++
+					if count >= constant.MaxNumb {
+						break
+					}
+				}
+
+				count++
+				if count >= constant.MaxNumb {
+					break
+				}
+			}
+		} else if repeatTag == "!" {
+			for i := 0; i < repeat; i++ {
+				for _, numb := range numbs {
+					item := list[numb.(int64)]
+					if strings.TrimSpace(item) == "" { // ignore empty line
+						continue
+					}
+
+					fieldValue.Values = append(fieldValue.Values, item)
+
+					count++
+					if count >= constant.MaxNumb {
+						break
+					}
+				}
+
+				count++
+				if count >= constant.MaxNumb {
+					break
+				}
+			}
 		}
 	}
 
