@@ -258,7 +258,7 @@ func toGen() {
 	if vari.Verbose {
 		logUtils.PrintTo(fmt.Sprintf("End at %s", tmEnd.Format("2006-01-02 15:04:05")))
 
-		dur := tmStart.Unix() - tmEnd.Unix()
+		dur := tmEnd.Unix() - tmStart.Unix()
 		logUtils.PrintTo(fmt.Sprintf("Duriation %d", dur))
 	}
 }

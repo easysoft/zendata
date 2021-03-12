@@ -14,10 +14,10 @@ BIN_MAC=${BIN_OUT}mac/${BINARY}/
 
 default: update_version_in_config gen_version_file compile_ui prepare_res compile_all copy_files package
 
-win64: update_version_in_config gen_version_file compile_ui prepare_res compile_win64 copy_files package
-win32: update_version_in_config gen_version_file compile_ui prepare_res compile_win32 copy_files package
-linux: update_version_in_config gen_version_file compile_ui prepare_res compile_linux copy_files package
-mac: update_version_in_config gen_version_file compile_ui prepare_res compile_mac copy_files package
+win64: update_version_in_config gen_version_file prepare_res compile_win64 copy_files package
+win32: update_version_in_config gen_version_file prepare_res compile_win32 copy_files package
+linux: update_version_in_config gen_version_file prepare_res compile_linux copy_files package
+mac: update_version_in_config gen_version_file prepare_res compile_mac copy_files package
 upload: upload_to
 
 prepare_res:
