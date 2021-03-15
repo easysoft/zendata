@@ -45,17 +45,26 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 	// deal with refer
 	if refer.Type != "" {
 		logUtils.PrintTo(refer.Type)
+
 		if refer.Type == "excel" {
 			field.From = refer.File
 			field.Select = refer.ColName
 			field.Where = refer.Condition
 
 		} else if refer.Type == constant.ResTypeRanges || refer.Type == constant.ResTypeInstances { // medium{2}
-			field.From = refer.File
-			field.Use = refer.ColName
-			if refer.Count > 0 {
-				field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
+			arr := strings.Split(refer.ColName, ",")
+			arrNew := make([]string, 0)
+
+			for _, item := range arr {
+				if refer.Count > 0 {
+					item = fmt.Sprintf("%s{%d}", item, refer.Count)
+				}
+
+				arrNew = append(arrNew, item)
 			}
+
+			field.From = refer.File
+			field.Use = strings.Join(arrNew, ",")
 
 		} else if refer.Type == constant.ResTypeYaml { // dir/content.yaml{3}
 			arr := strings.Split(refer.File, ",")

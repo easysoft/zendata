@@ -290,7 +290,6 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 		}
 
 	} else if field.Range != "" {
-
 		rangeSections := gen.ParseRangeProperty(field.Range)
 		if len(rangeSections) > 0 {
 			rangeSection := rangeSections[0]                                   // deal with yaml and text refer using range prop

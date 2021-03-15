@@ -39,8 +39,7 @@
 
       <a-row v-if="showColSection" :gutter="colsFull">
         <a-form-model-item :label="$t('form.col')" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-           <a-select v-model="refer.colName">
-              <a-select-option value="">{{$t('tips.pls.select')}}</a-select-option>
+           <a-select v-model="referColNames" :mode="fieldMultiple">
               <a-select-option v-for="f in fields" :key="f.name">
                 {{ f.name }}
               </a-select-option>
@@ -116,6 +115,7 @@ export default {
 
       refer: {},
       referFiles: [], // for range's multi values
+      referColNames: [], // for ranges and instances refer to multi values
       rules: {
       },
 
@@ -159,6 +159,13 @@ export default {
       } else {
         return ''
       }
+    },
+    fieldMultiple() {
+      if (this.refer.type === 'ranges' || this.refer.type === 'instances') {
+        return 'multiple'
+      } else {
+        return ''
+      }
     }
   },
   created () {
@@ -180,8 +187,11 @@ export default {
       getRefer(this.model.id, this.type).then(json => {
         console.log('getRefer', json)
         this.refer = json.data
-        this.referFiles = this.refer.file.split(',').map((fi) => {
-          return fi.split(':')[0]
+        this.referFiles = this.refer.file.split(',').map((file) => {
+          return file.split(':')[0]
+        })
+        this.referColNames = this.refer.colName.split(',').map((col) => {
+          return col.split(':')[0]
         })
 
         this.removeSheet()
@@ -223,18 +233,16 @@ export default {
         }
 
         if (this.refer.type == 'text' || this.refer.type == 'yaml') {
-          // const temp = this.referFiles.map((fi) => {
-          //   if (this.refer.rand) {
-          //     fi += ':R'
-          //   } else if (this.refer.step > 1) {
-          //     fi += ':' + this.refer.step
-          //   }
-          //   return fi
-          // })
           this.refer.file = this.referFiles.join(',')
+          this.refer.colName = this.referColNames
           console.log(this.refer.file)
+        } else if (this.refer.type == 'ranges' || this.refer.type == 'instances') {
+          this.refer.colName = this.referColNames.join(',')
+          this.refer.file = this.referFiles
+          console.log(this.refer.colName)
         } else {
           this.refer.file = this.referFiles
+          this.refer.colName = this.referColNames
         }
 
         let data = JSON.parse(JSON.stringify(this.refer))
@@ -273,6 +281,7 @@ export default {
           }
         } else {
           this.referFiles = []
+          this.referColNames = []
           this.refer.file = ''
           this.refer.sheet = ''
           this.refer.colName = ''
