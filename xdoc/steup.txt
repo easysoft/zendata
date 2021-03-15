@@ -1,3 +1,21 @@
 go run src/zd.go -y demo/article.yaml -c 3 -head -s
 
 rsrc -manifest xdoc/main.exe.manifest -ico xdoc/fav.ico -o zd.syso
+
+
+生成数据的地方：
+    随机数生成：
+        实现：
+            gen/helper/rand.go 统一生成随机数，在最后的数据打印时，替换占位巢。
+        调用：
+            Print -> replacePlaceholder -> getValForPlaceholder -> helper.GetRandFromRange
+
+    非随机数生成：
+        实现：
+            GenerateIntItems -> generateIntItemsByStep | generateIntItemsRand
+            GenerateFloatItems -> generateFloatItemsByStep | generateFloatItemsRand
+            GenerateByteItems -> generateByteItemsByStep | generateByteItemsRand
+
+        调用：toGen -> Generate | CreateValuesFromYaml -> GenerateOnTopLevel
+             -> GenerateFieldValuesForDef -> CreateField -> CreateListField
+             -> CreateListFieldValues -> CreateFieldValuesFromList -> CreateValuesFromInterval
