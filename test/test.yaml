@@ -2,11 +2,19 @@ title: test
 desc: 描述
 version: 1.0
 fields:
+  - field: field1
+    range: 1-3:R{2},a-z:R{3}
+    postfix: "\t"
+
+#  - field: field2
+#    range: 1001-9999
+#    postfix: ""
+
 #  - field: refer_text
 #    range: res/num.txt{2!}, ../demo/user.txt:R
 #    postfix: "\t"
 
-  - field: refer_content
-    range: ../demo/15_from_range.yaml{3}, ../demo/16_from_instance.yaml{10}
-    prefix: ""
-    postfix: "\t"
+#  - field: refer_content
+#    range: ../demo/15_from_range.yaml{3}, ../demo/16_from_instance.yaml{10}
+#    prefix: ""
+#    postfix: "\t"

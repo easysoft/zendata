@@ -17,7 +17,7 @@
 
       <a-row v-if="refer.type && refer.type!='value'" :gutter="colsFull">
           <a-form-model-item :label="$t('form.file')" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-select v-model="referFiles" @change="onReferFileChanged" mode="multiple">
+            <a-select v-model="referFiles" @change="onReferFileChanged" :mode="fileMultiple">
               <a-select-option v-for="(f, i) in files" :value="f.referName" :key="i">
                 <span v-if="refer.type != 'excel'">{{ f.title }}</span>
                 <span v-if="refer.type == 'excel'">{{ f.referName }}</span>
@@ -152,6 +152,13 @@ export default {
     },
     showColSection() {
       return this.refer.type === 'ranges' || this.refer.type === 'instances' || this.refer.type === 'excel'
+    },
+    fileMultiple() {
+      if (this.refer.type === 'text' || this.refer.type === 'yaml') {
+        return 'multiple'
+      } else {
+        return ''
+      }
     }
   },
   created () {
@@ -173,7 +180,9 @@ export default {
       getRefer(this.model.id, this.type).then(json => {
         console.log('getRefer', json)
         this.refer = json.data
-        this.referFiles = this.refer.file.split(',')
+        this.referFiles = this.refer.file.split(',').map((fi) => {
+          return fi.split(':')[0]
+        })
 
         this.removeSheet()
         this.listReferFileForSelection(this.refer.type, true)
@@ -213,7 +222,20 @@ export default {
           return
         }
 
-        this.refer.file = this.referFiles.join(',')
+        if (this.refer.type == 'text' || this.refer.type == 'yaml') {
+          // const temp = this.referFiles.map((fi) => {
+          //   if (this.refer.rand) {
+          //     fi += ':R'
+          //   } else if (this.refer.step > 1) {
+          //     fi += ':' + this.refer.step
+          //   }
+          //   return fi
+          // })
+          this.refer.file = this.referFiles.join(',')
+          console.log(this.refer.file)
+        } else {
+          this.refer.file = this.referFiles
+        }
 
         let data = JSON.parse(JSON.stringify(this.refer))
         if (data.type === 'excel') data.file = data.file + '.' + data.sheet
@@ -222,6 +244,12 @@ export default {
         data.step = parseInt(data.step)
         updateRefer(data, this.type).then(json => {
           console.log('updateRefer', json)
+          if (json.code == 1) {
+            this.$notification['success']({
+              message: this.$i18n.t('tips.success.to.submit'),
+              duration: 3,
+            });
+          }
         })
       })
     },
@@ -281,8 +309,9 @@ export default {
         })
 
       } else if (this.refer.type != 'value') {
+        console.log(this.files, this.referFiles)
         this.files.forEach((fi) => {
-          if (fi.referName === this.refer.file) id = fi.id
+          if (fi.referName === this.referFiles) id = fi.id
         })
 
         listReferResFieldForSelection(id, this.refer.type).then(json => {

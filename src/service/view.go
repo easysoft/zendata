@@ -14,23 +14,20 @@ import (
 	"strings"
 )
 
-func ViewData(res string) {
+func View(res string) {
 	resPath, resType, sheet := fileUtils.GetResProp(res, vari.WorkDir)
-	View(resPath, resType, sheet)
-}
+	if resPath == "" || resType == "" {
+		resPath, resType, sheet = fileUtils.GetResProp(res, vari.ZdPath)
+	}
 
-func ViewRes(res string) {
-	resPath, resType, sheet := fileUtils.GetResProp(res, vari.ZdPath)
-	View(resPath, resType, sheet)
-}
-
-func View(resPath, resType, sheet string) {
 	if resType == "yaml" {
 		typ, inst, ranges := ReadYamlData(resPath)
-		if typ == "inst" {
+		if typ == "inst" && inst.Instances != nil {
 			printInst(inst)
-		} else if typ == "range" {
+		} else if typ == "range" && ranges.Ranges != nil {
 			printRanges(ranges)
+		} else { // common yaml file, print tips
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("print_common_yaml_file", res))
 		}
 	} else if resType == "excel" {
 		printExcelSheet(resPath, sheet)
@@ -101,7 +98,6 @@ func printRanges(ranges model.ResRanges) {
 	}
 
 	logUtils.PrintTo(msg)
-
 }
 
 func printExcelSheet(path, sheetName string) {

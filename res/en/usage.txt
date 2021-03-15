@@ -30,8 +30,7 @@ Parameters:
 
   -l  --list       List user's data in current dir.
   -L               List build-in data in ZenData install dir.
-  -v  --view       View detailed definition of a data format in current dir.
-  -V               View detailed definition of a data format in ZenData install dir.
+  -v  --view       View detailed definition of a data or resource format.
   -h  --help       Print help.
   -e  --example    Print the data format config file of the example.
 

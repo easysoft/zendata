@@ -79,6 +79,7 @@ const locale = {
   'tips.delete': '确认删除？',
   'tips.search': '输入关键字搜索',
   'tips.success.to.import': '成功导入数据。',
+  'tips.success.to.submit': '提交成功。',
   'tips.zero': '0表示取所有记录',
   'tips.expr': '请输入数学运算表达式，由相同文件中的字段组成，如 "($field_step_negative * $field_nested_range) * -1 + 1000"。',
 

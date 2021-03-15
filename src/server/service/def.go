@@ -56,6 +56,7 @@ func (s *DefService) Save(def *model.ZdDef) (err error) {
 }
 
 func (s *DefService) Create(def *model.ZdDef) (err error) {
+	def.ReferName = service.PathToName(def.Path, constant.ResDirUsers, def.Type)
 	err = s.defRepo.Create(def)
 
 	// add root field node
@@ -76,6 +77,7 @@ func (s *DefService) Update(def *model.ZdDef) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
+	def.ReferName = service.PathToName(def.Path, constant.ResDirUsers, def.Type)
 	err = s.defRepo.Update(def)
 
 	return

@@ -50,23 +50,45 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 			field.Select = refer.ColName
 			field.Where = refer.Condition
 
-		} else if refer.Type == constant.ResTypeRanges { // medium{2}
+		} else if refer.Type == constant.ResTypeRanges || refer.Type == constant.ResTypeInstances { // medium{2}
 			field.From = refer.File
-			field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
-
-		} else if refer.Type == constant.ResTypeInstances { // privateC{2}
-			field.From = refer.File
-			field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
+			field.Use = refer.ColName
+			if refer.Count > 0 {
+				field.Use = fmt.Sprintf("%s{%d}", refer.ColName, refer.Count)
+			}
 
 		} else if refer.Type == constant.ResTypeYaml { // dir/content.yaml{3}
-			field.Range = fmt.Sprintf("%s{%d}", refer.File, refer.Count)
+			arr := strings.Split(refer.File, ",")
+			arrNew := make([]string, 0)
+			for _, item := range arr {
+				if refer.Count > 0 {
+					item = fmt.Sprintf("%s{%d}", item, refer.Count)
+				}
 
-		} else if refer.Type == constant.ResTypeText { // dir/users.txt:2
-			field.Range = fmt.Sprintf("%s:%d", refer.File, refer.Step)
+				arrNew = append(arrNew, item)
+			}
+			field.Range = strings.Join(arrNew, ",")
+
+		} else if refer.Type == constant.ResTypeText { // dir/users.txt:2,dir/file.txt:3
+			arr := strings.Split(refer.File, ",")
+			arrNew := make([]string, 0)
+			for _, item := range arr {
+				if refer.Rand {
+					item = fmt.Sprintf("%s:R", item)
+				} else if refer.Step > 1 {
+					item = fmt.Sprintf("%s:%d", item, refer.Step)
+				}
+
+				arrNew = append(arrNew, item)
+			}
+			field.Range = strings.Join(arrNew, ",")
+
 		} else if refer.Type == constant.ResTypeConfig { // dir/users.txt:2
 			field.Config = fmt.Sprintf("%s", refer.File)
-		} else if refer.Type == constant.ResTypeValue { // dir/users.txt:2
+
+		} else if refer.Type == constant.ResTypeValue { //
 			field.Value = fmt.Sprintf("%s", refer.Value)
+
 		}
 	}
 }

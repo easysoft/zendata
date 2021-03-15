@@ -13,7 +13,7 @@ instances:
 
     - field: date time
       range: "(-1W):60"        # 支持当前时间的运算，Y、M、D、W、h、m、s分别对应年、月、日、周、时、分、秒。
-      type: timestamp          #    月份、星期几的长、短格式，可用January、Jan、Monday、Mon字符串。
+      type: timestamp          #   月份和星期几的长、短格式，可分别用January、Jan和Monday、Mon来表达，如YY/Jan​/DD。
       format: "DD/Jan/YYYY:hh:mm:ss"
       prefix: "["
       postfix: " +0800] "
@@ -29,7 +29,7 @@ instances:
       rand: true
 
     - field: request size
-      range: 100-1900:R{3},10000-99999{10}
+      range: 100-9900:R
       postfix: " "
       rand: true
 

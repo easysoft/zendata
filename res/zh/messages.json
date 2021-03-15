@@ -213,6 +213,10 @@
     {
       "id": "root_invalid",
       "translation": "ZenData资源路径%s错误。"
+    },
+    {
+      "id": "print_common_yaml_file",
+      "translation": "文件%s是一个普通的数据定义文件，请执行数据生成命令来查看内容。"
     }
   ]
 }

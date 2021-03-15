@@ -32,6 +32,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 		lineForText := ""
 
 		for j, col := range cols {
+			// 3. random replacement
 			col = replacePlaceholder(col)
 			field := vari.TopFieldMap[fields[j]]
 			if field.Length > runewidth.StringWidth(col) {
@@ -168,10 +169,10 @@ func replacePlaceholder(col string) string {
 	ret := col
 
 	re := regexp.MustCompile("(?siU)\\${(.*)}")
-	arr := re.FindAllStringSubmatch(col, -1)
+	matchResultArr := re.FindAllStringSubmatch(col, -1)
 
 	strForReplaceMap := map[string][]string{}
-	for _, childArr := range arr {
+	for _, childArr := range matchResultArr {
 		placeholderStr := childArr[1]
 		strForReplaceMap[placeholderStr] = getValForPlaceholder(placeholderStr, len(childArr))
 

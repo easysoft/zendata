@@ -79,6 +79,7 @@ const locale = {
   'tips.delete': 'Are you sure to delete?',
   'tips.search': 'Input keywords to search',
   'tips.success.to.import': 'Success to import.',
+  'tips.success.to.submit': 'Success to submit.',
   'tips.zero': '0 means retrieve all records.',
   'tips.expr': 'You use a expression like "($field_step_negative * $field_nested_range) * -1 + 1000".',
 

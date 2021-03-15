@@ -220,8 +220,8 @@ func ConvertReferRangeToPath(file, currFile string) (path string) {
 	return
 }
 
-func ConvertResYamlPath(from, dir string) (ret string) {
-	pth := namedFileExistInDir(from, dir)
+func ConvertResYamlPath(from, workDir string) (ret string) {
+	pth := namedFileExistInDir(from, workDir)
 	if pth != "" {
 		ret = pth
 		return
@@ -242,9 +242,13 @@ func ConvertResYamlPath(from, dir string) (ret string) {
 			relatPath = file
 		}
 
+		realPth0 := path.Join(workDir, relatPath)
 		realPth1 := vari.ZdPath + constant.ResDirYaml + constant.PthSep + relatPath
 		realPth2 := vari.ZdPath + constant.ResDirUsers + constant.PthSep + relatPath
-		if FileExist(realPth1) {
+		if FileExist(realPth0) {
+			ret = realPth0
+			break
+		} else if FileExist(realPth1) {
 			ret = realPth1
 			break
 		} else if FileExist(realPth2) {

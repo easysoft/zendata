@@ -54,8 +54,7 @@ var (
 
 	listData bool
 	listRes  bool
-	viewData string
-	viewRes  string
+	view     string
 	md5      string
 
 	example bool
@@ -101,9 +100,8 @@ func main() {
 	flagSet.BoolVar(&listData, "list", false, "")
 	flagSet.BoolVar(&listRes, "L", false, "")
 
-	flagSet.StringVar(&viewData, "v", "", "")
-	flagSet.StringVar(&viewData, "view", "", "")
-	flagSet.StringVar(&viewRes, "V", "", "")
+	flagSet.StringVar(&view, "v", "", "")
+	flagSet.StringVar(&view, "view", "", "")
 
 	flagSet.StringVar(&md5, "md5", "", "")
 
@@ -171,11 +169,8 @@ func main() {
 			} else if listRes {
 				service.ListRes()
 				return
-			} else if viewData != "" {
-				service.ViewData(viewData)
-				return
-			} else if viewRes != "" {
-				service.ViewRes(viewRes)
+			} else if view != "" {
+				service.View(view)
 				return
 			} else if md5 != "" {
 				service.AddMd5(md5)

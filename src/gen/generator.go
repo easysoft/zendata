@@ -222,13 +222,21 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		values = append(values, val)
 
 		count++
+
+		// 2. random replacement
 		isRandomAndLoopEnd := !vari.ResLoading && //  ignore rand in resource
 			!(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
+			for _, v := range fieldWithValues.Values {
+				values = append(values, v.(string))
+			}
 			break
 		}
 
+		if count >= vari.Total || count >= len(fieldWithValues.Values) {
+			break
+		}
 		(*field).LoopIndex = (*field).LoopIndex + 1
 		if (*field).LoopIndex > (*field).LoopEnd {
 			(*field).LoopIndex = (*field).LoopStart

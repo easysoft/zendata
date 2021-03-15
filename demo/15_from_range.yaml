@@ -41,7 +41,7 @@ fields:
 
   - field: field_length                 # 指定宽度。
     range: 1-99                         # 01\t,02\t,03\t..., 99\t
-    length: 3                           # 包含前后缀的宽度。
+    length: 3                           # 不包含前后缀的宽度。
     leftpad: 0                          # 宽度不够时，补充的字符。
     postfix: "\t"
 

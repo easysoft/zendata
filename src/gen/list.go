@@ -76,8 +76,9 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 	}
 }
 
-func CheckRangeType(startStr string, endStr string, stepStr string) (string, interface{}, int, bool) {
-	rand := false
+func CheckRangeType(startStr string, endStr string, stepStr string) (dataType string, step interface{}, precision int,
+	rand bool, count int) {
+	step = 1
 
 	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
 
@@ -88,7 +89,6 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 		_, errInt3 = strconv.ParseInt(stepStr, 0, 64)
 	}
 	if errInt1 == nil && errInt2 == nil && errInt3 == nil { // is int
-		var step interface{} = 1
 		if stepStr != "" && stepStr != "r" {
 			stepInt, errInt3 := strconv.Atoi(stepStr)
 			if errInt3 == nil {
@@ -101,7 +101,13 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 		if (int1 > int2 && step.(int) > 0) || (int1 < int2 && step.(int) < 0) {
 			step = -1 * step.(int)
 		}
-		return "int", step, 0, rand
+
+		dataType = "int"
+		count = (int)(int1-int2) / step.(int)
+		if count < 0 {
+			count = count * -1
+		}
+		return
 
 	} else {
 		float1, errFloat1 := strconv.ParseFloat(startStr, 64)
@@ -111,8 +117,6 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			_, errFloat3 = strconv.ParseFloat(stepStr, 64)
 		}
 		if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
-			var step interface{} = nil
-
 			if stepStr != "" && stepStr != "r" {
 				stepFloat, errFloat3 := strconv.ParseFloat(stepStr, 64)
 				if errFloat3 == nil {
@@ -124,7 +128,6 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 
 			precision1, step1 := GetPrecision(float1, step)
 			precision2, step2 := GetPrecision(float2, step)
-			precision := 0
 			if precision1 < precision2 {
 				precision = precision2
 				step = step2
@@ -136,10 +139,15 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 			if (float1 > float2 && step.(float64) > 0) || (float1 < float2 && step.(float64) < 0) {
 				step = -1 * step.(float64)
 			}
-			return "float", step, precision, rand
+
+			dataType = "float"
+			count = (int)(float1-float2) / step.(int)
+			if count < 0 {
+				count = count * -1
+			}
+			return
 
 		} else if len(startStr) == 1 && len(endStr) == 1 { // is char
-			var step interface{} = 1
 			if stepStr != "r" {
 				stepChar, errChar3 := strconv.Atoi(stepStr)
 				if errChar3 == nil {
@@ -153,11 +161,29 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (string, int
 				(strings.Compare(startStr, endStr) < 0 && step.(int) < 0) {
 				step = -1 * step.(int)
 			}
-			return "char", step, 0, rand
+
+			dataType = "char"
+
+			startChar := startStr[0]
+			endChar := endStr[0]
+
+			gap := 0
+			if endChar > startChar { // 负数转uint单独处理
+				gap = int(endChar - startChar)
+			} else {
+				gap = int(startChar - endChar)
+			}
+			count = gap / step.(int)
+			if count < 0 {
+				count = count * -1
+			}
+			return
 		}
 	}
 
-	return "string", 1, 0, false // is string
+	dataType = "string"
+	step = 1
+	return
 }
 
 func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
@@ -218,13 +244,19 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		endStr = elemArr[1]
 	}
 
-	dataType, step, precision, rand := CheckRangeType(startStr, endStr, stepStr)
+	dataType, step, precision, rand, count := CheckRangeType(startStr, endStr, stepStr)
 
+	// 1. random replacement
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
-		items = append(items, Placeholder(field.Path))
+		val := Placeholder(field.Path + "->" + desc)
+		strItems := make([]string, 0)
+		for i := 0; i < repeat*count; i++ {
+			items = append(items, val)
+			strItems = append(strItems, val)
+		}
 
-		mp := placeholderMapForRandValues(dataType, []string{}, startStr, endStr, stepStr, strconv.Itoa(precision), field.Format, repeatTag)
-		vari.RandFieldNameToValuesMap[field.Path] = mp
+		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, stepStr, strconv.Itoa(precision), field.Format, repeatTag)
+		vari.RandFieldNameToValuesMap[field.Path+"->"+desc] = mp
 
 		return
 	}
