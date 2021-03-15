@@ -2,6 +2,7 @@ package gen
 
 import (
 	"errors"
+	"fmt"
 	"github.com/easysoft/zendata/src/gen/helper"
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
@@ -223,7 +224,7 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
 			for _, v := range fieldWithValues.Values {
-				values = append(values, v.(string))
+				values = append(values, fmt.Sprintf("%v", v))
 			}
 			break
 		}

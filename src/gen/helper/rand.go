@@ -7,14 +7,13 @@ import (
 	"strings"
 )
 
-func GetRandFromList(list []string, repeatStr string, count int) []string {
+func GetRandFromList(list []string, repeat, count int) []string {
 	ret := make([]string, 0)
 
 	for i := 0; i < count; i++ {
 		rand := commonUtils.RandNum(len(list))
 		val := list[rand]
 
-		repeat, _ := strconv.Atoi(repeatStr)
 		items := make([]string, 0)
 		for round := 0; round < repeat; round++ {
 			items = append(items, val)
@@ -26,8 +25,7 @@ func GetRandFromList(list []string, repeatStr string, count int) []string {
 	return ret
 }
 
-func GetRandFromRange(dataType, start, end, step, repeatStr, repeatTag, precisionStr string, count int, format string) []string {
-	repeat, _ := strconv.Atoi(repeatStr)
+func GetRandFromRange(dataType, start, end, step string, repeat int, repeatTag, precisionStr string, count int, format string) []string {
 	precision, _ := strconv.Atoi(precisionStr)
 
 	ret := make([]string, 0)
@@ -63,8 +61,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, repeatTag, precisio
 				items = append(items, item)
 			}
 
-			temp := strings.Join(items, "")
-			ret = append(ret, temp)
+			ret = append(ret, items...)
 		}
 	} else if dataType == "char" {
 		startChar := start[0]
@@ -97,8 +94,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, repeatTag, precisio
 				items = append(items, item)
 			}
 
-			temp := strings.Join(items, "")
-			ret = append(ret, temp)
+			ret = append(ret, items...)
 		}
 
 	} else if dataType == "float" {
@@ -134,8 +130,7 @@ func GetRandFromRange(dataType, start, end, step, repeatStr, repeatTag, precisio
 				items = append(items, item)
 			}
 
-			temp := strings.Join(items, "")
-			ret = append(ret, temp)
+			ret = append(ret, items...)
 		}
 	}
 

@@ -170,13 +170,13 @@ func replacePlaceholder(col string) string {
 
 	re := regexp.MustCompile("(?siU)\\${(.*)}")
 	matchResultArr := re.FindAllStringSubmatch(col, -1)
+	matchTimes := len(matchResultArr)
 
-	strForReplaceMap := map[string][]string{}
 	for _, childArr := range matchResultArr {
 		placeholderStr := childArr[1]
-		strForReplaceMap[placeholderStr] = getValForPlaceholder(placeholderStr, len(childArr))
+		values := getValForPlaceholder(placeholderStr, matchTimes)
 
-		for _, str := range strForReplaceMap[placeholderStr] {
+		for _, str := range values {
 			temp := Placeholder(placeholderStr)
 			ret = strings.Replace(ret, temp, str, 1)
 		}
@@ -191,9 +191,9 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 	tp := mp["type"].(string)
 	repeatObj := mp["repeat"]
 
-	repeat := "1"
+	repeat := 1
 	if repeatObj != nil {
-		repeat = repeatObj.(string)
+		repeat = repeatObj.(int)
 	}
 
 	strs := make([]string, 0)
@@ -224,5 +224,6 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		strs = helper.GetRandFromList(list, repeat, count)
 	}
 
+	strs = strs[:count]
 	return strs
 }

@@ -20,7 +20,7 @@ func generateIntItemsByStep(start int64, end int64, step int, repeat int, repeat
 	if repeatTag == "" {
 		for i := 0; true; {
 			val := start + int64(i*step)
-			if (val > end && step > 0) || (val < end && step < 0) {
+			if (val >= end && step > 0) || (val <= end && step < 0) {
 				break
 			}
 
@@ -42,7 +42,7 @@ func generateIntItemsByStep(start int64, end int64, step int, repeat int, repeat
 		for round := 0; round < repeat; round++ {
 			for i := 0; true; {
 				val := start + int64(i*step)
-				if (val > end && step > 0) || (val < end && step < 0) {
+				if (val >= end && step > 0) || (val <= end && step < 0) {
 					break
 				}
 
@@ -66,7 +66,7 @@ func generateIntItemsByStep(start int64, end int64, step int, repeat int, repeat
 func generateIntItemsRand(start int64, end int64, step int, repeat int, repeatTag string) []interface{} {
 	arr := make([]interface{}, 0)
 
-	countInRound := (end-start)/int64(step) + 1
+	countInRound := (end - start) / int64(step)
 	total := 0
 
 	if repeatTag == "" {

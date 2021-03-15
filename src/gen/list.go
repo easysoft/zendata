@@ -6,6 +6,7 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -141,7 +142,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 			}
 
 			dataType = "float"
-			count = (int)(float1-float2) / step.(int)
+			count = int(math.Floor((float1-float2)/step.(float64) + 0/5))
 			if count < 0 {
 				count = count * -1
 			}
@@ -196,7 +197,8 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 
 	if field.Path != "" && stepStr == "r" {
 		items = append(items, Placeholder(field.Path))
-		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "", field.Format, repeatTag)
+		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "",
+			field.Format, repeat, repeatTag)
 
 		vari.RandFieldNameToValuesMap[field.Path] = mp
 		return
@@ -255,7 +257,8 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 			strItems = append(strItems, val)
 		}
 
-		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, stepStr, strconv.Itoa(precision), field.Format, repeatTag)
+		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, stepStr,
+			strconv.Itoa(precision), field.Format, repeat, repeatTag)
 		vari.RandFieldNameToValuesMap[field.Path+"->"+desc] = mp
 
 		return
@@ -329,7 +332,8 @@ func Placeholder(str string) string {
 	return "${" + str + "}"
 }
 
-func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string, repeatTag string) map[string]interface{} {
+func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string,
+	repeat int, repeatTag string) map[string]interface{} {
 	ret := map[string]interface{}{}
 
 	ret["type"] = tp
@@ -343,6 +347,8 @@ func placeholderMapForRandValues(tp string, list []string, start, end, step, pre
 	ret["step"] = step
 	ret["precision"] = precision
 	ret["format"] = format
+
+	ret["repeat"] = repeat
 	ret["repeatTag"] = repeatTag
 
 	return ret

@@ -1,6 +1,7 @@
 package gen
 
 import (
+	"fmt"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"strconv"
@@ -23,7 +24,9 @@ func generateFloatItemsByStep(start float64, end float64, step float64, precisio
 	if repeatTag == "" {
 		for i := 0; true; {
 			val := start + float64(i)*step
-			if (val > end && step > 0) || (val < end && step < 0) {
+			val = ChangePrecision(val, precision)
+
+			if (val >= end && step > 0) || (val <= end && step < 0) {
 				break
 			}
 
@@ -44,6 +47,8 @@ func generateFloatItemsByStep(start float64, end float64, step float64, precisio
 		for round := 0; round < repeat; round++ {
 			for i := 0; true; {
 				val := start + float64(i)*step
+				val = ChangePrecision(val, precision)
+
 				if (val > end && step > 0) || (val < end && step < 0) {
 					break
 				}
@@ -129,7 +134,14 @@ func GetPrecision(base float64, step interface{}) (precision int, newStep float6
 		step = flt
 	}
 	str1 := strconv.FormatFloat(base, 'f', -1, 64)
-	str2 := strconv.FormatFloat(step.(float64), 'f', -1, 64)
+	var stepFloat float64 = 1
+	switch step.(type) {
+	case float64:
+		stepFloat = step.(float64)
+	case int:
+		stepFloat = float64(step.(int))
+	}
+	str2 := strconv.FormatFloat(stepFloat, 'f', -1, 64)
 
 	index1 := strings.LastIndex(str1, ".")
 	index2 := strings.LastIndex(str2, ".")
@@ -146,7 +158,12 @@ func GetPrecision(base float64, step interface{}) (precision int, newStep float6
 			newStep = newStep / 10
 		}
 	} else {
-		newStep = step.(float64)
+		switch step.(type) {
+		case float64:
+			newStep = step.(float64)
+		case int:
+			newStep = float64(step.(int))
+		}
 	}
 
 	return
@@ -168,4 +185,10 @@ func InterfaceToStr(val interface{}) string {
 	default:
 	}
 	return str
+}
+
+func ChangePrecision(flt float64, precision int) float64 {
+	format := fmt.Sprintf("%%.%df", precision)
+	ret, _ := strconv.ParseFloat(fmt.Sprintf(format, flt), 64)
+	return ret
 }
