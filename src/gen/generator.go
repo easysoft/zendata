@@ -217,12 +217,6 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 	indexOfRow := 0
 	count := 0
 	for {
-		// 处理格式、前后缀、loop等
-		val := loopFieldValWithFix(field, fieldWithValues, &indexOfRow, true)
-		values = append(values, val)
-
-		count++
-
 		// 2. random replacement
 		isRandomAndLoopEnd := !vari.ResLoading && //  ignore rand in resource
 			!(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
@@ -233,6 +227,12 @@ func GenerateFieldValuesForDef(field *model.DefField) []string {
 			}
 			break
 		}
+
+		// 处理格式、前后缀、loop等
+		val := loopFieldValWithFix(field, fieldWithValues, &indexOfRow, true)
+		values = append(values, val)
+
+		count++
 
 		if count >= vari.Total || count >= len(fieldWithValues.Values) {
 			break
