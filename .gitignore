@@ -25,3 +25,5 @@
 /data/test/
 /test/out/
 /log-agent/
+/src/test/proto/person.pb.go
+/src/test/proto/gen/
