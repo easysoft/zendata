@@ -27,17 +27,17 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 	vari.ConfigFileDir = fileUtils.GetAbsDir(configFile)
 
 	vari.Def = LoadDataDef(defaultFile, configFile, fieldsToExport)
+
 	if len(vari.Def.Fields) == 0 {
 		err = errors.New("")
 		return
 	}
 
-	if vari.Total < 0 {
-		if vari.Def.Type == constant.ConfigTypeArticle {
-			vari.Total = 1
-		} else {
-			vari.Total = constant.DefaultNumber
-		}
+	if vari.Def.Type == constant.ConfigTypeArticle {
+		vari.Total = 1
+	}
+	if vari.Total == 0 {
+		vari.Total = constant.DefaultNumber
 	}
 
 	vari.ResLoading = true // not to use placeholder when loading res
@@ -128,7 +128,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 		}
 		values = loopFieldValues(field, unionValues, count, true)
 
-	} else if field.From != "" { // refer to res
+	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
 		if field.Use != "" { // refer to ranges or instance
 			groupValues := vari.Res[field.From]
 			groups := strings.Split(field.Use, ",")

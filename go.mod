@@ -13,7 +13,6 @@ require (
 	github.com/cjrd/allocate v0.0.0-20191115010018-022b87fe59fc // indirect
 	github.com/denisenkom/go-mssqldb v0.9.0 // indirect
 	github.com/elazarl/go-bindata-assetfs v1.0.1
-	github.com/emicklei/proto v1.9.0
 	github.com/emirpasic/gods v1.12.0
 	github.com/fatih/color v1.10.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
@@ -41,7 +40,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
-	github.com/srikrsna/protoc-gen-gotag v0.5.0 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/ugorji/go v1.1.13 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
@@ -50,7 +48,6 @@ require (
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sys v0.0.0-20210308170721-88b6017d0656 // indirect
-	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.62.0
 	gopkg.in/yaml.v2 v2.4.0

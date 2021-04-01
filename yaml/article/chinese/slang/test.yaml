@@ -1,0 +1,13 @@
+author: ZenData
+desc: Generated from yaml/article/chinese/jixuwen/01/jixuwen.txt
+from: words.v1
+title: 文章句子
+type: article
+version: ""
+
+fields:
+  - field: 2-1-2
+    limit: 1
+    prefix: 段落一：秋天的天气
+    rand: true
+    select: 形容词-天气-秋季-好

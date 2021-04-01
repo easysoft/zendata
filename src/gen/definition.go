@@ -50,6 +50,10 @@ func LoadDataDef(defaultFile, configFile string, fieldsToExport *[]string) model
 		return configDef
 	}
 
+	if configDef.Type == "article" && configDef.Content != "" {
+		convertArticleContent(&configDef)
+	}
+
 	mergerDefine(&defaultDef, &configDef, fieldsToExport)
 	orderFields(&defaultDef, *fieldsToExport)
 
@@ -61,6 +65,15 @@ func LoadDataDef(defaultFile, configFile string, fieldsToExport *[]string) model
 	}
 
 	return defaultDef
+}
+
+func convertArticleContent(config *model.DefData) {
+	field := model.DefField{}
+	field.Type = config.Type
+	field.From = config.From
+	field.Range = "`" + config.Content + "`"
+
+	config.Fields = append(config.Fields, field)
 }
 
 func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string) {
@@ -81,6 +94,9 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 		vari.Type = constant.ConfigTypeText
 	}
 
+	if configDef.Content != "" && defaultDef.Content == "" {
+		defaultDef.Content = configDef.Content
+	}
 	if configDef.From != "" && defaultDef.From == "" {
 		defaultDef.From = configDef.From
 	}

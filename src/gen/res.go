@@ -50,7 +50,7 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 			loadResForField(&child, res)
 		}
 
-	} else if field.From != "" { // refer to res
+	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
 		var valueMap map[string][]string
 		resFile, resType, sheet := fileUtils.GetResProp(field.From, field.FileDir) // relate to current file
 		valueMap, _ = getResValue(resFile, resType, sheet, field)

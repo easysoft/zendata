@@ -1,0 +1,21 @@
+author: ZenData
+from: words.v1
+title: 互联网黑话
+type: article
+version: 1.1
+
+content: |
+  # n=黑话名词
+  # v=黑话动词
+
+  <html>
+    <head><title>黑话连篇</title></head>
+    <body>
+      <h1>第一篇</h1>
+      <div>
+        {n}是{v}{n}，{v}行业{n}。{n}是{v}{n}{n}，通过{n}和{n}达到{n}。
+        {n}是在{n}采用{n}打法达成{n}。{n}{n}作为{n}为产品赋能，{n}作为{n}的评判标准。
+        亮点是{黑话名词}，优势是{n}。{v}整个{n}，{v}{n}{v}{n}。{n}是{n}达到{n}标准。
+      </div>
+    </body>
+  </html>

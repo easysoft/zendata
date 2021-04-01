@@ -1,24 +1,25 @@
-syntax = "proto3"; //版本号
+syntax = "proto3";
 
-option go_package = "main"; //包名
+option go_package = "dist";
 
-import "tagger/tagger.proto";
-
-enum Enum { //枚举
-  Class1 = 0;   //标号 必须从 0开始
-  Class2 = 1;
-  Class3 = 2;
+enum Gender {
+  M = 0;
+  F = 1;
 }
 
-message Person { //消息，对应于Go的结构体
-  string Name = 1; //1:标号，唯一 即可（相当于数据库中的Id，不一定要从1 ，2的顺序依次排列。）
-  int32 Age = 2 [(tagger.tags) = "zd:\"field1\"" ];
-  Enum Cn = 3;
-  Address Address = 4;
+message Person {
+  string name = 1;
+  int32 age = 2;
+  Gender gender = 3;
+  Address address = 4;
 }
 
 message Address {
-  string Street = 1; // 1-9{3}
-  uint32 Id = 2;
-  repeated string Snippets = 3; //`zd:"field3"`
+  string city = 1;
+  repeated string places = 2;
+  Obj child = 3;
+}
+
+message Obj {
+  string name = 1;
 }

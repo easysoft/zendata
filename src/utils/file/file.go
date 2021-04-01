@@ -17,6 +17,9 @@ import (
 )
 
 func ReadFile(filePath string) string {
+	if !FileExist(filePath) {
+		return ""
+	}
 	buf := ReadFileBuf(filePath)
 	str := string(buf)
 	str = commonUtils.RemoveBlankLine(str)

@@ -44,6 +44,8 @@ type ResInstancesItem struct {
 type DefData struct {
 	ClsBase `yaml:",inline"`
 	Fields  []DefField `yaml:"fields,flow"`
+
+	Content string `yaml:"content"` // for article only
 }
 type DefField struct {
 	FieldBase `yaml:",inline"`

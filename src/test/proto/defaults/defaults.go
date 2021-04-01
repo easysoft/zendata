@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"log"
 	"reflect"
@@ -22,8 +23,7 @@ const (
 // Set initializes members in a struct referenced by a pointer.
 // Maps and slices are initialized by `make` and other primitive types are set with default values.
 // `ptr` should be a struct pointer
-func Set(ptr interface{}) error {
-
+func Set(ptr interface{}, fld *model.DefField) error {
 	if reflect.TypeOf(ptr).Kind() != reflect.Ptr {
 		return errInvalidType
 	}
@@ -39,10 +39,21 @@ func Set(ptr interface{}) error {
 		log.Println(fmt.Sprintf("1. struct '%s'", v.String()))
 	}
 
+	if t == nil {
+		log.Println("")
+	}
+	fld.Field = t.Name()
+	fld.Range = "-"
+
 	for i := 0; i < t.NumField(); i++ {
+		childFld := model.DefField{}
+		childFld.Field = t.Field(i).Name
+		childFld.Range = "-"
+		fld.Fields = append(fld.Fields, childFld)
+
 		defaultVal := t.Field(i).Tag.Get(fieldName)
 		if defaultVal != "-" {
-			if err := setField(v.Field(i), defaultVal); err != nil {
+			if err := setField(v.Field(i), defaultVal, &childFld); err != nil {
 				return err
 			}
 		}
@@ -54,12 +65,12 @@ func Set(ptr interface{}) error {
 // MustSet function is a wrapper of Set function
 // It will call Set and panic if err not equals nil.
 func MustSet(ptr interface{}) {
-	if err := Set(ptr); err != nil {
+	if err := Set(ptr, nil); err != nil {
 		panic(err)
 	}
 }
 
-func setField(field reflect.Value, defaultVal string) error {
+func setField(field reflect.Value, defaultVal string, fld *model.DefField) error {
 	if !field.CanSet() {
 		return nil
 	}
@@ -68,9 +79,9 @@ func setField(field reflect.Value, defaultVal string) error {
 		log.Println(fmt.Sprintf("2. set value '%s'", field.String()))
 	}
 
-	if !shouldInitializeField(field, defaultVal) {
-		return nil
-	}
+	//if !shouldInitializeField(field, defaultVal) {
+	//	return nil
+	//}
 
 	if isInitialValue(field) {
 		kind := field.Kind()
@@ -169,15 +180,15 @@ func setField(field reflect.Value, defaultVal string) error {
 
 	switch field.Kind() {
 	case reflect.Ptr:
-		setField(field.Elem(), defaultVal)
+		setField(field.Elem(), defaultVal, fld)
 		callSetter(field.Interface())
 	case reflect.Struct:
-		if err := Set(field.Addr().Interface()); err != nil {
+		if err := Set(field.Addr().Interface(), fld); err != nil {
 			return err
 		}
 	case reflect.Slice:
 		for j := 0; j < field.Len(); j++ {
-			if err := setField(field.Index(j), defaultVal); err != nil {
+			if err := setField(field.Index(j), defaultVal, &model.DefField{}); err != nil {
 				return err
 			}
 		}
