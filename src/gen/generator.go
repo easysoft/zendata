@@ -203,7 +203,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 		values = GenerateFieldValuesForDef(field)
 	}
 
-	if field.Rand {
+	if field.Rand && field.Type != constant.FieldTypeArticle {
 		values = randomValues(values)
 	}
 
