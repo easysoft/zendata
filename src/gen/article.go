@@ -12,7 +12,7 @@ import (
 func CreateArticleField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
 	fieldWithValue.Field = field.Field
 
-	content := genArticleContent(field)
+	content := genArticleContent(field) + "\n"
 
 	fieldWithValue.Values = append(fieldWithValue.Values, content)
 }

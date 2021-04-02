@@ -33,11 +33,12 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 		return
 	}
 
-	if vari.Def.Type == constant.ConfigTypeArticle {
-		vari.Total = 1
-	}
-	if vari.Total == 0 {
-		vari.Total = constant.DefaultNumber
+	if vari.Total < 0 {
+		if vari.Def.Type == constant.ConfigTypeArticle {
+			vari.Total = 1
+		} else {
+			vari.Total = constant.DefaultNumber
+		}
 	}
 
 	vari.ResLoading = true // not to use placeholder when loading res
