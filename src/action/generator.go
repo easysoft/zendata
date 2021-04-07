@@ -41,11 +41,13 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 	if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle {
 		var filePath = logUtils.FileWriter.Name()
 		defer logUtils.FileWriter.Close()
+		fileUtils.RmFile(filePath)
 
 		for index, line := range lines {
 			articlePath := fileUtils.GenArticleFiles(filePath, index)
-			logUtils.FileWriter, _ = os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
-			fmt.Fprint(logUtils.FileWriter, line)
+			fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
+			fmt.Fprint(fileWriter, line)
+			fileWriter.Close()
 		}
 	}
 
