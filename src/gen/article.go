@@ -1,8 +1,9 @@
 package gen
 
 import (
-	"fmt"
 	"github.com/easysoft/zendata/src/model"
+	commonUtils "github.com/easysoft/zendata/src/utils/common"
+	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"regexp"
@@ -12,32 +13,62 @@ import (
 func CreateArticleField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
 	fieldWithValue.Field = field.Field
 
+	numMap, nameMap, indexMap, contentWithoutComments := getNumMap(field.Range)
+	resFile, resType, sheet := fileUtils.GetResProp(field.From, "")
+	dataMap := getDataMap(numMap, nameMap, field, resFile, resType, sheet)
+
 	for i := 0; i < vari.Total; i++ {
-		content := genArticleContent(field) + "\n"
+		content := genArticle(contentWithoutComments, dataMap, nameMap, indexMap) + "\n"
 		fieldWithValue.Values = append(fieldWithValue.Values, content)
 	}
 }
 
-func genArticleContent(field *model.DefField) (ret string) {
-
-	numMap, nameMap, contentWithOutDefine := getNumMap(field.Range)
-
-	resFile, resType, sheet := fileUtils.GetResProp(field.From, "")
-	dataMap := getDataMap(numMap, nameMap, field, resFile, resType, sheet)
-
-	ret = genArticle(contentWithOutDefine, dataMap, nameMap)
-
-	return
-}
-
-func genArticle(content string, dataMap map[string][]string, nameMap map[string]string) (ret string) {
+func genArticle(content string, dataMap map[string][]string, nameMap map[string]string, indexMap map[string]int) (ret string) {
 	ret = content
 
-	for key, arr := range dataMap {
-		for _, item := range arr {
-			placeholder := fmt.Sprintf("{%s}", key)
-			ret = strings.Replace(ret, placeholder, item, 1)
+	//for key, arr := range dataMap {
+	//	for _, item := range arr {
+	//		placeholder := fmt.Sprintf("{%s}", key)
+	//		ret = strings.Replace(ret, placeholder, item, 1)
+	//	}
+	//}
+
+	regx := regexp.MustCompile(`[\(\[\{]((?U).*)[\)\]\}]`)
+	arr := regx.FindAllStringSubmatch(content, -1)
+
+	for _, child := range arr {
+		slotStr := child[0]
+		slotName := child[1]
+
+		mode := ""
+		tag := slotStr[0]
+		value := ""
+
+		if string(tag) == "(" {
+			mode = "fix"
+
+			if indexMap[slotName] < 0 {
+				indexMap[slotName] = 0
+			}
+			index := indexMap[slotName] % len(dataMap[slotName])
+			value = dataMap[slotName][index]
+
+		} else if string(tag) == "[" {
+			mode = "seq"
+
+			indexMap[slotName] = indexMap[slotName] + 1
+
+			index := indexMap[slotName] % len(dataMap[slotName])
+			value = dataMap[slotName][index]
+
+		} else if string(tag) == "{" {
+			mode = "rand"
+			value = dataMap[slotName][commonUtils.RandNum(len(dataMap[slotName]))]
 		}
+
+		ret = strings.Replace(ret, slotStr, value, 1)
+		mode = mode
+		//logUtils.PrintTo(fmt.Sprintf("%s, %s, %s, %s", mode, slotStr, slotName, value))
 	}
 
 	return
@@ -47,10 +78,10 @@ func getDataMap(numMap map[string]int, nameMap map[string]string, field *model.D
 	resFile string, resType string, sheet string) (ret map[string][]string) {
 	ret = map[string][]string{}
 
-	field.Rand = true
-	for key, num := range numMap {
+	field.Rand = false
+	for key, _ := range numMap {
 		originTotal := vari.Total
-		vari.Total = num
+		vari.Total = constant.MaxNumb // load all words
 
 		slct, ok := nameMap[key]
 		if ok {
@@ -68,10 +99,11 @@ func getDataMap(numMap map[string]int, nameMap map[string]string, field *model.D
 	return
 }
 
-func getNumMap(content string) (numMap map[string]int, nameMap map[string]string, contentWithOutDefine string) {
+func getNumMap(content string) (numMap map[string]int, nameMap map[string]string, indexMap map[string]int, contentWithoutComments string) {
 	numMap = map[string]int{}
 	nameMap = map[string]string{}
-	arrWithOutDefine := make([]string, 0)
+	indexMap = map[string]int{}
+	arrWithoutComments := make([]string, 0)
 
 	content = strings.Trim(content, "`")
 	lines := strings.Split(content, "\n")
@@ -97,7 +129,7 @@ func getNumMap(content string) (numMap map[string]int, nameMap map[string]string
 			continue
 		}
 
-		arrWithOutDefine = append(arrWithOutDefine, line)
+		arrWithoutComments = append(arrWithoutComments, line)
 
 		regx := regexp.MustCompile(`\{((?U).*)\}`)
 		arr := regx.FindAllStringSubmatch(line, -1)
@@ -110,10 +142,15 @@ func getNumMap(content string) (numMap map[string]int, nameMap map[string]string
 			} else {
 				numMap[name] = i + 1
 			}
+
+			_, ok2 := indexMap[name]
+			if !ok2 {
+				indexMap[name] = -1
+			}
 		}
 	}
 
-	contentWithOutDefine = strings.Join(arrWithOutDefine, "\n")
+	contentWithoutComments = strings.Join(arrWithoutComments, "\n")
 
 	return
 }

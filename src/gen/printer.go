@@ -15,6 +15,7 @@ import (
 
 func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 	fields []string) (lines []interface{}) {
+
 	if format == constant.FormatText {
 		printTextHeader(fields)
 	} else if format == constant.FormatSql {
@@ -58,7 +59,9 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 			valuesForSql = append(valuesForSql, colVal)
 		}
 
-		if format == constant.FormatText {
+		if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle { // article need to write to more than one files
+			lines = append(lines, lineForText)
+		} else if format == constant.FormatText && vari.Def.Type != constant.ConfigTypeArticle {
 			logUtils.PrintLine(lineForText)
 		} else if format == constant.FormatSql {
 			logUtils.PrintLine(genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows)))
