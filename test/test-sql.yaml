@@ -1,0 +1,13 @@
+title: 测试文件
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: nums
+    range: 1-9
+
+  - field: letters
+    from: name.letters.v1.yaml
+    use: letters
+    postfix: "\t"

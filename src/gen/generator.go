@@ -79,7 +79,7 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 		}
 
 		// select from excel with expr
-		if strings.Index(child.Select, "${") > -1 || strings.Index(child.Where, "${") > -1 {
+		if helper.SelectExcelWithExpr(child) {
 			selects := helper.ReplaceVariableValues(child.Select, topLevelFieldNameToValuesMap)
 			wheres := helper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
 
@@ -390,7 +390,7 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {
 	// 叶节点
 	if len(fieldValue.Values) == 0 {
-		if strings.Index(field.Select, "${") < 0 && strings.Index(field.Where, "${") < 0 {
+		if helper.SelectExcelWithExpr(field) {
 			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
 			err = errors.New("")
 		}

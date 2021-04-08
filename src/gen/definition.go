@@ -57,10 +57,10 @@ func LoadDataDef(defaultFile, configFile string, fieldsToExport *[]string) model
 	mergerDefine(&defaultDef, &configDef, fieldsToExport)
 	orderFields(&defaultDef, *fieldsToExport)
 
-	for _, field := range defaultDef.Fields {
+	for index, _ := range defaultDef.Fields {
 		if vari.Trim {
-			field.Prefix = ""
-			field.Postfix = ""
+			defaultDef.Fields[index].Prefix = ""
+			defaultDef.Fields[index].Postfix = ""
 		}
 	}
 

@@ -133,8 +133,11 @@ func main() {
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")
 
-	flagSet.BoolVar(&set, "s", false, "")
+	flagSet.BoolVar(&set, "S", false, "")
 	flagSet.BoolVar(&set, "set", false, "")
+
+	flagSet.StringVar(&vari.Server, "s", "mysql", "")
+	flagSet.StringVar(&vari.Server, "server", "mysql", "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 

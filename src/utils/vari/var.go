@@ -31,6 +31,7 @@ var (
 	Trim      bool
 	Recursive bool
 	Type      string
+	Server    string // database type
 
 	JsonResp string = "[]"
 	Ip       string

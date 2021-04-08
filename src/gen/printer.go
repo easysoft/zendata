@@ -95,7 +95,10 @@ func printTextHeader(fields []string) {
 func printSqlHeader(fields []string, table string) {
 	fieldNames := make([]string, 0)
 	for _, f := range fields {
-		fieldNames = append(fieldNames, "`"+f+"`")
+		if vari.Server == "mysql" {
+			f = "`" + f + "`"
+		}
+		fieldNames = append(fieldNames, f)
 	}
 	logUtils.PrintLine(fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", ")))
 }

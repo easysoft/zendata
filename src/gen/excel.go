@@ -3,6 +3,7 @@ package gen
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"github.com/easysoft/zendata/src/gen/helper"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
@@ -20,7 +21,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 	values = map[string][]string{}
 
 	// sql has variable expr
-	if strings.Index(field.Select, "${") > -1 || strings.Index(field.Where, "${") > -1 {
+	if helper.SelectExcelWithExpr(*field) {
 		return
 	}
 
