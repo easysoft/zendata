@@ -16,8 +16,13 @@ import (
 	"time"
 )
 
-func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField) map[string][]string {
-	values := map[string][]string{}
+func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField, total int) (values map[string][]string) {
+	values = map[string][]string{}
+
+	// sql has variable expr
+	if strings.Index(field.Select, "${") > -1 || strings.Index(field.Where, "${") > -1 {
+		return
+	}
 
 	dbName := getDbName(filePath)
 
@@ -30,7 +35,7 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 		ConvertWordExcelsToSQLiteIfNeeded(dbName, filePath)
 	}
 
-	list, selectCol := ReadDataFromSQLite(*field, dbName, sheet)
+	list, fieldSelect := ReadDataFromSQLite(*field, dbName, sheet, total)
 	// get index for data retrieve
 	numbs := GenerateIntItems(0, (int64)(len(list)), 1, false, 1, "")
 	// get data by index
@@ -42,11 +47,11 @@ func GenerateFieldValuesFromExcel(filePath, sheet string, field *model.DefField)
 			break
 		}
 
-		values[selectCol] = append(values[selectCol], item)
+		values[fieldSelect] = append(values[fieldSelect], item)
 		index = index + 1
 	}
 
-	return values
+	return
 }
 
 func getDbName(path string) (dbName string) {
@@ -205,10 +210,10 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	return
 }
 
-func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) ([]string, string) {
+func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, total int) ([]string, string) {
 	list := make([]string, 0)
 
-	selectCol := field.Select
+	fieldSelect := field.Select
 	from := dbName
 	if tableName != "" {
 		from += "_" + tableName
@@ -220,7 +225,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 			where = "y"
 		}
 
-		cols := strings.Split(selectCol, "-")
+		cols := strings.Split(fieldSelect, "-")
 		wheres := ""
 		for index, col := range cols {
 			if index == 0 {
@@ -244,7 +249,6 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 	}
 
 	if !strings.Contains(where, "LIMIT") {
-		total := vari.Total
 		if total > constant.MaxNumb {
 			total = constant.MaxNumb
 		}
@@ -255,9 +259,9 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 		where = where + fmt.Sprintf(" LIMIT %d", total)
 	}
 
-	colStr := selectCol
+	colStr := fieldSelect
 	if vari.Def.Type == constant.ConfigTypeArticle {
-		colStr = "`词语` AS `" + selectCol + "`"
+		colStr = "`词语` AS `" + fieldSelect + "`"
 	}
 
 	sqlStr := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", colStr, from, where)
@@ -311,7 +315,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string) (
 		}
 	}
 
-	return list, selectCol
+	return list, fieldSelect
 }
 
 func isExcelChanged(path string) bool {

@@ -72,8 +72,31 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 		}
 
 		childValues := topLevelFieldNameToValuesMap[child.Field]
-		if child.Value != "" { // is value expression
+
+		// is value expression
+		if child.Value != "" {
 			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap)
+		}
+
+		// select from excel with expr
+		if strings.Index(child.Select, "${") > -1 || strings.Index(child.Where, "${") > -1 {
+			selects := helper.ReplaceVariableValues(child.Select, topLevelFieldNameToValuesMap)
+			wheres := helper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
+
+			childValues = make([]string, 0)
+			for index, slct := range selects {
+				temp := child
+				temp.Select = slct
+				temp.Where = wheres[index%len(wheres)]
+
+				resFile, _, sheet := fileUtils.GetResProp(temp.From, temp.FileDir)
+
+				selectCount := vari.Total / len(selects)
+				mp := generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
+				for _, items := range mp {
+					childValues = append(childValues, items...)
+				}
+			}
 		}
 
 		arrOfArr = append(arrOfArr, childValues)
@@ -367,8 +390,10 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {
 	// 叶节点
 	if len(fieldValue.Values) == 0 {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
-		err = errors.New("")
+		if strings.Index(field.Select, "${") < 0 && strings.Index(field.Where, "${") < 0 {
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
+			err = errors.New("")
+		}
 		return
 	}
 

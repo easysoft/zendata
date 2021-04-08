@@ -13,8 +13,8 @@ import (
 	"io/ioutil"
 )
 
-func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
-	res := map[string]map[string][]string{}
+func LoadResDef(fieldsToExport []string) (res map[string]map[string][]string) {
+	res = map[string]map[string][]string{}
 
 	for index, field := range vari.Def.Fields {
 		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
@@ -27,7 +27,7 @@ func LoadResDef(fieldsToExport []string) map[string]map[string][]string {
 		}
 		loadResForField(&field, &res)
 	}
-	return res
+	return
 }
 
 func loadResForField(field *model.DefField, res *map[string]map[string][]string) {
@@ -88,7 +88,7 @@ func getResValue(resFile, resType, sheet string, field *model.DefField) (map[str
 }
 
 func getResFromExcel(resFile, sheet string, field *model.DefField) map[string][]string { // , string) {
-	valueMap := GenerateFieldValuesFromExcel(resFile, sheet, field)
+	valueMap := generateFieldValuesFromExcel(resFile, sheet, field, vari.Total)
 
 	return valueMap
 }

@@ -89,6 +89,44 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 	return
 }
 
+func ReplaceVariableValues(exp string, valuesMap map[string][]string) (ret []string) {
+	reg := regexp.MustCompile(`\$\{([_,a-z,A-Z,0-9]+)\}`)
+	arr := reg.FindAllStringSubmatch(exp, -1)
+
+	total := 1
+	for _, items := range arr { // computer total
+		fieldName := items[1]
+
+		size := len(valuesMap[fieldName])
+		if total < size {
+			total = size
+		}
+	}
+
+	for i := 0; i < total; i++ {
+		item := exp
+		for _, items := range arr {
+			fieldSlot := items[0]
+			fieldName := items[1]
+			referValues := valuesMap[fieldName]
+			referField := vari.TopFieldMap[fieldName]
+
+			valStr := "N/A"
+			if len(referValues) > 0 {
+				valStr = referValues[i%len(referValues)]
+				valStr = strings.TrimLeft(valStr, referField.Prefix)
+				valStr = strings.TrimRight(valStr, referField.Postfix)
+			}
+
+			item = strings.ReplaceAll(item, fieldSlot, valStr)
+		}
+
+		ret = append(ret, item)
+	}
+
+	return
+}
+
 func getNumType(str string) (val interface{}, tp string) {
 	val, errInt := strconv.ParseInt(str, 0, 64)
 	if errInt == nil {
