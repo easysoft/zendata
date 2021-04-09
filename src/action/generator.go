@@ -25,8 +25,12 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 
 	count := 0
 	if strings.ToLower(path.Ext(configFile)) == "."+constant.FormatProto { //gen from protobuf
-		bufStr := gen.GenerateProtobuf(configFile)
-		lines = append(lines, bufStr)
+		buf, pth := gen.GenerateProtobuf(configFile)
+
+		if vari.Verbose {
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
+		}
+		logUtils.PrintLine(buf)
 
 		count = 1
 

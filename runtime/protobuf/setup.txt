@@ -1,0 +1,4 @@
+/protoc --php_out=./ hello.proto
+
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+composer -vvv require google/protobuf

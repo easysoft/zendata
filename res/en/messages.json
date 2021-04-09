@@ -226,6 +226,11 @@
     {
       "id": "print_common_yaml_file",
       "translation": "%s is a common yaml definition file, please exec data generation command to view."
+    },
+
+    {
+      "id": "protobuf_path",
+      "translation": "Protobuf data write to file %s."
     }
   ]
 }

@@ -13,24 +13,42 @@ import (
 
 const (
 	outputDir = "output"
+	bufFile   = "data.bin"
 )
 
-func GenerateProtobuf(protoFile string) (ret string) {
+func GenerateProtobuf(protoFile string) (content, pth string) {
 	outputDir := generateCls(protoFile)
 
-	converterFile := generateConverter(outputDir)
+	convertFile := generateConverter(outputDir)
 
-	return converterFile
+	content, pth = generateBinData(convertFile)
+
+	return
 }
 
-func generateConverter(dir string) (ret string) {
+func generateBinData(convertFile string) (content, pth string) {
+	dir := path.Dir(convertFile)
+
+	phpExeFile := "php"
+	if commonUtils.IsWin() { // use build-in php runtime
+		phpExeFile = path.Join(vari.ZdPath, "runtime", "php7", "php.exe")
+	}
+	cmdStr := phpExeFile + " convert.php"
+	shellUtils.ExecInDir(cmdStr, dir)
+
+	pth = path.Join(dir, bufFile)
+
+	return
+}
+
+func generateConverter(dir string) (pth string) {
 	srcFile := path.Join(vari.ZdPath, "runtime", "protobuf", "convert.php")
-	ret = path.Join(dir, "convert.php")
+	pth = path.Join(dir, "convert.php")
 
 	content := fileUtils.ReadFile(srcFile)
 	content = strings.ReplaceAll(content, "${cls_name}", vari.ProtoCls)
 
-	fileUtils.WriteFile(ret, content)
+	fileUtils.WriteFile(pth, content)
 
 	return
 }
