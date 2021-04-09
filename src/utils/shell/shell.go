@@ -10,11 +10,11 @@ import (
 	"strings"
 )
 
-func Exe(cmdStr string) (ret string, err error) {
-	return ExeInDir(cmdStr, "")
+func Exec(cmdStr string) (ret string, err error) {
+	return ExecInDir(cmdStr, "")
 }
 
-func ExeInDir(cmdStr string, dir string) (ret string, err error) {
+func ExecInDir(cmdStr string, dir string) (ret string, err error) {
 	var cmd *exec.Cmd
 	if commonUtils.IsWin() {
 		cmd = exec.Command("cmd", "/C", cmdStr)

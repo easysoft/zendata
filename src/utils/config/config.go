@@ -65,7 +65,7 @@ func InitConfig(root string) {
 	CheckConfigPermission()
 
 	if commonUtils.IsWin() {
-		shellUtils.Exe("chcp 65001")
+		shellUtils.Exec("chcp 65001")
 	}
 
 	vari.Config = getInst()
@@ -229,7 +229,7 @@ func addZdToPathEnvVarWin(home string) {
 	logUtils.PrintToWithColor("\n"+i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
 
 	// TODO: fix the space issue
-	//out, err := shellUtils.Exe(cmd)
+	//out, err := shellUtils.Exec(cmd)
 	//
 	//if err == nil {
 	//	msg := i118Utils.I118Prt.Sprintf("add_to_path_success_win")
@@ -249,7 +249,7 @@ func addZdToPathEnvVarForLinux(home string) {
 	}
 
 	cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ZdPath, path)
-	out, err := shellUtils.Exe(cmd)
+	out, err := shellUtils.Exec(cmd)
 
 	if err == nil {
 		msg := i118Utils.I118Prt.Sprintf("add_to_path_success_linux", path)

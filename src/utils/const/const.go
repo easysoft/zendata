@@ -39,8 +39,9 @@ var (
 	FormatSql   = "sql"
 	FormatExcel = "xlsx"
 	FormatCsv   = "csv"
+	FormatProto = "proto"
 	FormatData  = "data"
-	Formats     = []string{FormatText, FormatJson, FormatXml, FormatSql, FormatExcel, FormatCsv}
+	Formats     = []string{FormatText, FormatJson, FormatXml, FormatSql, FormatExcel, FormatCsv, FormatProto}
 
 	ModeParallel       = "parallel"
 	ModeRecursive      = "recursive"

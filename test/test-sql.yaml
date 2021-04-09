@@ -4,10 +4,12 @@ author: zentao
 version: 1.0
 
 fields:
-  - field: nums
-    range: 1-9
+  - field: num
+    range: 1-11
+    postfix: "\t"
 
-  - field: letters
-    from: name.letters.v1.yaml
-    use: letters
+  - field: name
+    from: address.cn.v1.china
+    select: city
+    where: state like '%山东%'
     postfix: "\t"

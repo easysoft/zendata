@@ -20,7 +20,7 @@ func LoadDataDef(defaultFile, configFile string, fieldsToExport *[]string) model
 
 	// load defaultDef
 	if defaultFile != "" {
-		pathDefaultFile := fileUtils.GetAbosutePath(defaultFile)
+		pathDefaultFile := fileUtils.GetAbsolutePath(defaultFile)
 
 		defaultContent, err := ioutil.ReadFile(pathDefaultFile)
 		defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
@@ -36,7 +36,7 @@ func LoadDataDef(defaultFile, configFile string, fieldsToExport *[]string) model
 	}
 
 	// load configDef
-	pathConfigFile := fileUtils.GetAbosutePath(configFile)
+	pathConfigFile := fileUtils.GetAbsolutePath(configFile)
 
 	yamlContent, err := ioutil.ReadFile(pathConfigFile)
 	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)

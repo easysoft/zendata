@@ -30,8 +30,13 @@ var (
 	Human     bool
 	Trim      bool
 	Recursive bool
-	Type      string
-	Server    string // database type
+
+	Table    string
+	Type     string
+	Server   string // database type
+	DBDsn    string
+	DBClear  bool
+	ProtoCls string
 
 	JsonResp string = "[]"
 	Ip       string

@@ -25,6 +25,8 @@
 /data/test/
 /test/out/
 /log-agent/
-/src/test/proto/person.pb.go
-/src/test/proto/dist/
 /yaml/article/chinese/slang/out/
+/runtime/protobuf/bin
+/runtime/protobuf/go
+/runtime/protobuf/vendor
+/runtime/protobuf/out/

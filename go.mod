@@ -17,6 +17,7 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang/protobuf v1.4.3
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect

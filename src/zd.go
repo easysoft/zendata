@@ -46,7 +46,6 @@ var (
 	root   string
 	input  string
 	output string
-	table  string
 	format = constant.FormatText
 	decode bool
 
@@ -93,9 +92,6 @@ func main() {
 	flagSet.StringVar(&output, "o", "", "")
 	flagSet.StringVar(&output, "output", "", "")
 
-	flagSet.StringVar(&table, "t", "", "")
-	flagSet.StringVar(&table, "table", "", "")
-
 	flagSet.BoolVar(&listData, "l", false, "")
 	flagSet.BoolVar(&listData, "list", false, "")
 	flagSet.BoolVar(&listRes, "L", false, "")
@@ -136,8 +132,14 @@ func main() {
 	flagSet.BoolVar(&set, "S", false, "")
 	flagSet.BoolVar(&set, "set", false, "")
 
+	flagSet.StringVar(&vari.Table, "t", "", "")
+	flagSet.StringVar(&vari.Table, "table", "", "")
 	flagSet.StringVar(&vari.Server, "s", "mysql", "")
 	flagSet.StringVar(&vari.Server, "server", "mysql", "")
+	flagSet.StringVar(&vari.DBDsn, "dns", "", "")
+	flagSet.BoolVar(&vari.DBClear, "clear", false, "")
+
+	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
@@ -214,11 +216,14 @@ func toGen() {
 		}
 
 		startServer() // will init its own db
+
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		format = constant.FormatJson
-		action.Generate(defaultFile, configFile, fields, format, table)
+		action.Generate(defaultFile, configFile, fields, format, vari.Table)
+
 	} else if vari.RunMode == constant.RunModeParse {
 		action.ParseSql(input, output)
+
 	} else if vari.RunMode == constant.RunModeGen {
 		if vari.Human {
 			vari.WithHead = true
@@ -243,13 +248,16 @@ func toGen() {
 				defer logUtils.FileWriter.Close()
 			}
 		}
+		if vari.DBDsn != "" {
+			format = constant.FormatSql
+		}
 
-		if format == constant.FormatSql && table == "" {
+		if format == constant.FormatSql && vari.Table == "" {
 			logUtils.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
 			return
 		}
 
-		action.Generate(defaultFile, configFile, fields, format, table)
+		action.Generate(defaultFile, configFile, fields, format, vari.Table)
 	}
 
 	tmEnd := time.Now()
@@ -284,7 +292,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
 	defaultFile, configFile, fields, vari.Total,
-		format, vari.Trim, table, decode, input, output = serverUtils.ParseGenParams(req)
+		format, vari.Trim, vari.Table, decode, input, output = serverUtils.ParseGenParams(req)
 
 	if decode {
 		gen.Decode(defaultFile, configFile, fields, input, output)

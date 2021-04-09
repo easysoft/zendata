@@ -19,7 +19,12 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 	if format == constant.FormatText {
 		printTextHeader(fields)
 	} else if format == constant.FormatSql {
-		printSqlHeader(fields, table)
+		sqlHeader := getInsertSqlHeader(fields, table)
+		if vari.DBDsn != "" {
+			lines = append(lines, sqlHeader)
+		} else {
+			logUtils.PrintLine(sqlHeader)
+		}
 	} else if format == constant.FormatJson {
 		printJsonHeader()
 	} else if format == constant.FormatXml {
@@ -61,10 +66,19 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 
 		if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle { // article need to write to more than one files
 			lines = append(lines, lineForText)
+
 		} else if format == constant.FormatText && vari.Def.Type != constant.ConfigTypeArticle {
 			logUtils.PrintLine(lineForText)
+
 		} else if format == constant.FormatSql {
-			logUtils.PrintLine(genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows)))
+			sql := genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows))
+
+			if vari.DBDsn != "" { // add to return array for exec sql
+				lines = append(lines, sql)
+			} else {
+				logUtils.PrintLine(sql)
+			}
+
 		} else if format == constant.FormatJson {
 			logUtils.PrintLine(genJsonLine(i, row, len(rows), fields))
 		} else if format == constant.FormatXml {
@@ -92,7 +106,7 @@ func printTextHeader(fields []string) {
 	logUtils.PrintLine(headerLine)
 }
 
-func printSqlHeader(fields []string, table string) {
+func getInsertSqlHeader(fields []string, table string) string {
 	fieldNames := make([]string, 0)
 	for _, f := range fields {
 		if vari.Server == "mysql" {
@@ -100,7 +114,8 @@ func printSqlHeader(fields []string, table string) {
 		}
 		fieldNames = append(fieldNames, f)
 	}
-	logUtils.PrintLine(fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", ")))
+	ret := fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", "))
+	return ret
 }
 
 func printJsonHeader() {

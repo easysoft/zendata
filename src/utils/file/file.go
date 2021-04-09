@@ -88,15 +88,16 @@ func IsDir(f string) bool {
 	return fi.IsDir()
 }
 
-func GetAbosutePath(pth string) string {
+func GetAbsolutePath(pth string) string {
 	if !IsAbsPath(pth) {
 		pth, _ = filepath.Abs(pth)
 	}
 
 	return pth
 }
-func GetAbosuteDir(pth string) string {
-	pth = GetAbosutePath(pth)
+func GetAbsoluteDir(pth string) string {
+	pth = GetAbsolutePath(pth)
+	pth = path.Dir(pth)
 	pth = AddSepIfNeeded(pth)
 
 	return pth

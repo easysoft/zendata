@@ -1,25 +1,26 @@
 syntax = "proto3";
 
-option go_package = "dist";
+// package domain;
+// option go_package = "domain";
+
+message Person {
+  string name = 1;
+  int32 age = 2;
+  Gender gender = 3;
+  Address address = 4;
+}
 
 enum Gender {
   M = 0;
   F = 1;
 }
 
-message Person {
-  string name = 1; // fdsfudsf
-  int32 age = 2;
-  Gender gender = 3;
-  Address address = 4;
-}
-
 message Address {
   string city = 1;
   repeated string places = 2;
-  Obj child = 3;
+  Item child = 3;
 }
 
-message Obj {
+message Item {
   string name = 1;
 }
