@@ -28,8 +28,7 @@ func generateConverter(dir string) (ret string) {
 	ret = path.Join(dir, "convert.php")
 
 	content := fileUtils.ReadFile(srcFile)
-	content = strings.Replace(content, "${cls_path}", vari.ProtoCls, 1)
-	content = strings.Replace(content, "${cls_name}", vari.ProtoCls, 1)
+	content = strings.ReplaceAll(content, "${cls_name}", vari.ProtoCls)
 
 	fileUtils.WriteFile(ret, content)
 
