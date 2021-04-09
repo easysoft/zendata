@@ -18,7 +18,7 @@ enum Gender {
 message Address {
   string city = 1;
   repeated string places = 2;
-  Item child = 3;
+  Item item = 3;
 }
 
 message Item {
