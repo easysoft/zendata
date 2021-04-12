@@ -8,7 +8,8 @@ $typeArr = array("double","float","int32","int64","uint32","uint64","sint32","si
 
 $inst = new ${cls_name}();
 
-echo("====================set properties====================\n");
+printSep("set properties");
+
 $reflect = new ReflectionObject($inst);
 $methods = $reflect->getMethods();
 foreach ($methods as $key => $value) {
@@ -30,7 +31,7 @@ $data = file_get_contents('data.bin');
 $decode = new Person();
 $decode->mergeFromString($data);
 
-echo("====================print object====================\n");
+printSep("print object");
 printObj($decode);
 
 function printObj($obj) {
@@ -239,4 +240,8 @@ function getRandStr($length = 10) {
 function getRandFloat($min = 0, $max = 1) {
     $rl = mt_rand() / mt_getrandmax();
     return ($min + ($rl * ($max - $min)));
+}
+
+function printSep($title) {
+    echo(str_repeat("=",16) . " " . $title . " " . str_repeat("=",16) . "\n");
 }
