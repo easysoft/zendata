@@ -7,19 +7,19 @@ $typeArr = array("double","float","int32","int64","uint32","uint64","sint32","si
     "fixed32","fixed64","sfixed32","sfixed64","bool","string","bytes");
 
 $inst = new ${cls_name}();
-$inst->setName('aaron');
 
+echo("====================set properties====================\n");
 $reflect = new ReflectionObject($inst);
 $methods = $reflect->getMethods();
 foreach ($methods as $key => $value) {
-    $methodName = $value->getName();
-    $found = strpos($methodName, 'set');
+    $setMethodName = $value->getName();
+    $found = strpos($setMethodName, 'set');
     if ($found !== false) {
         $repeated = false;
-        $className = "";
+        $setMethodParamCls = "";
 
-        parserFieldPropsFromComments($value, $repeated, $className);
-        setFieldDefaultValue($inst, $repeated, $className, $methodName);
+        parserFieldPropsFromComments($value, $repeated, $setMethodParamCls);
+        setFieldDefaultValue($inst, $repeated, $setMethodParamCls, $setMethodName);
     }
 }
 
@@ -30,46 +30,102 @@ $data = file_get_contents('data.bin');
 $decode = new Person();
 $decode->mergeFromString($data);
 
-print_r(json_encode($decode));
+echo("====================print object====================\n");
+printObj($decode);
 
-function setFieldDefaultValue(&$inst, $repeated, $className, $methodName)
+function printObj($obj) {
+    $reflect = new ReflectionObject($obj);
+    $name = $reflect->getName();
+    $methods = $reflect->getMethods();
+    foreach ($methods as $key => $value) {
+        $methodName = $value->getName();
+        $found = strpos($methodName, 'get');
+        if ($found !== false && $methodName !== "getClass" && $methodName !== "getType" && $methodName !== "getLegacyClass") {
+            $repeated = false;
+            $className = "";
+            parserFieldPropsFromComments($value, $repeated, $className);
+            $var = call_user_func(array($obj, $methodName));
+
+            if (isStandType($className) || gettype($var) === 'integer') {
+                printField($name, $methodName, $var, $repeated, $className);
+                continue;
+            }
+
+            printObj($var);
+        }
+    }
+}
+
+function printField($name, $methodName, $var, $repeated, $className) {
+    if ($className === 'bool') {
+        if ($var) $var = 'true';
+        else $var = 'false';
+    }
+
+    if (!$repeated) {
+        $name = str_pad($name . '->' . $methodName, 26," ", STR_PAD_RIGHT);
+        echo "$name = $var\n";
+        return;
+    }
+
+    $arr = array();
+    foreach ($var as $key => $value) {
+        $arr[] = $value;
+    }
+
+    $name = str_pad($methodName, 26," ", STR_PAD_RIGHT);
+    echo "$name = [" . join(",",$arr) . "] \n";
+}
+
+function setFieldDefaultValue(&$inst, $repeated, $setMethodParamCls, $setMethodName)
 {
     global $typeArr;
 
     $ref = new ReflectionObject($inst);
     $objectType = $ref->getName();
     echo "object type      = $objectType\n";
-    echo "field type       = $className\n";
-    echo "field method     = $methodName\n";
+    echo "field type       = $setMethodParamCls\n";
+    echo "field method     = $setMethodName\n";
     echo "field repeated   = $repeated\n\n";
 
-    if (isStandType($className)) {
-        $defaultVal = getDefaultValByType($className, $repeated);
-        call_user_func(array($inst, $methodName), $defaultVal);
+    if (isStandType($setMethodParamCls)) { //
+        $defaultVal = getDefaultValByType($setMethodParamCls, $repeated);
+        call_user_func(array($inst, $setMethodName), $defaultVal);
 
         return;
     }
 
-    require "./$className.php";
+    require "./$setMethodParamCls.php";
 
-    $propObj = new $className();
-    $reflect = new ReflectionObject($propObj);
+    $child = new $setMethodParamCls();
+    $reflect = new ReflectionObject($child);
     $methods = $reflect->getMethods();
+    $isEnum = true;
     foreach ($methods as $key => $value) {
-        $methodName = $value->getName();
-        $found = strpos($methodName, 'set');
+        $setMethodName2 = $value->getName();
+        $found = strpos($setMethodName2, 'set');
         if ($found === false) {
             continue;
         }
 
-        $repeated = false;
-        $fieldClassName = "";
-        parserFieldPropsFromComments($value, $repeated, $fieldClassName);
+        $isEnum = false;
 
-        if (!isStandType($fieldClassName)) {
-            setFieldDefaultValue($propObj, $repeated, $fieldClassName, $methodName);
-        }
+        $repeated2 = 0;
+        $fieldClassName = "";
+        parserFieldPropsFromComments($value, $repeated2, $fieldClassName);
+        setFieldDefaultValue($child, $repeated2, $fieldClassName, $setMethodName2);
     }
+
+    if (!$isEnum) {
+        $children = $child;
+        if ($repeated) {
+            $children = array();
+            $children[] = $child;
+        }
+
+        call_user_func(array($inst, $setMethodName), $children);
+    }
+
 }
 
 function parserFieldPropsFromComments($value, &$repeated, &$className)
