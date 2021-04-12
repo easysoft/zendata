@@ -8,11 +8,10 @@ message Person {
   int32 age = 2;
   Gender gender = 3;
   Address address = 4;
-  repeated string places = 5;
+  repeated string hobbies = 5;
 
   bool boolField = 6;
   string stringField = 7;
-
   float floatField = 8;
   double doubleField = 9;
   int32 int32Field = 10;
@@ -28,9 +27,10 @@ enum Gender {
 
 message Address {
   string city = 1;
-  repeated Item item = 3;
+  repeated AddressItem AddressItems = 3;
 }
 
-message Item {
-  string name = 1;
+message AddressItem {
+  string street = 1;
+  string building = 2;
 }
