@@ -9,7 +9,16 @@ message Person {
   Gender gender = 3;
   Address address = 4;
   repeated string places = 5;
-  fixed64 fixedProp = 6;
+
+  bool boolField = 6;
+  string stringField = 7;
+
+  float floatField = 8;
+  double doubleField = 9;
+  int32 int32Field = 10;
+  uint32 uint32Field = 11;
+  int64 int64Field = 12;
+  uint64 uint64Field = 13;
 }
 
 enum Gender {
