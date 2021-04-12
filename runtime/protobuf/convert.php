@@ -63,7 +63,8 @@ function printField($name, $methodName, $var, $repeated, $className) {
     }
 
     if (!$repeated) {
-        $name = str_pad($name . '->' . $methodName, 26," ", STR_PAD_RIGHT);
+        $name = $name . '->' . substr($methodName, 3);
+        $name = str_pad($name, 26," ", STR_PAD_RIGHT);
         echo "$name = $var\n";
         return;
     }
@@ -73,7 +74,7 @@ function printField($name, $methodName, $var, $repeated, $className) {
         $arr[] = $value;
     }
 
-    $name = str_pad($methodName, 26," ", STR_PAD_RIGHT);
+    $name = str_pad($name . '->' . substr($methodName, 3), 26," ", STR_PAD_RIGHT);
     echo "$name = [" . join(",",$arr) . "] \n";
 }
 
