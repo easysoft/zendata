@@ -8,6 +8,8 @@ message Person {
   int32 age = 2;
   Gender gender = 3;
   Address address = 4;
+  repeated string places = 5;
+  fixed64 fixedProp = 6;
 }
 
 enum Gender {
@@ -17,8 +19,7 @@ enum Gender {
 
 message Address {
   string city = 1;
-  repeated string places = 2;
-  Item item = 3;
+  repeated Item item = 3;
 }
 
 message Item {
