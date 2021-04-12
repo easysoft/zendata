@@ -4,6 +4,7 @@ import (
 	"fmt"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	logUtils "github.com/easysoft/zendata/src/utils/log"
 	shellUtils "github.com/easysoft/zendata/src/utils/shell"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"path"
@@ -34,7 +35,10 @@ func generateBinData(convertFile string) (content, pth string) {
 		phpExeFile = path.Join(vari.ZdPath, "runtime", "php7", "php.exe")
 	}
 	cmdStr := phpExeFile + " convert.php"
-	shellUtils.ExecInDir(cmdStr, dir)
+	out, _ := shellUtils.ExecInDir(cmdStr, dir)
+	if vari.Verbose {
+		logUtils.PrintTo(out)
+	}
 
 	pth = path.Join(dir, bufFile)
 
