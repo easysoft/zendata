@@ -7,7 +7,6 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	shellUtils "github.com/easysoft/zendata/src/utils/shell"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -29,7 +28,7 @@ func GenerateProtobuf(protoFile string) (content, pth string) {
 }
 
 func generateBinData(convertFile string) (content, pth string) {
-	dir := path.Dir(convertFile)
+	dir := filepath.Dir(convertFile)
 
 	phpExeFile := "php"
 	if commonUtils.IsWin() { // use build-in php runtime

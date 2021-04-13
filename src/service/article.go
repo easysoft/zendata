@@ -15,14 +15,15 @@ import (
 )
 
 const (
-	strLeft = "“"
+	strLeft  = "“"
 	strRight = "”"
 
-	expLeft = "（"
+	expLeft  = "（"
 	expRight = "）"
 
 	table = "words.v1"
 )
+
 var (
 	compares = []string{"=", "!=", ">", "<"}
 )
@@ -33,10 +34,14 @@ func ConvertArticle(src, dist string) {
 		pth, _ := filepath.Abs(src)
 		files = append(files, pth)
 
-		if dist == "" { dist = fileUtils.AddSepIfNeeded(path.Dir(pth)) }
+		if dist == "" {
+			dist = fileUtils.AddSepIfNeeded(filepath.Dir(pth))
+		}
 	} else {
 		fileUtils.GetFilesInDir(src, ".txt", &files)
-		if dist == "" { dist = fileUtils.AddSepIfNeeded(src) }
+		if dist == "" {
+			dist = fileUtils.AddSepIfNeeded(src)
+		}
 	}
 
 	for _, filePath := range files {
@@ -53,13 +58,13 @@ func convertSentYaml(filePath, dist string) (yamlPaths []string) {
 	for paragIndex, parag := range paragraphs {
 
 		for sentIndex, sent := range parag {
-			fileSeq := fmt.Sprintf("p%02d-s%02d", paragIndex + 1, sentIndex + 1)
+			fileSeq := fmt.Sprintf("p%02d-s%02d", paragIndex+1, sentIndex+1)
 
 			conf := createDef(constant.ConfigTypeArticle, table, fileUtils.GetRelatPath(filePath))
 
 			prefix := ""
 			for sectIndex, sect := range sent { // each sent saved as a yaml file
-				fieldSeq := fmt.Sprintf("%d-%d-%d", paragIndex + 1, sentIndex + 1, sectIndex + 1)
+				fieldSeq := fmt.Sprintf("%d-%d-%d", paragIndex+1, sentIndex+1, sectIndex+1)
 				if sect.Type == "exp" {
 					fields := createFields(fieldSeq, prefix, sect.Val)
 					conf.XFields = append(conf.XFields, fields...)
@@ -68,7 +73,7 @@ func convertSentYaml(filePath, dist string) (yamlPaths []string) {
 				} else {
 					prefix += sect.Val
 
-					if prefix != "" && sectIndex == len(sent) - 1 { // last section
+					if prefix != "" && sectIndex == len(sent)-1 { // last section
 						field := model.DefFieldExport{Field: fieldSeq, Prefix: prefix}
 						conf.XFields = append(conf.XFields, field)
 						prefix = ""
@@ -155,10 +160,10 @@ func createFields(seq string, prefix, exp string) (fields []model.DefFieldExport
 		expArr = expArr[2:]
 	}
 
-	if strings.Index(exp, "=") == len(exp) - 2 {
-		exp = string(expArr[:len(expArr) - 2])
+	if strings.Index(exp, "=") == len(exp)-2 {
+		exp = string(expArr[:len(expArr)-2])
 		field.Select = exp
-		field.Where = string(expArr[len(expArr) - 1])
+		field.Where = string(expArr[len(expArr)-1])
 	} else {
 		field.Select = exp
 		field.Where = ""
@@ -198,7 +203,7 @@ func parseSections(content string) (sections []model.ArticleSent) {
 			section += duplicateStr
 			i += 1
 
-			if i == len(runeArr) - 1 {
+			if i == len(runeArr)-1 {
 				addSection(section, "str", &sections)
 			}
 
@@ -230,7 +235,7 @@ func parseSections(content string) (sections []model.ArticleSent) {
 			section += str
 
 			if str == "。" {
-				if i < len(runeArr) - 1 && string(runeArr[i+1]) == strRight {
+				if i < len(runeArr)-1 && string(runeArr[i+1]) == strRight {
 					i += 1
 					strStart = false
 				}
@@ -241,7 +246,7 @@ func parseSections(content string) (sections []model.ArticleSent) {
 				section = ""
 			} else if str == "\n" {
 				// get all \n
-				for j := i+1; j < len(runeArr); j++ {
+				for j := i + 1; j < len(runeArr); j++ {
 					if string(runeArr[j]) == "\n" {
 						section += str
 						i = j
@@ -255,7 +260,7 @@ func parseSections(content string) (sections []model.ArticleSent) {
 				strStart = false
 				expStart = false
 				section = ""
-			} else if i == len(runeArr) - 1 {
+			} else if i == len(runeArr)-1 {
 				addSection(section, "str", &sections)
 			}
 		}
@@ -272,14 +277,14 @@ func groupSections(sectionArr []model.ArticleSent) (paragraphs [][][]model.Artic
 		section := sectionArr[index]
 		sections = append(sections, section)
 
-		if section.IsParag || index == len(sectionArr) - 1 {
+		if section.IsParag || index == len(sectionArr)-1 {
 			sentences = append(sentences, sections)
 			paragraphs = append(paragraphs, sentences)
 
 			sentences = make([][]model.ArticleSent, 0)
 			sections = make([]model.ArticleSent, 0)
 		} else if section.IsSent {
-			if index < len(sectionArr) - 1 && sectionArr[index+1].IsParag {
+			if index < len(sectionArr)-1 && sectionArr[index+1].IsParag {
 				sections = append(sections, sectionArr[index+1])
 				sentences = append(sentences, sections)
 				paragraphs = append(paragraphs, sentences)
@@ -290,7 +295,7 @@ func groupSections(sectionArr []model.ArticleSent) (paragraphs [][][]model.Artic
 				index += 1
 			} else {
 				sentences = append(sentences, sections)
-				if index == len(sectionArr) - 1 {
+				if index == len(sectionArr)-1 {
 					paragraphs = append(paragraphs, sentences)
 				}
 
@@ -309,7 +314,7 @@ func addSection(str, typ string, arr *[]model.ArticleSent) {
 	sent.Val = str
 
 	runeArr := []rune(str)
-	end := runeArr[len(runeArr) - 1]
+	end := runeArr[len(runeArr)-1]
 	if string(end) == "\n" {
 		sent.IsParag = true
 	} else if string(end) == "。" {
@@ -320,20 +325,19 @@ func addSection(str, typ string, arr *[]model.ArticleSent) {
 }
 
 func isCouple(i int, arr []rune) (isCouple bool, duplicateStr string) {
-	if string(arr[i]) == strLeft && (i + 1 < len(arr) && string(arr[i + 1]) == strLeft) {
+	if string(arr[i]) == strLeft && (i+1 < len(arr) && string(arr[i+1]) == strLeft) {
 		isCouple = true
 		duplicateStr = string(arr[i])
-	} else if string(arr[i]) == strRight && (i + 1 < len(arr) && string(arr[i + 1]) == strRight) {
+	} else if string(arr[i]) == strRight && (i+1 < len(arr) && string(arr[i+1]) == strRight) {
 		isCouple = true
 		duplicateStr = string(arr[i])
-	} else if string(arr[i]) == expLeft && (i + 1 < len(arr) && string(arr[i + 1]) == expLeft) {
+	} else if string(arr[i]) == expLeft && (i+1 < len(arr) && string(arr[i+1]) == expLeft) {
 		isCouple = true
 		duplicateStr = string(arr[i])
-	} else if string(arr[i]) == expRight && (i + 1 < len(arr) && string(arr[i + 1]) == expRight) {
+	} else if string(arr[i]) == expRight && (i+1 < len(arr) && string(arr[i+1]) == expRight) {
 		isCouple = true
 		duplicateStr = string(arr[i])
 	}
 
 	return
 }
-

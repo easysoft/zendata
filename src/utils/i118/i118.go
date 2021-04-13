@@ -9,7 +9,6 @@ import (
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"io/ioutil"
-	"path"
 	"path/filepath"
 )
 

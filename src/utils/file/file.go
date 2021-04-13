@@ -97,7 +97,7 @@ func GetAbsolutePath(pth string) string {
 }
 func GetAbsoluteDir(pth string) string {
 	pth = GetAbsolutePath(pth)
-	pth = path.Dir(pth)
+	pth = filepath.Dir(pth)
 	pth = AddSepIfNeeded(pth)
 
 	return pth
