@@ -10,7 +10,6 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"time"
