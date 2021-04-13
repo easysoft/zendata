@@ -258,8 +258,7 @@ function randUint64($maxStrValue){
 
     for($i = 0; $i < strlen($maxStrValue); $i++){
         $maxDigit = $maxStrValue[$i];
-        //if beginning of the result is same than beginning of the max,
-        //we limit random to current char from maximum, or else it can be from 0 to 9
+
         if($result === $maxBegin){
             $result .= random_int(0, $maxDigit);
         }else{
@@ -268,11 +267,7 @@ function randUint64($maxStrValue){
         $maxBegin .= $maxDigit;
     }
 
-    $result = ltrim($result, '0');
-    if($result === ''){
-        $result = '1';
-    }
-
+    $result = '1' . substr($result,1);
     return intval($result);
 }
 
