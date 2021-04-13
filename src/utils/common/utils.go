@@ -45,11 +45,11 @@ func GetOs() string {
 	if osName == "darwin" {
 		return "mac"
 	} else {
-		return osName
+		return strings.Replace(osName, "windows", "win", 1)
 	}
 }
 func IsWin() bool {
-	return GetOs() == "windows"
+	return GetOs() == "win"
 }
 func IsLinux() bool {
 	return GetOs() == "linux"

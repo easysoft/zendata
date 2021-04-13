@@ -32,7 +32,7 @@ func generateBinData(convertFile string) (content, pth string) {
 
 	phpExeFile := "php"
 	if commonUtils.IsWin() { // use build-in php runtime
-		phpExeFile = filepath.Join(vari.ZdPath, "runtime", "php7", "php.exe")
+		phpExeFile = filepath.Join(vari.ZdPath, "runtime", "php", "php7", "php.exe")
 	}
 	cmdStr := phpExeFile + " convert.php"
 	out, _ := shellUtils.ExecInDir(cmdStr, dir)
