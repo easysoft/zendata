@@ -10,6 +10,7 @@ import (
 	"golang.org/x/text/message"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 )
 
 var I118Prt *message.Printer
@@ -30,7 +31,7 @@ func InitI118(lang string) {
 		data, _ := res.Asset(langRes)
 		InitResFromAsset(data)
 	} else {
-		InitRes(path.Join(vari.ZdPath, langRes))
+		InitRes(filepath.Join(vari.ZdPath, langRes))
 	}
 
 	if lang == "zh" {

@@ -13,6 +13,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"path"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -154,7 +155,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 
 	for _, fi := range dir {
 		if fi.IsDir() {
-			GetFilesAndDirs(path.Join(pth, fi.Name()), typ, res)
+			GetFilesAndDirs(filepath.Join(pth, fi.Name()), typ, res)
 		} else {
 			name := fi.Name()
 			fileExt := path.Ext(name)
@@ -162,7 +163,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 				continue
 			}
 
-			file := model.ResFile{Path: path.Join(pth, name), UpdatedAt: fi.ModTime()}
+			file := model.ResFile{Path: filepath.Join(pth, name), UpdatedAt: fi.ModTime()}
 			(*res)[typ] = append((*res)[typ], file)
 		}
 	}

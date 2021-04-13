@@ -247,7 +247,7 @@ func ConvertResYamlPath(from, workDir string) (ret string) {
 			relatPath = file
 		}
 
-		realPth0 := path.Join(workDir, relatPath)
+		realPth0 := filepath.Join(workDir, relatPath)
 		realPth1 := vari.ZdPath + constant.ResDirYaml + constant.PthSep + relatPath
 		realPth2 := vari.ZdPath + constant.ResDirUsers + constant.PthSep + relatPath
 		if FileExist(realPth0) {
@@ -460,7 +460,7 @@ func namedFileExistInDir(file, dir string) (pth string) {
 			return
 		}
 	} else {
-		file = path.Join(dir, file)
+		file = filepath.Join(dir, file)
 		if FileExist(file) {
 			pth = file
 			return

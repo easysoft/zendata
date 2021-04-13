@@ -8,6 +8,7 @@ import (
 	shellUtils "github.com/easysoft/zendata/src/utils/shell"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -32,7 +33,7 @@ func generateBinData(convertFile string) (content, pth string) {
 
 	phpExeFile := "php"
 	if commonUtils.IsWin() { // use build-in php runtime
-		phpExeFile = path.Join(vari.ZdPath, "runtime", "php7", "php.exe")
+		phpExeFile = filepath.Join(vari.ZdPath, "runtime", "php7", "php.exe")
 	}
 	cmdStr := phpExeFile + " convert.php"
 	out, _ := shellUtils.ExecInDir(cmdStr, dir)
@@ -40,14 +41,14 @@ func generateBinData(convertFile string) (content, pth string) {
 		logUtils.PrintTo(out)
 	}
 
-	pth = path.Join(dir, bufFile)
+	pth = filepath.Join(dir, bufFile)
 
 	return
 }
 
 func generateConverter(dir string) (pth string) {
-	srcFile := path.Join(vari.ZdPath, "runtime", "protobuf", "convert.php")
-	pth = path.Join(dir, "convert.php")
+	srcFile := filepath.Join(vari.ZdPath, "runtime", "protobuf", "convert.php")
+	pth = filepath.Join(dir, "convert.php")
 
 	content := fileUtils.ReadFile(srcFile)
 	content = strings.ReplaceAll(content, "${cls_name}", vari.ProtoCls)
@@ -58,7 +59,7 @@ func generateConverter(dir string) (pth string) {
 }
 
 func generateCls(protoFile string) (ret string) {
-	outputDir := path.Join(fileUtils.GetAbsoluteDir(protoFile), outputDir)
+	outputDir := filepath.Join(fileUtils.GetAbsoluteDir(protoFile), outputDir)
 	fileUtils.RmFile(outputDir)
 	fileUtils.MkDirIfNeeded(outputDir)
 
@@ -69,7 +70,7 @@ func generateCls(protoFile string) (ret string) {
 		execFile += ".exe"
 	}
 
-	execFile = path.Join(vari.ZdPath, "runtime", "protobuf", "bin", platform, execFile)
+	execFile = filepath.Join(vari.ZdPath, "runtime", "protobuf", "bin", platform, execFile)
 
 	cmdStr := fmt.Sprintf("%s --php_out=%s %s", execFile, outputDir, protoFile)
 	shellUtils.Exec(cmdStr)

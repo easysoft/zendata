@@ -17,7 +17,6 @@ import (
 	"log"
 	"os"
 	"os/user"
-	"path"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -55,7 +54,7 @@ func InitConfig(root string) {
 	} else {
 		vari.ZdPath = fileUtils.GetExeDir()
 	}
-	if !fileUtils.FileExist(path.Join(vari.ZdPath, "tmp", "cache")) {
+	if !fileUtils.FileExist(filepath.Join(vari.ZdPath, "tmp", "cache")) {
 		log.Println(fmt.Sprintf("%s is not a vaild ZenData dir.", vari.ZdPath), color.FgRed)
 		os.Exit(1)
 	}
