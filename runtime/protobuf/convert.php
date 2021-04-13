@@ -155,8 +155,8 @@ function getRandValByType($type)
         return $ret;
 
     } else if ($type === 'int64' || $type === 'sint64' || $type === 'sfixed64') { // go int64 : integer/string
-        $ret = rand() << 32 | rand(); //    6571882023217245969
-        //   -3451450498452162931
+        $ret = randUint64('9223372036854775807');
+
         $sign = rand(0, 1);
         if ($sign == 0) {
             $ret *= -1;
@@ -164,8 +164,7 @@ function getRandValByType($type)
         return $ret;
 
     } else if ($type === 'uint64' || $type === 'fixed64') { // go uint64 : integer
-        $ret = rand() << 32 | rand(); //    8252018705439509776
-        $ret = ($ret - 1) * 2;
+        $ret = randUint64('18446744073709551615');
         return $ret;
 
     }
@@ -251,6 +250,30 @@ function getRandStr($length = 10)
         $string .= substr($chars, (rand() % (strlen($chars))), 1);
     }
     return ($string);
+}
+
+function randUint64($maxStrValue){
+    $result = '';
+    $maxBegin = '';
+
+    for($i = 0; $i < strlen($maxStrValue); $i++){
+        $maxDigit = $maxStrValue[$i];
+        //if beginning of the result is same than beginning of the max,
+        //we limit random to current char from maximum, or else it can be from 0 to 9
+        if($result === $maxBegin){
+            $result .= random_int(0, $maxDigit);
+        }else{
+            $result .= random_int(0, 9);
+        }
+        $maxBegin .= $maxDigit;
+    }
+
+    $result = ltrim($result, '0');
+    if($result === ''){
+        $result = '1';
+    }
+
+    return intval($result);
 }
 
 function getRandFloat($min = 0, $max = 1)
