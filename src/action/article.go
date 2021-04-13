@@ -8,8 +8,11 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"gopkg.in/yaml.v3"
 	"path/filepath"
-	"strings"
 	"time"
+)
+
+const (
+	maxLen = 10
 )
 
 func ParseArticle(file string, out string) {
@@ -38,14 +41,19 @@ func ParseArticle(file string, out string) {
 }
 
 func replaceWords(content string, words map[string]string) (ret string) {
-	maxLen := 6
-	ret = content
 
 	runeArr := []rune(content)
+	newRuneArr := make([]rune, 0)
+	lastUsedWordOfCategoryMap := map[string]string{}
 	for i := 0; i < len(runeArr); {
 		found := false
 		for j := maxLen; j >= 0; j-- {
-			chars := runeArr[i : i+j]
+			end := i + j
+			if end > len(runeArr) {
+				end = len(runeArr)
+			}
+
+			chars := runeArr[i:end]
 			str := ""
 			for _, char := range chars {
 				str += string(char)
@@ -53,17 +61,33 @@ func replaceWords(content string, words map[string]string) (ret string) {
 
 			val, ok := words[str]
 			if ok {
-				ret = strings.Replace(ret, str, "["+val+"]", 1)
-				i = i + j
+				lastOne, ok := lastUsedWordOfCategoryMap[val]
+
+				new := ""
+				if ok && lastOne == str {
+					new = "(" + val + ")"
+				} else {
+					new = "[" + val + "]"
+				}
+				itemArr := []rune(new)
+				newRuneArr = append(newRuneArr, itemArr...)
+
+				lastUsedWordOfCategoryMap[val] = str // update
+
+				i = end
 				found = true
 				break
 			}
 		}
 
 		if !found {
+			newRuneArr = append(newRuneArr, runeArr[i])
+
 			i++
 		}
 	}
+
+	ret = string(newRuneArr)
 
 	return
 }

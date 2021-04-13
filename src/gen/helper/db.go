@@ -64,8 +64,18 @@ func LoadAllWords() (ret map[string]string) {
 			return
 		}
 
-		for index, v := range values {
-			item := v.(*string)
+		//for index, v := range values {
+		//	item := v.(*string)
+		//	if *item == "y" {
+		//		key := values[1].(*string)
+		//		ret[*key] = colIndexToName[index]
+		//		break
+		//	}
+		//}
+
+		for index := len(values) - 1; index >= 0; index-- {
+			val := values[index]
+			item := val.(*string)
 			if *item == "y" {
 				key := values[1].(*string)
 				ret[*key] = colIndexToName[index]
