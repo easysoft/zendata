@@ -12,7 +12,6 @@ import (
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"path"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -49,7 +48,7 @@ func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWid
 
 		for _, item := range res[key] {
 			pth := item.Path
-			fileExt := path.Ext(pth)
+			fileExt := filepath.Ext(pth)
 			isArticleFiles := false
 			var title, desc, tp string
 
@@ -158,7 +157,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 			GetFilesAndDirs(filepath.Join(pth, fi.Name()), typ, res)
 		} else {
 			name := fi.Name()
-			fileExt := path.Ext(name)
+			fileExt := filepath.Ext(name)
 			if fileExt != ".yaml" && fileExt != ".xlsx" && fileExt != ".txt" {
 				continue
 			}

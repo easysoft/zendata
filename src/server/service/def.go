@@ -13,7 +13,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -294,8 +294,8 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 		if len(rangeSections) > 0 {
 			rangeSection := rangeSections[0]                                   // deal with yaml and text refer using range prop
 			desc, step, count, countTag := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
-			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
-				if path.Ext(desc) == ".txt" { // dir/users.txt:2
+			if filepath.Ext(desc) == ".txt" || filepath.Ext(desc) == ".yaml" {
+				if filepath.Ext(desc) == ".txt" { // dir/users.txt:2
 					refer.Type = constant.ResTypeText
 
 					if strings.ToLower(step) == "r" {
@@ -304,7 +304,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 						refer.Step, _ = strconv.Atoi(step)
 					}
 
-				} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
+				} else if filepath.Ext(desc) == ".yaml" { // dir/content.yaml{3}
 					refer.Type = constant.ResTypeYaml
 
 					refer.Count = count

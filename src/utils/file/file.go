@@ -110,7 +110,7 @@ func GetRelatPath(pth string) string {
 }
 
 func IsAbsPath(pth string) bool {
-	return path.IsAbs(pth) ||
+	return filepath.IsAbs(pth) ||
 		strings.Index(pth, ":") == 1 // windows
 }
 
@@ -364,7 +364,7 @@ func GetFilesByExtInDir(folder, ext string, files *[]string) {
 	folder, _ = filepath.Abs(folder)
 
 	if !IsDir(folder) {
-		if ext == "" || path.Ext(folder) == ext {
+		if ext == "" || filepath.Ext(folder) == ext {
 			*files = append(*files, folder)
 		}
 
@@ -385,15 +385,15 @@ func GetFilesByExtInDir(folder, ext string, files *[]string) {
 		filePath := AddSepIfNeeded(folder) + name
 		if fi.IsDir() {
 			GetFilesByExtInDir(filePath, ext, files)
-		} else if strings.Index(name, "~") != 0 && (ext == "" || path.Ext(filePath) == ext) {
+		} else if strings.Index(name, "~") != 0 && (ext == "" || filepath.Ext(filePath) == ext) {
 			*files = append(*files, filePath)
 		}
 	}
 }
 
 func GetFileName(filePath string) string {
-	fileName := path.Base(filePath)
-	fileName = strings.TrimSuffix(fileName, path.Ext(filePath))
+	fileName := filepath.Base(filePath)
+	fileName = strings.TrimSuffix(fileName, filepath.Ext(filePath))
 
 	return fileName
 }
@@ -402,7 +402,7 @@ func GetFilesInDir(folder, ext string, files *[]string) {
 	folder, _ = filepath.Abs(folder)
 
 	if !IsDir(folder) {
-		if path.Ext(folder) == ext {
+		if filepath.Ext(folder) == ext {
 			*files = append(*files, folder)
 		}
 
@@ -423,14 +423,14 @@ func GetFilesInDir(folder, ext string, files *[]string) {
 		filePath := AddSepIfNeeded(folder) + name
 		if fi.IsDir() {
 			GetFilesInDir(filePath, ext, files)
-		} else if strings.Index(name, "~") != 0 && path.Ext(filePath) == ext {
+		} else if strings.Index(name, "~") != 0 && filepath.Ext(filePath) == ext {
 			*files = append(*files, filePath)
 		}
 	}
 }
 
 func ChangeFileExt(filePath, ext string) string {
-	ret := strings.TrimSuffix(filePath, path.Ext(filePath))
+	ret := strings.TrimSuffix(filePath, filepath.Ext(filePath))
 	ret += ext
 
 	return ret
@@ -473,8 +473,8 @@ func namedFileExistInDir(file, dir string) (pth string) {
 func GenArticleFiles(pth string, index int) (ret string) {
 	postfix := fmt.Sprintf("%03d", index+1)
 
-	ret = strings.TrimSuffix(pth, path.Ext(pth))
-	ret += "-" + postfix + path.Ext(pth)
+	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
+	ret += "-" + postfix + filepath.Ext(pth)
 
 	return
 }

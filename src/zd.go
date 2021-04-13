@@ -233,7 +233,7 @@ func toGen() {
 			fileUtils.MkDirIfNeeded(filepath.Dir(output))
 			fileUtils.RemoveExist(output)
 
-			ext := strings.ToLower(path.Ext(output))
+			ext := strings.ToLower(filepath.Ext(output))
 			if len(ext) > 1 {
 				ext = strings.TrimLeft(ext, ".")
 			}

@@ -8,7 +8,6 @@ import (
 	"math/rand"
 	"net"
 	"os"
-	"path"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -19,7 +18,7 @@ import (
 
 func Base(pathStr string) string {
 	pathStr = filepath.ToSlash(pathStr)
-	return path.Base(pathStr)
+	return filepath.Base(pathStr)
 }
 
 func RemoveBlankLine(str string) string {

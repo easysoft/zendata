@@ -11,6 +11,7 @@ import (
 	"github.com/easysoft/zendata/src/utils/vari"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -24,7 +25,7 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 	}
 
 	count := 0
-	if strings.ToLower(path.Ext(configFile)) == "."+constant.FormatProto { //gen from protobuf
+	if strings.ToLower(filepath.Ext(configFile)) == "."+constant.FormatProto { //gen from protobuf
 		buf, pth := gen.GenerateProtobuf(configFile)
 
 		if vari.Verbose {

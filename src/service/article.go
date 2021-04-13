@@ -8,7 +8,6 @@ import (
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	_ "github.com/mattn/go-sqlite3"
 	"gopkg.in/yaml.v3"
-	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -86,7 +85,7 @@ func convertSentYaml(filePath, dist string) (yamlPaths []string) {
 			content = strings.Replace(content, "xfields", "\nfields", -1)
 
 			yamlPath := fileUtils.AddSepIfNeeded(dist) +
-				fileUtils.ChangeFileExt(path.Base(filePath), "-") + fileSeq + ".yaml"
+				fileUtils.ChangeFileExt(filepath.Base(filePath), "-") + fileSeq + ".yaml"
 			fileUtils.WriteFile(yamlPath, content)
 
 			yamlPaths = append(yamlPaths, yamlPath)
@@ -115,7 +114,7 @@ func convertMainYaml(yamlPaths []string, filePath, dist string) {
 	content = string(bytes)
 	content = strings.Replace(content, "xfields", "\nfields", -1)
 
-	yamlPath := fileUtils.AddSepIfNeeded(dist) + fileUtils.ChangeFileExt(path.Base(filePath), ".yaml")
+	yamlPath := fileUtils.AddSepIfNeeded(dist) + fileUtils.ChangeFileExt(filepath.Base(filePath), ".yaml")
 	fileUtils.WriteFile(yamlPath, content)
 
 	relatPath := fileUtils.GetRelatPath(yamlPath)

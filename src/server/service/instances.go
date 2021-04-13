@@ -14,7 +14,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
-	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -260,8 +260,8 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
 			desc, step, count, countTag := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
-			if path.Ext(desc) == ".txt" || path.Ext(desc) == ".yaml" {
-				if path.Ext(desc) == ".txt" { // dir/users.txt:2
+			if filepath.Ext(desc) == ".txt" || filepath.Ext(desc) == ".yaml" {
+				if filepath.Ext(desc) == ".txt" { // dir/users.txt:2
 					refer.Type = constant.ResTypeText
 
 					if strings.ToLower(step) == "r" {
@@ -270,7 +270,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 						refer.Step, _ = strconv.Atoi(step)
 					}
 
-				} else if path.Ext(desc) == ".yaml" { // dir/content.yaml{3}
+				} else if filepath.Ext(desc) == ".yaml" { // dir/content.yaml{3}
 					refer.Type = constant.ResTypeYaml
 
 					refer.Count = count
