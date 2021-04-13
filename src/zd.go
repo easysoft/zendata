@@ -221,7 +221,12 @@ func toGen() {
 		action.Generate(defaultFile, configFile, fields, format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeParse {
-		action.ParseSql(input, output)
+		ext := filepath.Ext(input)
+		if ext == ".sql" {
+			action.ParseSql(input, output)
+		} else if ext == ".txt" {
+			action.ParseArticle(input, output)
+		}
 
 	} else if vari.RunMode == constant.RunModeGen {
 		if vari.Human {

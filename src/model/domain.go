@@ -59,6 +59,15 @@ type DefField struct {
 	Froms []DefField `yaml:"froms,flow,omitempty"`
 }
 
+type DefArticle struct {
+	Author  string `yaml:"author"`
+	From    string `yaml:"from"`
+	Title   string `yaml:"title"`
+	Type    string `yaml:"type"`
+	Version string `yaml:"version"`
+	Content string `yaml:"content"`
+}
+
 // base struct
 type FieldBase struct {
 	FieldSimple `yaml:",inline"`

@@ -50,20 +50,46 @@ func genArticle(content string, dataMap map[string][]string, nameMap map[string]
 			if indexMap[slotName] < 0 {
 				indexMap[slotName] = 0
 			}
-			index := indexMap[slotName] % len(dataMap[slotName])
-			value = dataMap[slotName][index]
+
+			mode := len(dataMap[slotName])
+			if mode == 0 {
+				mode = 1
+			}
+			index := indexMap[slotName] % mode
+
+			dt, ok := dataMap[slotName]
+			if ok {
+				value = dt[index]
+			}
 
 		} else if string(tag) == "[" {
 			mode = "seq"
 
 			indexMap[slotName] = indexMap[slotName] + 1
 
-			index := indexMap[slotName] % len(dataMap[slotName])
-			value = dataMap[slotName][index]
+			mode := len(dataMap[slotName])
+			if mode == 0 {
+				mode = 1
+			}
+			index := indexMap[slotName] % mode
+
+			dt, ok := dataMap[slotName]
+			if ok {
+				value = dt[index]
+			}
 
 		} else if string(tag) == "{" {
 			mode = "rand"
-			value = dataMap[slotName][commonUtils.RandNum(len(dataMap[slotName]))]
+
+			mode := len(dataMap[slotName])
+			if mode == 0 {
+				mode = 1
+			}
+
+			dt, ok := dataMap[slotName]
+			if ok {
+				value = dt[commonUtils.RandNum(mode)]
+			}
 		}
 
 		ret = strings.Replace(ret, slotStr, value, 1)
@@ -131,8 +157,13 @@ func getNumMap(content string) (numMap map[string]int, nameMap map[string]string
 
 		arrWithoutComments = append(arrWithoutComments, line)
 
-		regx := regexp.MustCompile(`\{((?U).*)\}`)
-		arr := regx.FindAllStringSubmatch(line, -1)
+		regxSeq := regexp.MustCompile(`\[((?U).*)\]`)
+		arrSeq := regxSeq.FindAllStringSubmatch(line, -1)
+
+		regxRand := regexp.MustCompile(`\{((?U).*)\}`)
+		arrRand := regxRand.FindAllStringSubmatch(line, -1)
+
+		arr := append(arrSeq, arrRand...)
 
 		for _, child := range arr {
 			name := child[1]

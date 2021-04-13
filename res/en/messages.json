@@ -118,6 +118,10 @@
       "translation": "Generate %d yaml files in %s, spend %d secs."
     },
     {
+      "id": "generate_article_templ",
+      "translation": "Generate article template in %s, spend %d secs."
+    },
+    {
       "id": "start_server",
       "translation": "Start ZenData HTTP service, press CTRL+C to exist.\nTo design test data pls access http://%s:%s. \nTo generate data you may call  http://%s:%s/data, for example curl http://%s:%s/data?config=demo/default.yaml&lines=10."
     },

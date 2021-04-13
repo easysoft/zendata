@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	_ "github.com/go-sql-driver/mysql"
@@ -27,6 +28,51 @@ func ExecSql(lines []interface{}) (count int) {
 		conn.Exec(deleteSql)
 	}
 	conn.Exec(sql)
+
+	return
+}
+
+func LoadAllWords() (ret map[string]string) {
+	ret = map[string]string{}
+
+	sqlStr := fmt.Sprintf("SELECT * FROM words_v1")
+	rows, err := vari.DB.Query(sqlStr)
+	defer rows.Close()
+	if err != nil {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
+		return
+	}
+
+	columns, err := rows.Columns()
+	colNum := len(columns)
+
+	colIndexToName := map[int]string{}
+	for index, col := range columns {
+		colIndexToName[index] = col
+	}
+
+	var values = make([]interface{}, colNum)
+	for i, _ := range values {
+		var itf string
+		values[i] = &itf
+	}
+
+	for rows.Next() {
+		err = rows.Scan(values...)
+		if err != nil {
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
+			return
+		}
+
+		for index, v := range values {
+			item := v.(*string)
+			if *item == "y" {
+				key := values[1].(*string)
+				ret[*key] = colIndexToName[index]
+				break
+			}
+		}
+	}
 
 	return
 }
