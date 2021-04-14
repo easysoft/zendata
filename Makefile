@@ -12,7 +12,7 @@ BIN_WIN32=${BIN_OUT}win32/${BINARY}/
 BIN_LINUX=${BIN_OUT}linux/${BINARY}/
 BIN_MAC=${BIN_OUT}mac/${BINARY}/
 
-default: update_version_in_config gen_version_file compile_ui prepare_res compile_all copy_files package
+default: update_version_in_config gen_version_file prepare_res compile_all copy_files package
 
 win64: update_version_in_config gen_version_file prepare_res compile_win64 copy_files package
 win32: update_version_in_config gen_version_file prepare_res compile_win32 copy_files package
@@ -27,6 +27,10 @@ prepare_res:
 	@rm -rf ${BIN_DIR}
 
 compile_all: compile_win64 compile_win32 compile_linux compile_mac
+
+build_ui:
+	@echo 'compile ui'
+	@cd ui && yarn build && cd ..
 
 compile_win64:
 	@echo 'start compile win64'
@@ -46,12 +50,14 @@ compile_mac:
 
 copy_files:
 	@echo 'start copy files'
-	@cp -r {.zd.conf,data,yaml,users,demo} ${BIN_DIR} && rm -rf ${BIN_DIR}/demo/output
+	@cp -r {.zd.conf,data,yaml,users,demo,runtime} ${BIN_DIR}
+	@rm -rf ${BIN_DIR}/demo/out ${BIN_DIR}/yaml/article/chinese/slang/out ${BIN_DIR}/runtime/protobuf/out
 
 	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
 	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
 
-	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}/${BINARY}"; done
+	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/runtime,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}/${BINARY}"; done
+	@rm -rf ${BIN_OUT}linux/${BINARY}/runtime ${BIN_OUT}mac/${BINARY}/runtime
 
 package:
 	@echo 'start package'
@@ -74,10 +80,6 @@ gen_version_file:
 	@echo 'gen version'
 	@mkdir -p ${QINIU_DIR}/${PROJECT}/
 	@echo ${VERSION} > ${QINIU_DIR}/${PROJECT}/version.txt
-
-compile_ui:
-	@echo 'compile ui'
-	@cd ui && yarn build && cd ..
 
 upload_to:
 	@echo 'upload...'

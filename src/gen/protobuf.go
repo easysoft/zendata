@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	outputDir = "output"
+	outputDir = "out"
 	bufFile   = "data.bin"
 )
 
