@@ -225,7 +225,7 @@
 
     {
       "id": "protobuf_path",
-      "translation": "protobuf二进制内容已写入文件%s。"
+      "translation": "ProtoBuf二进制内容已写入文件%s。"
     }
   ]
 }

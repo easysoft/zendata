@@ -234,7 +234,7 @@
 
     {
       "id": "protobuf_path",
-      "translation": "Protobuf data write to file %s."
+      "translation": "ProtoBuf data write to file %s."
     }
   ]
 }

@@ -1,0 +1,13 @@
+title: Person
+desc: ""
+author: ProtoBuf
+version: "1.0"
+fields:
+- field: Name # user/address/street
+  range: [1-9]{5}
+- field: Age
+  range: '-'
+- field: Gender
+  range: '-'
+- field: Address
+  range: '-'

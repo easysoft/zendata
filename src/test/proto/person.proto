@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "dist";
+
+enum Gender {
+  M = 0;
+  F = 1;
+}
+
+message Person {
+  string name = 1; // fdsfudsf
+  int32 age = 2;
+  Gender gender = 3;
+  Address address = 4;
+}
+
+message Address {
+  string city = 1;
+  repeated string places = 2;
+  Obj child = 3;
+}
+
+message Obj {
+  string name = 1;
+}
