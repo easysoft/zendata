@@ -6,13 +6,17 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"gopkg.in/yaml.v3"
 	"path/filepath"
 	"time"
 )
 
-const (
-	maxLen = 10
+var (
+	MaxLen = 10
+
+	IgnoreWords      = []string{"了", "的"}
+	IgnoreCategories = []string{"介词"}
 )
 
 func ParseArticle(file string, out string) {
@@ -41,13 +45,12 @@ func ParseArticle(file string, out string) {
 }
 
 func replaceWords(content string, words map[string]string) (ret string) {
-
 	runeArr := []rune(content)
 	newRuneArr := make([]rune, 0)
 	lastUsedWordOfCategoryMap := map[string]string{}
 	for i := 0; i < len(runeArr); {
 		found := false
-		for j := maxLen; j >= 0; j-- {
+		for j := MaxLen; j >= 0; j-- {
 			end := i + j
 			if end > len(runeArr) {
 				end = len(runeArr)
@@ -61,22 +64,28 @@ func replaceWords(content string, words map[string]string) (ret string) {
 
 			val, ok := words[str]
 			if ok {
-				lastOne, ok := lastUsedWordOfCategoryMap[val]
-
-				new := ""
-				if ok && lastOne == str {
-					new = "(" + val + ")"
-				} else {
-					new = "[" + val + "]"
+				if str == "有" {
+					logUtils.PrintTo("")
 				}
-				itemArr := []rune(new)
-				newRuneArr = append(newRuneArr, itemArr...)
 
-				lastUsedWordOfCategoryMap[val] = str // update
+				if !ignoreToReplace(str, val) {
+					lastOne, ok := lastUsedWordOfCategoryMap[val]
 
-				i = end
-				found = true
-				break
+					new := ""
+					if ok && lastOne == str {
+						new = "(" + val + ")"
+					} else {
+						new = "{" + val + "}"
+					}
+					itemArr := []rune(new)
+					newRuneArr = append(newRuneArr, itemArr...)
+
+					lastUsedWordOfCategoryMap[val] = str // update
+
+					i = end
+					found = true
+					break
+				}
 			}
 		}
 
@@ -90,4 +99,19 @@ func replaceWords(content string, words map[string]string) (ret string) {
 	ret = string(newRuneArr)
 
 	return
+}
+
+func ignoreToReplace(val, category string) bool {
+	if stringUtils.StrInArr(val, IgnoreWords) {
+		return true
+	}
+	if stringUtils.StrInArr(category, IgnoreCategories) {
+		return true
+	}
+
+	//if category == "姓" || category == "名字" {
+	//	return true
+	//}
+
+	return false
 }

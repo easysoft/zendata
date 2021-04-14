@@ -501,7 +501,9 @@ func importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]
 				if colIndex == 0 { // word
 					record["词语"] = val
 				} else {
-					if val != "y" && val != "b" && val != "f" && val != "m" {
+					if val == "y" || val == "b" || val == "f" || val == "m" {
+						val = "y"
+					} else {
 						val = ""
 					}
 

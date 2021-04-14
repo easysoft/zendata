@@ -6,10 +6,15 @@ import (
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
+	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	_ "github.com/go-sql-driver/mysql"
 	"regexp"
 	"strings"
+)
+
+var (
+	IgnoreCategories = []string{"姓", "名字"}
 )
 
 func ExecSql(lines []interface{}) (count int) {
@@ -76,9 +81,13 @@ func LoadAllWords() (ret map[string]string) {
 		for index := len(values) - 1; index >= 0; index-- {
 			val := values[index]
 			item := val.(*string)
+
 			if *item == "y" {
 				key := values[1].(*string)
-				ret[*key] = colIndexToName[index]
+				if !stringUtils.StrInArr(colIndexToName[index], IgnoreCategories) {
+					ret[*key] = colIndexToName[index]
+				}
+
 				break
 			}
 		}
