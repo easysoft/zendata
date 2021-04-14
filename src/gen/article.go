@@ -40,13 +40,10 @@ func genArticle(content string, dataMap map[string][]string, nameMap map[string]
 		slotStr := child[0]
 		slotName := child[1]
 
-		mode := ""
 		tag := slotStr[0]
 		value := ""
 
-		if string(tag) == "(" {
-			mode = "fix"
-
+		if string(tag) == "(" { // fixed
 			if indexMap[slotName] < 0 {
 				indexMap[slotName] = 0
 			}
@@ -58,13 +55,11 @@ func genArticle(content string, dataMap map[string][]string, nameMap map[string]
 			index := indexMap[slotName] % mode
 
 			dt, ok := dataMap[slotName]
-			if ok {
+			if ok && len(dt) > 0 {
 				value = dt[index]
 			}
 
-		} else if string(tag) == "[" {
-			mode = "seq"
-
+		} else if string(tag) == "[" { // seq
 			indexMap[slotName] = indexMap[slotName] + 1
 
 			mode := len(dataMap[slotName])
@@ -74,27 +69,23 @@ func genArticle(content string, dataMap map[string][]string, nameMap map[string]
 			index := indexMap[slotName] % mode
 
 			dt, ok := dataMap[slotName]
-			if ok {
+			if ok && len(dt) > 0 {
 				value = dt[index]
 			}
 
-		} else if string(tag) == "{" {
-			mode = "rand"
-
+		} else if string(tag) == "{" { // random
 			mode := len(dataMap[slotName])
 			if mode == 0 {
 				mode = 1
 			}
 
 			dt, ok := dataMap[slotName]
-			if ok {
+			if ok && len(dt) > 0 {
 				value = dt[commonUtils.RandNum(mode)]
 			}
 		}
 
 		ret = strings.Replace(ret, slotStr, value, 1)
-		mode = mode
-		//logUtils.PrintTo(fmt.Sprintf("%s, %s, %s, %s", mode, slotStr, slotName, value))
 	}
 
 	return
