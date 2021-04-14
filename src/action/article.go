@@ -6,7 +6,6 @@ import (
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
-	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"gopkg.in/yaml.v3"
 	"path/filepath"
 	"time"
@@ -14,9 +13,6 @@ import (
 
 var (
 	MaxLen = 10
-
-	IgnoreWords      = []string{"了", "的"}
-	IgnoreCategories = []string{"介词"}
 )
 
 func ParseArticle(file string, out string) {
@@ -68,24 +64,22 @@ func replaceWords(content string, words map[string]string) (ret string) {
 					logUtils.PrintTo("")
 				}
 
-				if !ignoreToReplace(str, val) {
-					lastOne, ok := lastUsedWordOfCategoryMap[val]
+				lastOne, ok := lastUsedWordOfCategoryMap[val]
 
-					new := ""
-					if ok && lastOne == str {
-						new = "(" + val + ")"
-					} else {
-						new = "{" + val + "}"
-					}
-					itemArr := []rune(new)
-					newRuneArr = append(newRuneArr, itemArr...)
-
-					lastUsedWordOfCategoryMap[val] = str // update
-
-					i = end
-					found = true
-					break
+				new := ""
+				if ok && lastOne == str {
+					new = "(" + val + ")"
+				} else {
+					new = "{" + val + "}"
 				}
+				itemArr := []rune(new)
+				newRuneArr = append(newRuneArr, itemArr...)
+
+				lastUsedWordOfCategoryMap[val] = str // update
+
+				i = end
+				found = true
+				break
 			}
 		}
 
@@ -99,19 +93,4 @@ func replaceWords(content string, words map[string]string) (ret string) {
 	ret = string(newRuneArr)
 
 	return
-}
-
-func ignoreToReplace(val, category string) bool {
-	if stringUtils.StrInArr(val, IgnoreWords) {
-		return true
-	}
-	if stringUtils.StrInArr(category, IgnoreCategories) {
-		return true
-	}
-
-	//if category == "姓" || category == "名字" {
-	//	return true
-	//}
-
-	return false
 }

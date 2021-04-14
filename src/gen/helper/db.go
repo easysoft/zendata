@@ -14,7 +14,8 @@ import (
 )
 
 var (
-	IgnoreCategories = []string{"姓", "名字"}
+	IgnoreWords      = []string{"了", "的"}
+	IgnoreCategories = []string{"姓", "名字", "介词"}
 )
 
 func ExecSql(lines []interface{}) (count int) {
@@ -84,7 +85,8 @@ func LoadAllWords() (ret map[string]string) {
 
 			if *item == "y" {
 				key := values[1].(*string)
-				if !stringUtils.StrInArr(colIndexToName[index], IgnoreCategories) {
+				if !stringUtils.StrInArr(colIndexToName[index], IgnoreCategories) &&
+					!stringUtils.StrInArr(*key, IgnoreWords) {
 					ret[*key] = colIndexToName[index]
 				}
 
