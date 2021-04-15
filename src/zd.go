@@ -48,8 +48,6 @@ var (
 	format = constant.FormatText
 	decode bool
 
-	article string
-
 	listData bool
 	listRes  bool
 	view     string
@@ -105,9 +103,6 @@ func main() {
 
 	flagSet.BoolVar(&decode, "D", false, "")
 	flagSet.BoolVar(&decode, "decode", false, "")
-
-	flagSet.StringVar(&article, "a", "", "")
-	flagSet.StringVar(&article, "article", "", "")
 
 	flagSet.StringVar(&vari.Ip, "b", "", "")
 	flagSet.StringVar(&vari.Ip, "bind", "", "")
@@ -181,9 +176,6 @@ func main() {
 				return
 			} else if decode {
 				gen.Decode(defaultFile, configFile, fields, input, output)
-				return
-			} else if article != "" {
-				service.ConvertArticle(article, output)
 				return
 			}
 

@@ -22,7 +22,7 @@ Parameters:
   -R  --root       The root directory when generate data OR running HTTP. The client can call the config file under the root directory.
                    If not specified, take the directory where the zd executable file is located.
 
-  -i  --input      Specify a sql schema file and output the YAML config file for each table.
+  -i  --input      Specify a sql schema OR article text file, used to generate YAML config file for it.
                    You need to specify an output directory by using -o.
   -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
                    Also you can output the readable format via -H.
@@ -48,8 +48,8 @@ $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # Output th
 $>zd.exe -d demo\default.yaml -o test.sql -t user -s mysql --trim    # Remove the prefix and postfix of every field.
 
 $>zd.exe -i demo\zentao.sql -o db                   # Generate YAML files for each table by parsing zentao.sql.
+$>zd.exe -i demo\article.txt  -o demo               # Convert article text to yaml config file in demo dir.
 $>zd.exe -c demo\default.yaml -i test.txt --decode  # Parse the file specified by -i according to the config of -d.
-$>zd.exe -a demo\article.txt  -o demo               # Convert article to yaml config file in demo dir.
 
 $>zd.exe -l                             # List all build-in data types.
 $>zd.exe -v address.cn.v1               # View data types in build-in Excel file data\address\cn.v1.xlsx.
