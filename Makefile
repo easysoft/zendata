@@ -57,7 +57,19 @@ copy_files:
 	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
 
 	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/runtime,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}/${BINARY}"; done
-	@rm -rf ${BIN_OUT}linux/${BINARY}/runtime ${BIN_OUT}mac/${BINARY}/runtime
+
+	@rm -rf ${BIN_OUT}linux/${BINARY}/runtime/php \
+		${BIN_OUT}linux/${BINARY}/runtime/protobuf/bin/mac \
+		${BIN_OUT}linux/${BINARY}/runtime/protobuf/bin/win*
+	@rm -rf ${BIN_OUT}mac/${BINARY}/runtime/php \
+		${BIN_OUT}mac/${BINARY}/runtime/protobuf/bin/linux \
+		${BIN_OUT}mac/${BINARY}/runtime/protobuf/bin/win*
+	@rm -rf ${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/mac \
+		${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/linux \
+		${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/win64
+	@rm -rf ${BIN_OUT}win64/${BINARY}/runtime/protobuf/bin/mac \
+		${BIN_OUT}win64/${BINARY}/runtime/protobuf/bin/linux \
+		${BIN_OUT}win64/${BINARY}/runtime/protobuf/bin/win32
 
 package:
 	@echo 'start package'
