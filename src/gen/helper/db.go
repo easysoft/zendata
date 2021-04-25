@@ -104,7 +104,7 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 	)
 
 	// mysql://root:1234@localhost:3306/dbname#utf8
-	reg := regexp.MustCompile(`([a-z,A-Z]+)://(.+):(.+)@(.+):(\d+)/(.+)#(.+)`)
+	reg := regexp.MustCompile(`([a-z,A-Z]+)://(.+):(.*)@(.+):(\d+)/(.+)#(.+)`)
 	arr := reg.FindAllStringSubmatch(dsn, -1)
 
 	if len(arr) == 0 {
