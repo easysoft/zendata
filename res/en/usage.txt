@@ -10,6 +10,7 @@ Parameters:
 
   -F  --field      This parameter can be used to specify the fields, separated by commas. The default is all fields.
   -t  --table      If the output format is sql, using it to specify the table name to insert data to.
+      --dns        Specify MySQL data source connection string, used to insert data to table directly.
   -T  --trim       Remove the prefix and postfix of every field when outputting data or decode data to json string.
   -H  --human      Output a readable format, print the field name, and use the tab key to split.
 
@@ -46,6 +47,7 @@ $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  # Output da
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.xml   # Output data in XML.
 $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # Output the sql inserted into the table user.
 $>zd.exe -d demo\default.yaml -o test.sql -t user -s mysql --trim    # Remove the prefix and postfix of every field.
+$>zd.exe -c test\test-sql.yaml -t zendata.table_a --trim -dns mysql://root:P2ssw0rd@127.0.0.1:3306/zendata#utf8 --clear # Insert data to MySQL table.
 
 $>zd.exe -i demo\zentao.sql -o db                   # Generate YAML files for each table by parsing zentao.sql.
 $>zd.exe -i demo\article.txt  -o demo               # Convert article text to yaml config file in demo dir.
