@@ -1,0 +1,13 @@
+title: 数据测试
+desc: 数据测试
+from: email.v1.yaml
+
+fields:
+  - field: email
+    use: western_with_esp
+
+  - field: password
+    range: [P2ssw0rd, pass]
+
+  - field: title
+    range: [首页, 登录]
