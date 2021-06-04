@@ -34,11 +34,11 @@ func generateFloatItemsByStep(start float64, end float64, step float64, precisio
 				arr = append(arr, val)
 
 				total++
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 			}
-			if total > constant.MaxNumb {
+			if total > constant.MaxNumbForLangeRange {
 				break
 			}
 			i++
@@ -55,14 +55,14 @@ func generateFloatItemsByStep(start float64, end float64, step float64, precisio
 
 				arr = append(arr, val)
 
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 				i++
 			}
 
 			total++
-			if total > constant.MaxNumb {
+			if total > constant.MaxNumbForLangeRange {
 				break
 			}
 		}
@@ -90,12 +90,12 @@ func generateFloatItemsRand(start float64, end float64, step float64, precision,
 				arr = append(arr, val)
 
 				total++
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 			}
 
-			if total > constant.MaxNumb {
+			if total > constant.MaxNumbForLangeRange {
 				break
 			}
 			i++
@@ -112,14 +112,14 @@ func generateFloatItemsRand(start float64, end float64, step float64, precision,
 
 				arr = append(arr, val)
 
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 				i++
 			}
 
 			total++
-			if total > constant.MaxNumb {
+			if total > constant.MaxNumbForLangeRange {
 				break
 			}
 		}

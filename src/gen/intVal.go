@@ -28,12 +28,12 @@ func generateIntItemsByStep(start int64, end int64, step int, repeat int, repeat
 				arr = append(arr, val)
 
 				total++
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 			}
 
-			if total >= constant.MaxNumb {
+			if total >= constant.MaxNumbForLangeRange {
 				break
 			}
 			i++
@@ -48,13 +48,13 @@ func generateIntItemsByStep(start int64, end int64, step int, repeat int, repeat
 
 				arr = append(arr, val)
 
-				if total >= constant.MaxNumb {
+				if total >= constant.MaxNumbForLangeRange {
 					break
 				}
 				i++
 			}
 
-			if total >= constant.MaxNumb {
+			if total >= constant.MaxNumbForLangeRange {
 				break
 			}
 		}
@@ -82,12 +82,12 @@ func generateIntItemsRand(start int64, end int64, step int, repeat int, repeatTa
 
 				total++
 
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 			}
 
-			if total > constant.MaxNumb {
+			if total > constant.MaxNumbForLangeRange {
 				break
 			}
 			i++
@@ -103,13 +103,13 @@ func generateIntItemsRand(start int64, end int64, step int, repeat int, repeatTa
 				val := start + rand
 				arr = append(arr, val)
 
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 				i++
 			}
 
-			if total > constant.MaxNumb {
+			if total > constant.MaxNumbForLangeRange {
 				break
 			}
 		}
