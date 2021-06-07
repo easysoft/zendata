@@ -17,16 +17,16 @@ var (
 	csvWriter *csv.Writer
 )
 
-func Write(rows [][]string, format string, table string, colIsNumArr []bool,
+func Write(rows [][]string, table string, colIsNumArr []bool,
 	fields []string) (lines []interface{}) {
 
 	f := excelize.NewFile()
 	index := f.NewSheet(sheetName)
 	f.SetActiveSheet(index)
 
-	if format == constant.FormatExcel {
+	if vari.Format == constant.FormatExcel {
 		printExcelHeader(fields, f)
-	} else if format == constant.FormatCsv {
+	} else if vari.Format == constant.FormatCsv {
 		csvWriter = csv.NewWriter(logUtils.FileWriter)
 	}
 
@@ -41,11 +41,11 @@ func Write(rows [][]string, format string, table string, colIsNumArr []bool,
 				//col = stringUtils.AddPad(col, field)
 			}
 
-			if format == constant.FormatExcel {
+			if vari.Format == constant.FormatExcel {
 				colName, _ := excelize.CoordinatesToCellName(j+1, i+2)
 				f.SetCellValue(sheetName, colName, col)
 
-			} else if format == constant.FormatCsv {
+			} else if vari.Format == constant.FormatCsv {
 				csvRow = append(csvRow, col)
 			}
 		}
@@ -53,9 +53,9 @@ func Write(rows [][]string, format string, table string, colIsNumArr []bool,
 	}
 
 	var err error
-	if format == constant.FormatExcel {
+	if vari.Format == constant.FormatExcel {
 		err = f.SaveAs(logUtils.FilePath)
-	} else if format == constant.FormatCsv {
+	} else if vari.Format == constant.FormatCsv {
 		err = csvWriter.WriteAll(csvData)
 		csvWriter.Flush()
 	}

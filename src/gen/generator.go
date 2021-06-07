@@ -362,6 +362,7 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 	indexOfRow *int, withFix bool) (loopStr string) {
 	prefix := field.Prefix
 	postfix := field.Postfix
+	divider := field.Divider
 
 	for j := 0; j < (*field).LoopIndex; j++ {
 		if loopStr != "" {
@@ -382,6 +383,9 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 	}
 	if withFix && !vari.Trim {
 		loopStr = prefix + loopStr + postfix
+	}
+	if vari.Format == constant.FormatText && !vari.Trim {
+		loopStr += divider
 	}
 
 	return

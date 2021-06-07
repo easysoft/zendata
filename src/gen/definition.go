@@ -195,22 +195,15 @@ func CopyField(child model.DefField, parent *model.DefField) {
 		(*parent).Range = child.Range
 	}
 
-	//if child.Prefix != "" {
 	(*parent).Prefix = child.Prefix
-	//}
-	//if child.Postfix != "" {
 	(*parent).Postfix = child.Postfix
-	//}
+	(*parent).Divider = child.Divider
 
 	if child.Loop != "" {
 		(*parent).Loop = child.Loop
 	}
-	//if child.Loopfix != "" {
 	(*parent).Loopfix = child.Loopfix
-	//}
-	//if child.Format != "" {
 	(*parent).Format = child.Format
-	//}
 
 	if child.From != "" {
 		(*parent).From = child.From

@@ -96,17 +96,6 @@ func InArray(need interface{}, arr []string) bool {
 	return false
 }
 
-func AddPostfix(str string, width int, ch string) string {
-	lent := runewidth.StringWidth(str)
-
-	if width > lent {
-		postFix := strings.Repeat(ch, width-lent)
-		str += postFix
-	}
-
-	return str
-}
-
 func GetNumbWidth(numb int) int {
 	str := strconv.Itoa(numb)
 	width := len(str)

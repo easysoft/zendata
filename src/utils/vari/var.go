@@ -30,6 +30,7 @@ var (
 	Human     bool
 	Trim      bool
 	Recursive bool
+	Format    = constant.FormatText
 
 	Table    string
 	Type     string

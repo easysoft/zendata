@@ -95,6 +95,7 @@ type FieldSimple struct {
 	Value   string `yaml:"value,omitempty"`
 	Prefix  string `yaml:"prefix,omitempty"`
 	Postfix string `yaml:"postfix,omitempty"`
+	Divider string `yaml:"divider,omitempty"`
 	Loop    string `yaml:"loop,omitempty"`
 	Loopfix string `yaml:"loopfix,omitempty"`
 	Format  string `yaml:"format,omitempty"`
@@ -144,11 +145,11 @@ type DefFieldExport struct {
 	Field   string `yaml:"field"`
 	Prefix  string `yaml:"prefix,omitempty"`
 	Postfix string `yaml:"postfix,omitempty"`
-
-	Select string `yaml:"select,omitempty"`
-	Where  string `yaml:"where,omitempty"`
-	Rand   bool   `yaml:"rand"`
-	Limit  int    `yaml:"limit,omitempty"`
+	Divider string `yaml:"divider,omitempty"`
+	Select  string `yaml:"select,omitempty"`
+	Where   string `yaml:"where,omitempty"`
+	Rand    bool   `yaml:"rand"`
+	Limit   int    `yaml:"limit,omitempty"`
 }
 type Article struct {
 	Title   string         `yaml:"title"`

@@ -45,7 +45,6 @@ var (
 	root   string
 	input  string
 	output string
-	format = constant.FormatText
 	decode bool
 
 	listData bool
@@ -209,8 +208,8 @@ func toGen() {
 		startServer() // will init its own db
 
 	} else if vari.RunMode == constant.RunModeServerRequest {
-		format = constant.FormatJson
-		action.Generate(defaultFile, configFile, fields, format, vari.Table)
+		vari.Format = constant.FormatJson
+		action.Generate(defaultFile, configFile, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeParse {
 		ext := filepath.Ext(input)
@@ -234,10 +233,10 @@ func toGen() {
 				ext = strings.TrimLeft(ext, ".")
 			}
 			if stringUtils.InArray(ext, constant.Formats) {
-				format = ext
+				vari.Format = ext
 			}
 
-			if format == constant.FormatExcel {
+			if vari.Format == constant.FormatExcel {
 				logUtils.FilePath = output
 			} else {
 				logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR|os.O_CREATE, 0777)
@@ -245,15 +244,15 @@ func toGen() {
 			}
 		}
 		if vari.DBDsn != "" {
-			format = constant.FormatSql
+			vari.Format = constant.FormatSql
 		}
 
-		if format == constant.FormatSql && vari.Table == "" {
+		if vari.Format == constant.FormatSql && vari.Table == "" {
 			logUtils.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
 			return
 		}
 
-		action.Generate(defaultFile, configFile, fields, format, vari.Table)
+		action.Generate(defaultFile, configFile, fields, vari.Format, vari.Table)
 	}
 
 	tmEnd := time.Now()
@@ -288,7 +287,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
 	defaultFile, configFile, fields, vari.Total,
-		format, vari.Trim, vari.Table, decode, input, output = serverUtils.ParseGenParams(req)
+		vari.Format, vari.Trim, vari.Table, decode, input, output = serverUtils.ParseGenParams(req)
 
 	if decode {
 		gen.Decode(defaultFile, configFile, fields, input, output)

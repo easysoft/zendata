@@ -17,6 +17,7 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 	field.Value = treeNode.Exp
 	field.Prefix = treeNode.Prefix
 	field.Postfix = treeNode.Postfix
+	field.Divider = treeNode.Divider
 	field.Loop = treeNode.Loop
 	field.Loopfix = treeNode.Loopfix
 	field.Format = treeNode.Format

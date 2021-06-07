@@ -35,10 +35,6 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 	for i := 0; i < total; i++ {
 		params := make(map[string]interface{})
 
-		//expr1, err1 := govaluate.NewEvaluableExpression("1+1")
-		//result, err := expr1.Evaluate(params)
-		//fmt.Sprintf("%v, %v, %v", expr1, err1, result)
-
 		for _, items := range arr {
 			fieldName := items[1]
 			referValues := valuesMap[fieldName]

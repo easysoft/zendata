@@ -94,6 +94,7 @@ const locale = {
   'form.content': '内容',
   'form.prefix': '前缀',
   'form.postfix': '后缀',
+  'form.divider': '分隔符',
   'form.loop': '循环',
   'form.loopfix': '间隔符',
   'form.type': '类型',

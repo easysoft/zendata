@@ -46,7 +46,7 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 		}
 
 		if format == constant.FormatExcel || format == constant.FormatCsv { // for excel and cvs
-			gen.Write(rows, format, table, colIsNumArr, fieldsToExport)
+			gen.Write(rows, table, colIsNumArr, fieldsToExport)
 		} else { // returned is for preview, sql exec and article writing
 			lines = gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
 		}

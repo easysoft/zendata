@@ -104,9 +104,6 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 
 		children := field.Fields
 		if len(children) > 0 {
-			//colWithoutFix := col[runewidth.StringWidth(field.Postfix):
-			//	runewidth.StringWidth(col) - runewidth.StringWidth(field.Postfix)]
-
 			rowMapChild := map[string]interface{}{}
 			decodeOneLevel(col, children, &rowMapChild)
 

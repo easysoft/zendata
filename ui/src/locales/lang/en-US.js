@@ -94,6 +94,7 @@ const locale = {
   'form.content': 'Content',
   'form.prefix': 'Prefix',
   'form.postfix': 'Postfix',
+  'form.divider': 'Divider',
   'form.loop': 'Loop',
   'form.loopfix': 'LoopFix',
   'form.type': 'Type',

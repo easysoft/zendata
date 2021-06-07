@@ -14,6 +14,10 @@
           <a-form-model-item prop="postfix">
             <a-input v-model="model.postfix" />
           </a-form-model-item>
+          <span class="input-group-addon">{{$t('form.divider')}}</span>
+          <a-form-model-item prop="divider">
+            <a-input v-model="model.divider" />
+          </a-form-model-item>
         </div>
       </a-form-model-item>
 
@@ -22,9 +26,7 @@
           <a-form-model-item prop="loop">
             <a-input v-model="model.loop" :placeholder="$t('tips.range.int')" />
           </a-form-model-item>
-          <span class="input-group-addon">
-            {{$t('form.loopfix')}}
-          </span>
+          <span class="input-group-addon">{{$t('form.loopfix')}}</span>
           <a-form-model-item prop="loopfix">
             <a-input v-model="model.loopfix" />
           </a-form-model-item>
@@ -119,9 +121,9 @@ export default {
         field: [
           { required: true, message: this.$i18n.t('valid.required'), trigger: 'change' },
         ],
-        loop: [
-          { validator: checkLoop, message: this.$i18n.t('valid.loop.check'), trigger: 'change' },
-        ],
+        // loop: [
+        //   { validator: checkLoop, message: this.$i18n.t('valid.loop.check'), trigger: 'change' },
+        // ],
       },
     };
   },

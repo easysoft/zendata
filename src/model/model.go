@@ -38,6 +38,7 @@ type ZdField struct {
 	Range    string `gorm:"column:range" json:"range"`
 	Prefix   string `gorm:"column:prefix" json:"prefix"`
 	Postfix  string `gorm:"column:postfix" json:"postfix"`
+	Divider  string `gorm:"column:divider" json:"divider"`
 	Loop     string `gorm:"column:loop" json:"loop"`
 	Loopfix  string `gorm:"column:loopfix" json:"loopfix"`
 	Format   string `gorm:"column:format" json:"format"`

@@ -470,10 +470,10 @@ func namedFileExistInDir(file, dir string) (pth string) {
 }
 
 func GenArticleFiles(pth string, index int) (ret string) {
-	postfix := fmt.Sprintf("%03d", index+1)
+	pfix := fmt.Sprintf("%03d", index+1)
 
 	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
-	ret += "-" + postfix + filepath.Ext(pth)
+	ret += "-" + pfix + filepath.Ext(pth)
 
 	return
 }
