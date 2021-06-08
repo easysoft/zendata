@@ -23,13 +23,13 @@ func ParseSql(file string, out string) {
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.FieldSimple{Range: " "}
+			field := model.FieldSimple{Range: "-"}
 			field.Init(col)
 			def.Fields = append(def.Fields, field)
 		}
 
 		bytes, _ := yaml.Marshal(&def)
-		content := string(bytes)
+		content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
 
 		if out != "" {
 			out = fileUtils.AddSepIfNeeded(out)
