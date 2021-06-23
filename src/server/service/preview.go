@@ -69,7 +69,6 @@ func (s *PreviewService) linesToStr(lines []interface{}) (data string) {
 	return
 }
 
-func NewPreviewService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo,
-	instancesRepo *serverRepo.InstancesRepo) *PreviewService {
-	return &PreviewService{defRepo: defRepo, fieldRepo: fieldRepo, instancesRepo: instancesRepo}
+func NewPreviewService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo, referRepo *serverRepo.ReferRepo, instancesRepo *serverRepo.InstancesRepo) *PreviewService {
+	return &PreviewService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo, instancesRepo: instancesRepo}
 }

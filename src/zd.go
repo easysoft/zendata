@@ -351,7 +351,7 @@ func InitServer() (err error) {
 	syncService := serverService.NewSyncService(defService,
 		fieldService, rangesService, instancesService, configService, excelService, textService,
 		referService, resService)
-	previewService := serverService.NewPreviewService(defRepo, fieldRepo, instancesRepo)
+	previewService := serverService.NewPreviewService(defRepo, fieldRepo, referRepo, instancesRepo)
 
 	server := NewServer(config, defService, fieldService, sectionService, referService,
 		rangesService, instancesService, textService, excelService, configService, resService,

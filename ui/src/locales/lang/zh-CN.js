@@ -82,6 +82,8 @@ const locale = {
   'tips.success.to.submit': '提交成功。',
   'tips.zero': '0表示取所有记录',
   'tips.expr': '请输入数学运算表达式，由相同文件中的字段组成，如 "($field_step_negative * $field_nested_range) * -1 + 1000"。',
+  'tips.range.and.refer': '注意：引用和区间之间是互斥的，以最后保存的为准。',
+  'tips.pls.refresh.data': '第一次使用，请点击右上角"刷新数据"按钮。',
 
   'form.name': '名称',
   'form.file': '文件',
@@ -128,10 +130,14 @@ const locale = {
   'form.cancel': '取消',
 
   'valid.required': '该字段不能为空。',
+  'valid.type.empty': '类型不能为空',
+  'valid.number.or.single.letter': '必须是数字或单个字母',
+  'valid.unsigned.integer': '必须是正整数',
+  'valid.number': '必须是数字',
   'valid.loop.check': '需为整数或整数区间。',
   'valid.folder.users': '用户数据必须保存在users/目录下。',
   'valid.folder.yaml': '公用数据必须保存在/yaml目录下。',
-  'valid.folder.data': 'Excel数据必须保存在data/目录下。',
+  'valid.folder.data': 'Excel数据必须保存在data/目录下。'
 
 }
 

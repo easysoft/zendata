@@ -2,6 +2,12 @@
   <div class="panel">
     <a-form-model ref="editForm" :model="refer" :rules="rules">
       <a-row :gutter="colsFull">
+        <a-form-model-item :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <span>{{$t('tips.range.and.refer')}}</span>
+        </a-form-model-item>
+      </a-row>
+
+      <a-row :gutter="colsFull">
         <a-form-model-item :label="$t('form.type')" prop="type" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-select v-model="refer.type" @change="onReferTypeChanged">
             <a-select-option value="config">{{$t('msg.config')}}</a-select-option>

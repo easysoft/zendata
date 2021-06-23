@@ -13,28 +13,32 @@
     <a-row :gutter="10">
       <a-col :span="hasSelected ? 12 : 24">
         <div class="main-table">
-          <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id" :custom-row="customRow">
-            <a slot="recordTitle" slot-scope="text, record" @click="design(record)">{{record.title}}</a>
+          <div v-if="defs.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
 
-            <span slot="folderWithPath" slot-scope="text, record">
-              <a-tooltip placement="top" overlayClassName="tooltip-light">
-                <template slot="title">
-                  <span>{{record.path | replacePathSep}}</span>
-                </template>
-                <a>{{record.path | pathToRelated}}</a>
-              </a-tooltip>
-            </span>
+          <template v-if="defs.length>0">
+            <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id" :custom-row="customRow">
+              <a slot="recordTitle" slot-scope="text, record" @click="design(record)">{{record.title}}</a>
 
-            <span slot="action" slot-scope="record">
-              <a @click="design(record)" :title="$t('action.design')"><Icon type="control" :style="{fontSize: '16px'}" /></a> &nbsp;
-              <a @click="edit(record)" :title="$t('action.edit')"><Icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
-              <a @click="showDeleteConfirm(record)" :title="$t('action.delete')"><Icon type="delete" :style="{fontSize: '16px'}" /></a>
-            </span>
-          </a-table>
+              <span slot="folderWithPath" slot-scope="text, record">
+                <a-tooltip placement="top" overlayClassName="tooltip-light">
+                  <template slot="title">
+                    <span>{{record.path | replacePathSep}}</span>
+                  </template>
+                  <a>{{record.path | pathToRelated}}</a>
+                </a-tooltip>
+              </span>
 
-          <div class="pagination-wrapper">
-            <a-pagination size="small" simple @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
-          </div>
+              <span slot="action" slot-scope="record">
+                <a @click="design(record)" :title="$t('action.design')"><Icon type="control" :style="{fontSize: '16px'}" /></a> &nbsp;
+                <a @click="edit(record)" :title="$t('action.edit')"><Icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
+                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')"><Icon type="delete" :style="{fontSize: '16px'}" /></a>
+              </span>
+            </a-table>
+
+            <div class="pagination-wrapper">
+              <a-pagination size="small" simple @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
+            </div>
+          </template>
         </div>
       </a-col>
       <a-col v-if="hasSelected" :span="12">
@@ -240,4 +244,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.no-data-tips {
+  padding: 15px;
+  text-align: center;
+}
 </style>

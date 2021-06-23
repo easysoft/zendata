@@ -82,6 +82,8 @@ const locale = {
   'tips.success.to.submit': 'Success to submit.',
   'tips.zero': '0 means retrieve all records.',
   'tips.expr': 'You use a expression like "($field_step_negative * $field_nested_range) * -1 + 1000".',
+  'tips.range.and.refer': 'Saved reference settings will overwrite the ones of range.',
+  'tips.pls.refresh.data': 'First time to use, please click "Refresh" button on the top-right corner.',
 
   'form.name': 'Name',
   'form.file': 'File',
@@ -128,6 +130,10 @@ const locale = {
   'form.cancel': 'Cancel',
 
   'valid.required': 'Can not be empty.',
+  'valid.type.empty': 'Type cannot be empty.',
+  'valid.number.or.single.letter': 'Should be a number or single letter.',
+  'valid.unsigned.integer': 'Should be unsigned integer.',
+  'valid.number': 'Should be a number.',
   'valid.loop.check': 'Should be integer or a range of integers',
   'valid.folder.users': 'Data must be saved in users/ dir',
   'valid.folder.yaml': 'YAML must be saved in /yaml',

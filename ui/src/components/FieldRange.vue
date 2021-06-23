@@ -20,19 +20,13 @@
       <a-row v-for="item in sections" :key="item.id" :gutter="cols">
 
         <a-col :span="col">
-          <a-form-model-item prop="type" :wrapperCol="wrapperColFull">
-            <a-select v-model="item.type">
-              <a-select-option value="interval">{{ $t('form.type.interval') }}</a-select-option>
-              <a-select-option value="list">{{ $t('form.type.list') }}</a-select-option>
-              <a-select-option value="literal">{{ $t('form.type.literal') }}</a-select-option>
-            </a-select>
-          </a-form-model-item>
+          <span v-if="item.type=='interval'">{{ $t('form.type.interval') }}</span>
+          <span v-if="item.type=='list'">{{ $t('form.type.list') }}</span>
+          <span v-if="item.type=='literal'">{{ $t('form.type.literal') }}</span>
         </a-col>
 
         <a-col :span="col">
-          <a-form-model-item prop="value" :wrapperCol="wrapperColFull">
-            <a-input v-model="item.value" />
-          </a-form-model-item>
+          <span>{{ item.value }}</span>
         </a-col>
 
         <a-col :span="8">
@@ -62,6 +56,19 @@
         @cancel="cancelSection">
       <div>
         <a-form-model ref="editForm" :model="section" :rules="rules">
+
+          <a-row :gutter="cols">
+            <a-col :span="cols">
+              <a-form-model-item :label="$t('form.type')" prop="type" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+                <a-select v-model="section.type">
+                  <a-select-option value="interval">{{ $t('form.type.interval') }}</a-select-option>
+                  <a-select-option value="list">{{ $t('form.type.list') }}</a-select-option>
+                  <a-select-option value="literal">{{ $t('form.type.literal') }}</a-select-option>
+                </a-select>
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+
           <div v-if="section.type==='interval'">
             <a-row :gutter="cols">
               <a-col :span="cols">
@@ -168,19 +175,22 @@ export default {
       editSectionVisible: false,
 
       rules: {
+        type: [
+          { required: true, message: this.$i18n.t('valid.type.empty'), trigger: 'change' },
+        ],
         start: [
-          { required: true, message: '必须是数字或单个字母', trigger: 'change' },
+          { required: true, message: this.$i18n.t('valid.number.or.single.letter'), trigger: 'change' },
           { validator: this.checkRange, trigger: 'change' },
         ],
         end: [
-          { required: true, message: '必须是数字或单个字母', trigger: 'change' },
+          { required: true, message: this.$i18n.t('valid.number.or.single.letter'), trigger: 'change' },
           { validator: this.checkRange, trigger: 'change' },
         ],
         repeat: [
-          { validator: this.checkRepeat, message: '必须是正整数', trigger: 'change' },
+          { validator: this.checkRepeat, message: this.$i18n.t('valid.unsigned.integer'), trigger: 'change' },
         ],
         step: [
-          { validator: this.checkStep, message: '必须是数字', trigger: 'change' },
+          { validator: this.checkStep, message: this.$i18n.t('valid.number'), trigger: 'change' },
         ],
       },
     };
