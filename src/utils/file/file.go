@@ -147,10 +147,7 @@ func GetExeDir() string { // where zd.exe file in
 			dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
 		}
 	} else { // debug
-		dir, _ = os.Getwd()
-		//if commonUtils.IsMac() {
-		//	dir = "/Users/aaron/rd/project/zentao/go/zd"
-		//}
+		dir = vari.WorkDir
 	}
 
 	dir, _ = filepath.Abs(dir)
