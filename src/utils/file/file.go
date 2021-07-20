@@ -148,9 +148,9 @@ func GetExeDir() string { // where zd.exe file in
 		}
 	} else { // debug
 		dir, _ = os.Getwd()
-		if commonUtils.IsMac() {
-			dir = "/Users/aaron/rd/project/zentao/go/zd"
-		}
+		//if commonUtils.IsMac() {
+		//	dir = "/Users/aaron/rd/project/zentao/go/zd"
+		//}
 	}
 
 	dir, _ = filepath.Abs(dir)
