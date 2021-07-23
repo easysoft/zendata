@@ -52,7 +52,7 @@ func createTimestampSectionValue(section string, values *[]interface{}) {
 	desc, step := parseTsSection(section)
 	start, end := parseTsDesc(desc)
 
-	if step > 0 && start > end {
+	if (step > 0 && start > end) || (step < 0 && start < end) {
 		step *= -1
 	}
 
@@ -77,12 +77,23 @@ func parseTsSection(section string) (desc string, step int) {
 	sectionArr := strings.Split(section, ":")
 	desc = sectionArr[0]
 	step = 1
+	units := []string{"Y", "M", "D", "w", "h", "m", "s"}
 	if len(sectionArr) > 1 {
 		stepStr := sectionArr[1]
-		stepTemp, err := strconv.Atoi(stepStr)
-
-		if err == nil {
-			step = stepTemp
+		if len(stepStr) <= 0 {
+			return
+		}
+		if !strings.HasPrefix(stepStr, "+") && !strings.HasPrefix(stepStr, "-") {
+			stepStr = "+" + stepStr
+		}
+		unit := string(stepStr[len(stepStr)-1])
+		found, _ := stringUtils.FindInArr(unit, units)
+		if !found {
+			stepStr += "s"
+		}
+		stepTemp := increment(0, stepStr)
+		if step != 0 {
+			step = int(stepTemp)
 		}
 	}
 
