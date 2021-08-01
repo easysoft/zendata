@@ -57,7 +57,6 @@ func createTimestampSectionValue(section string, values *[]interface{}) {
 	}
 
 	// get index numbers for data retrieve
-	//numbs := GenerateIntItems(start, end, step, false, 1, "")
 	numbs := GenerateTimeItems(start, end, step, unit, 1, "")
 
 	// generate data by index
@@ -104,12 +103,6 @@ func parseTsDesc(desc string) (start, end int64) {
 
 	start = parseTsValue(startStr, true)
 	end = parseTsValue(endStr, false)
-
-	if start > end {
-		temp := start
-		start = end
-		end = temp
-	}
 
 	//logUtils.PrintTo(
 	//	fmt.Sprintf("From %s to %s",
