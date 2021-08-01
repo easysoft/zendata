@@ -72,16 +72,12 @@ func createTimestampSectionValue(section string, values *[]interface{}) {
 }
 
 func parseTsSection(section string) (desc string, step int, unit string) {
-	section = strings.TrimSpace(section)
+	section = strings.Trim(strings.TrimSpace(section), ":")
 
 	sectionArr := strings.Split(section, ":")
 	desc = sectionArr[0]
-	step = 1
 	if len(sectionArr) > 1 {
 		stepStr := sectionArr[1]
-		if len(stepStr) <= 0 {
-			return
-		}
 		step, unit = parseTsExpr(stepStr)
 		if step == 0 {
 			step = 1
