@@ -5,6 +5,7 @@ version: 1.0
 field: logs
 instances:
   - instance: log
+    note: log
     fields:
     - field: host
       from: ip.v2.yaml
