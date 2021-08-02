@@ -1,4 +1,4 @@
-title: test
+title: Apache Logs
 desc: Apache访问日志 # 127.0.0.1 - - [10/Jan/2021:14:02:05 +0800] "GET /index.php HTTP/1.1" 200 1404 "-" "<AGENT>"
 version: 1.0
 
@@ -33,8 +33,8 @@ instances:
       postfix: " "
       rand: true
 
-    - field: request-size
-      range: []{8},["-"] # 空或-
+    - field: tag
+      range: '[]{8},["-"]' # 空或-
       postfix: " "
       rand: true
 

@@ -20,10 +20,10 @@ var (
 	LanguageEN      = "en"
 	LanguageZH      = "zh"
 
-	EnRes = fmt.Sprintf("res%sen%smessages.json", string(os.PathSeparator), string(os.PathSeparator))
-	ZhRes = fmt.Sprintf("res%szh%smessages.json", string(os.PathSeparator), string(os.PathSeparator))
+	EnRes = fmt.Sprintf("res%sen%smessages.json", PthSep, PthSep)
+	ZhRes = fmt.Sprintf("res%szh%smessages.json", PthSep, PthSep)
 
-	LogDir = fmt.Sprintf("log%s", string(os.PathSeparator))
+	LogDir = fmt.Sprintf("log%s", PthSep)
 
 	LeftWidth = 36
 	MinWidth  = 130

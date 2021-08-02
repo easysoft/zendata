@@ -48,6 +48,7 @@ func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWid
 
 		for _, item := range res[key] {
 			pth := item.Path
+
 			fileExt := filepath.Ext(pth)
 			isArticleFiles := false
 			var title, desc, tp string
@@ -171,9 +172,9 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 func ReadYamlInfo(path string) (title, desc, resType string) {
 	info := model.DefInfo{}
 
-	//if strings.Index(path, "zentao/number/") > -1 {
-	//	log.Println(path)
-	//}
+	if strings.Index(path, "apache") > -1 {
+		logUtils.PrintTo("")
+	}
 
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
