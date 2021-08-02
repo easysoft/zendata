@@ -49,7 +49,7 @@ func convertTmFormat(field *model.DefField) { // to 2006-01-02 15:04:05
 }
 
 func createTimestampSectionValue(section string, values *[]interface{}) {
-	desc, step := parseTsSection(section)
+	desc, step, unit := parseTsSection(section)
 	start, end := parseTsDesc(desc)
 
 	if (step > 0 && start > end) || (step < 0 && start < end) {
@@ -57,7 +57,7 @@ func createTimestampSectionValue(section string, values *[]interface{}) {
 	}
 
 	// get index numbers for data retrieve
-	numbs := GenerateIntItems(start, end, step, false, 1, "")
+	numbs := GenerateTimeItems(start, end, step, unit, 1, "")
 
 	// generate data by index
 	index := 0
@@ -71,29 +71,16 @@ func createTimestampSectionValue(section string, values *[]interface{}) {
 	}
 }
 
-func parseTsSection(section string) (desc string, step int) {
-	section = strings.TrimSpace(section)
+func parseTsSection(section string) (desc string, step int, unit string) {
+	section = strings.Trim(strings.TrimSpace(section), ":")
 
 	sectionArr := strings.Split(section, ":")
 	desc = sectionArr[0]
-	step = 1
-	units := []string{"Y", "M", "D", "w", "h", "m", "s"}
 	if len(sectionArr) > 1 {
 		stepStr := sectionArr[1]
-		if len(stepStr) <= 0 {
-			return
-		}
-		if !strings.HasPrefix(stepStr, "+") && !strings.HasPrefix(stepStr, "-") {
-			stepStr = "+" + stepStr
-		}
-		unit := string(stepStr[len(stepStr)-1])
-		found, _ := stringUtils.FindInArr(unit, units)
-		if !found {
-			stepStr += "s"
-		}
-		stepTemp := increment(0, stepStr)
-		if step != 0 {
-			step = int(stepTemp)
+		step, unit = parseTsExpr(stepStr)
+		if step == 0 {
+			step = 1
 		}
 	}
 
@@ -112,12 +99,6 @@ func parseTsDesc(desc string) (start, end int64) {
 
 	start = parseTsValue(startStr, true)
 	end = parseTsValue(endStr, false)
-
-	if start > end {
-		temp := start
-		start = end
-		end = temp
-	}
 
 	//logUtils.PrintTo(
 	//	fmt.Sprintf("From %s to %s",
@@ -210,46 +191,119 @@ func getTodayTs() (start, end int64) {
 	return
 }
 
-func increment(originalVal int64, incrementStr string) (ret int64) {
-	ret = originalVal
-
+// parse time expression to number and unit
+// example: parseTsExpr("+3w") ->  int(3) and "w"
+func parseTsExpr(incrementStr string) (num int, unit string) {
+	num = 0
+	unit = "s"
 	incrementStr = strings.TrimSpace(incrementStr)
-	if len(incrementStr) < 3 {
+	if len(incrementStr) <= 0 {
 		return
 	}
 
 	units := []string{"Y", "M", "D", "w", "h", "m", "s"}
 
-	unit := string(incrementStr[len(incrementStr)-1])
+	unit = string(incrementStr[len(incrementStr)-1])
 	found, _ := stringUtils.FindInArr(unit, units)
+	end := len(incrementStr) - 1
 	if !found {
-		return
+		unit = "s"
+		end = len(incrementStr)
 	}
 
-	numStr := incrementStr[:len(incrementStr)-1]
-	num, _ := strconv.Atoi(numStr)
+	numStr := incrementStr[:end]
+	num, _ = strconv.Atoi(numStr)
+	return
+}
+
+func incrementUnit(originalVal int64, incNum int, unit string) (ret int64) {
+	ret = originalVal
+
+	start := time.Unix(ret, 0)
+	if incNum == 0 {
+		return
+	}
+	switch unit {
+	case "Y":
+		start = start.AddDate(incNum, 0, 0)
+	case "M":
+		start = start.AddDate(0, incNum, 0)
+	case "D":
+		start = start.AddDate(0, 0, incNum)
+	case "w":
+		start = start.AddDate(0, 0, incNum * 7)
+	case "h":
+		start = start.Add(time.Hour * time.Duration(incNum))
+	case "m":
+		start = start.Add(time.Minute * time.Duration(incNum))
+	case "s":
+		start = start.Add(time.Second * time.Duration(incNum))
+	default:
+	}
+	ret = start.Unix()
+	return
+}
+
+func increment(originalVal int64, incrementStr string) (ret int64) {
+	ret = originalVal
+
+	num, unit := parseTsExpr(incrementStr)
 	if num == 0 {
 		return
 	}
 
-	switch unit {
-	case "Y":
-		ret += int64(num) * 365 * 24 * 60 * 60
-	case "M":
-		ret += int64(num) * 30 * 24 * 60 * 60
-	case "D":
-		ret += int64(num) * 24 * 60 * 60
-	case "w":
-		ret += int64(num) * 7 * 24 * 60 * 60
-	case "h":
-		ret += int64(num) * 60 * 60
-	case "m":
-		ret += int64(num) * 60
-	case "s":
-		ret += int64(num)
-	default:
-
-	}
+	ret = incrementUnit(originalVal, num, unit)
 
 	return
+}
+
+func GenerateTimeItems(start int64, end int64, step int, unit string, repeat int, repeatTag string) []interface{}{
+	arr := make([]interface{}, 0)
+
+	total := 0
+	if repeatTag == "" {
+		for i := 0; true; {
+			val := incrementUnit(start, i * step, unit)
+			//val := start + int64(i*step)
+			if (val >= end && step > 0) || (val <= end && step < 0) {
+				break
+			}
+
+			for round := 0; round < repeat; round++ {
+				arr = append(arr, val)
+
+				total++
+				if total > constant.MaxNumbForLangeRange {
+					break
+				}
+			}
+
+			if total >= constant.MaxNumbForLangeRange {
+				break
+			}
+			i++
+		}
+	} else if repeatTag == "!" {
+		for round := 0; round < repeat; round++ {
+			for i := 0; true; {
+				val := start + incrementUnit(start, i*step, unit)
+				//val := start + int64(i*step)
+				if (val >= end && step > 0) || (val <= end && step < 0) {
+					break
+				}
+
+				arr = append(arr, val)
+
+				if total >= constant.MaxNumbForLangeRange {
+					break
+				}
+				i++
+			}
+
+			if total >= constant.MaxNumbForLangeRange {
+				break
+			}
+		}
+	}
+	return arr
 }
