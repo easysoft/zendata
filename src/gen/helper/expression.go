@@ -141,3 +141,39 @@ func getNumType(str string) (val interface{}, tp string) {
 
 	return
 }
+
+func getValuesType(values []string) (tp string) {
+	tool := map[string]int {
+		"int": 0,
+		"float": 1,
+		"string": 2,
+	}
+	tp = "int"
+	for _, item := range values {
+		_, t := getType(item)
+		if tool[t] > tool[tp] {
+			tp = t
+		}
+		if tp == "string" {
+			break
+		}
+	}
+	return
+}
+
+func getType(str string) (val interface{}, tp string) {
+	val, errInt := strconv.ParseInt(str, 0, 64)
+	if errInt == nil {
+		tp = "int"
+		return
+	}
+
+	val, errFloat := strconv.ParseFloat(str, 64)
+	if errFloat == nil {
+		tp = "float"
+		return
+	}
+	val = str
+	tp = "string"
+	return
+}
