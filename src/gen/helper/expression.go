@@ -16,7 +16,7 @@ import (
 func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (ret []string) {
 	exp := field.Value
 
-	reg := regexp.MustCompile(`\$([_,a-z,A-Z,0-9]+)`)
+	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]+)`)
 	arr := reg.FindAllStringSubmatch(exp, -1)
 
 	total := 1
