@@ -222,6 +222,10 @@
       "id": "print_common_yaml_file",
       "translation": "文件%s是一个普通的数据定义文件，请执行数据生成命令来查看内容。"
     },
+    {
+      "id": "gen_article_must_has_out_param",
+      "translation": "生成文章必须使用-o提供输出参数。"
+    },
 
     {
       "id": "protobuf_path",

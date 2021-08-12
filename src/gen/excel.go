@@ -42,7 +42,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 	// get data by index
 	index := 0
 	for _, numb := range numbs {
-		item := list[numb.(int64)]
+		item := list[numb.(int64)%(int64(len(list)))]
 
 		if index >= constant.MaxNumb {
 			break

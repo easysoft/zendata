@@ -44,7 +44,6 @@ var (
 
 	root   string
 	input  string
-	output string
 	decode bool
 
 	listData bool
@@ -85,8 +84,8 @@ func main() {
 	flagSet.StringVar(&fields, "F", "", "")
 	flagSet.StringVar(&fields, "field", "", "")
 
-	flagSet.StringVar(&output, "o", "", "")
-	flagSet.StringVar(&output, "output", "", "")
+	flagSet.StringVar(&vari.Out, "o", "", "")
+	flagSet.StringVar(&vari.Out, "output", "", "")
 
 	flagSet.BoolVar(&listData, "l", false, "")
 	flagSet.BoolVar(&listData, "list", false, "")
@@ -174,7 +173,7 @@ func main() {
 				service.AddMd5(md5)
 				return
 			} else if decode {
-				gen.Decode(defaultFile, configFile, fields, input, output)
+				gen.Decode(defaultFile, configFile, fields, input)
 				return
 			}
 
@@ -214,9 +213,9 @@ func toGen() {
 	} else if vari.RunMode == constant.RunModeParse {
 		ext := filepath.Ext(input)
 		if ext == ".sql" {
-			action.ParseSql(input, output)
+			action.ParseSql(input, vari.Out)
 		} else if ext == ".txt" {
-			action.ParseArticle(input, output)
+			action.ParseArticle(input, vari.Out)
 		}
 
 	} else if vari.RunMode == constant.RunModeGen {
@@ -224,11 +223,11 @@ func toGen() {
 			vari.WithHead = true
 		}
 
-		if output != "" {
-			fileUtils.MkDirIfNeeded(filepath.Dir(output))
-			fileUtils.RemoveExist(output)
+		if vari.Out != "" {
+			fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
+			fileUtils.RemoveExist(vari.Out)
 
-			ext := strings.ToLower(filepath.Ext(output))
+			ext := strings.ToLower(filepath.Ext(vari.Out))
 			if len(ext) > 1 {
 				ext = strings.TrimLeft(ext, ".")
 			}
@@ -237,9 +236,9 @@ func toGen() {
 			}
 
 			if vari.Format == constant.FormatExcel {
-				logUtils.FilePath = output
+				logUtils.FilePath = vari.Out
 			} else {
-				logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR|os.O_CREATE, 0777)
+				logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
 				defer logUtils.FileWriter.Close()
 			}
 		}
@@ -287,10 +286,10 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
 	defaultFile, configFile, fields, vari.Total,
-		vari.Format, vari.Trim, vari.Table, decode, input, output = serverUtils.ParseGenParams(req)
+		vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
 
 	if decode {
-		gen.Decode(defaultFile, configFile, fields, input, output)
+		gen.Decode(defaultFile, configFile, fields, input)
 	} else if defaultFile != "" || configFile != "" {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))

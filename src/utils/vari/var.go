@@ -32,6 +32,7 @@ var (
 	Recursive bool
 	Format    = constant.FormatText
 
+	Out      string
 	Table    string
 	Type     string
 	Server   string // database type

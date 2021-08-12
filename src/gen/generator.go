@@ -31,6 +31,11 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 	if len(vari.Def.Fields) == 0 {
 		err = errors.New("")
 		return
+	} else if vari.Def.Type == constant.ConfigTypeArticle && vari.Out == "" {
+		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
+		logUtils.PrintErrMsg(errMsg)
+		err = errors.New(errMsg)
+		return
 	}
 
 	if vari.Total < 0 {

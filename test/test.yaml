@@ -2,9 +2,15 @@ title: test
 desc: 描述
 version: 1.0
 fields:
-  - field: field1
-    range: [`1-2`,`a-z`]:R
-    postfix: "\t"
+  - field: field_step_negative
+    range: 9-1:-2
+    prefix: "["
+    postfix: "]\t"
+  - field: field_value_expression
+    value: "$field_step_negative * 3 + 1000"
+    prefix: "["
+    postfix: "]\t"
+    length: 20
 
 #  - field: field2
 #    range: 1001-9999

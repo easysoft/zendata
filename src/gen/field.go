@@ -11,6 +11,12 @@ func CreateField(field *model.DefField) model.FieldWithValues {
 	if field.Type == "" { // set default
 		field.Type = constant.FieldTypeList
 	}
+	if field.Length > 0 {
+		field.Length = field.Length - len(field.Prefix) - len(field.Postfix)
+		if field.Length < 0 {
+			field.Length = 0
+		}
+	}
 
 	if field.Type == constant.FieldTypeList {
 		CreateListField(field, &fieldWithValue)

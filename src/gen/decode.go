@@ -14,11 +14,11 @@ import (
 
 const ()
 
-func Decode(defaultFile, configFile, fieldsToExportStr, input, output string) {
-	if output != "" {
-		fileUtils.MkDirIfNeeded(filepath.Dir(output))
-		fileUtils.RemoveExist(output)
-		logUtils.FileWriter, _ = os.OpenFile(output, os.O_RDWR|os.O_CREATE, 0777)
+func Decode(defaultFile, configFile, fieldsToExportStr, input string) {
+	if vari.Out != "" {
+		fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
+		fileUtils.RemoveExist(vari.Out)
+		logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
 		defer logUtils.FileWriter.Close()
 	}
 

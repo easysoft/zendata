@@ -231,6 +231,10 @@
       "id": "print_common_yaml_file",
       "translation": "%s is a common yaml definition file, please exec data generation command to view."
     },
+    {
+      "id": "gen_article_must_has_out_param",
+      "translation": "Generate article must use -o to provide output parameter。"
+    },
 
     {
       "id": "protobuf_path",
