@@ -26,7 +26,7 @@ func generateFloatItemsByStep(start float64, end float64, step float64, precisio
 			val := start + float64(i)*step
 			val = ChangePrecision(val, precision)
 
-			if (val >= end && step > 0) || (val <= end && step < 0) {
+			if (val > end && step > 0) || (val < end && step < 0) {
 				break
 			}
 
