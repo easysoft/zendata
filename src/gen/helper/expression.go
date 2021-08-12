@@ -16,10 +16,19 @@ import (
 func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (ret []string) {
 	exp := field.Value
 
-	reg := regexp.MustCompile(`\$([_,a-z,A-Z,0-9]+)`)
+	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]+)`)
 	arr := reg.FindAllStringSubmatch(exp, -1)
 
 	total := 1
+	typeGrade := map[string]int {
+		"int": 0,
+		"float": 1,
+		"string": 2,
+	}
+	expressionType := "int"
+	if strings.Contains(exp, "'") {
+		expressionType = "string"
+	}
 	for _, items := range arr { // computer total
 		placeholder := items[0]
 		fieldName := items[1]
@@ -29,9 +38,15 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 		if total < size {
 			total = size
 		}
+
+		// judge type of expression
+		referField := vari.TopFieldMap[fieldName]
+		tp := getValuesType(valuesMap[fieldName], referField.Prefix, referField.Postfix)
+		if typeGrade[tp] > typeGrade[expressionType] {
+			expressionType = tp
+		}
 	}
 
-	dataTypeFromValues := "int"
 	for i := 0; i < total; i++ {
 		params := make(map[string]interface{})
 
@@ -41,17 +56,13 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 			referField := vari.TopFieldMap[fieldName]
 
 			valStr := "N/A"
-			tp := ""
 			var val interface{}
 			if len(referValues) > 0 {
 				valStr = referValues[i%len(referValues)]
 				valStr = strings.TrimLeft(valStr, referField.Prefix)
 				valStr = strings.TrimRight(valStr, referField.Postfix)
 
-				val, tp = getNumType(valStr)
-				if tp != "int" {
-					dataTypeFromValues = tp
-				}
+				val = parseValue(valStr, expressionType)
 			}
 			params[fieldName] = val
 		}
@@ -67,10 +78,12 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 			}
 
 			mask := ""
-			if dataTypeFromValues == "int" {
+			if expressionType == "int" {
 				mask = "%.0f"
+			} else if expressionType == "float" {
+				mask = "%f"
 			} else {
-				mask = "%d"
+				mask = "%s"
 			}
 
 			str := fmt.Sprintf(mask, result)
@@ -123,7 +136,28 @@ func ReplaceVariableValues(exp string, valuesMap map[string][]string) (ret []str
 	return
 }
 
-func getNumType(str string) (val interface{}, tp string) {
+func getValuesType(values []string, prefix string, postfix string) (tp string) {
+	tool := map[string]int {
+		"int": 0,
+		"float": 1,
+		"string": 2,
+	}
+	tp = "int"
+	for _, item := range values {
+		valStr := strings.TrimLeft(item, prefix)
+		valStr = strings.TrimRight(valStr, postfix)
+		_, t := getType(valStr)
+		if tool[t] > tool[tp] {
+			tp = t
+		}
+		if tp == "string" {
+			break
+		}
+	}
+	return
+}
+
+func getType(str string) (val interface{}, tp string) {
 	val, errInt := strconv.ParseInt(str, 0, 64)
 	if errInt == nil {
 		tp = "int"
@@ -135,9 +169,25 @@ func getNumType(str string) (val interface{}, tp string) {
 		tp = "float"
 		return
 	}
-
 	val = str
-	tp = "float"
+	tp = "string"
+	return
+}
 
+func parseValue(str string, tp string) (val interface{}) {
+	var err error
+	if tp == "int" {
+		val, err = strconv.ParseInt(str, 0, 64)
+		if err != nil {
+			val = 0
+		}
+	} else if tp == "float" {
+		val, err = strconv.ParseFloat(str, 64)
+		if err != nil {
+			val = 0.0
+		}
+	} else {
+		val = str
+	}
 	return
 }
