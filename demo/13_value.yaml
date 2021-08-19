@@ -10,3 +10,11 @@ fields:
 
   - field: result
     value: "$first * $second"
+    postfix: ' '
+
+  - field: third
+    range: [one,two,three]
+    postfix: ' '
+
+  - field: result_str
+    value: "$first + '_' + $third"
