@@ -8,5 +8,13 @@ fields:
     range: 1-9
     postfix: ' = '
 
-  - field: result
+  - field: result       # 数值格式的值表达式
     value: "$first * $second"
+    postfix: ' '
+
+  - field: third
+    range: [one,two,three]
+    postfix: ' '
+
+  - field: result_str  # 字符串格式的值表达式
+    value: "$first + '_' + $third"
