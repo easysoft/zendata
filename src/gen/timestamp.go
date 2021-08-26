@@ -173,9 +173,6 @@ func parseTsValue(str string, isStart bool) (value int64) {
 			value = todayEnd
 		}
 	} else {
-		if !isStart {
-			tm = time.Date(tm.Year(), tm.Month(), tm.Day(), 23, 59, 59, 0, tm.Location())
-		}
 		value = tm.Unix()
 	}
 
