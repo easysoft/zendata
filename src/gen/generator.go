@@ -80,7 +80,7 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 
 		// is value expression
 		if child.Value != "" {
-			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap)
+			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.TopFieldMap)
 		}
 
 		// select from excel with expr
