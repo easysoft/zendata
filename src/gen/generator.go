@@ -80,7 +80,7 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 
 		// is value expression
 		if child.Value != "" {
-			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap)
+			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.TopFieldMap)
 		}
 
 		// select from excel with expr
@@ -113,7 +113,8 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 
 func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 	if len(field.Fields) > 0 { // sub fields
-		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+		fieldNameToValuesMap := map[string][]string{}  // refer field name to values
+		fieldMap := map[string]model.DefField{}
 
 		for _, child := range field.Fields {
 			if child.From == "" {
@@ -122,6 +123,19 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 
 			child.FileDir = field.FileDir
 			childValues := GenerateForField(&child, withFix)
+			fieldNameToValuesMap[child.Field] = childValues
+			fieldMap[child.Field] = child
+		}
+
+		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+
+		for _, child := range field.Fields {
+
+			childValues := fieldNameToValuesMap[child.Field]
+
+			if child.Value != "" {
+				childValues = helper.GenExpressionValues(child, fieldNameToValuesMap, fieldMap)
+			}
 			arrOfArr = append(arrOfArr, childValues)
 		}
 

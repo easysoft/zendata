@@ -13,7 +13,8 @@ import (
 	"strings"
 )
 
-func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (ret []string) {
+func GenExpressionValues(field model.DefField, valuesMap map[string][]string,
+	fieldMap map[string]model.DefField) (ret []string) {
 	exp := field.Value
 
 	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]+)`)
@@ -40,7 +41,7 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 		}
 
 		// judge type of expression
-		referField := vari.TopFieldMap[fieldName]
+		referField := fieldMap[fieldName]
 		tp := getValuesType(valuesMap[fieldName], referField.Prefix, referField.Postfix)
 		if typeGrade[tp] > typeGrade[expressionType] {
 			expressionType = tp
@@ -53,7 +54,7 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string) (r
 		for _, items := range arr {
 			fieldName := items[1]
 			referValues := valuesMap[fieldName]
-			referField := vari.TopFieldMap[fieldName]
+			referField := fieldMap[fieldName]
 
 			valStr := "N/A"
 			var val interface{}
