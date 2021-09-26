@@ -19,18 +19,18 @@ func ParseSql(file string, out string) {
 	statementMap, pkMap, fkMap := getCreateStatement(file)
 
 	// gen key yaml files
-	def := model.DefSimple{}
-	def.Init("keys", "automated export", "", "1.0")
+	inst := model.ZdInstances{Title: "keys", Desc: "automated export"}
 
 	for tableName, keyCol := range pkMap {
-		field := model.FieldSimple{}
-		field.Field = fmt.Sprintf("%s_%s", tableName, keyCol)
-		field.Range = "1-100000"
+		item := model.ZdInstancesItem{}
 
-		def.Fields = append(def.Fields, field)
+		item.Instance = fmt.Sprintf("%s_%s", tableName, keyCol)
+		item.Range = "1-100000"
+
+		inst.Instances = append(inst.Instances, item)
 	}
 
-	bytes, _ := yaml.Marshal(&def)
+	bytes, _ := yaml.Marshal(&inst)
 	content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
 
 	if out != "" {

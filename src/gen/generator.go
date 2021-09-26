@@ -175,52 +175,15 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
 		if field.Use != "" { // refer to ranges or instance
 			groupValues := vari.Res[field.From]
-			groups := strings.Split(field.Use, ",")
-			for _, group := range groups {
-				regx := regexp.MustCompile(`\{(.*)\}`)
-				arr := regx.FindStringSubmatch(group)
-				group = regx.ReplaceAllString(group, "")
-				num := 0
-				if len(arr) == 2 {
-					num, _ = strconv.Atoi(arr[1])
-				}
 
-				i := num
-				if group == "all" {
-					for _, arr := range groupValues { // add all
-						valuesFromGroup := make([]string, 0)
-						if num == 0 {
-							valuesFromGroup = arr
-						} else {
-							valuesFromGroup = arr[:num]
-						}
-
-						values = append(values, valuesFromGroup...)
-
-						i = i - len(valuesFromGroup)
-						if i <= 0 {
-							continue
-						}
-					}
-				} else {
-					valuesFromGroup := make([]string, 0)
-					if num == 0 {
-						valuesFromGroup = groupValues[group]
-					} else {
-						mode := num % len(groupValues[group])
-						if mode == 0 {
-							mode = len(groupValues[group])
-						}
-						valuesFromGroup = groupValues[group][:mode]
-					}
-
-					values = append(values, valuesFromGroup...)
-
-					i = i - len(valuesFromGroup)
-					if i <= 0 {
-						continue
-					}
-				}
+			use := strings.TrimSpace(field.Use) // like group{limit:repeat}
+			use, numLimit, repeat := getNum(use)
+			if strings.Index(use, "all") == 0 {
+				valuesForAdd := getRepeatValuesFromAll(groupValues, numLimit, repeat)
+				values = append(values, valuesForAdd...)
+			} else {
+				valuesForAdd := getRepeatValuesFromGroups(groupValues, use, numLimit, repeat)
+				values = append(values, valuesForAdd...)
 			}
 		} else if field.Select != "" { // refer to excel
 			groupValues := vari.Res[field.From]
@@ -540,4 +503,69 @@ func getModArr(arrOfArr [][]string) []int {
 	}
 
 	return indexArr
+}
+
+func getNum(group string) (ret string, numLimit, repeat int) {
+	regx := regexp.MustCompile(`\{([^:]*):?([^:]*)\}`)
+	arr := regx.FindStringSubmatch(group)
+	if len(arr) >= 2 {
+		numLimit, _ = strconv.Atoi(arr[1])
+	}
+	if len(arr) >= 3 {
+		repeat, _ = strconv.Atoi(arr[2])
+	}
+
+	ret = regx.ReplaceAllString(group, "")
+
+	return
+}
+
+func getRepeatValuesFromAll(groupValues map[string][]string, numLimit, repeat int) (ret []string) {
+	if repeat == 0 {
+		repeat = 1
+	}
+
+	count := 0
+exit:
+	for _, arr := range groupValues {
+		for _, item := range arr {
+			for i := 0; i < repeat; i++ {
+				ret = append(ret, item)
+				count++
+
+				if numLimit > 0 && count >= numLimit {
+					break exit
+				}
+			}
+		}
+	}
+
+	return
+}
+
+func getRepeatValuesFromGroups(groupValues map[string][]string, use string, numLimit, repeat int) (ret []string) {
+	if repeat == 0 {
+		repeat = 1
+	}
+
+	groupNames := strings.Split(use, ",")
+
+	count := 0
+exit:
+	for _, groupName := range groupNames {
+		arr := groupValues[groupName]
+
+		for _, item := range arr {
+			for i := 0; i < repeat; i++ {
+				ret = append(ret, item)
+				count++
+
+				if numLimit > 0 && count >= numLimit {
+					break exit
+				}
+			}
+		}
+	}
+
+	return
 }

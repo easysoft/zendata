@@ -73,8 +73,6 @@ type FieldBase struct {
 	FieldSimple `yaml:",inline"`
 
 	Config string `yaml:"config,omitempty"`
-	From   string `yaml:"from,omitempty"`
-	Use    string `yaml:"use,omitempty"`
 	Select string `yaml:"select,omitempty"`
 	Where  string `yaml:"where,omitempty"`
 	Limit  int    `yaml:"limit,omitempty"`
