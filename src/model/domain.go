@@ -73,8 +73,8 @@ type FieldBase struct {
 	FieldSimple `yaml:",inline"`
 
 	Config string `yaml:"config,omitempty"`
-	Use    string `yaml:"use,omitempty"`
 	From   string `yaml:"from,omitempty"`
+	Use    string `yaml:"use,omitempty"`
 	Select string `yaml:"select,omitempty"`
 	Where  string `yaml:"where,omitempty"`
 	Limit  int    `yaml:"limit,omitempty"`
@@ -102,15 +102,14 @@ type FieldSimple struct {
 	Rand    bool   `yaml:"rand,omitempty"`
 	Type    string `yaml:"type,omitempty"`
 	Mode    string `yaml:"mode,omitempty"`
+	From    string `yaml:"from,omitempty"`
+	Use     string `yaml:"use,omitempty"`
 
-	LoopStart          int    `yaml:"-"`
-	LoopEnd            int    `yaml:"-"`
-	LoopIndex          int    `yaml:"-"`
-	IsRand             bool   `yaml:"-"`
-	ReferToAnotherYaml bool   `yaml:"-"`
-	FkDef              string `yaml:"fkDef,omitempty"`
-	FkField            string `yaml:"fkField,omitempty"`
-	FkRelation         string `yaml:"fkRelation,omitempty"`
+	LoopStart          int  `yaml:"-"`
+	LoopEnd            int  `yaml:"-"`
+	LoopIndex          int  `yaml:"-"`
+	IsRand             bool `yaml:"-"`
+	ReferToAnotherYaml bool `yaml:"-"`
 }
 
 type FieldWithValues struct {
@@ -145,17 +144,14 @@ type DefExport struct {
 	XFields []DefFieldExport `yaml:"xfields,flow"` // control orders
 }
 type DefFieldExport struct {
-	Field      string `yaml:"field"`
-	Prefix     string `yaml:"prefix,omitempty"`
-	Postfix    string `yaml:"postfix,omitempty"`
-	Divider    string `yaml:"divider,omitempty"`
-	Select     string `yaml:"select,omitempty"`
-	Where      string `yaml:"where,omitempty"`
-	Rand       bool   `yaml:"rand"`
-	Limit      int    `yaml:"limit,omitempty"`
-	FkFile     string `gorm:"column:fkFile" json:"fkFile" yaml:"fkFile,omitempty"`
-	FkField    string `gorm:"column:fkField" json:"fkField" yaml:"fkField,omitempty"`
-	FkRelation string `gorm:"column:fkRelation" json:"fkRelation" yaml:"fkRelation,omitempty"`
+	Field   string `yaml:"field"`
+	Prefix  string `yaml:"prefix,omitempty"`
+	Postfix string `yaml:"postfix,omitempty"`
+	Divider string `yaml:"divider,omitempty"`
+	Select  string `yaml:"select,omitempty"`
+	Where   string `yaml:"where,omitempty"`
+	Rand    bool   `yaml:"rand"`
+	Limit   int    `yaml:"limit,omitempty"`
 }
 type Article struct {
 	Title   string         `yaml:"title"`

@@ -96,7 +96,6 @@ func getResFromExcel(resFile, sheet string, field *model.DefField) map[string][]
 func getResFromYaml(resFile string) (valueMap map[string][]string) { // , resName string) {
 	if vari.CacheResFileToMap[resFile] != nil { // already cached
 		valueMap = vari.CacheResFileToMap[resFile]
-		//resName = vari.CacheResFileToName[resFile]
 		return
 	}
 
@@ -145,9 +144,9 @@ func getResFromInstances(insts model.ResInstances) (groupedValue map[string][]st
 		}
 
 		// gen values
-		fieldFromInsts := convertInstantToField(insts, inst)
+		fieldFromInst := convertInstantToField(insts, inst)
 		group := inst.Instance
-		groupedValue[group] = GenerateForFieldRecursive(&fieldFromInsts, false)
+		groupedValue[group] = GenerateForFieldRecursive(&fieldFromInst, false)
 	}
 
 	return groupedValue

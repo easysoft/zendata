@@ -112,11 +112,11 @@ func GenerateFromYaml(defaultFile, configFile string, fieldsToExport *[]string) 
 }
 
 func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []string) {
-	if len(field.Fields) > 0 { // sub fields
+	if len(field.Fields) > 0 { // has sub fields
 		fieldNameToValuesMap := map[string][]string{} // refer field name to values
 		fieldMap := map[string]model.DefField{}
 
-		// 1. prepare referred values
+		// 1. generate values for sub fields
 		for _, child := range field.Fields {
 			if child.From == "" {
 				child.From = field.From
@@ -128,7 +128,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 			fieldMap[child.Field] = child
 		}
 
-		// 2. generate values for sub fields
+		// 2. deal with expression
 		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 		for _, child := range field.Fields {
 			childValues := fieldNameToValuesMap[child.Field]

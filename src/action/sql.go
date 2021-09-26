@@ -1,6 +1,7 @@
 package action
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
@@ -15,7 +16,32 @@ import (
 func ParseSql(file string, out string) {
 	startTime := time.Now().Unix()
 
-	statementMap, keyMap := getCreateStatement(file)
+	statementMap, pkMap, fkMap := getCreateStatement(file)
+
+	// gen key yaml files
+	def := model.DefSimple{}
+	def.Init("keys", "automated export", "", "1.0")
+
+	for tableName, keyCol := range pkMap {
+		field := model.FieldSimple{}
+		field.Field = fmt.Sprintf("%s_%s", tableName, keyCol)
+		field.Range = "1-100000"
+
+		def.Fields = append(def.Fields, field)
+	}
+
+	bytes, _ := yaml.Marshal(&def)
+	content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
+
+	if out != "" {
+		out = fileUtils.AddSepIfNeeded(out)
+		outFile := out + "keys.yaml"
+		WriteToFile(outFile, content)
+	} else {
+		logUtils.PrintTo(content)
+	}
+
+	// gen table yaml files
 	for tableName, statement := range statementMap {
 		createStr := statement
 
@@ -25,14 +51,20 @@ func ParseSql(file string, out string) {
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.FieldSimple{Range: "-"}
-			field.Init(col)
+			field := model.FieldSimple{Field: col}
 
-			a, ok := keyMap[col]
-			if ok {
-				field.FkDef = a[0] + ".yaml"
-				field.FkField = a[1]
-				field.FkRelation = ":1"
+			// pk
+			isPk := col == pkMap[tableName]
+			fkInfo, isFk := fkMap[col]
+
+			if isPk {
+				field.From = "keys.yaml"
+				field.Use = fmt.Sprintf("%s_%s", tableName, col)
+			} else if isFk {
+				field.From = "keys.yaml"
+				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
+			} else {
+				field.Range = "-"
 			}
 
 			def.Fields = append(def.Fields, field)
@@ -54,9 +86,10 @@ func ParseSql(file string, out string) {
 	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), out, entTime-startTime))
 }
 
-func getCreateStatement(file string) (statementMap map[string]string, keyMap map[string][2]string) {
+func getCreateStatement(file string) (statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
 	statementMap = map[string]string{}
-	keyMap = map[string][2]string{}
+	pkMap = map[string]string{}
+	fkMap = map[string][2]string{}
 
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -72,18 +105,26 @@ func getCreateStatement(file string) (statementMap map[string]string, keyMap map
 		arr2 := re.FindAllStringSubmatch(firstLine, -1)
 
 		if len(arr2) > 0 && len(arr2[0]) > 1 {
-
-			re3 := regexp.MustCompile("(?i)FOREIGN KEY \\(`(.+)`\\) REFERENCES `(.+)` \\(`(.+)`\\)")
-			arr3 := re3.FindAllStringSubmatch(item, -1)
-			if len(arr3) > 0 {
-				for _, childArr := range arr3 {
-					keyMap[childArr[1]] = [2]string{childArr[2], childArr[3]}
-				}
-			}
-
 			tableName := arr2[0][1]
 			tableName = strings.ReplaceAll(tableName, "`", "")
 			statementMap[tableName] = item
+
+			re3 := regexp.MustCompile("(?i)PRIMARY KEY\\s+\\(`(.+)`\\)")
+			arr3 := re3.FindAllStringSubmatch(item, -1)
+			if len(arr3) > 0 {
+				for _, childArr := range arr3 {
+					pkMap[tableName] = childArr[1]
+				}
+			}
+
+			re4 := regexp.MustCompile("(?i)FOREIGN KEY\\s+\\(`(.+)`\\) REFERENCES `(.+)` \\(`(.+)`\\)")
+			arr4 := re4.FindAllStringSubmatch(item, -1)
+			if len(arr4) > 0 {
+				for _, childArr := range arr4 {
+					fkMap[childArr[1]] = [2]string{childArr[2], childArr[3]}
+				}
+			}
+
 		}
 	}
 
