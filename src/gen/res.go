@@ -25,12 +25,12 @@ func LoadResDef(fieldsToExport []string) (res map[string]map[string][]string) {
 			field.From = vari.Def.From
 			vari.Def.Fields[index].From = vari.Def.From
 		}
-		loadResForField(&field, &res)
+		loadResForFieldRecursive(&field, &res)
 	}
 	return
 }
 
-func loadResForField(field *model.DefField, res *map[string]map[string][]string) {
+func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string][]string) {
 	if len(field.Fields) > 0 { // sub fields
 		for _, child := range field.Fields {
 			if child.Use != "" && child.From == "" {
@@ -38,7 +38,7 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 			}
 
 			child.FileDir = field.FileDir
-			loadResForField(&child, res)
+			loadResForFieldRecursive(&child, res)
 		}
 	} else if len(field.Froms) > 0 { // multiple from
 		for _, child := range field.Froms {
@@ -47,10 +47,10 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 			}
 
 			child.FileDir = field.FileDir
-			loadResForField(&child, res)
+			loadResForFieldRecursive(&child, res)
 		}
 
-	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
+	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // from a res
 		var valueMap map[string][]string
 		resFile, resType, sheet := fileUtils.GetResProp(field.From, field.FileDir) // relate to current file
 		valueMap, _ = getResValue(resFile, resType, sheet, field)
@@ -67,7 +67,7 @@ func loadResForField(field *model.DefField, res *map[string]map[string][]string)
 			(*res)[field.From][resKey] = val
 		}
 
-	} else if field.Config != "" { // refer to config
+	} else if field.Config != "" { // from a config
 		resFile, resType, _ := fileUtils.GetResProp(field.Config, field.FileDir)
 		values, _ := getResValue(resFile, resType, "", field)
 		(*res)[field.Config] = values
@@ -94,7 +94,7 @@ func getResFromExcel(resFile, sheet string, field *model.DefField) map[string][]
 }
 
 func getResFromYaml(resFile string) (valueMap map[string][]string) { // , resName string) {
-	if vari.CacheResFileToMap[resFile] != nil {
+	if vari.CacheResFileToMap[resFile] != nil { // already cached
 		valueMap = vari.CacheResFileToMap[resFile]
 		//resName = vari.CacheResFileToName[resFile]
 		return
@@ -147,7 +147,7 @@ func getResFromInstances(insts model.ResInstances) (groupedValue map[string][]st
 		// gen values
 		fieldFromInsts := convertInstantToField(insts, inst)
 		group := inst.Instance
-		groupedValue[group] = GenerateForField(&fieldFromInsts, false)
+		groupedValue[group] = GenerateForFieldRecursive(&fieldFromInsts, false)
 	}
 
 	return groupedValue
@@ -159,7 +159,7 @@ func getResFromRanges(ranges model.ResRanges) map[string][]string {
 	for group, expression := range ranges.Ranges {
 		field := convertRangesToField(ranges, expression)
 
-		groupedValue[group] = GenerateForField(&field, false)
+		groupedValue[group] = GenerateForFieldRecursive(&field, false)
 	}
 
 	return groupedValue
@@ -195,7 +195,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 
 					// gen values
 					group := referencedInst.Instance
-					groupedValueReferenced[group] = GenerateForField(&field, false)
+					groupedValueReferenced[group] = GenerateForFieldRecursive(&field, false)
 				}
 			}
 
@@ -267,7 +267,7 @@ func getResForConfig(configRes model.DefField) map[string][]string {
 	groupedValue := map[string][]string{}
 
 	// config field is a standard field
-	groupedValue["all"] = GenerateForField(&configRes, false)
+	groupedValue["all"] = GenerateForFieldRecursive(&configRes, false)
 
 	return groupedValue
 }

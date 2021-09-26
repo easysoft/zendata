@@ -17,7 +17,7 @@ const (
 	bufFile   = "data.bin"
 )
 
-func GenerateProtobuf(protoFile string) (content, pth string) {
+func GenerateFromProtobuf(protoFile string) (content, pth string) {
 	outputDir := generateCls(protoFile)
 
 	convertFile := generateConverter(outputDir)

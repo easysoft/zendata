@@ -15,9 +15,11 @@ import (
 func ParseSql(file string, out string) {
 	startTime := time.Now().Unix()
 
-	statements := getCreateStatement(file)
-	for tableName, statement := range statements {
-		columns := getColumnsFromCreateStatement(statement)
+	statementMap, keyMap := getCreateStatement(file)
+	for tableName, statement := range statementMap {
+		createStr := statement
+
+		columns := getColumnsFromCreateStatement(createStr)
 
 		def := model.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
@@ -25,6 +27,14 @@ func ParseSql(file string, out string) {
 		for _, col := range columns {
 			field := model.FieldSimple{Range: "-"}
 			field.Init(col)
+
+			a, ok := keyMap[col]
+			if ok {
+				field.FkDef = a[0] + ".yaml"
+				field.FkField = a[1]
+				field.FkRelation = ":1"
+			}
+
 			def.Fields = append(def.Fields, field)
 		}
 
@@ -41,16 +51,17 @@ func ParseSql(file string, out string) {
 	}
 
 	entTime := time.Now().Unix()
-	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statements), out, entTime-startTime))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), out, entTime-startTime))
 }
 
-func getCreateStatement(file string) map[string]string {
-	statements := map[string]string{}
+func getCreateStatement(file string) (statementMap map[string]string, keyMap map[string][2]string) {
+	statementMap = map[string]string{}
+	keyMap = map[string][2]string{}
 
 	content, err := ioutil.ReadFile(file)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file))
-		return statements
+		return
 	}
 
 	re := regexp.MustCompile("(?siU)(CREATE TABLE.*;)")
@@ -61,13 +72,22 @@ func getCreateStatement(file string) map[string]string {
 		arr2 := re.FindAllStringSubmatch(firstLine, -1)
 
 		if len(arr2) > 0 && len(arr2[0]) > 1 {
+
+			re3 := regexp.MustCompile("(?i)FOREIGN KEY \\(`(.+)`\\) REFERENCES `(.+)` \\(`(.+)`\\)")
+			arr3 := re3.FindAllStringSubmatch(item, -1)
+			if len(arr3) > 0 {
+				for _, childArr := range arr3 {
+					keyMap[childArr[1]] = [2]string{childArr[2], childArr[3]}
+				}
+			}
+
 			tableName := arr2[0][1]
 			tableName = strings.ReplaceAll(tableName, "`", "")
-			statements[tableName] = item
+			statementMap[tableName] = item
 		}
 	}
 
-	return statements
+	return
 }
 
 func getColumnsFromCreateStatement(sent string) []string {

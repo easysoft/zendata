@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string) (
+func GenerateFromYaml(defaultFile, configFile string, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
 	vari.DefaultFileDir = fileUtils.GetAbsDir(defaultFile)
@@ -46,13 +46,13 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 		}
 	}
 
+	// 为被引用的资源生成数据
 	vari.ResLoading = true // not to use placeholder when loading res
 	vari.Res = LoadResDef(*fieldsToExport)
 	vari.ResLoading = false
 
+	// 迭代fields生成值列表
 	topLevelFieldNameToValuesMap := map[string][]string{}
-
-	// 为每个field生成值列表
 	for index, field := range vari.Def.Fields {
 		if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
 			continue
@@ -61,7 +61,7 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 		if field.Use != "" && field.From == "" {
 			field.From = vari.Def.From
 		}
-		values := GenerateForField(&field, true)
+		values := GenerateForFieldRecursive(&field, true)
 
 		vari.Def.Fields[index].Precision = field.Precision
 
@@ -111,26 +111,26 @@ func GenerateOnTopLevel(defaultFile, configFile string, fieldsToExport *[]string
 	return
 }
 
-func GenerateForField(field *model.DefField, withFix bool) (values []string) {
+func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []string) {
 	if len(field.Fields) > 0 { // sub fields
-		fieldNameToValuesMap := map[string][]string{}  // refer field name to values
+		fieldNameToValuesMap := map[string][]string{} // refer field name to values
 		fieldMap := map[string]model.DefField{}
 
+		// 1. prepare referred values
 		for _, child := range field.Fields {
 			if child.From == "" {
 				child.From = field.From
 			}
 
 			child.FileDir = field.FileDir
-			childValues := GenerateForField(&child, withFix)
+			childValues := GenerateForFieldRecursive(&child, withFix)
 			fieldNameToValuesMap[child.Field] = childValues
 			fieldMap[child.Field] = child
 		}
 
+		// 2. generate values for sub fields
 		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
-
 		for _, child := range field.Fields {
-
 			childValues := fieldNameToValuesMap[child.Field]
 
 			if child.Value != "" {
@@ -139,6 +139,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 			arrOfArr = append(arrOfArr, childValues)
 		}
 
+		// 3. get combined values for parent field
 		count := vari.Total
 		count = getRecordCount(arrOfArr)
 		if count > vari.Total {
@@ -161,7 +162,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 			}
 
 			child.FileDir = field.FileDir
-			childValues := GenerateForField(&child, withFix)
+			childValues := GenerateForFieldRecursive(&child, withFix)
 			unionValues = append(unionValues, childValues...)
 		}
 
@@ -242,7 +243,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 		values = loopFieldValues(field, values, vari.Total, true)
 
 	} else { // leaf field
-		values = GenerateFieldValuesForDef(field)
+		values = GenerateValuesForField(field)
 	}
 
 	if field.Rand && field.Type != constant.FieldTypeArticle {
@@ -252,7 +253,7 @@ func GenerateForField(field *model.DefField, withFix bool) (values []string) {
 	return values
 }
 
-func GenerateFieldValuesForDef(field *model.DefField) []string {
+func GenerateValuesForField(field *model.DefField) []string {
 	values := make([]string, 0)
 
 	fieldWithValues := CreateField(field)

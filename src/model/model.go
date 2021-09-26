@@ -35,25 +35,28 @@ type ZdField struct {
 	Field string `gorm:"column:field" json:"field"`
 	Note  string `gorm:"column:note" json:"note"`
 
-	Range    string `gorm:"column:range" json:"range"`
-	Prefix   string `gorm:"column:prefix" json:"prefix"`
-	Postfix  string `gorm:"column:postfix" json:"postfix"`
-	Divider  string `gorm:"column:divider" json:"divider"`
-	Loop     string `gorm:"column:loop" json:"loop"`
-	Loopfix  string `gorm:"column:loopfix" json:"loopfix"`
-	Format   string `gorm:"column:format" json:"format"`
-	Type     string `gorm:"column:type" json:"type"`
-	Mode     string `gorm:"column:mode" json:"mode"`
-	Length   int    `gorm:"column:length" json:"length"`
-	LeftPad  string `gorm:"column:leftPad" json:"leftPad"`
-	RightPad string `gorm:"column:rightPad" json:"rightPad"`
-	Rand     bool   `gorm:"column:rand" json:"rand"`
-	Config   string `gorm:"column:config" json:"config"`
-	Use      string `gorm:"column:use" json:"use"`
-	From     string `gorm:"column:fromCol" json:"fromCol"`
-	Select   string `gorm:"column:selectCol" json:"selectCol"`
-	Where    string `gorm:"column:whereCol" json:"whereCol"`
-	Limit    int    `gorm:"column:limitCol" json:"limitCol"`
+	Range      string `gorm:"column:range" json:"range"`
+	Prefix     string `gorm:"column:prefix" json:"prefix"`
+	Postfix    string `gorm:"column:postfix" json:"postfix"`
+	Divider    string `gorm:"column:divider" json:"divider"`
+	Loop       string `gorm:"column:loop" json:"loop"`
+	Loopfix    string `gorm:"column:loopfix" json:"loopfix"`
+	Format     string `gorm:"column:format" json:"format"`
+	Type       string `gorm:"column:type" json:"type"`
+	Mode       string `gorm:"column:mode" json:"mode"`
+	Length     int    `gorm:"column:length" json:"length"`
+	LeftPad    string `gorm:"column:leftPad" json:"leftPad"`
+	RightPad   string `gorm:"column:rightPad" json:"rightPad"`
+	Rand       bool   `gorm:"column:rand" json:"rand"`
+	Config     string `gorm:"column:config" json:"config"`
+	Use        string `gorm:"column:use" json:"use"`
+	From       string `gorm:"column:fromCol" json:"fromCol"`
+	Select     string `gorm:"column:selectCol" json:"selectCol"`
+	Where      string `gorm:"column:whereCol" json:"whereCol"`
+	Limit      int    `gorm:"column:limitCol" json:"limitCol"`
+	FkFile     string `gorm:"column:fkFile" json:"fkFile" yaml:"fkFile,omitempty"`
+	FkField    string `gorm:"column:fkField" json:"fkField" yaml:"fkField,omitempty"`
+	FkRelation string `gorm:"column:fkRelation" json:"fkRelation" yaml:"fkRelation,omitempty"`
 
 	// refer to yaml or text by using range prop
 	Step   string `gorm:"column:step" json:"step"`
@@ -209,12 +212,15 @@ type ZdInstancesItem struct {
 	RightPad string `gorm:"column:rightPad" json:"rightPad" yaml:"rightPad,omitempty"`
 	Rand     bool   `gorm:"column:rand" json:"rand" yaml:"rand,omitempty"`
 
-	Config string `gorm:"column:config" json:"config" yaml:"config,omitempty"`
-	Use    string `gorm:"column:use" json:"use" yaml:"use,omitempty"`
-	From   string `gorm:"column:fromCol" json:"fromCol" yaml:"from,omitempty"`
-	Select string `gorm:"column:selectCol" json:"selectCol" yaml:"select,omitempty"`
-	Where  string `gorm:"column:whereCol" json:"whereCol" yaml:"where,omitempty"`
-	Limit  int    `gorm:"column:limitCol" json:"limitCol" yaml:"limit,omitempty"`
+	Config     string `gorm:"column:config" json:"config" yaml:"config,omitempty"`
+	Use        string `gorm:"column:use" json:"use" yaml:"use,omitempty"`
+	From       string `gorm:"column:fromCol" json:"fromCol" yaml:"from,omitempty"`
+	Select     string `gorm:"column:selectCol" json:"selectCol" yaml:"select,omitempty"`
+	Where      string `gorm:"column:whereCol" json:"whereCol" yaml:"where,omitempty"`
+	Limit      int    `gorm:"column:limitCol" json:"limitCol" yaml:"limit,omitempty"`
+	FkFile     string `gorm:"column:fkFile" json:"fkFile" yaml:"fkFile,omitempty"`
+	FkField    string `gorm:"column:fkField" json:"fkField" yaml:"fkField,omitempty"`
+	FkRelation string `gorm:"column:fkRelation" json:"fkRelation" yaml:"fkRelation,omitempty"`
 
 	Exp         string `gorm:"column:exp" json:"exp" yaml:"exp,omitempty"`
 	InstancesID uint   `gorm:"column:instancesID" json:"instancesID" yaml:"-"`

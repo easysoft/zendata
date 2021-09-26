@@ -228,7 +228,7 @@ func incrementUnit(originalVal int64, incNum int, unit string) (ret int64) {
 	case "D":
 		start = start.AddDate(0, 0, incNum)
 	case "w":
-		start = start.AddDate(0, 0, incNum * 7)
+		start = start.AddDate(0, 0, incNum*7)
 	case "h":
 		start = start.Add(time.Hour * time.Duration(incNum))
 	case "m":
@@ -254,13 +254,13 @@ func increment(originalVal int64, incrementStr string) (ret int64) {
 	return
 }
 
-func GenerateTimeItems(start int64, end int64, step int, unit string, repeat int, repeatTag string) []interface{}{
+func GenerateTimeItems(start int64, end int64, step int, unit string, repeat int, repeatTag string) []interface{} {
 	arr := make([]interface{}, 0)
 
 	total := 0
 	if repeatTag == "" {
 		for i := 0; true; {
-			val := incrementUnit(start, i * step, unit)
+			val := incrementUnit(start, i*step, unit)
 			//val := start + int64(i*step)
 			if (val >= end && step > 0) || (val <= end && step < 0) {
 				break

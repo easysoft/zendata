@@ -25,7 +25,7 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 
 	count := 0
 	if strings.ToLower(filepath.Ext(configFile)) == "."+constant.FormatProto { //gen from protobuf
-		buf, pth := gen.GenerateProtobuf(configFile)
+		buf, pth := gen.GenerateFromProtobuf(configFile)
 
 		if vari.Verbose {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
@@ -40,7 +40,7 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 			fieldsToExport = strings.Split(fieldsToExportStr, ",")
 		}
 
-		rows, colIsNumArr, err := gen.GenerateOnTopLevel(defaultFile, configFile, &fieldsToExport)
+		rows, colIsNumArr, err := gen.GenerateFromYaml(defaultFile, configFile, &fieldsToExport)
 		if err != nil {
 			return
 		}
