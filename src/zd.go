@@ -179,7 +179,7 @@ func main() {
 				service.AddMd5(md5)
 				return
 			} else if decode {
-				gen.Decode(defaultFile, configFile, fields, input)
+				gen.Decode(files, fields, input)
 				return
 			}
 
@@ -298,7 +298,8 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
 
 	if decode {
-		gen.Decode(defaultFile, configFile, fields, input)
+		files := []string{defaultFile, configFile}
+		gen.Decode(files, fields, input)
 	} else if defaultFile != "" || configFile != "" {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))

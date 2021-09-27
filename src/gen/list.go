@@ -299,13 +299,12 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
 	rootDef := vari.Def
-	defaultDir := vari.DefaultFileDir
 	configDir := vari.ConfigFileDir
 	res := vari.Res
 
 	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
-	rows, colIsNumArr, _ := GenerateFromYaml("", configFile, &fieldsToExport)
+	rows, colIsNumArr, _ := GenerateFromYaml([]string{configFile}, &fieldsToExport)
 	if field.Rand {
 		rows = randomValuesArr(rows)
 	}
@@ -321,7 +320,6 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 
 	// rollback root def when finish to deal with refer yaml file
 	vari.Def = rootDef
-	vari.DefaultFileDir = defaultDir
 	vari.ConfigFileDir = configDir
 	vari.Res = res
 

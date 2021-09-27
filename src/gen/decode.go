@@ -14,7 +14,7 @@ import (
 
 const ()
 
-func Decode(defaultFile, configFile, fieldsToExportStr, input string) {
+func Decode(files []string, fieldsToExportStr, input string) {
 	if vari.Out != "" {
 		fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
 		fileUtils.RemoveExist(vari.Out)
@@ -22,8 +22,7 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input string) {
 		defer logUtils.FileWriter.Close()
 	}
 
-	vari.DefaultFileDir = fileUtils.GetAbsDir(defaultFile)
-	vari.ConfigFileDir = fileUtils.GetAbsDir(configFile)
+	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
 	vari.Total = 10
 
@@ -32,7 +31,7 @@ func Decode(defaultFile, configFile, fieldsToExportStr, input string) {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
 
-	vari.Def = LoadDataDef(defaultFile, configFile, &fieldsToExport)
+	vari.Def = LoadDataDef(files, &fieldsToExport)
 	vari.Res = LoadResDef(fieldsToExport)
 
 	data := fileUtils.ReadFile(input)

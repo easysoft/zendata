@@ -104,7 +104,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 
-		defaultDef.Fields[i].FileDir = vari.DefaultFileDir
+		defaultDef.Fields[i].FileDir = vari.ConfigFileDir
 		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 	for i, field := range configDef.Fields {

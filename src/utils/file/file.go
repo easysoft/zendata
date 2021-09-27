@@ -334,11 +334,6 @@ func ComputerReferFilePath(file string, field *model.DefField) (resPath string) 
 		return
 	}
 
-	resPath = vari.DefaultFileDir + file
-	if FileExist(resPath) {
-		return
-	}
-
 	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
 	if FileExist(resPath) {
 		return
