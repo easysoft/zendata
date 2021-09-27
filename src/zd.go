@@ -37,6 +37,7 @@ import (
 )
 
 var (
+	configs     []string
 	defaultFile string
 	configFile  string
 	//count       int
@@ -139,10 +140,15 @@ func main() {
 		os.Args = append(os.Args, "-help")
 	}
 
-	flagSet.Parse(os.Args[1:])
+	files, count := fileUtils.GetFilesFromParams(os.Args[1:])
+	flagSet.Parse(os.Args[1+count:])
+	if count == 0 {
+		files = []string{defaultFile, configFile}
+	}
 	if vari.Port != 0 {
 		vari.RunMode = constant.RunModeServer
 	}
+
 	configUtils.InitConfig(root)
 	vari.DB, _ = configUtils.InitDB()
 	defer vari.DB.Close()
@@ -183,20 +189,28 @@ func main() {
 				vari.RunMode = constant.RunModeParse
 			}
 
-			toGen()
+			toGen(files)
 		} else {
 			logUtils.PrintUsage()
 		}
 	}
 }
 
-func toGen() {
+func toGen(files []string) {
 	tmStart := time.Now()
 	if vari.Verbose {
 		logUtils.PrintTo(fmt.Sprintf("Start at %s.", tmStart.Format("2006-01-02 15:04:05")))
 	}
 
-	if vari.RunMode == constant.RunModeServer {
+	if vari.RunMode == constant.RunModeParse {
+		ext := filepath.Ext(input)
+		if ext == ".sql" {
+			action.ParseSql(input, vari.Out)
+		} else if ext == ".txt" {
+			action.ParseArticle(input, vari.Out)
+		}
+
+	} else if vari.RunMode == constant.RunModeServer {
 		vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + constant.PthSep
 		err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
 		if err != nil {
@@ -207,16 +221,11 @@ func toGen() {
 		startServer() // will init its own db
 
 	} else if vari.RunMode == constant.RunModeServerRequest {
-		vari.Format = constant.FormatJson
-		action.Generate(defaultFile, configFile, fields, vari.Format, vari.Table)
+		//  use the files from post data
+		files := []string{defaultFile, configFile}
 
-	} else if vari.RunMode == constant.RunModeParse {
-		ext := filepath.Ext(input)
-		if ext == ".sql" {
-			action.ParseSql(input, vari.Out)
-		} else if ext == ".txt" {
-			action.ParseArticle(input, vari.Out)
-		}
+		vari.Format = constant.FormatJson
+		action.Generate(files, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeGen {
 		if vari.Human {
@@ -251,7 +260,7 @@ func toGen() {
 			return
 		}
 
-		action.Generate(defaultFile, configFile, fields, vari.Format, vari.Table)
+		action.Generate(files, fields, vari.Format, vari.Table)
 	}
 
 	tmEnd := time.Now()
@@ -294,7 +303,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
-		toGen()
+		toGen(nil)
 	}
 }
 

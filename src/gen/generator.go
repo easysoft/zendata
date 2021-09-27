@@ -20,13 +20,11 @@ import (
 	"time"
 )
 
-func GenerateFromYaml(defaultFile, configFile string, fieldsToExport *[]string) (
+func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.DefaultFileDir = fileUtils.GetAbsDir(defaultFile)
-	vari.ConfigFileDir = fileUtils.GetAbsDir(configFile)
-
-	vari.Def = LoadDataDef(defaultFile, configFile, fieldsToExport)
+	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	vari.Def = LoadDataDef(files, fieldsToExport)
 
 	if len(vari.Def.Fields) == 0 {
 		err = errors.New("")

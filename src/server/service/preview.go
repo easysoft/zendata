@@ -22,7 +22,7 @@ type PreviewService struct {
 func (s *PreviewService) PreviewDefData(defId uint) (data string) {
 	def, _ := s.defRepo.Get(defId)
 
-	lines := action.Generate("", def.Path, "", constant.FormatData, "")
+	lines := action.Generate([]string{def.Path}, "", constant.FormatData, "")
 	data = s.linesToStr(lines)
 
 	return
@@ -53,7 +53,7 @@ func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data 
 	configFile := vari.ZdPath + "tmp" + constant.PthSep + ".temp.yaml"
 	fileUtils.WriteFile(configFile, string(defContent))
 
-	lines := action.Generate("", configFile, field.Field, constant.FormatData, "")
+	lines := action.Generate([]string{configFile}, field.Field, constant.FormatData, "")
 	data = s.linesToStr(lines)
 
 	return

@@ -14,41 +14,36 @@ import (
 	"strings"
 )
 
-func LoadDataDef(defaultFile, configFile string, fieldsToExport *[]string) model.DefData {
-	defaultDef := model.DefData{}
-	configDef := model.DefData{}
+func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
+	ret = LoadDef(files[0])
 
-	// load defaultDef
-	if defaultFile != "" {
-		pathDefaultFile := fileUtils.GetAbsolutePath(defaultFile)
-
-		defaultContent, err := ioutil.ReadFile(pathDefaultFile)
-		defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
-		if err != nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
-			return defaultDef
-		}
-		err = yaml.Unmarshal(defaultContent, &defaultDef)
-		if err != nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
-			return defaultDef
-		}
+	for i := 1; i < len(files); i++ {
+		ret = MergeDef(ret, files[i], fieldsToExport)
 	}
 
-	// load configDef
-	pathConfigFile := fileUtils.GetAbsolutePath(configFile)
+	return
+}
 
-	yamlContent, err := ioutil.ReadFile(pathConfigFile)
-	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
+func LoadDef(file string) (ret model.DefData) {
+	pathDefaultFile := fileUtils.GetAbsolutePath(file)
+
+	defaultContent, err := ioutil.ReadFile(pathDefaultFile)
+	defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathConfigFile), color.FgCyan)
-		return configDef
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
+		return
 	}
-	err = yaml.Unmarshal(yamlContent, &configDef)
+	err = yaml.Unmarshal(defaultContent, &ret)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", pathConfigFile), color.FgCyan)
-		return configDef
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
+		return
 	}
+
+	return
+}
+
+func MergeDef(defaultDef model.DefData, configFile string, fieldsToExport *[]string) model.DefData {
+	configDef := LoadDef(configFile)
 
 	if configDef.Type == "article" && configDef.Content != "" {
 		convertArticleContent(&configDef)

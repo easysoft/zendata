@@ -474,3 +474,16 @@ func GenArticleFiles(pth string, index int) (ret string) {
 
 	return
 }
+
+func GetFilesFromParams(args []string) (files []string, count int) {
+	for _, arg := range args {
+		if strings.Index(arg, "-") != 0 {
+			files = append(files, arg)
+			count++
+		} else {
+			break
+		}
+	}
+
+	return
+}

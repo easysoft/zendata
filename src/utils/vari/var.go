@@ -53,8 +53,7 @@ var (
 	CacheResFileToMap  = map[string]map[string][]string{}
 	CacheResFileToName = map[string]string{}
 
-	DefaultFileDir string
-	ConfigFileDir  string
+	ConfigFileDir string
 
 	AgentLogDir string
 )

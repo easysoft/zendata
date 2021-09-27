@@ -15,17 +15,16 @@ import (
 	"time"
 )
 
-func Generate(defaultFile string, configFile string, fieldsToExportStr, format, table string) (lines []interface{}) {
+func Generate(files []string, fieldsToExportStr, format, table string) (lines []interface{}) {
 	startTime := time.Now().Unix()
 
-	if defaultFile != "" && configFile == "" {
-		configFile = defaultFile
-		defaultFile = ""
+	if len(files) == 0 {
+		return
 	}
 
 	count := 0
-	if strings.ToLower(filepath.Ext(configFile)) == "."+constant.FormatProto { //gen from protobuf
-		buf, pth := gen.GenerateFromProtobuf(configFile)
+	if strings.ToLower(filepath.Ext(files[0])) == "."+constant.FormatProto { //gen from protobuf
+		buf, pth := gen.GenerateFromProtobuf(files[0])
 
 		if vari.Verbose {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
@@ -40,7 +39,7 @@ func Generate(defaultFile string, configFile string, fieldsToExportStr, format, 
 			fieldsToExport = strings.Split(fieldsToExportStr, ",")
 		}
 
-		rows, colIsNumArr, err := gen.GenerateFromYaml(defaultFile, configFile, &fieldsToExport)
+		rows, colIsNumArr, err := gen.GenerateFromYaml(files, &fieldsToExport)
 		if err != nil {
 			return
 		}
