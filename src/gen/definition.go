@@ -15,10 +15,17 @@ import (
 )
 
 func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
-	ret = LoadDef(files[0])
+	newFiles := make([]string, 0)
+	for _, f := range files {
+		if f == "" {
+			continue
+		}
+		newFiles = append(newFiles, f)
+	}
 
-	for i := 0; i < len(files); i++ {
-		right := LoadDef(files[i])
+	ret = LoadDef(newFiles[0])
+	for _, f := range newFiles {
+		right := LoadDef(f)
 
 		ret = MergeDef(ret, right, fieldsToExport)
 	}

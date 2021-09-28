@@ -229,7 +229,9 @@ func GenerateValuesForField(field *model.DefField) []string {
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
 			for _, v := range fieldWithValues.Values {
-				values = append(values, fmt.Sprintf("%v", v))
+				str := fmt.Sprintf("%v", v)
+				str = addFix(str, field, true)
+				values = append(values, str)
 			}
 			break
 		}
@@ -341,9 +343,6 @@ func loopFieldValues(field *model.DefField, oldValues []string, total int, withF
 
 func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
 	indexOfRow *int, withFix bool) (loopStr string) {
-	prefix := field.Prefix
-	postfix := field.Postfix
-	divider := field.Divider
 
 	for j := 0; j < (*field).LoopIndex; j++ {
 		if loopStr != "" {
@@ -359,16 +358,27 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 		*indexOfRow++
 	}
 
-	if field.Length > runewidth.StringWidth(loopStr) {
-		loopStr = stringUtils.AddPad(loopStr, *field)
+	loopStr = addFix(loopStr, field, withFix)
+
+	return
+}
+
+func addFix(str string, field *model.DefField, withFix bool) (ret string) {
+	prefix := field.Prefix
+	postfix := field.Postfix
+	divider := field.Divider
+
+	if field.Length > runewidth.StringWidth(str) {
+		str = stringUtils.AddPad(str, *field)
 	}
 	if withFix && !vari.Trim {
-		loopStr = prefix + loopStr + postfix
+		str = prefix + str + postfix
 	}
 	if vari.Format == constant.FormatText && !vari.Trim {
-		loopStr += divider
+		str += divider
 	}
 
+	ret = str
 	return
 }
 
