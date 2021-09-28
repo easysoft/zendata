@@ -97,7 +97,15 @@ func GenerateFromYaml(defaultFile, configFile string, fieldsToExport *[]string) 
 
 				resFile, _, sheet := fileUtils.GetResProp(temp.From, temp.FileDir)
 
-				selectCount := vari.Total / len(selects)
+				//	问题描述：
+				//	原代码为：`selectCount := vari.Toal / len(selects)`
+				//	因为整除的向下取整，如果`len(selects)`为3，`vari.Total`为8，则`selectCount`为2
+				//	对于每一个`selects`的元素来说，都只会查两个元素，这样加起来一共只有6个结果，
+				//	导致另外两个结果只能通过重复查到的数据的方式补充。
+				//	解决方案：
+				//  将代码改为: `selectCount := vari.Total / len(selects) + 1`,以达到使用人员的真正想要的
+				//	即查到足够的数量，而不是通过重复补齐
+				selectCount := vari.Total / len(selects) + 1
 				mp := generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
 				for _, items := range mp {
 					childMapValues = append(childMapValues, items)
