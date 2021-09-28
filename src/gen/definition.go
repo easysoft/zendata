@@ -17,8 +17,10 @@ import (
 func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
 	ret = LoadDef(files[0])
 
-	for i := 1; i < len(files); i++ {
-		ret = MergeDef(ret, files[i], fieldsToExport)
+	for i := 0; i < len(files); i++ {
+		right := LoadDef(files[i])
+
+		ret = MergeDef(ret, right, fieldsToExport)
 	}
 
 	return
@@ -26,6 +28,10 @@ func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
 
 func LoadDef(file string) (ret model.DefData) {
 	pathDefaultFile := fileUtils.GetAbsolutePath(file)
+
+	if !fileUtils.FileExist(pathDefaultFile) {
+		return
+	}
 
 	defaultContent, err := ioutil.ReadFile(pathDefaultFile)
 	defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
@@ -42,9 +48,7 @@ func LoadDef(file string) (ret model.DefData) {
 	return
 }
 
-func MergeDef(defaultDef model.DefData, configFile string, fieldsToExport *[]string) model.DefData {
-	configDef := LoadDef(configFile)
-
+func MergeDef(defaultDef model.DefData, configDef model.DefData, fieldsToExport *[]string) model.DefData {
 	if configDef.Type == "article" && configDef.Content != "" {
 		convertArticleContent(&configDef)
 	}
