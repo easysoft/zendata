@@ -26,7 +26,7 @@ fields:
     postfix: "\t"
 
   - field: columns                        # 变量，从excel中读取的列。如果命令指定-F参数，需要包含以避免忽略处理。
-    range: [state,city]
+    range: [city,state]
     postfix: "\t"
   - field: conditions                     # 变量，用于where条件里。如果命令指定-F参数，需要包含以避免忽略处理。
     range: [山东,江苏]
