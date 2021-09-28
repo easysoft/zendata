@@ -89,6 +89,7 @@ func GenerateFromYaml(defaultFile, configFile string, fieldsToExport *[]string) 
 			wheres := helper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
 
 			childValues = make([]string, 0)
+			childMapValues := make([][]string, 0)
 			for index, slct := range selects {
 				temp := child
 				temp.Select = slct
@@ -99,8 +100,14 @@ func GenerateFromYaml(defaultFile, configFile string, fieldsToExport *[]string) 
 				selectCount := vari.Total / len(selects)
 				mp := generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
 				for _, items := range mp {
-					childValues = append(childValues, items...)
+					childMapValues = append(childMapValues, items)
 				}
+			}
+			for index := 0; len(childValues) < vari.Total;  {
+				for i, _ := range selects {
+					childValues = append(childValues, childMapValues[i][index%len(childMapValues[i])])
+				}
+				index++
 			}
 		}
 
