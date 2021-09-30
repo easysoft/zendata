@@ -35,7 +35,8 @@ ZenData是一款通用的数据生成工具，您可以使用yaml文件来定义
 $>zd.exe -d demo\default.yaml                                        # 根据-d参数指定的配置文件生成10条记录。
 $>zd.exe -c demo\default.yaml                                        # 根据-c参数指定的配置文件生成10条记录。
 $>zd.exe -c demo\default.yaml -r                                     # 根据-c参数指定的配置文件，采用递归的方式生成10条记录。
-$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100               # -c和-d两个文件的配置合并，输出100条记录。
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100               # -c覆盖-d文件的配置，输出100条记录。
+$>zd.exe demo\default.yaml demo\test.yaml -n 100                     # 多配置文件示例，后面的文件会覆盖前面文件里的配置。
 
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.txt   # 输出原始格式的数据。
 $>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  # 输出json格式的数据。
