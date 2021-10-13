@@ -84,6 +84,10 @@
       "translation": "SQLite查询失败，语句：%s，错误：%s。"
     },
     {
+      "id": "pls_check_excel",
+      "translation": "请确认所查询的表格和列存在于Excel文件%s中。"
+    },
+    {
       "id": "fail_to_parse_row",
       "translation": "SQLite行解析失败，错误%s。"
     },

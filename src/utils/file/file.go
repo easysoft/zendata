@@ -196,6 +196,10 @@ func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // 
 		resFile = resPath
 	}
 
+	if !FileExist(resFile) {
+		resFile = ""
+	}
+
 	if resFile == "" {
 		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from)+"\n")
 	}
@@ -309,10 +313,6 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 			ret = realPth
 			return
 		}
-	}
-
-	if ret == "" {
-		color.New(color.FgCyan).Fprintf(color.Output, i118Utils.I118Prt.Sprintf("fail_to_find_res", from)+"\n")
 	}
 
 	return

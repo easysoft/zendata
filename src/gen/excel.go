@@ -10,6 +10,7 @@ import (
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/fatih/color"
 	"log"
 	"os"
 	"strconv"
@@ -21,7 +22,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 	values = map[string][]string{}
 
 	// sql has variable expr
-	if helper.SelectExcelWithExpr(*field) {
+	if filePath == "" || helper.SelectExcelWithExpr(*field) {
 		return
 	}
 
@@ -36,7 +37,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 		ConvertWordExcelsToSQLiteIfNeeded(dbName, filePath)
 	}
 
-	list, fieldSelect := ReadDataFromSQLite(*field, dbName, sheet, total)
+	list, fieldSelect := ReadDataFromSQLite(*field, dbName, sheet, total, filePath)
 	// get index for data retrieve
 	numbs := GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1, "")
 	// get data by index
@@ -211,7 +212,8 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	return
 }
 
-func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, total int) ([]string, string) {
+func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, total int, filePath string) (
+	[]string, string) {
 	list := make([]string, 0)
 
 	fieldSelect := field.Select
@@ -270,6 +272,8 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	defer rows.Close()
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("pls_check_excel", filePath), color.FgRed)
+
 		return list, ""
 	}
 

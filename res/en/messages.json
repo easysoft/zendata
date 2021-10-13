@@ -89,6 +89,10 @@
       "translation": "fail to exec query %s."
     },
     {
+      "id": "pls_check_excel",
+      "translation": "please check selected sheet and columns exist in excel file %s."
+    },
+    {
       "id": "fail_to_parse_row",
       "translation": "fail to parse sqlite3 row %s."
     },

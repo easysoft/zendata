@@ -14,12 +14,12 @@ import (
 )
 
 var (
-	exampleFile  = fmt.Sprintf("res%sen%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
-	usageFile  = fmt.Sprintf("res%sen%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
+	exampleFile = fmt.Sprintf("res%sen%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
+	usageFile   = fmt.Sprintf("res%sen%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
 
 	FileWriter *os.File
 	HttpWriter http.ResponseWriter
-	FilePath string // for excel output
+	FilePath   string // for excel output
 )
 
 func PrintExample() {
@@ -73,6 +73,7 @@ func PrintToWithColor(msg string, attr color.Attribute) {
 		fmt.Fprint(output, msg+"\n")
 	} else {
 		color.New(attr).Fprintf(output, msg+"\n")
+		//color.New(attr).Println(output, msg)
 	}
 }
 
