@@ -23,7 +23,7 @@ func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
 		newFiles = append(newFiles, f)
 	}
 
-	ret = LoadDef(newFiles[0])
+	ret = model.DefData{}
 	for _, f := range newFiles {
 		right := LoadDef(f)
 
@@ -48,7 +48,7 @@ func LoadDef(file string) (ret model.DefData) {
 	}
 	err = yaml.Unmarshal(defaultContent, &ret)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", pathDefaultFile), color.FgCyan)
 		return
 	}
 

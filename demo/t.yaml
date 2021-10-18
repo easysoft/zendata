@@ -5,11 +5,5 @@ author: zentao
 version: 1.0
 
 fields:
-  - field: field2
-    fields:
-    - field: field2.1
-      range: 1-9:R
-      divider: ','
-    - field: field2.2
-      range: a-z
-      postfix: ','
+  - field: field2.1
+    range: "【】`<.>WWW"
