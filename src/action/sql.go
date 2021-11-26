@@ -100,7 +100,7 @@ func getCreateStatement(file string) (statementMap map[string]string, pkMap map[
 	re := regexp.MustCompile("(?siU)(CREATE TABLE.*;)")
 	arr := re.FindAllString(string(content), -1)
 	for _, item := range arr {
-		re := regexp.MustCompile("(?i)CREATE TABLE.*\\s+(.+)\\s+\\(") // get table name
+		re := regexp.MustCompile("(?i)CREATE TABLE.*\\s+(\\S+)\\s+\\(") // get table name
 		firstLine := strings.Split(item, "\n")[0]
 		arr2 := re.FindAllStringSubmatch(firstLine, -1)
 
@@ -109,19 +109,23 @@ func getCreateStatement(file string) (statementMap map[string]string, pkMap map[
 			tableName = strings.ReplaceAll(tableName, "`", "")
 			statementMap[tableName] = item
 
-			re3 := regexp.MustCompile("(?i)PRIMARY KEY\\s+\\(`(.+)`\\)")
+			re3 := regexp.MustCompile("(?i)PRIMARY KEY\\s+\\((\\S+)\\)")
 			arr3 := re3.FindAllStringSubmatch(item, -1)
 			if len(arr3) > 0 {
 				for _, childArr := range arr3 {
-					pkMap[tableName] = childArr[1]
+					pkMap[tableName] = strings.ReplaceAll(childArr[1], "`", "")
 				}
 			}
 
-			re4 := regexp.MustCompile("(?i)FOREIGN KEY\\s+\\(`(.+)`\\) REFERENCES `(.+)` \\(`(.+)`\\)")
+			re4 := regexp.MustCompile("(?i)FOREIGN KEY\\s+\\((\\S+)\\) REFERENCES (\\S+) \\((\\S+)\\)")
 			arr4 := re4.FindAllStringSubmatch(item, -1)
 			if len(arr4) > 0 {
 				for _, childArr := range arr4 {
-					fkMap[childArr[1]] = [2]string{childArr[2], childArr[3]}
+					col := strings.ReplaceAll(childArr[1], "`", "")
+					toTable := strings.ReplaceAll(childArr[2], "`", "")
+					toCol := strings.ReplaceAll(childArr[3], "`", "")
+
+					fkMap[col] = [2]string{toTable, toCol}
 				}
 			}
 

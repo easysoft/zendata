@@ -1,5 +1,5 @@
 
-CREATE TABLE `biz_project` (
+CREATE TABLE `biz_project`   (
     `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) DEFAULT NULL,
     `updated_at` datetime(3) DEFAULT NULL,
@@ -24,6 +24,6 @@ CREATE TABLE `biz_task` (
     `project_name` longtext,
     `disabled_at` datetime(3) DEFAULT NULL,
     PRIMARY KEY (`id`),
-    KEY `fk_project_id_idx` (`project_id`),
+    KEY  `fk_project_id_idx`  (`project_id`),
     CONSTRAINT `fk_project_id` FOREIGN KEY (`project_id`) REFERENCES `biz_project` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
