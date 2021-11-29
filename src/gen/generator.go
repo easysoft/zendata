@@ -103,13 +103,13 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 				//	解决方案：
 				//  将代码改为: `selectCount := vari.Total / len(selects) + 1`,以达到使用人员的真正想要的
 				//	即查到足够的数量，而不是通过重复补齐
-				selectCount := vari.Total / len(selects) + 1
+				selectCount := vari.Total/len(selects) + 1
 				mp := generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
 				for _, items := range mp {
 					childMapValues = append(childMapValues, items)
 				}
 			}
-			for index := 0; len(childValues) < vari.Total;  {
+			for index := 0; len(childValues) < vari.Total; {
 				for i, _ := range selects {
 					childValues = append(childValues, childMapValues[i][index%len(childMapValues[i])])
 				}
@@ -189,13 +189,15 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 		if field.Use != "" { // refer to ranges or instance
 			groupValues := vari.Res[field.From]
 
-			use := strings.TrimSpace(field.Use) // like group{limit:repeat}
-			use, numLimit, repeat := getNum(use)
+			uses := strings.TrimSpace(field.Use) // like group{limit:repeat}
+			use, numLimit, repeat := getNum(uses)
 			if strings.Index(use, "all") == 0 {
 				valuesForAdd := getRepeatValuesFromAll(groupValues, numLimit, repeat)
 				values = append(values, valuesForAdd...)
 			} else {
-				valuesForAdd := getRepeatValuesFromGroups(groupValues, use, numLimit, repeat)
+				//valuesForAdd := getRepeatValuesFromGroups(groupValues, use, numLimit, repeat)
+				infos := parseUse(uses)
+				valuesForAdd := getRepeatValuesFromGroups2(groupValues, infos)
 				values = append(values, valuesForAdd...)
 			}
 		} else if field.Select != "" { // refer to excel
@@ -543,6 +545,33 @@ func getNum(group string) (ret string, numLimit, repeat int) {
 	return
 }
 
+// pars Uses
+type retsInfo struct {
+	ret      string
+	numLimit int
+	repeat   int
+}
+
+func parseUse(groups string) (results []retsInfo) {
+	rets := strings.Split(groups, ",")
+	results = make([]retsInfo, len(rets))
+	regx := regexp.MustCompile(`\{([^:]*):?([^:]*)\}`)
+	for k, v := range rets {
+		results[k].ret = regx.ReplaceAllString(v, "")
+		arr := regx.FindStringSubmatch(v)
+		if len(arr) >= 2 {
+			results[k].numLimit, _ = strconv.Atoi(arr[1])
+		}
+		if len(arr) >= 3 {
+			results[k].repeat, _ = strconv.Atoi(arr[2])
+			if results[k].repeat == 0 {
+				results[k].repeat = 1
+			}
+		}
+	}
+	return
+}
+
 func getRepeatValuesFromAll(groupValues map[string][]string, numLimit, repeat int) (ret []string) {
 	if repeat == 0 {
 		repeat = 1
@@ -590,5 +619,26 @@ exit:
 		}
 	}
 
+	return
+}
+
+func getRepeatValuesFromGroups2(groupValues map[string][]string, info []retsInfo) (ret []string) {
+	count := 0
+	total := 0
+	for _, v := range info {
+		total = total + v.numLimit
+	}
+exit:
+	for _, v := range info {
+		arr := groupValues[v.ret]
+		for i := 0; i < v.numLimit; i++ {
+			index := i / v.repeat
+			ret = append(ret, arr[index])
+			count++
+		}
+		if count >= total {
+			break exit
+		}
+	}
 	return
 }
