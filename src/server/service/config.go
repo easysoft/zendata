@@ -18,19 +18,19 @@ import (
 )
 
 type ConfigService struct {
-	configRepo  *serverRepo.ConfigRepo
-	resService  *ResService
-	sectionRepo *serverRepo.SectionRepo
+	ConfigRepo  *serverRepo.ConfigRepo  `inject:""`
+	ResService  *ResService             `inject:""`
+	SectionRepo *serverRepo.SectionRepo `inject:""`
 }
 
 func (s *ConfigService) List(keywords string, page int) (list []*model.ZdConfig, total int) {
-	list, total, _ = s.configRepo.List(strings.TrimSpace(keywords), page)
+	list, total, _ = s.ConfigRepo.List(strings.TrimSpace(keywords), page)
 	return
 }
 
 func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []model.Dir) {
 	if id > 0 {
-		config, _ = s.configRepo.Get(uint(id))
+		config, _ = s.ConfigRepo.Get(uint(id))
 	}
 
 	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
@@ -53,7 +53,7 @@ func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
 }
 
 func (s *ConfigService) Create(config *model.ZdConfig) (err error) {
-	err = s.configRepo.Create(config)
+	err = s.ConfigRepo.Create(config)
 	s.updateYaml(config.ID)
 
 	return
@@ -61,7 +61,7 @@ func (s *ConfigService) Create(config *model.ZdConfig) (err error) {
 
 func (s *ConfigService) Update(config *model.ZdConfig) (err error) {
 	var old model.ZdConfig
-	old, err = s.configRepo.Get(config.ID)
+	old, err = s.ConfigRepo.Get(config.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
@@ -69,7 +69,7 @@ func (s *ConfigService) Update(config *model.ZdConfig) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	err = s.configRepo.Update(config)
+	err = s.ConfigRepo.Update(config)
 	s.updateYaml(config.ID)
 
 	return
@@ -77,30 +77,30 @@ func (s *ConfigService) Update(config *model.ZdConfig) (err error) {
 
 func (s *ConfigService) Remove(id int) (err error) {
 	var old model.ZdConfig
-	old, err = s.configRepo.Get(uint(id))
+	old, err = s.ConfigRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
 
 	fileUtils.RemoveExist(old.Path)
-	err = s.configRepo.Remove(uint(id))
+	err = s.ConfigRepo.Remove(uint(id))
 
 	return
 }
 
 func (s *ConfigService) updateYaml(id uint) (err error) {
 	var po model.ZdConfig
-	po, _ = s.configRepo.Get(id)
+	po, _ = s.ConfigRepo.Get(id)
 
 	s.genYaml(&po)
-	err = s.configRepo.UpdateYaml(po)
+	err = s.ConfigRepo.UpdateYaml(po)
 	fileUtils.WriteFile(po.Path, po.Yaml)
 
 	return
 }
 func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
 	yamlObj := model.ResConfig{}
-	s.configRepo.GenConfigRes(*config, &yamlObj)
+	s.ConfigRepo.GenConfigRes(*config, &yamlObj)
 
 	bytes, _ := yaml.Marshal(yamlObj)
 	config.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
@@ -109,7 +109,7 @@ func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
 }
 
 func (s *ConfigService) Sync(files []model.ResFile) (err error) {
-	list := s.configRepo.ListAll()
+	list := s.ConfigRepo.ListAll()
 
 	mp := map[string]*model.ZdConfig{}
 	for _, item := range list {
@@ -122,7 +122,7 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
-			s.configRepo.Remove(mp[fi.Path].ID)
+			s.ConfigRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
 		} else { // db is new
 
@@ -156,11 +156,11 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 		po.Prefix = `"` + po.Prefix + `"`
 	}
 
-	s.configRepo.Create(&po)
+	s.ConfigRepo.Create(&po)
 
 	rangeSections := gen.ParseRangeProperty(po.Range)
 	for i, rangeSection := range rangeSections {
-		s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, po.ID, "config")
+		s.SectionRepo.SaveFieldSectionToDB(rangeSection, i, po.ID, "config")
 	}
 
 	return
@@ -175,8 +175,4 @@ func (s *ConfigService) GConfigItemTree(configId int) (root model.ZdRangesItem) 
 	root.Fields = append(root.Fields, &item)
 
 	return
-}
-
-func NewConfigService(configRepo *serverRepo.ConfigRepo, sectionRepo *serverRepo.SectionRepo) *ConfigService {
-	return &ConfigService{configRepo: configRepo, sectionRepo: sectionRepo}
 }

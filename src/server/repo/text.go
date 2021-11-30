@@ -7,52 +7,52 @@ import (
 )
 
 type TextRepo struct {
-	db *gorm.DB
+	DB *gorm.DB `inject:""`
 }
 
 func (r *TextRepo) ListAll() (models []*model.ZdText) {
-	r.db.Select("id,title,referName,fileName,folder,path,updatedAt").Find(&models)
+	r.DB.Select("id,title,referName,fileName,folder,path,updatedAt").Find(&models)
 	return
 }
 
 func (r *TextRepo) List(keywords string, page int) (models []*model.ZdText, total int, err error) {
-	query := r.db.Select("id,title,referName,fileName,folder,path").Order("id ASC")
+	query := r.DB.Select("id,title,referName,fileName,folder,path").Order("id ASC")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
 	if page > 0 {
-		query = query.Offset((page-1) * constant.PageSize).Limit(constant.PageSize)
+		query = query.Offset((page - 1) * constant.PageSize).Limit(constant.PageSize)
 	}
 
 	err = query.Find(&models).Error
 
-	err = r.db.Model(&model.ZdText{}).Count(&total).Error
+	err = r.DB.Model(&model.ZdText{}).Count(&total).Error
 
 	return
 }
 
 func (r *TextRepo) Get(id uint) (model model.ZdText, err error) {
-	err = r.db.Where("id=?", id).First(&model).Error
+	err = r.DB.Where("id=?", id).First(&model).Error
 	return
 }
 
 func (r *TextRepo) Create(model *model.ZdText) (err error) {
-	err = r.db.Create(model).Error
+	err = r.DB.Create(model).Error
 	return
 }
 func (r *TextRepo) Update(model *model.ZdText) (err error) {
-	err = r.db.Save(model).Error
+	err = r.DB.Save(model).Error
 	return
 }
 
 func (r *TextRepo) Remove(id uint) (err error) {
 	model := model.ZdText{}
 	model.ID = id
-	err = r.db.Delete(model).Error
+	err = r.DB.Delete(model).Error
 
 	return
 }
 
 func NewTextRepo(db *gorm.DB) *TextRepo {
-	return &TextRepo{db: db}
+	return &TextRepo{DB: db}
 }

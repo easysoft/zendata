@@ -10,12 +10,12 @@ import (
 )
 
 type ResService struct {
-	rangesRepo    *serverRepo.RangesRepo
-	instancesRepo *serverRepo.InstancesRepo
-	configRepo    *serverRepo.ConfigRepo
-	excelRepo     *serverRepo.ExcelRepo
-	textRepo      *serverRepo.TextRepo
-	defRepo       *serverRepo.DefRepo
+	RangesRepo    *serverRepo.RangesRepo    `inject:""`
+	InstancesRepo *serverRepo.InstancesRepo `inject:""`
+	ConfigRepo    *serverRepo.ConfigRepo    `inject:""`
+	ExcelRepo     *serverRepo.ExcelRepo     `inject:""`
+	TextRepo      *serverRepo.TextRepo      `inject:""`
+	DefRepo       *serverRepo.DefRepo       `inject:""`
 }
 
 func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
@@ -45,17 +45,17 @@ func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 
 func (s *ResService) ListReferFileForSelection(resType string) (ret interface{}) {
 	if resType == "ranges" {
-		ret = s.rangesRepo.ListAll()
+		ret = s.RangesRepo.ListAll()
 	} else if resType == "instances" {
-		ret = s.instancesRepo.ListAll()
+		ret = s.InstancesRepo.ListAll()
 	} else if resType == "config" {
-		ret = s.configRepo.ListAll()
+		ret = s.ConfigRepo.ListAll()
 	} else if resType == "yaml" {
-		ret = s.defRepo.ListAll()
+		ret = s.DefRepo.ListAll()
 	} else if resType == "excel" {
-		ret = s.excelRepo.ListFiles()
+		ret = s.ExcelRepo.ListFiles()
 	} else if resType == "text" {
-		ret = s.textRepo.ListAll()
+		ret = s.TextRepo.ListAll()
 	}
 
 	return
@@ -65,7 +65,7 @@ func (s *ResService) ListReferSheetForSelection(referName string) (ret []*model.
 	index := strings.LastIndex(referName, ".")
 	file := referName[:index]
 
-	ret = s.excelRepo.ListSheets(file)
+	ret = s.ExcelRepo.ListSheets(file)
 
 	return
 }
@@ -74,7 +74,7 @@ func (s *ResService) ListReferExcelColForSelection(referName string) (ret []mode
 	file := referName[:index]
 	sheet := referName[index+1:]
 
-	res, _ := s.excelRepo.GetBySheet(file, sheet)
+	res, _ := s.ExcelRepo.GetBySheet(file, sheet)
 	excel, _ := excelize.OpenFile(res.Path)
 
 	for _, sheet := range excel.GetSheetList() {
@@ -105,7 +105,7 @@ func (s *ResService) ListReferExcelColForSelection(referName string) (ret []mode
 
 func (s *ResService) ListReferResFieldForSelection(resId int, resType string) (ret []model.ResField) {
 	if resType == "instances" {
-		items, _ := s.instancesRepo.GetItems(uint(resId))
+		items, _ := s.InstancesRepo.GetItems(uint(resId))
 		for i, item := range items {
 			if item.ParentID != 0 {
 				return
@@ -114,7 +114,7 @@ func (s *ResService) ListReferResFieldForSelection(resId int, resType string) (r
 			ret = append(ret, field)
 		}
 	} else if resType == "ranges" {
-		items, _ := s.rangesRepo.GetItems(resId)
+		items, _ := s.RangesRepo.GetItems(resId)
 		for i, item := range items {
 			if item.ParentID != 0 {
 				return
@@ -133,7 +133,7 @@ func NewResService(rangesRepo *serverRepo.RangesRepo,
 	excelRepo *serverRepo.ExcelRepo,
 	textRepo *serverRepo.TextRepo,
 	defRepo *serverRepo.DefRepo) *ResService {
-	return &ResService{rangesRepo: rangesRepo, instancesRepo: instancesRepo,
-		configRepo: configRepo, excelRepo: excelRepo,
-		textRepo: textRepo, defRepo: defRepo}
+	return &ResService{RangesRepo: rangesRepo, InstancesRepo: instancesRepo,
+		ConfigRepo: configRepo, ExcelRepo: excelRepo,
+		TextRepo: textRepo, DefRepo: defRepo}
 }

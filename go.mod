@@ -14,6 +14,8 @@ require (
 	github.com/denisenkom/go-mssqldb v0.9.0 // indirect
 	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/emirpasic/gods v1.12.0
+	github.com/facebookgo/inject v0.0.0-20180706035515-f23751cae28b // indirect
+	github.com/facebookgo/structtag v0.0.0-20150214074306-217e25fb9691 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect

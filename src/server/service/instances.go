@@ -20,20 +20,20 @@ import (
 )
 
 type InstancesService struct {
-	instancesRepo  *serverRepo.InstancesRepo
-	referRepo      *serverRepo.ReferRepo
-	resService     *ResService
-	sectionService *SectionService
-	sectionRepo    *serverRepo.SectionRepo
+	InstancesRepo  *serverRepo.InstancesRepo `inject:""`
+	ReferRepo      *serverRepo.ReferRepo     `inject:""`
+	ResService     *ResService               `inject:""`
+	SectionService *SectionService           `inject:""`
+	SectionRepo    *serverRepo.SectionRepo   `inject:""`
 }
 
 func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInstances, total int) {
-	list, total, _ = s.instancesRepo.List(strings.TrimSpace(keywords), page)
+	list, total, _ = s.InstancesRepo.List(strings.TrimSpace(keywords), page)
 	return
 }
 
 func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []model.Dir) {
-	instances, _ = s.instancesRepo.Get(uint(id))
+	instances, _ = s.InstancesRepo.Get(uint(id))
 
 	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
 
@@ -55,13 +55,13 @@ func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
 	return
 }
 func (s *InstancesService) Create(instances *model.ZdInstances) (err error) {
-	err = s.instancesRepo.Create(instances)
+	err = s.InstancesRepo.Create(instances)
 
 	return
 }
 func (s *InstancesService) Update(instances *model.ZdInstances) (err error) {
 	var old model.ZdInstances
-	old, err = s.instancesRepo.Get(instances.ID)
+	old, err = s.InstancesRepo.Get(instances.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
@@ -69,46 +69,46 @@ func (s *InstancesService) Update(instances *model.ZdInstances) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	err = s.instancesRepo.Update(instances)
+	err = s.InstancesRepo.Update(instances)
 
 	return
 }
 
 func (s *InstancesService) Remove(id int) (err error) {
 	var old model.ZdInstances
-	old, err = s.instancesRepo.Get(uint(id))
+	old, err = s.InstancesRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
 
 	fileUtils.RemoveExist(old.Path)
-	err = s.instancesRepo.Remove(uint(id))
+	err = s.InstancesRepo.Remove(uint(id))
 	return
 }
 
 func (s *InstancesService) updateYamlByItem(itemId uint) (err error) {
-	item, _ := s.instancesRepo.GetItem(itemId)
+	item, _ := s.InstancesRepo.GetItem(itemId)
 	return s.updateYaml(item.InstancesID)
 }
 func (s *InstancesService) updateYaml(id uint) (err error) {
 	var po model.ZdInstances
-	po, _ = s.instancesRepo.Get(id)
+	po, _ = s.InstancesRepo.Get(id)
 
 	s.genYaml(&po)
-	err = s.instancesRepo.UpdateYaml(po)
+	err = s.InstancesRepo.UpdateYaml(po)
 	fileUtils.WriteFile(po.Path, po.Yaml)
 
 	return
 }
 
 func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
-	//items, err := s.instancesRepo.GetItems(instances.ID)
+	//items, err := s.InstancesRepo.GetItems(instances.ID)
 	//if err != nil {
 	//	return
 	//}
 	//
 	//yamlObj := model.ResInstances{}
-	//s.instancesRepo.GenInst(*instances, &yamlObj)
+	//s.InstancesRepo.GenInst(*instances, &yamlObj)
 	//
 	//for _, item := range items {
 	//	inst := instancesItemToResInstForExport(*item)
@@ -127,7 +127,7 @@ func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
 }
 
 func (s *InstancesService) Sync(files []model.ResFile) {
-	list := s.instancesRepo.ListAll()
+	list := s.InstancesRepo.ListAll()
 
 	mp := map[string]*model.ZdInstances{}
 	for _, item := range list {
@@ -139,7 +139,7 @@ func (s *InstancesService) Sync(files []model.ResFile) {
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
-			s.instancesRepo.Remove(mp[fi.Path].ID)
+			s.InstancesRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
 		}
 	}
@@ -165,7 +165,7 @@ func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
 
-	s.instancesRepo.Create(&po)
+	s.InstancesRepo.Create(&po)
 
 	for i, item := range po.Instances {
 		item.Ord = i + 1
@@ -205,7 +205,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 	item.Range = strings.TrimSpace(item.Range)
 
 	// save item
-	s.instancesRepo.SaveItem(item)
+	s.InstancesRepo.SaveItem(item)
 
 	// create refer
 	refer := model.ZdRefer{OwnerType: "instances", OwnerID: item.ID}
@@ -287,14 +287,14 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 
 	// save refer
 	refer.OwnerID = item.ID
-	s.referRepo.Save(&refer)
+	s.ReferRepo.Save(&refer)
 
 	// gen sections if needed
 	if needToCreateSections {
 		rangeSections := gen.ParseRangeProperty(item.Range)
 
 		for i, rangeSection := range rangeSections {
-			s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "instances")
+			s.SectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "instances")
 		}
 	}
 
@@ -307,5 +307,5 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 
 func NewInstancesService(instancesRepo *serverRepo.InstancesRepo, referRepo *serverRepo.ReferRepo,
 	sectionRepo *serverRepo.SectionRepo) *InstancesService {
-	return &InstancesService{instancesRepo: instancesRepo, referRepo: referRepo, sectionRepo: sectionRepo}
+	return &InstancesService{InstancesRepo: instancesRepo, ReferRepo: referRepo, SectionRepo: sectionRepo}
 }

@@ -13,14 +13,14 @@ import (
 )
 
 type PreviewService struct {
-	defRepo       *serverRepo.DefRepo
-	fieldRepo     *serverRepo.FieldRepo
-	referRepo     *serverRepo.ReferRepo
-	instancesRepo *serverRepo.InstancesRepo
+	DefRepo       *serverRepo.DefRepo       `inject:""`
+	FieldRepo     *serverRepo.FieldRepo     `inject:""`
+	ReferRepo     *serverRepo.ReferRepo     `inject:""`
+	InstancesRepo *serverRepo.InstancesRepo `inject:""`
 }
 
 func (s *PreviewService) PreviewDefData(defId uint) (data string) {
-	def, _ := s.defRepo.Get(defId)
+	def, _ := s.DefRepo.Get(defId)
 
 	lines := action.Generate([]string{def.Path}, "", constant.FormatData, "")
 	data = s.linesToStr(lines)
@@ -31,16 +31,16 @@ func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data 
 	var field model.ZdField
 
 	if fieldType == constant.ResTypeDef {
-		field, _ = s.fieldRepo.Get(fieldId)
+		field, _ = s.FieldRepo.Get(fieldId)
 	} else if fieldType == constant.ResTypeInstances {
-		instItem, _ := s.instancesRepo.GetItem(fieldId)
+		instItem, _ := s.InstancesRepo.GetItem(fieldId)
 		field.From = instItem.From
 		copier.Copy(&field, instItem)
 	}
 
 	ref := model.ZdRefer{}
 	if !field.IsRange {
-		ref, _ = s.referRepo.GetByOwnerId(field.ID)
+		ref, _ = s.ReferRepo.GetByOwnerId(field.ID)
 	}
 
 	fld := model.DefField{}
@@ -70,5 +70,5 @@ func (s *PreviewService) linesToStr(lines []interface{}) (data string) {
 }
 
 func NewPreviewService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo, referRepo *serverRepo.ReferRepo, instancesRepo *serverRepo.InstancesRepo) *PreviewService {
-	return &PreviewService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo, instancesRepo: instancesRepo}
+	return &PreviewService{DefRepo: defRepo, FieldRepo: fieldRepo, ReferRepo: referRepo, InstancesRepo: instancesRepo}
 }

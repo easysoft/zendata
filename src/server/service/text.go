@@ -13,18 +13,18 @@ import (
 )
 
 type TextService struct {
-	textRepo   *serverRepo.TextRepo
-	resService *ResService
+	TextRepo   *serverRepo.TextRepo `inject:""`
+	ResService *ResService          `inject:""`
 }
 
 func (s *TextService) List(keywords string, page int) (list []*model.ZdText, total int) {
-	list, total, _ = s.textRepo.List(strings.TrimSpace(keywords), page)
+	list, total, _ = s.TextRepo.List(strings.TrimSpace(keywords), page)
 
 	return
 }
 
 func (s *TextService) Get(id int) (text model.ZdText, dirs []model.Dir) {
-	text, _ = s.textRepo.Get(uint(id))
+	text, _ = s.TextRepo.Get(uint(id))
 
 	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
 
@@ -45,13 +45,13 @@ func (s *TextService) Save(text *model.ZdText) (err error) {
 	return
 }
 func (s *TextService) Create(text *model.ZdText) (err error) {
-	err = s.textRepo.Create(text)
+	err = s.TextRepo.Create(text)
 
 	return
 }
 func (s *TextService) Update(text *model.ZdText) (err error) {
 	var old model.ZdText
-	old, err = s.textRepo.Get(text.ID)
+	old, err = s.TextRepo.Get(text.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
@@ -59,26 +59,26 @@ func (s *TextService) Update(text *model.ZdText) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	err = s.textRepo.Update(text)
+	err = s.TextRepo.Update(text)
 
 	return
 }
 
 func (s *TextService) Remove(id int) (err error) {
 	var old model.ZdText
-	old, err = s.textRepo.Get(uint(id))
+	old, err = s.TextRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
 
 	fileUtils.RemoveExist(old.Path)
-	err = s.textRepo.Remove(uint(id))
+	err = s.TextRepo.Remove(uint(id))
 
 	return
 }
 
 func (s *TextService) Sync(files []model.ResFile) (err error) {
-	list := s.textRepo.ListAll()
+	list := s.TextRepo.ListAll()
 
 	mp := map[string]*model.ZdText{}
 	for _, item := range list {
@@ -91,7 +91,7 @@ func (s *TextService) Sync(files []model.ResFile) (err error) {
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
-			s.textRepo.Remove(mp[fi.Path].ID)
+			s.TextRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
 		} else { // db is new
 
@@ -115,11 +115,11 @@ func (s *TextService) SyncToDB(file model.ResFile) (err error) {
 	}
 	text.Content = fileUtils.ReadFile(file.Path)
 
-	s.textRepo.Create(&text)
+	s.TextRepo.Create(&text)
 
 	return
 }
 
 func NewTextService(textRepo *serverRepo.TextRepo) *TextService {
-	return &TextService{textRepo: textRepo}
+	return &TextService{TextRepo: textRepo}
 }

@@ -19,22 +19,22 @@ import (
 )
 
 type DefService struct {
-	defRepo     *serverRepo.DefRepo
-	fieldRepo   *serverRepo.FieldRepo
-	referRepo   *serverRepo.ReferRepo
-	sectionRepo *serverRepo.SectionRepo
+	DefRepo     *serverRepo.DefRepo     `inject:""`
+	FieldRepo   *serverRepo.FieldRepo   `inject:""`
+	ReferRepo   *serverRepo.ReferRepo   `inject:""`
+	SectionRepo *serverRepo.SectionRepo `inject:""`
 
-	resService     *ResService
-	sectionService *SectionService
+	ResService     *ResService     `inject:""`
+	SectionService *SectionService `inject:""`
 }
 
 func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total int) {
-	list, total, _ = s.defRepo.List(strings.TrimSpace(keywords), page)
+	list, total, _ = s.DefRepo.List(strings.TrimSpace(keywords), page)
 	return
 }
 
 func (s *DefService) Get(id int) (def model.ZdDef, dirs []model.Dir) {
-	def, _ = s.defRepo.Get(uint(id))
+	def, _ = s.DefRepo.Get(uint(id))
 
 	serverUtils.GetDirs(constant.ResDirUsers, &dirs)
 
@@ -57,19 +57,19 @@ func (s *DefService) Save(def *model.ZdDef) (err error) {
 
 func (s *DefService) Create(def *model.ZdDef) (err error) {
 	def.ReferName = service.PathToName(def.Path, constant.ResDirUsers, def.Type)
-	err = s.defRepo.Create(def)
+	err = s.DefRepo.Create(def)
 
 	// add root field node
-	rootField, err := s.fieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
-	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
-	err = s.defRepo.Update(def)
+	rootField, err := s.FieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
+	s.ReferRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
+	err = s.DefRepo.Update(def)
 
 	return
 }
 
 func (s *DefService) Update(def *model.ZdDef) (err error) {
 	var old model.ZdDef
-	old, err = s.defRepo.Get(def.ID)
+	old, err = s.DefRepo.Get(def.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
@@ -78,52 +78,52 @@ func (s *DefService) Update(def *model.ZdDef) (err error) {
 	}
 
 	def.ReferName = service.PathToName(def.Path, constant.ResDirUsers, def.Type)
-	err = s.defRepo.Update(def)
+	err = s.DefRepo.Update(def)
 
 	return
 }
 
 func (s *DefService) Remove(id int) (err error) {
 	var old model.ZdDef
-	old, err = s.defRepo.Get(uint(id))
+	old, err = s.DefRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
 	fileUtils.RemoveExist(old.Path)
 
-	err = s.defRepo.Remove(uint(id))
+	err = s.DefRepo.Remove(uint(id))
 	return
 }
 
 func (s *DefService) updateYamlByField(fieldId uint) (err error) {
-	field, _ := s.fieldRepo.Get(fieldId)
+	field, _ := s.FieldRepo.Get(fieldId)
 	return s.updateYaml(field.DefID)
 }
 
 func (s *DefService) updateYaml(id uint) (err error) {
 	var po model.ZdDef
-	po, _ = s.defRepo.Get(id)
+	po, _ = s.DefRepo.Get(id)
 
 	s.genYaml(&po)
-	err = s.defRepo.UpdateYaml(po)
+	err = s.DefRepo.UpdateYaml(po)
 	fileUtils.WriteFile(po.Path, po.Yaml)
 
 	return
 }
 
 func (s *DefService) genYaml(def *model.ZdDef) (str string) {
-	root, err := s.fieldRepo.GetDefFieldTree(def.ID)
+	root, err := s.FieldRepo.GetDefFieldTree(def.ID)
 	if err != nil {
 		return
 	}
 
 	yamlObj := model.DefData{}
-	s.defRepo.GenDef(*def, &yamlObj)
+	s.DefRepo.GenDef(*def, &yamlObj)
 
 	for _, child := range root.Fields { // ignore the root
 		defField := model.DefField{}
 
-		refer, _ := s.referRepo.GetByOwnerId(child.ID)
+		refer, _ := s.ReferRepo.GetByOwnerId(child.ID)
 		s.zdFieldToFieldForExport(*child, refer, &defField)
 
 		yamlObj.Fields = append(yamlObj.Fields, defField)
@@ -141,7 +141,7 @@ func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model
 	for _, child := range treeNode.Fields {
 		childField := model.DefField{}
 
-		childRefer, _ := s.referRepo.GetByOwnerId(child.ID)
+		childRefer, _ := s.ReferRepo.GetByOwnerId(child.ID)
 		s.zdFieldToFieldForExport(*child, childRefer, &childField)
 
 		field.Fields = append(field.Fields, childField)
@@ -165,7 +165,7 @@ func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model
 }
 
 func (s *DefService) Sync(files []model.ResFile) (err error) {
-	list := s.defRepo.ListAll()
+	list := s.DefRepo.ListAll()
 
 	mp := map[string]*model.ZdDef{}
 	for _, item := range list {
@@ -182,7 +182,7 @@ func (s *DefService) Sync(files []model.ResFile) (err error) {
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
-			s.defRepo.Remove(mp[fi.Path].ID)
+			s.DefRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
 		}
 	}
@@ -205,10 +205,10 @@ func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
 
 	po.Yaml = string(content)
 
-	s.defRepo.Create(&po)
+	s.DefRepo.Create(&po)
 
-	rootField, _ := s.fieldRepo.CreateTreeNode(po.ID, 0, "字段", "root")
-	s.referRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
+	rootField, _ := s.FieldRepo.CreateTreeNode(po.ID, 0, "字段", "root")
+	s.ReferRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
 	for i, field := range po.Fields {
 		field.Ord = i + 1
 		s.saveFieldToDB(&field, po, fi.Path, rootField.ID, po.ID)
@@ -244,7 +244,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 	field.Range = strings.TrimSpace(field.Range)
 
 	// save field
-	s.fieldRepo.Save(field)
+	s.FieldRepo.Save(field)
 
 	// create refer
 	refer := model.ZdRefer{OwnerType: "def", OwnerID: field.ID}
@@ -321,14 +321,14 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 
 	// save refer
 	refer.OwnerID = field.ID
-	s.referRepo.Save(&refer)
+	s.ReferRepo.Save(&refer)
 
 	// gen sections if needed
 	if needToCreateSections {
 		rangeSections := gen.ParseRangeProperty(field.Range)
 
 		for i, rangeSection := range rangeSections {
-			s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, field.ID, "def")
+			s.SectionRepo.SaveFieldSectionToDB(rangeSection, i, field.ID, "def")
 		}
 	}
 
@@ -336,11 +336,4 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 	for _, child := range field.Fields {
 		s.saveFieldToDB(child, def, currPath, field.ID, defID)
 	}
-}
-
-func NewDefService(defRepo *serverRepo.DefRepo,
-	fieldRepo *serverRepo.FieldRepo,
-	sectionRepo *serverRepo.SectionRepo,
-	referRepo *serverRepo.ReferRepo) *DefService {
-	return &DefService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo, sectionRepo: sectionRepo}
 }

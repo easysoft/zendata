@@ -6,81 +6,81 @@ import (
 )
 
 type SectionService struct {
-	fieldRepo     *serverRepo.FieldRepo
-	configRepo    *serverRepo.ConfigRepo
-	rangesRepo    *serverRepo.RangesRepo
-	instancesRepo *serverRepo.InstancesRepo
+	FieldRepo     *serverRepo.FieldRepo     `inject:""`
+	ConfigRepo    *serverRepo.ConfigRepo    `inject:""`
+	RangesRepo    *serverRepo.RangesRepo    `inject:""`
+	InstancesRepo *serverRepo.InstancesRepo `inject:""`
 
-	sectionRepo      *serverRepo.SectionRepo
-	defService       *DefService
-	configService    *ConfigService
-	rangesService    *RangesService
-	instancesService *InstancesService
+	SectionRepo      *serverRepo.SectionRepo `inject:""`
+	DefService       *DefService             `inject:""`
+	ConfigService    *ConfigService          `inject:""`
+	RangesService    *RangesService          `inject:""`
+	InstancesService *InstancesService       `inject:""`
 }
 
 func (s *SectionService) List(ownerId uint, ownerType string) (sections []*model.ZdSection, err error) {
-	sections, err = s.sectionRepo.List(ownerId, ownerType)
+	sections, err = s.SectionRepo.List(ownerId, ownerType)
 	return
 }
 
 func (s *SectionService) Create(ownerId, sectionsId uint, ownerType string) (err error) {
-	preSection, err := s.sectionRepo.Get(sectionsId, ownerType)
+	preSection, err := s.SectionRepo.Get(sectionsId, ownerType)
 
 	section := model.ZdSection{Value: "0-9", OwnerID: ownerId, OwnerType: ownerType, Ord: preSection.Ord + 1,
 		Start: "0", End: "9"}
-	err = s.sectionRepo.Create(&section)
+	err = s.SectionRepo.Create(&section)
 
 	if ownerType == "def" {
-		s.fieldRepo.SetIsRange(section.OwnerID, true)
+		s.FieldRepo.SetIsRange(section.OwnerID, true)
 	} else if ownerType == "instances" {
-		s.instancesRepo.SetIsRange(section.OwnerID, true)
+		s.InstancesRepo.SetIsRange(section.OwnerID, true)
 	}
 
 	return
 }
 
 func (s *SectionService) Update(section *model.ZdSection) (err error) {
-	err = s.sectionRepo.Update(section)
+	err = s.SectionRepo.Update(section)
 
 	ownerId := section.OwnerID
 	ownerType := section.OwnerType
 
 	s.updateFieldRangeProp(ownerId, ownerType)
 	if ownerType == "def" {
-		s.fieldRepo.SetIsRange(section.OwnerID, true)
-		s.defService.updateYamlByField(section.OwnerID)
+		s.FieldRepo.SetIsRange(section.OwnerID, true)
+		s.DefService.updateYamlByField(section.OwnerID)
 
 	} else if ownerType == "config" {
-		s.configService.updateYaml(section.OwnerID)
+		s.ConfigService.updateYaml(section.OwnerID)
 	} else if ownerType == "ranges" {
-		s.rangesService.updateYamlByItem(section.OwnerID)
+		s.RangesService.updateYamlByItem(section.OwnerID)
 
 	} else if ownerType == "instances" {
-		s.instancesRepo.SetIsRange(section.OwnerID, true)
-		s.instancesService.updateYamlByItem(section.OwnerID)
+		s.InstancesRepo.SetIsRange(section.OwnerID, true)
+		s.InstancesService.updateYamlByItem(section.OwnerID)
 	}
 
 	return
 }
 
 func (s *SectionService) Remove(sectionId int, ownerType string) (ownerId uint, err error) {
-	section, err := s.sectionRepo.Get(uint(sectionId), ownerType)
+	section, err := s.SectionRepo.Get(uint(sectionId), ownerType)
 	ownerId = section.OwnerID
 
-	err = s.sectionRepo.Remove(uint(sectionId), ownerType)
+	err = s.SectionRepo.Remove(uint(sectionId), ownerType)
 
 	s.updateFieldRangeProp(ownerId, ownerType)
 	if ownerType == "def" {
-		s.fieldRepo.SetIsRange(section.OwnerID, true)
-		s.defService.updateYamlByField(section.OwnerID)
+		s.FieldRepo.SetIsRange(section.OwnerID, true)
+		s.DefService.updateYamlByField(section.OwnerID)
 	} else if ownerType == "config" {
-		s.configService.updateYaml(section.OwnerID)
+		s.ConfigService.updateYaml(section.OwnerID)
 	} else if ownerType == "ranges" {
-		s.rangesService.updateYamlByItem(section.OwnerID)
+		s.RangesService.updateYamlByItem(section.OwnerID)
 
 	} else if ownerType == "instances" {
-		s.instancesRepo.SetIsRange(section.OwnerID, true)
-		s.instancesService.updateYamlByItem(section.OwnerID)
+		s.InstancesRepo.SetIsRange(section.OwnerID, true)
+		s.InstancesService.updateYamlByItem(section.OwnerID)
 	}
 
 	return
@@ -89,7 +89,7 @@ func (s *SectionService) Remove(sectionId int, ownerType string) (ownerId uint, 
 func (s *SectionService) updateFieldRangeProp(ownerId uint, ownerType string) (err error) {
 	rangeStr := ""
 
-	sections, _ := s.sectionRepo.List(ownerId, ownerType)
+	sections, _ := s.SectionRepo.List(ownerId, ownerType)
 	for index, sect := range sections {
 		if index > 0 {
 			rangeStr += ","
@@ -98,13 +98,13 @@ func (s *SectionService) updateFieldRangeProp(ownerId uint, ownerType string) (e
 	}
 
 	if ownerType == "def" {
-		s.fieldRepo.UpdateRange(rangeStr, ownerId)
+		s.FieldRepo.UpdateRange(rangeStr, ownerId)
 	} else if ownerType == "config" {
-		s.configRepo.UpdateConfigRange(rangeStr, ownerId)
+		s.ConfigRepo.UpdateConfigRange(rangeStr, ownerId)
 	} else if ownerType == "ranges" {
-		s.rangesRepo.UpdateItemRange(rangeStr, ownerId)
+		s.RangesRepo.UpdateItemRange(rangeStr, ownerId)
 	} else if ownerType == "instances" {
-		s.instancesRepo.UpdateItemRange(rangeStr, ownerId)
+		s.InstancesRepo.UpdateItemRange(rangeStr, ownerId)
 	}
 
 	return
@@ -118,10 +118,10 @@ func NewSectionService(
 
 	defService *DefService, instancesService *InstancesService,
 	rangesService *RangesService, configService *ConfigService) *SectionService {
-	return &SectionService{fieldRepo: fieldRepo, sectionRepo: sectionRepo,
-		configRepo: configRepo, rangesRepo: rangesRepo,
-		defService: defService, instancesService: instancesService,
+	return &SectionService{FieldRepo: fieldRepo, SectionRepo: sectionRepo,
+		ConfigRepo: configRepo, RangesRepo: rangesRepo,
+		DefService: defService, InstancesService: instancesService,
 
-		instancesRepo: instancesRepo,
-		rangesService: rangesService, configService: configService}
+		InstancesRepo: instancesRepo,
+		RangesService: rangesService, ConfigService: configService}
 }

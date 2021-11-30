@@ -17,18 +17,18 @@ import (
 )
 
 type RangesService struct {
-	rangesRepo  *serverRepo.RangesRepo
-	resService  *ResService
-	sectionRepo *serverRepo.SectionRepo
+	RangesRepo  *serverRepo.RangesRepo  `inject:""`
+	ResService  *ResService             `inject:""`
+	SectionRepo *serverRepo.SectionRepo `inject:""`
 }
 
 func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges, total int) {
-	list, total, _ = s.rangesRepo.List(strings.TrimSpace(keywords), page)
+	list, total, _ = s.RangesRepo.List(strings.TrimSpace(keywords), page)
 	return
 }
 
 func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirs []model.Dir) {
-	ranges, _ = s.rangesRepo.Get(uint(id))
+	ranges, _ = s.RangesRepo.Get(uint(id))
 
 	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
 
@@ -50,13 +50,13 @@ func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 	return
 }
 func (s *RangesService) Create(ranges *model.ZdRanges) (err error) {
-	err = s.rangesRepo.Create(ranges)
+	err = s.RangesRepo.Create(ranges)
 
 	return
 }
 func (s *RangesService) Update(ranges *model.ZdRanges) (err error) {
 	var old model.ZdRanges
-	old, err = s.rangesRepo.Get(ranges.ID)
+	old, err = s.RangesRepo.Get(ranges.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
@@ -64,25 +64,25 @@ func (s *RangesService) Update(ranges *model.ZdRanges) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	err = s.rangesRepo.Update(ranges)
+	err = s.RangesRepo.Update(ranges)
 
 	return
 }
 
 func (s *RangesService) Remove(id int) (err error) {
 	var old model.ZdRanges
-	old, err = s.rangesRepo.Get(uint(id))
+	old, err = s.RangesRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
 
 	fileUtils.RemoveExist(old.Path)
-	err = s.rangesRepo.Remove(uint(id))
+	err = s.RangesRepo.Remove(uint(id))
 	return
 }
 
 func (s *RangesService) Sync(files []model.ResFile) (err error) {
-	list := s.rangesRepo.ListAll()
+	list := s.RangesRepo.ListAll()
 
 	mp := map[string]*model.ZdRanges{}
 	for _, item := range list {
@@ -94,7 +94,7 @@ func (s *RangesService) Sync(files []model.ResFile) (err error) {
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
-			s.rangesRepo.Remove(mp[fi.Path].ID)
+			s.RangesRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
 		}
 	}
@@ -120,19 +120,19 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
 
-	s.rangesRepo.Create(&po)
+	s.RangesRepo.Create(&po)
 
 	i := 1
 	for k, v := range po.RangeMap {
 		item := model.ZdRangesItem{Field: k, Value: v}
 		item.RangesID = po.ID
 		item.Ord = i
-		s.rangesRepo.SaveItem(&item)
+		s.RangesRepo.SaveItem(&item)
 		i += 1
 
 		rangeSections := gen.ParseRangeProperty(item.Value)
 		for i, rangeSection := range rangeSections {
-			s.sectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "ranges")
+			s.SectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "ranges")
 		}
 	}
 
@@ -140,28 +140,28 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 }
 
 func (s *RangesService) updateYamlByItem(itemId uint) (err error) {
-	item, _ := s.rangesRepo.GetItem(itemId)
+	item, _ := s.RangesRepo.GetItem(itemId)
 	return s.updateYaml(item.RangesID)
 }
 func (s *RangesService) updateYaml(id uint) (err error) {
 	var po model.ZdRanges
-	po, _ = s.rangesRepo.Get(id)
+	po, _ = s.RangesRepo.Get(id)
 
 	s.genYaml(&po)
-	err = s.rangesRepo.UpdateYaml(po)
+	err = s.RangesRepo.UpdateYaml(po)
 	fileUtils.WriteFile(po.Path, po.Yaml)
 
 	return
 }
 func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
-	items, err := s.rangesRepo.GetItems(int(ranges.ID))
+	items, err := s.RangesRepo.GetItems(int(ranges.ID))
 	if err != nil {
 		return
 	}
 
 	yamlObj := model.ResRanges{}
 	yamlObj.Ranges = map[string]string{}
-	s.rangesRepo.GenRangesRes(*ranges, &yamlObj)
+	s.RangesRepo.GenRangesRes(*ranges, &yamlObj)
 
 	for _, item := range items {
 
@@ -175,5 +175,5 @@ func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
 }
 
 func NewRangesService(rangesRepo *serverRepo.RangesRepo, sectionRepo *serverRepo.SectionRepo) *RangesService {
-	return &RangesService{rangesRepo: rangesRepo, sectionRepo: sectionRepo}
+	return &RangesService{RangesRepo: rangesRepo, SectionRepo: sectionRepo}
 }

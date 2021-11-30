@@ -10,31 +10,31 @@ import (
 )
 
 type SectionRepo struct {
-	db *gorm.DB
+	DB *gorm.DB `inject:""`
 }
 
 func (r *SectionRepo) List(ownerId uint, ownerType string) (sections []*model.ZdSection, err error) {
-	err = r.db.Where("ownerID=? AND ownerType=?", ownerId, ownerType).Find(&sections).Error
+	err = r.DB.Where("ownerID=? AND ownerType=?", ownerId, ownerType).Find(&sections).Error
 	return
 }
 
 func (r *SectionRepo) Get(id uint, ownerType string) (section model.ZdSection, err error) {
-	err = r.db.Where("id=? AND ownerType=?", id, ownerType).First(&section).Error
+	err = r.DB.Where("id=? AND ownerType=?", id, ownerType).First(&section).Error
 	return
 }
 
 func (r *SectionRepo) Create(section *model.ZdSection) (err error) {
-	err = r.db.Create(&section).Error
+	err = r.DB.Create(&section).Error
 	return
 }
 
 func (r *SectionRepo) Update(section *model.ZdSection) (err error) {
-	err = r.db.Save(&section).Error
+	err = r.DB.Save(&section).Error
 	return
 }
 
 func (r *SectionRepo) Remove(id uint, ownerType string) (err error) {
-	err = r.db.Where("id=? AND ownerType=?", id, ownerType).Delete(&model.ZdSection{}).Error
+	err = r.DB.Where("id=? AND ownerType=?", id, ownerType).Delete(&model.ZdSection{}).Error
 	return
 }
 
@@ -76,5 +76,5 @@ func (r *SectionRepo) SaveFieldSectionToDB(rangeSection string, ord int, fieldID
 }
 
 func NewSectionRepo(db *gorm.DB) *SectionRepo {
-	return &SectionRepo{db: db}
+	return &SectionRepo{DB: db}
 }

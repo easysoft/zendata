@@ -6,19 +6,19 @@ import (
 )
 
 type SyncService struct {
-	defService *DefService
-	fieldService *FieldService
-	rangesService *RangesService
-	instancesService *InstancesService
-	configService *ConfigService
-	excelService *ExcelService
-	textService *TextService
-	referService *ReferService
-	resService *ResService
+	DefService       *DefService       `inject:""`
+	FieldService     *FieldService     `inject:""`
+	RangesService    *RangesService    `inject:""`
+	InstancesService *InstancesService `inject:""`
+	ConfigService    *ConfigService    `inject:""`
+	ExcelService     *ExcelService     `inject:""`
+	TextService      *TextService      `inject:""`
+	ReferService     *ReferService     `inject:""`
+	ResService       *ResService       `inject:""`
 }
 
 func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
-	files := s.resService.LoadRes("")
+	files := s.ResService.LoadRes("")
 
 	fileMap := map[string][]model.ResFile{}
 	for _, fi := range files {
@@ -28,13 +28,13 @@ func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
 		fileMap[fi.ResType] = append(fileMap[fi.ResType], fi)
 	}
 
-	s.defService.Sync(fileMap[constant.ResTypeYaml])
-	s.rangesService.Sync(fileMap[constant.ResTypeRanges])
-	s.instancesService.Sync(fileMap[constant.ResTypeInstances])
-	s.configService.Sync(fileMap[constant.ResTypeConfig])
+	s.DefService.Sync(fileMap[constant.ResTypeYaml])
+	s.RangesService.Sync(fileMap[constant.ResTypeRanges])
+	s.InstancesService.Sync(fileMap[constant.ResTypeInstances])
+	s.ConfigService.Sync(fileMap[constant.ResTypeConfig])
 
-	s.excelService.Sync(fileMap[constant.ResTypeExcel])
-	s.textService.Sync(fileMap[constant.ResTypeText])
+	s.ExcelService.Sync(fileMap[constant.ResTypeExcel])
+	s.TextService.Sync(fileMap[constant.ResTypeText])
 }
 
 func NewSyncService(
@@ -48,14 +48,14 @@ func NewSyncService(
 	referService *ReferService,
 	resService *ResService) *SyncService {
 	return &SyncService{
-		defService: defService,
-		fieldService: fieldService,
-		rangesService: rangesService,
-		instancesService: instancesService,
-		configService: configService,
-		excelService: excelService,
-		textService: textService,
-		referService: referService,
-		resService: resService,
+		DefService:       defService,
+		FieldService:     fieldService,
+		RangesService:    rangesService,
+		InstancesService: instancesService,
+		ConfigService:    configService,
+		ExcelService:     excelService,
+		TextService:      textService,
+		ReferService:     referService,
+		ResService:       resService,
 	}
 }

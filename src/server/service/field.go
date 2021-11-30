@@ -7,27 +7,27 @@ import (
 )
 
 type FieldService struct {
-	defRepo *serverRepo.DefRepo
-	fieldRepo *serverRepo.FieldRepo
-	referRepo *serverRepo.ReferRepo
+	DefRepo   *serverRepo.DefRepo   `inject:""`
+	FieldRepo *serverRepo.FieldRepo `inject:""`
+	ReferRepo *serverRepo.ReferRepo `inject:""`
 
-	defService *DefService
+	DefService *DefService
 }
 
 func (s *FieldService) GetTree(defId uint) (root *model.ZdField, err error) {
-	root, err = s.fieldRepo.GetDefFieldTree(defId)
+	root, err = s.FieldRepo.GetDefFieldTree(defId)
 	return
 }
 
 func (s *FieldService) Get(fieldId int) (field model.ZdField, err error) {
-	field, err = s.fieldRepo.Get(uint(fieldId))
+	field, err = s.FieldRepo.Get(uint(fieldId))
 
 	return
 }
 
 func (s *FieldService) Save(field *model.ZdField) (err error) {
-	err = s.fieldRepo.Save(field)
-	s.defService.updateYaml(field.DefID)
+	err = s.FieldRepo.Save(field)
+	s.DefService.updateYaml(field.DefID)
 
 	return
 }
@@ -40,7 +40,7 @@ func (s *FieldService) Create(defId, targetId uint, name string, mode string) (f
 	} else {
 		var target model.ZdField
 
-		target, err = s.fieldRepo.Get(targetId)
+		target, err = s.FieldRepo.Get(targetId)
 		field.DefID = target.DefID
 
 		if mode == "child" {
@@ -48,38 +48,38 @@ func (s *FieldService) Create(defId, targetId uint, name string, mode string) (f
 		} else {
 			field.ParentID = target.ParentID
 		}
-		field.Ord = s.fieldRepo.GetMaxOrder(field.ParentID)
+		field.Ord = s.FieldRepo.GetMaxOrder(field.ParentID)
 	}
 
-	err = s.fieldRepo.Save(field)
-	s.referRepo.CreateDefault(field.ID, constant.ResTypeDef)
+	err = s.FieldRepo.Save(field)
+	s.ReferRepo.CreateDefault(field.ID, constant.ResTypeDef)
 
-	s.defService.updateYaml(field.DefID)
+	s.DefService.updateYaml(field.DefID)
 
 	return
 }
 
 func (s *FieldService) Remove(id int) (defId int, err error) {
-	field, _ := s.fieldRepo.Get(uint(id))
+	field, _ := s.FieldRepo.Get(uint(id))
 	defId = int(field.DefID)
 
 	err = s.deleteFieldAndChildren(field.DefID, field.ID)
 
-	s.defService.updateYaml(field.DefID)
+	s.DefService.updateYaml(field.DefID)
 
 	return
 }
 
 func (s *FieldService) Move(srcId, targetId uint, mode string) (defId uint, srcField model.ZdField, err error) {
-	srcField, err = s.fieldRepo.Get(srcId)
-	targetField, err := s.fieldRepo.Get(targetId)
+	srcField, err = s.FieldRepo.Get(srcId)
+	targetField, err := s.FieldRepo.Get(targetId)
 	defId = srcField.DefID
 
 	if "0" == mode {
 		srcField.ParentID = targetId
-		srcField.Ord = s.fieldRepo.GetMaxOrder(srcField.ParentID)
+		srcField.Ord = s.FieldRepo.GetMaxOrder(srcField.ParentID)
 	} else if "-1" == mode {
-		err = s.fieldRepo.AddOrderForTargetAndNextCases(srcField.ID, targetField.Ord, targetField.ParentID)
+		err = s.FieldRepo.AddOrderForTargetAndNextCases(srcField.ID, targetField.Ord, targetField.ParentID)
 		if err != nil {
 			return
 		}
@@ -87,7 +87,7 @@ func (s *FieldService) Move(srcId, targetId uint, mode string) (defId uint, srcF
 		srcField.ParentID = targetField.ParentID
 		srcField.Ord = targetField.Ord
 	} else if "1" == mode {
-		err = s.fieldRepo.AddOrderForNextCases(srcField.ID, targetField.Ord, targetField.ParentID)
+		err = s.FieldRepo.AddOrderForNextCases(srcField.ID, targetField.Ord, targetField.ParentID)
 		if err != nil {
 			return
 		}
@@ -96,17 +96,17 @@ func (s *FieldService) Move(srcId, targetId uint, mode string) (defId uint, srcF
 		srcField.Ord = targetField.Ord + 1
 	}
 
-	err = s.fieldRepo.UpdateOrdAndParent(srcField)
+	err = s.FieldRepo.UpdateOrdAndParent(srcField)
 
-	s.defService.updateYaml(defId)
+	s.DefService.updateYaml(defId)
 
 	return
 }
 
 func (s *FieldService) deleteFieldAndChildren(defId, fieldId uint) (err error) {
-	err = s.fieldRepo.Remove(fieldId)
+	err = s.FieldRepo.Remove(fieldId)
 	if err == nil {
-		children, _ := s.fieldRepo.GetChildren(defId, fieldId)
+		children, _ := s.FieldRepo.GetChildren(defId, fieldId)
 		for _, child := range children {
 			s.deleteFieldAndChildren(child.DefID, child.ID)
 		}
@@ -118,6 +118,6 @@ func (s *FieldService) deleteFieldAndChildren(defId, fieldId uint) (err error) {
 func NewFieldService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo,
 	referRepo *serverRepo.ReferRepo,
 	defService *DefService) *FieldService {
-	return &FieldService{defRepo: defRepo, fieldRepo: fieldRepo, referRepo: referRepo,
-		defService: defService}
+	return &FieldService{DefRepo: defRepo, FieldRepo: fieldRepo, ReferRepo: referRepo,
+		DefService: defService}
 }

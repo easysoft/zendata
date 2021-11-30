@@ -6,35 +6,35 @@ import (
 )
 
 type ReferRepo struct {
-	db *gorm.DB
+	DB *gorm.DB `inject:""`
 }
 
 func (r *ReferRepo) CreateDefault(ownerId uint, ownerType string) (err error) {
 	refer := &model.ZdRefer{OwnerID: ownerId, OwnerType: ownerType}
-	err = r.db.Create(&refer).Error
+	err = r.DB.Create(&refer).Error
 
 	return
 }
 
 func (r *ReferRepo) Create(refer *model.ZdRefer) (err error) {
-	err = r.db.Create(&refer).Error
+	err = r.DB.Create(&refer).Error
 	return
 }
 
 func (r *ReferRepo) GetByOwnerId(fieldId uint) (refer model.ZdRefer, err error) {
-	err = r.db.Where("ownerID=?", fieldId).First(&refer).Error
+	err = r.DB.Where("ownerID=?", fieldId).First(&refer).Error
 	return
 }
 func (r *ReferRepo) GetByOwnerIdAndType(fieldId uint, ownerType string) (refer model.ZdRefer, err error) {
-	err = r.db.Where("ownerID=? AND ownerType=?", fieldId, ownerType).First(&refer).Error
+	err = r.DB.Where("ownerID=? AND ownerType=?", fieldId, ownerType).First(&refer).Error
 	return
 }
 
 func (r *ReferRepo) Save(ref *model.ZdRefer) (err error) {
-	err = r.db.Save(ref).Error
+	err = r.DB.Save(ref).Error
 	return
 }
 
 func NewReferRepo(db *gorm.DB) *ReferRepo {
-	return &ReferRepo{db: db}
+	return &ReferRepo{DB: db}
 }

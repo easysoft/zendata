@@ -7,7 +7,7 @@ import (
 )
 
 type FieldRepo struct {
-	db *gorm.DB
+	DB *gorm.DB `inject:""`
 }
 
 func (r *FieldRepo) GetDefFieldTree(defId uint) (root *model.ZdField, err error) {
@@ -39,7 +39,7 @@ func (r *FieldRepo) CreateTreeNode(defId, targetId uint, name string, mode strin
 	} else {
 		var target model.ZdField
 
-		err = r.db.Where("id=?", targetId).First(&target).Error
+		err = r.DB.Where("id=?", targetId).First(&target).Error
 		field.DefID = target.DefID
 
 		if mode == "child" {
@@ -50,13 +50,13 @@ func (r *FieldRepo) CreateTreeNode(defId, targetId uint, name string, mode strin
 		field.Ord = r.GetMaxOrder(field.ParentID)
 	}
 
-	err = r.db.Save(field).Error
+	err = r.DB.Save(field).Error
 	return
 }
 
 func (r *FieldRepo) GetMaxOrder(parentId uint) (ord int) {
 	var preChild model.ZdField
-	err := r.db.
+	err := r.DB.
 		Where("parentID=?", parentId).
 		Order("ord DESC").Limit(1).
 		First(&preChild).Error
@@ -70,21 +70,21 @@ func (r *FieldRepo) GetMaxOrder(parentId uint) (ord int) {
 }
 
 func (r *FieldRepo) ListByDef(defId uint) (fields []*model.ZdField, err error) {
-	err = r.db.Where("defID=?", defId).Order("parentID ASC ,ord ASC").Find(&fields).Error
+	err = r.DB.Where("defID=?", defId).Order("parentID ASC ,ord ASC").Find(&fields).Error
 	return
 }
 
 func (r *FieldRepo) Get(fieldId uint) (field model.ZdField, err error) {
-	err = r.db.Where("id=?", fieldId).First(&field).Error
+	err = r.DB.Where("id=?", fieldId).First(&field).Error
 	return
 }
 
 func (r *FieldRepo) Save(field *model.ZdField) (err error) {
-	err = r.db.Save(field).Error
+	err = r.DB.Save(field).Error
 	return
 }
 func (r *FieldRepo) UpdateRange(rang string, id uint) (err error) {
-	err = r.db.Model(&model.ZdField{}).Where("id=?", id).Update("range", rang).Error
+	err = r.DB.Model(&model.ZdField{}).Where("id=?", id).Update("range", rang).Error
 
 	return
 }
@@ -93,7 +93,7 @@ func (r *FieldRepo) makeTree(Data []*model.ZdField, node *model.ZdField) { //参
 	children, _ := r.haveChild(Data, node) //判断节点是否有子节点并返回
 	if children != nil {
 		node.Fields = append(node.Fields, children[0:]...) //添加子节点
-		for _, v := range children {                           //查询子节点的子节点，并添加到子节点
+		for _, v := range children {                       //查询子节点的子节点，并添加到子节点
 			_, has := r.haveChild(Data, v)
 			if has {
 				r.makeTree(Data, v) //递归添加节点
@@ -117,18 +117,18 @@ func (r *FieldRepo) haveChild(Data []*model.ZdField, node *model.ZdField) (child
 func (r *FieldRepo) Remove(id uint) (err error) {
 	field := model.ZdField{}
 	field.ID = id
-	err = r.db.Delete(field).Error
+	err = r.DB.Delete(field).Error
 
 	return
 }
 
 func (r *FieldRepo) GetChildren(defId, fieldId uint) (children []*model.ZdField, err error) {
-	err = r.db.Where("defID=? AND parentID=?", defId, fieldId).Find(&children).Error
+	err = r.DB.Where("defID=? AND parentID=?", defId, fieldId).Find(&children).Error
 	return
 }
 
 func (r *FieldRepo) SetIsRange(fieldId uint, b bool) (err error) {
-	err = r.db.Model(&model.ZdField{}).
+	err = r.DB.Model(&model.ZdField{}).
 		Where("id = ?", fieldId).Update("isRange", b).Error
 
 	return
@@ -137,7 +137,7 @@ func (r *FieldRepo) SetIsRange(fieldId uint, b bool) (err error) {
 func (r *FieldRepo) AddOrderForTargetAndNextCases(srcID uint, targetOrder int, targetParentID uint) (err error) {
 	sql := fmt.Sprintf(`update %s set ord = ord + 1 where ord >= %d and parentID = %d and id!=%d`,
 		(&model.ZdField{}).TableName(), targetOrder, targetParentID, srcID)
-	err = r.db.Exec(sql).Error
+	err = r.DB.Exec(sql).Error
 
 	return
 }
@@ -145,17 +145,17 @@ func (r *FieldRepo) AddOrderForTargetAndNextCases(srcID uint, targetOrder int, t
 func (r *FieldRepo) AddOrderForNextCases(srcID uint, targetOrder int, targetParentID uint) (err error) {
 	sql := fmt.Sprintf(`update %s set ord = ord + 1 where ord > %d and parentID = %d and id!=%d`,
 		(&model.ZdField{}).TableName(), targetOrder, targetParentID, srcID)
-	err = r.db.Exec(sql).Error
+	err = r.DB.Exec(sql).Error
 
 	return
 }
 
 func (r *FieldRepo) UpdateOrdAndParent(field model.ZdField) (err error) {
-	err = r.db.Model(&field).UpdateColumn(model.ZdField{Ord: field.Ord, ParentID: field.ParentID}).Error
+	err = r.DB.Model(&field).UpdateColumn(model.ZdField{Ord: field.Ord, ParentID: field.ParentID}).Error
 
 	return
 }
 
 func NewFieldRepo(db *gorm.DB) *FieldRepo {
-	return &FieldRepo{db: db}
+	return &FieldRepo{DB: db}
 }

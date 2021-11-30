@@ -6,26 +6,26 @@ import (
 )
 
 type ReferService struct {
-	fieldRepo *serverRepo.FieldRepo
-	referRepo *serverRepo.ReferRepo
+	FieldRepo *serverRepo.FieldRepo `inject:""`
+	ReferRepo *serverRepo.ReferRepo `inject:""`
 
-	defService *DefService
+	DefService *DefService `inject:""`
 }
 
 func (s *ReferService) Get(ownerId uint, ownerType string) (refer model.ZdRefer, err error) {
-	refer, err = s.referRepo.GetByOwnerIdAndType(ownerId, ownerType)
+	refer, err = s.ReferRepo.GetByOwnerIdAndType(ownerId, ownerType)
 	return
 }
 
 func (s *ReferService) Update(ref *model.ZdRefer) (err error) {
-	err = s.referRepo.Save(ref)
+	err = s.ReferRepo.Save(ref)
 
-	s.fieldRepo.SetIsRange(ref.OwnerID, false)
-	s.defService.updateYamlByField(ref.OwnerID)
+	s.FieldRepo.SetIsRange(ref.OwnerID, false)
+	s.DefService.updateYamlByField(ref.OwnerID)
 
 	return
 }
 
 func NewReferService(fieldRepo *serverRepo.FieldRepo, referRepo *serverRepo.ReferRepo, defService *DefService) *ReferService {
-	return &ReferService{fieldRepo: fieldRepo, referRepo: referRepo, defService: defService}
+	return &ReferService{FieldRepo: fieldRepo, ReferRepo: referRepo, DefService: defService}
 }

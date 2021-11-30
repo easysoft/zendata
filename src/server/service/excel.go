@@ -13,17 +13,17 @@ import (
 )
 
 type ExcelService struct {
-	excelRepo  *serverRepo.ExcelRepo
-	resService *ResService
+	ExcelRepo  *serverRepo.ExcelRepo `inject:""`
+	ResService *ResService           `inject:""`
 }
 
 func (s *ExcelService) List(keywords string, page int) (list []*model.ZdExcel, total int) {
-	list, total, _ = s.excelRepo.List(strings.TrimSpace(keywords), page)
+	list, total, _ = s.ExcelRepo.List(strings.TrimSpace(keywords), page)
 	return
 }
 
 func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []model.Dir) {
-	excel, _ = s.excelRepo.Get(uint(id))
+	excel, _ = s.ExcelRepo.Get(uint(id))
 
 	serverUtils.GetDirs(constant.ResDirData, &dirs)
 
@@ -45,7 +45,7 @@ func (s *ExcelService) Save(excel *model.ZdExcel) (err error) {
 }
 func (s *ExcelService) Update(excel *model.ZdExcel) (err error) {
 	var old model.ZdExcel
-	old, err = s.excelRepo.Get(excel.ID)
+	old, err = s.ExcelRepo.Get(excel.ID)
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
@@ -53,25 +53,25 @@ func (s *ExcelService) Update(excel *model.ZdExcel) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	err = s.excelRepo.Update(excel)
+	err = s.ExcelRepo.Update(excel)
 
 	return
 }
 
 func (s *ExcelService) Remove(id int) (err error) {
 	var old model.ZdExcel
-	old, err = s.excelRepo.Get(uint(id))
+	old, err = s.ExcelRepo.Get(uint(id))
 	if err == gorm.ErrRecordNotFound {
 		return
 	}
 
 	fileUtils.RemoveExist(old.Path)
-	err = s.excelRepo.Remove(uint(id))
+	err = s.ExcelRepo.Remove(uint(id))
 	return
 }
 
 func (s *ExcelService) Sync(files []model.ResFile) (err error) {
-	list := s.excelRepo.ListAll()
+	list := s.ExcelRepo.ListAll()
 
 	mp := map[string]*model.ZdExcel{}
 	for _, item := range list {
@@ -84,7 +84,7 @@ func (s *ExcelService) Sync(files []model.ResFile) (err error) {
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
-			s.excelRepo.Remove(mp[fi.Path].ID)
+			s.ExcelRepo.Remove(mp[fi.Path].ID)
 			s.SyncToDB(fi)
 		} else { // db is new
 
@@ -102,11 +102,11 @@ func (s *ExcelService) SyncToDB(file model.ResFile) (err error) {
 		ReferName: service.PathToName(file.Path, constant.ResDirData, constant.ResTypeExcel),
 		FileName:  fileUtils.GetFileName(file.Path),
 	}
-	s.excelRepo.Create(&excel)
+	s.ExcelRepo.Create(&excel)
 
 	return
 }
 
 func NewExcelService(excelRepo *serverRepo.ExcelRepo) *ExcelService {
-	return &ExcelService{excelRepo: excelRepo}
+	return &ExcelService{ExcelRepo: excelRepo}
 }
