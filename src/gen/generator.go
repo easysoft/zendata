@@ -624,19 +624,24 @@ exit:
 
 func getRepeatValuesFromGroups2(groupValues map[string][]string, info []retsInfo) (ret []string) {
 	count := 0
-	total := 0
-	for _, v := range info {
-		total = total + v.numLimit
-	}
+
 exit:
 	for _, v := range info {
+		if v.repeat == 0 {
+		}
+		v.repeat = 1
+
 		arr := groupValues[v.ret]
-		for i := 0; i < v.numLimit; i++ {
-			index := i / v.repeat
+		if len(arr) == 0 {
+			break exit
+		}
+
+		for i := 0; (v.numLimit > 0 && i < v.numLimit) || i < vari.Total; i++ {
+			index := i / v.repeat % len(arr)
 			ret = append(ret, arr[index])
 			count++
 		}
-		if count >= total {
+		if count >= vari.Total {
 			break exit
 		}
 	}

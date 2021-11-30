@@ -270,12 +270,12 @@ func GenerateTimeItems(start int64, end int64, step int, unit string, repeat int
 				arr = append(arr, val)
 
 				total++
-				if total > constant.MaxNumbForLangeRange {
+				if total > constant.MaxNumb {
 					break
 				}
 			}
 
-			if total >= constant.MaxNumbForLangeRange {
+			if total >= constant.MaxNumb {
 				break
 			}
 			i++
@@ -291,13 +291,13 @@ func GenerateTimeItems(start int64, end int64, step int, unit string, repeat int
 
 				arr = append(arr, val)
 
-				if total >= constant.MaxNumbForLangeRange {
+				if total >= constant.MaxNumb {
 					break
 				}
 				i++
 			}
 
-			if total >= constant.MaxNumbForLangeRange {
+			if total >= constant.MaxNumb {
 				break
 			}
 		}

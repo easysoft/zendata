@@ -5,7 +5,12 @@ author: zentao
 version: 1.0
 
 fields:
-  - field: field_use_instance
-    from: ip.v1.yaml
-    use: privateC{6:3}
-    postfix: "\t"
+  - field: length32_random_no_separator2
+    use: length32_random_no_separator
+    from: uuid.v1.yaml
+    postfix: " "
+
+  - field: length162
+    use: length16
+    from: uuid.v1.yaml
+    postfix: " "
