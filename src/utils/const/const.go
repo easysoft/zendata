@@ -23,8 +23,6 @@ var (
 	EnRes = fmt.Sprintf("res%sen%smessages.json", PthSep, PthSep)
 	ZhRes = fmt.Sprintf("res%szh%smessages.json", PthSep, PthSep)
 
-	LogDir = fmt.Sprintf("log%s", PthSep)
-
 	LeftWidth = 36
 	MinWidth  = 130
 	MinHeight = 36
