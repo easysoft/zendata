@@ -21,10 +21,9 @@
 /tmp/.default.yaml
 /tmp/.config.yaml
 /qshell.log
-/log-agent/
+/log-zd/
 /data/test/
 /test/out/
-/log-agent/
 /yaml/article/chinese/slang/out/
 /runtime/protobuf/go
 /runtime/protobuf/out/
