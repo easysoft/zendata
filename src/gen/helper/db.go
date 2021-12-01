@@ -18,7 +18,7 @@ var (
 	IgnoreCategories = []string{"姓", "名字", "介词"}
 )
 
-func ExecSql(lines []interface{}) (count int) {
+func ExecSqlInUserDB(lines []interface{}) (count int) {
 	sql := ""
 
 	for _, line := range lines {
@@ -41,53 +41,41 @@ func ExecSql(lines []interface{}) (count int) {
 func LoadAllWords() (ret map[string]string) {
 	ret = map[string]string{}
 
-	sqlStr := fmt.Sprintf("SELECT * FROM words_v1")
-	rows, err := vari.DB.Query(sqlStr)
+	rows, _ := vari.DB.Table("words_v1").Where("true").Select("*").Rows()
 	defer rows.Close()
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
-		return
-	}
 
 	columns, err := rows.Columns()
 	colNum := len(columns)
 
-	colIndexToName := map[int]string{}
+	colIndexToCategoryName := map[int]string{}
 	for index, col := range columns {
-		colIndexToName[index] = col
+		colIndexToCategoryName[index] = col
 	}
 
-	var values = make([]interface{}, colNum)
-	for i, _ := range values {
+	// build an empty string array to retrieve row
+	var record = make([]interface{}, colNum)
+	for i, _ := range record {
 		var itf string
-		values[i] = &itf
+		record[i] = &itf
 	}
 
 	for rows.Next() {
-		err = rows.Scan(values...)
+		err = rows.Scan(record...)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
 			return
 		}
 
-		//for index, v := range values {
-		//	item := v.(*string)
-		//	if *item == "y" {
-		//		key := values[1].(*string)
-		//		ret[*key] = colIndexToName[index]
-		//		break
-		//	}
-		//}
+		for index := len(record) - 1; index >= 0; index-- {
+			word := record[1].(*string)
+			category := colIndexToCategoryName[index]
+			isBelowToCategory := record[index].(*string)
 
-		for index := len(values) - 1; index >= 0; index-- {
-			val := values[index]
-			item := val.(*string)
+			if *isBelowToCategory == "y" {
+				if !stringUtils.StrInArr(category, IgnoreCategories) &&
+					!stringUtils.StrInArr(*word, IgnoreWords) {
 
-			if *item == "y" {
-				key := values[1].(*string)
-				if !stringUtils.StrInArr(colIndexToName[index], IgnoreCategories) &&
-					!stringUtils.StrInArr(*key, IgnoreWords) {
-					ret[*key] = colIndexToName[index]
+					ret[*word] = category
 				}
 
 				break
@@ -127,7 +115,7 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 		err = conn.Ping() // make sure database is accessible
 		if err != nil {
 			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteData, err.Error()))
+				fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteFile, err.Error()))
 		}
 	}
 

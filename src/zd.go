@@ -141,12 +141,13 @@ func main() {
 	if count == 0 {
 		files = []string{defaultFile, configFile}
 	}
-	if vari.Port != 0 {
+
+	if vari.Ip != "" || vari.Port != 0 {
 		vari.RunMode = constant.RunModeServer
 	}
 
 	configUtils.InitConfig(root)
-	vari.DB, _ = configUtils.InitDB()
+	vari.DB, _ = serverConfig.NewGormDB()
 	defer vari.DB.Close()
 
 	switch os.Args[1] {
@@ -280,12 +281,9 @@ func startServer() {
 	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server",
 		vari.Ip, port, vari.Ip, port, vari.Ip, port), color.FgCyan)
 
-	config := serverConfig.NewConfig()
-	gormDb, err := serverConfig.NewGormDB(config)
-	defer gormDb.Close()
-
 	// start admin server
-	server, err := server.InitServer(config, gormDb)
+	config := serverConfig.NewConfig()
+	server, err := server.InitServer(config)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server_fail", port), color.FgRed)
 	}

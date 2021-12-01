@@ -11,6 +11,7 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"github.com/jinzhu/gorm"
 	"log"
 	"os"
 	"strconv"
@@ -72,7 +73,8 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 	}
 
 	firstSheet = excel.GetSheetList()[0]
-	if !isExcelChanged(path) {
+	changed, sqlBeforeCompleted := isExcelChanged(path)
+	if !changed {
 		return
 	}
 
@@ -116,6 +118,10 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 
 		valList := ""
 		for rowIndex, row := range rows {
+			if vari.Verbose {
+				logUtils.PrintLine(fmt.Sprintf("deal with excel row %d", rowIndex))
+			}
+
 			if rowIndex == 0 {
 				continue
 			}
@@ -144,22 +150,29 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 		ddl := fmt.Sprintf(ddlTemplate, tableName, colDefine)
 		insertSql := fmt.Sprintf(insertTemplate, tableName, colList, valList)
 
-		_, err = vari.DB.Exec(dropSql)
+		err = vari.DB.Exec(dropSql).Error
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
 			return
 		}
 
-		_, err = vari.DB.Exec(ddl)
+		err = vari.DB.Exec(ddl).Error
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
 			return
 		}
 
-		_, err = vari.DB.Exec(insertSql)
+		err = vari.DB.Exec(insertSql).Error
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
 			return
+		}
+
+		if changed {
+			err = vari.DB.Exec(sqlBeforeCompleted).Error
+			if err != nil {
+				logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlBeforeCompleted, err.Error()))
+			}
 		}
 	}
 
@@ -167,7 +180,8 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 }
 
 func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
-	if !isExcelChanged(dir) {
+	changed, sqlBeforeCompleted := isExcelChanged(dir)
+	if !changed {
 		return
 	}
 
@@ -185,7 +199,7 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	}
 
 	dropSql := `DROP TABLE IF EXISTS ` + tableName + `;`
-	_, err := vari.DB.Exec(dropSql)
+	err := vari.DB.Exec(dropSql).Error
 	if err != nil {
 		log.Println(i118Utils.I118Prt.Sprintf("fail_to_drop_table", tableName, err.Error()))
 		return
@@ -196,17 +210,24 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 		"%s" +
 		"\n);"
 	ddlSql := fmt.Sprintf(ddlTemplate, strings.Join(ddlFields, ", \n"))
-	_, err = vari.DB.Exec(ddlSql)
+	err = vari.DB.Exec(ddlSql).Error
 	if err != nil {
 		log.Println(i118Utils.I118Prt.Sprintf("fail_to_create_table", tableName, err.Error()))
 		return
 	}
 
-	sql := strings.Join(insertSqls, "\n")
-	_, err = vari.DB.Exec(sql)
+	insertSql := strings.Join(insertSqls, "\n")
+	err = vari.DB.Exec(insertSql).Error
 	if err != nil {
-		log.Println(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sql, err.Error()))
+		log.Println(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
 		return
+	}
+
+	if changed {
+		err = vari.DB.Exec(sqlBeforeCompleted).Error
+		if err != nil {
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlBeforeCompleted, err.Error()))
+		}
 	}
 
 	return
@@ -268,10 +289,11 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	sqlStr := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", colStr, from, where)
-	rows, err := vari.DB.Query(sqlStr)
+	rows, err := vari.DB.Raw(sqlStr).Rows()
 	defer rows.Close()
+
 	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", "", err.Error()))
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("pls_check_excel", filePath), color.FgRed)
 
 		return list, ""
@@ -323,9 +345,15 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	return list, fieldSelect
 }
 
-func isExcelChanged(path string) bool {
+type ExcelChangedResult struct {
+	Id         uint
+	Name       string
+	ChangeTime int64 `gorm:"column:changeTime"`
+}
+
+func isExcelChanged(path string) (changed bool, sqlBeforeCompleted string) {
 	if !fileUtils.FileExist(path) {
-		return false
+		return
 	}
 
 	fileChangeTime := time.Time{}.Unix()
@@ -335,56 +363,45 @@ func isExcelChanged(path string) bool {
 		fileChangeTime = getDirModTime(path).Unix()
 	}
 
-	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s WHERE name = '%s' ORDER BY changeTime DESC LIMIT 1;",
+	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s "+
+		"WHERE name = '%s' "+
+		"ORDER BY changeTime DESC "+
+		"LIMIT 1;",
 		constant.SqliteTrackTable, path)
-	rows, err := vari.DB.Query(sqlStr)
-	defer rows.Close()
-	if err != nil {
+
+	record := ExcelChangedResult{}
+	err := vari.DB.Raw(sqlStr).Scan(&record).Error
+
+	if err != nil && err != gorm.ErrRecordNotFound {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
-		return true
+
+		changed = true
+		return
 	}
 
 	found := false
-	changed := false
-	for rows.Next() {
+
+	if record.Id > 0 { // found
 		found = true
-		var id int
-		var name string
-		var changeTime int64
 
-		err = rows.Scan(&id, &name, &changeTime)
-		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
+		if path == record.Name && record.ChangeTime < fileChangeTime { // update exist record
 			changed = true
-			break
 		}
-
-		if path == name && changeTime < fileChangeTime {
-			changed = true
-			break
-		}
-	}
-
-	if !found {
+	} else { // not found, to add a record
 		changed = true
 	}
 
 	if changed {
 		if !found {
-			sqlStr = fmt.Sprintf("INSERT INTO %s(name, changeTime) VALUES('%s', %d)",
+			sqlBeforeCompleted = fmt.Sprintf("INSERT INTO %s(name, changeTime) VALUES('%s', %d)",
 				constant.SqliteTrackTable, path, fileChangeTime)
 		} else {
-			sqlStr = fmt.Sprintf("UPDATE %s SET changeTime = %d WHERE name = '%s'",
+			sqlBeforeCompleted = fmt.Sprintf("UPDATE %s SET changeTime = %d WHERE name = '%s'",
 				constant.SqliteTrackTable, fileChangeTime, path)
-		}
-
-		_, err = vari.DB.Exec(sqlStr)
-		if err != nil {
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", sqlStr, err.Error()))
 		}
 	}
 
-	return changed
+	return
 }
 
 func getDirModTime(path string) (dirChangeTime time.Time) {

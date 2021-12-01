@@ -1,7 +1,6 @@
 package configUtils
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
@@ -13,6 +12,7 @@ import (
 	stdinUtils "github.com/easysoft/zendata/src/utils/stdin"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
+	"github.com/jinzhu/gorm"
 	"gopkg.in/ini.v1"
 	"log"
 	"os"
@@ -21,23 +21,6 @@ import (
 	"reflect"
 	"strings"
 )
-
-func InitDB() (db *sql.DB, err error) {
-	db, err = sql.Open(constant.SqliteDriver, constant.SqliteData)
-	err = db.Ping() // make sure database is accessible
-	if err != nil {
-		logUtils.PrintErrMsg(
-			fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteData, err.Error()))
-		return
-	}
-
-	tableInit := isDataInit(db)
-	if tableInit {
-	} else {
-	}
-
-	return
-}
 
 func InitConfig(root string) {
 	var err error = nil
@@ -72,8 +55,8 @@ func InitConfig(root string) {
 	i118Utils.InitI118(vari.Config.Language)
 
 	//logUtils.PrintToWithColor("workdir = "+vari.ZdPath, color.FgCyan)
-	constant.SqliteData = strings.Replace(constant.SqliteData, "file:", "file:"+vari.ZdPath, 1)
-	//logUtils.PrintToWithColor("dbfile = "+constant.SqliteData, color.FgCyan)
+	constant.SqliteFile = strings.Replace(constant.SqliteFile, "file:", "file:"+vari.ZdPath, 1)
+	//logUtils.PrintToWithColor("dbfile = "+constant.SqliteFile, color.FgCyan)
 }
 
 func SaveConfig(conf model.Config) error {
@@ -259,9 +242,9 @@ func addZdToPathEnvVarForLinux(home string) {
 	}
 }
 
-func isDataInit(db *sql.DB) bool {
-	sql := "select * from " + (&model.ZdDef{}).TableName()
-	_, err := db.Query(sql)
+func isDataInit(gormDb *gorm.DB) bool {
+	def := model.ZdDef{}
+	err := gormDb.Find(def).Error
 
 	if err == nil {
 		return true

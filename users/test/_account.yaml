@@ -3,8 +3,15 @@ desc: 数据测试
 from: email.v1.yaml
 
 fields:
-  - field: email
-    use: western_with_esp
+  - field: part1
+    from: name.cn.given.v1
+    select: pinyin
+  - field: part2
+    from: name.cn.family.v1
+    select: pinyin
+
+#  - field: email
+#    use: western_with_esp
 
   - field: password
     range: [P2ssw0rd, pass]

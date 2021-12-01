@@ -1,14 +1,14 @@
 package vari
 
 import (
-	"database/sql"
 	"github.com/easysoft/zendata/src/model"
 	"github.com/easysoft/zendata/src/utils/const"
+	"github.com/jinzhu/gorm"
 )
 
 var (
 	Config = model.Config{Version: 1, Language: "en"}
-	DB     *sql.DB
+	DB     *gorm.DB
 
 	RunMode constant.RunMode
 

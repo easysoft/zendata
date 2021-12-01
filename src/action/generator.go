@@ -52,7 +52,7 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 
 		// exec insert sql
 		if vari.DBDsn != "" {
-			helper.ExecSql(lines)
+			helper.ExecSqlInUserDB(lines)
 		}
 
 		// article need to write to more than one files

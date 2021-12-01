@@ -10,7 +10,6 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/facebookgo/inject"
-	"github.com/jinzhu/gorm"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -36,7 +35,7 @@ type Server struct {
 	ConfigService    *serverService.ConfigService    `inject:""`
 }
 
-func InitServer(config *serverConfig.Config, gormDb *gorm.DB) (server *Server, err error) {
+func InitServer(config *serverConfig.Config) (server *Server, err error) {
 	var g inject.Graph
 
 	server = &Server{}
@@ -44,7 +43,7 @@ func InitServer(config *serverConfig.Config, gormDb *gorm.DB) (server *Server, e
 	// inject objects
 	if err := g.Provide(
 		&inject.Object{Value: config},
-		&inject.Object{Value: gormDb},
+		&inject.Object{Value: vari.DB},
 		&inject.Object{Value: server},
 	); err != nil {
 		logUtils.PrintErrMsg(fmt.Sprintf("provide usecase objects to the Graph: %v", err))
