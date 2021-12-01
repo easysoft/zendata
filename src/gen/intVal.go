@@ -3,6 +3,8 @@ package gen
 import (
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
+	"strconv"
+	"strings"
 )
 
 func GenerateIntItems(start int64, end int64, step interface{}, rand bool, repeat int, repeatTag string) []interface{} {
@@ -28,12 +30,12 @@ func generateIntItemsByStep(start int64, end int64, step int, repeat int, repeat
 				arr = append(arr, val)
 
 				total++
-				if total > constant.MaxNumb {
+				if total > constant.MaxNumbForLangeRange {
 					break
 				}
 			}
 
-			if total >= constant.MaxNumb {
+			if total >= constant.MaxNumbForLangeRange {
 				break
 			}
 			i++
@@ -48,13 +50,13 @@ func generateIntItemsByStep(start int64, end int64, step int, repeat int, repeat
 
 				arr = append(arr, val)
 
-				if total >= constant.MaxNumb {
+				if total >= constant.MaxNumbForLangeRange {
 					break
 				}
 				i++
 			}
 
-			if total >= constant.MaxNumb {
+			if total >= constant.MaxNumbForLangeRange {
 				break
 			}
 		}
@@ -69,16 +71,12 @@ func generateIntItemsRand(start int64, end int64, step int, repeat int, repeatTa
 	countInRound := (end - start) / int64(step)
 	total := 0
 
-	if repeatTag == "" {
+	str := strconv.FormatInt(end, 10)
+	if strings.Count(str, "9") == len(str) && start == 0 {
 		for i := int64(0); i < countInRound; {
-			rand := commonUtils.RandNum64(countInRound)
-			if step < 0 {
-				rand = rand * -1
-			}
-
-			val := start + rand
+			rand := commonUtils.RandStrAndNum(countInRound)
 			for round := 0; round < repeat; round++ {
-				arr = append(arr, val)
+				arr = append(arr, rand)
 
 				total++
 
@@ -86,14 +84,14 @@ func generateIntItemsRand(start int64, end int64, step int, repeat int, repeatTa
 					break
 				}
 			}
-
 			if total > constant.MaxNumb {
 				break
 			}
+
 			i++
 		}
-	} else if repeatTag == "!" {
-		for round := 0; round < repeat; round++ {
+	} else {
+		if repeatTag == "" {
 			for i := int64(0); i < countInRound; {
 				rand := commonUtils.RandNum64(countInRound)
 				if step < 0 {
@@ -101,17 +99,44 @@ func generateIntItemsRand(start int64, end int64, step int, repeat int, repeatTa
 				}
 
 				val := start + rand
-				arr = append(arr, val)
+				for round := 0; round < repeat; round++ {
+					arr = append(arr, val)
+
+					total++
+
+					if total > constant.MaxNumb {
+						break
+					}
+				}
 
 				if total > constant.MaxNumb {
 					break
 				}
+
 				i++
 			}
+		} else if repeatTag == "!" {
+			for round := 0; round < repeat; round++ {
+				for i := int64(0); i < countInRound; {
+					rand := commonUtils.RandNum64(countInRound)
+					if step < 0 {
+						rand = rand * -1
+					}
 
-			if total > constant.MaxNumb {
-				break
+					val := start + rand
+					arr = append(arr, val)
+
+					if total > constant.MaxNumb {
+						break
+					}
+					i++
+				}
+
+				if total > constant.MaxNumb {
+					break
+				}
 			}
+
 		}
 	}
 
