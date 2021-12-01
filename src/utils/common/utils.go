@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -211,4 +212,17 @@ func RandNum64(length int64) int64 {
 
 	seedInt := rand.Int63n(length)
 	return seedInt
+}
+
+func RandStrAndNum(length int64) string {
+	l := len(strconv.Itoa(int(length)))
+	str := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	var letters []rune = str
+
+	b := make([]rune, l)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+
+	return string(b)
 }
