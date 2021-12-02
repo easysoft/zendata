@@ -36,7 +36,10 @@ func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithVal
 func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
 	rang := field.Range
 	if rang == "" {
-		fieldValue.Values = append(fieldValue.Values, "")
+		for i := 0; i < vari.Total; i++ {
+			fieldValue.Values = append(fieldValue.Values, "")
+		}
+
 		return
 	}
 

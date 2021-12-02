@@ -12,6 +12,7 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
+	uuid "github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
 	"net/url"
 	"regexp"
@@ -126,6 +127,10 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 	} else if strings.Index(format, "urlencode") == 0 {
 		str := interfaceToStr(val, precision)
 		ret = UrlEncode(str)
+		pass = true
+		return
+	} else if strings.Index(format, "uuid()") == 0 {
+		ret = uuid.NewV4().String()
 		pass = true
 		return
 	}

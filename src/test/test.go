@@ -1,13 +1,17 @@
 package main
 
 import (
-	"encoding/base64"
-	"log"
-	"net/url"
+	"fmt"
+	uuid "github.com/satori/go.uuid"
 )
 
 func main() {
-	str := "http://baidu.com"
-	log.Println(base64.StdEncoding.EncodeToString([]byte(str)))
-	log.Println(url.QueryEscape(str))
+	u1 := uuid.NewV4()
+	fmt.Printf("UUIDv4: %s\n", u1)
+
+	u1 = uuid.NewV4()
+	fmt.Printf("UUIDv4: %s\n", u1)
+
+	u1 = uuid.NewV4()
+	fmt.Printf("UUIDv4: %s\n", u1)
 }

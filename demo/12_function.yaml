@@ -13,12 +13,12 @@ fields:
     range: 10-20
     format: sha1
     prefix: "sha1: "          
-    postfix: " "          
+    postfix: " "
 
   - field: field_3_base64 
     range: 10-20
     format: base64
-    prefix: "base64: "          
+    prefix: "base64: "
     postfix: "\t"
 
   - field: field_4
@@ -30,3 +30,8 @@ fields:
     format: urlencode
     prefix: "urlencode: "          
     postfix: "\t"
+
+  - field: field_5_uuid
+    format: "uuid()"
+    prefix: "uuid: "
+    postfix: " "
