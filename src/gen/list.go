@@ -38,6 +38,10 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 	if rang == "" {
 		for i := 0; i < vari.Total; i++ {
 			fieldValue.Values = append(fieldValue.Values, "")
+
+			if strings.Index(field.Format, "uuid") == -1 {
+				break
+			}
 		}
 
 		return
