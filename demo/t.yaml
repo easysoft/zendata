@@ -5,12 +5,7 @@ author: zentao
 version: 1.0
 
 fields:
-  - field: length32_random_no_separator2
-    use: length32_random_no_separator
-    from: uuid.v1.yaml
-    postfix: " "
-
-  - field: length162
-    use: length16
-    from: uuid.v1.yaml
+  - field: f1
+    range: 0-9
+    loop: 2-4
     postfix: " "

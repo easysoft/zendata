@@ -242,7 +242,8 @@ func GenerateValuesForField(field *model.DefField) []string {
 	for {
 		// 2. random replacement
 		isRandomAndLoopEnd := !vari.ResLoading && //  ignore rand in resource
-			!(*field).ReferToAnotherYaml && (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
+			!(*field).ReferToAnotherYaml &&
+			(*field).IsRand && (*field).LoopIndex > (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
 			for _, v := range fieldWithValues.Values {
