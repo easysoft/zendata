@@ -6,6 +6,4 @@ version: 1.0
 
 fields:
   - field: f1
-    range: 0-9
-    loop: 2-4
-    postfix: " "
+    format: "uuid(- )"
