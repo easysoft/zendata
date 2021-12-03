@@ -129,8 +129,16 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		ret = UrlEncode(str)
 		pass = true
 		return
-	} else if strings.Index(format, "uuid()") == 0 {
+	} else if strings.Index(format, "uuid") == 0 {
 		ret = uuid.NewV4().String()
+		format = strings.ReplaceAll(format, " ", "")
+		if format != "uuid()" {
+			regx := regexp.MustCompile("uuid\\((\\S+)\\)")
+			sep := regx.FindStringSubmatch(format)[1]
+			if sep != "" {
+				ret = strings.ReplaceAll(ret, "-", sep)
+			}
+		}
 		pass = true
 		return
 	}
