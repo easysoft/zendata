@@ -45,29 +45,26 @@ func ParseSql(file string, out string) {
 	for tableName, statement := range statementMap {
 		createStr := statement
 
-		columns := getColumnsFromCreateStatement2(createStr)
-		// todo
-		// handle fieldTypes
-		//rans := getFieldType(infos)
+		columns, types := getColumnsFromCreateStatement2(createStr)
 
 		def := model.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
 
-		for m, col := range columns {
-			field := model.FieldSimple{Field: m}
+		for _, col := range columns {
+			field := model.FieldSimple{Field: col}
 
 			// pk
-			isPk := m == pkMap[tableName]
-			fkInfo, isFk := fkMap[m]
+			isPk := col == pkMap[tableName]
+			fkInfo, isFk := fkMap[col]
 
 			if isPk {
 				field.From = "keys.yaml"
-				field.Use = fmt.Sprintf("%s_%s", tableName, m)
+				field.Use = fmt.Sprintf("%s_%s", tableName, col)
 			} else if isFk {
 				field.From = "keys.yaml"
 				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 			} else {
-				field.Range = col
+				field.Range = types[col]
 			}
 
 			def.Fields = append(def.Fields, field)
@@ -155,8 +152,8 @@ func getColumnsFromCreateStatement(sent string) []string {
 	return fieldLines
 }
 
-func getColumnsFromCreateStatement2(sent string) (fieldInfo map[string]string) {
-	//fieldLines := make([]string, 0)
+func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo map[string]string) {
+	fieldLines = make([]string, 0)
 	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
 	arr := re.FindAllStringSubmatch(string(sent), -1)
 	//fieldTypes := make([]string, 0)
@@ -169,11 +166,11 @@ func getColumnsFromCreateStatement2(sent string) (fieldInfo map[string]string) {
 			//fieldTypes = append(fieldTypes, fieldType)
 			field = strings.ReplaceAll(field, "`", "")
 			fieldInfo[field] = judge(fieldType)
-			//fieldLines = append(fieldLines, field)
+			fieldLines = append(fieldLines, field)
 		}
 	}
 
-	return fieldInfo
+	return fieldLines, fieldInfo
 }
 
 func judge(fieldType string) (ran string) {
@@ -191,7 +188,7 @@ func judge(fieldType string) (ran string) {
 		ran = "-8388608~8388607"
 		fmt.Println("MEDIUMINT")
 	case "INT", "INTEGER":
-		ran = "-2147483648~2147483647"
+		ran = "'-2147483648~2147483647'"
 		fmt.Println("INT/INTEGER")
 	case "FLOAT":
 		ran = "123.457"
