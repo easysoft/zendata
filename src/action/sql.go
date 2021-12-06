@@ -178,47 +178,83 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 
 func parseFieldInfo(fieldType string) (ran string) {
 	var ret []string
-
+	isUnsigned := false
 	fieldType = strings.ToUpper(fieldType)
-	if strings.Contains(fieldType, "UNSIGNED") {
-		fmt.Println("start 0")
+	if strings.Contains(fieldType, "UNSIGNED") { // judge unsigned
+		isUnsigned = true
 	}
 
-	fieldType = strings.ReplaceAll(strings.Fields(fieldType)[1], ",", "")
+	fieldType = strings.TrimSuffix(strings.Fields(fieldType)[1], ",")
 	myExp := regexp.MustCompile("([A-Z]*)\\((.*?)\\)")
 	ret = myExp.FindStringSubmatch(fieldType)
 	if ret != nil {
-		ran = judgeFieldType(ret[1], ret[2])
+		ran = judgeFieldType(ret[1], ret[2], isUnsigned)
 	} else {
-		ran = judgeFieldType(fieldType, "")
+		ran = judgeFieldType(fieldType, "", isUnsigned)
 	}
 
 	return ran
 }
 
-func judgeFieldType(fieldType, num string) (ran string) {
-
+func judgeFieldType(fieldType, num string, isUnsigned bool) (ran string) {
 	switch fieldType {
+	// integer
+	case "BIT":
+		if isUnsigned {
+			ran = "0-255"
+		} else {
+			ran = "-128-127"
+		}
 	case "TINYINT":
-		ran = "-128-127"
 		if num == "1" {
 			ran = "0-1"
+		} else if isUnsigned {
+			ran = "0-255"
+		} else {
+			ran = "-128-127"
 		}
 	case "SMALLINT":
 		ran = "-32768-32767"
 	case "MEDIUMINT":
-		ran = "-8388608~8388607"
+		ran = "-8388608-8388607"
 	case "INT", "INTEGER":
-		ran = "-2147483648~2147483647"
-	case "FLOAT":
-		ran = "123.457"
+		ran = "-2147483648-2147483647"
 	case "BIGINT":
-		ran = "BIGINT"
+		ran = `"BIGINT"`
+	// floating-point
+	case "FLOAT":
+		ran = `"FLOAT"`
 	case "DOUBLE":
-		ran = "DOUBLE"
+		ran = `"DOUBLE"`
+	// fixed-point
 	case "DECIMAL":
-		ran = "DECIMAL"
-
+		ran = `"DECIMAL"`
+	// character string
+	case "CHAR":
+		ran = `"CHAR"`
+	case "VARCHAR":
+		ran = `"VARCHAR"`
+	case "TINYTEXT":
+		ran = `"TINYTEXT"`
+	case "TEXT":
+		ran = `"TEXT"`
+	case "MEDIUMTEXT":
+		ran = `"MEDIUMTEXT"`
+	case "LONGTEXT":
+		ran = `"LONGTEXT"`
+	// binary data
+	case "TINYBLOB":
+		ran = `"TINYBLOB"`
+	case "BLOB":
+		ran = `"BLOB"`
+	case "MEDIUMBLOB":
+		ran = `"MEDIUMBLOB"`
+	case "LONGBLOB":
+		ran = `"LONGBLOB"`
+	case "BINARY":
+		ran = "BINARY"
+	case "VARBINARY":
+		ran = "VARBINARY"
 	// Date and time type
 	case "DATE":
 		ran = `"DATE"`
@@ -230,27 +266,27 @@ func judgeFieldType(fieldType, num string) (ran string) {
 		ran = `"DATETIME"`
 	case "TIMESTAMP":
 		ran = `"TIMESTAMP"`
-	// String type
-	case "CHAR":
-		ran = `"CHAR"`
-	case "VARCHAR":
-		ran = `"VARCHAR"`
-	case "TINYBLOB":
-		ran = `"TINYBLOB"`
-	case "TINYTEXT":
-		ran = `"TINYTEXT"`
-	case "BLOB":
-		ran = `"BLOB"`
-	case "TEXT":
-		ran = `"TEXT"`
-	case "MEDIUMBLOB":
-		ran = `"MEDIUMBLOB"`
-	case "MEDIUMTEXT":
-		ran = `"MEDIUMTEXT"`
-	case "LONGBLOB":
-		ran = `"LONGBLOB"`
-	case "LONGTEXT":
-		ran = `"LONGTEXT"`
+	// other type
+	case "ENUM":
+		ran = `"ENUM"`
+	case "SET":
+		ran = `"SET"`
+	case "GEOMETRY":
+		ran = `"GEOMETRY"`
+	case "POINT":
+		ran = `"POINT"`
+	case "LINESTRING":
+		ran = `"LINESTRING"`
+	case "POLYGON":
+		ran = `"POLYGON"`
+	case "MULTIPOINT":
+		ran = `"MULTIPOINT"`
+	case "MULTILINESTRING":
+		ran = `"MULTILINESTRING"`
+	case "MULTIPOLYGON":
+		ran = `"MULTIPOLYGON"`
+	case "GEOMETRYCOLLECTION":
+		ran = `"GEOMETRYCOLLECTION"`
 	default:
 	}
 
