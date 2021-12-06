@@ -228,13 +228,13 @@ func judgeFieldType(fieldType, num string, isUnsigned bool) (FieldTypeInfoIns Fi
 		ran = "0-65535"
 	case "MEDIUMINT":
 		ran = "0-65535"
-		note = `"[0,2^24-1]"`
+		note = `"MEDIUMINT [0,2^24-1]"`
 	case "INT", "INTEGER":
 		ran = "0-100000"
-		note = `"[0,2^32-1]"`
+		note = `"INI [0,2^32-1]"`
 	case "BIGINT":
 		ran = "0-100000"
-		note = `"[0,2^64-1]"`
+		note = `"BIGINT [0,2^64-1]"`
 	// floating-point
 	case "FLOAT":
 		ran = "1.01-99.99:0.01"
