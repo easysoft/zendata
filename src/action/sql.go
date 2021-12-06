@@ -9,6 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -64,11 +65,12 @@ func ParseSql(file string, out string) {
 				field.From = "keys.yaml"
 				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 			} else {
-				field.Range = types[col]
-				if types[col] == "TIMESTAMP" || types[col] == "DATETIME" {
-					field.Format = "YY/MM/DD hh:mm:ss"
+				if types[col] == `"DATE"` || types[col] == `"TIME"` || types[col] == `"YEAR"` || types[col] == `"DATETIME"` || types[col] == `"TIMESTAMP"` {
+					field.Range = strconv.Quote("20210821 000000:60")
 					field.Type = "timestamp"
-					field.Range = "20210821 000000:60"
+					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
+				} else {
+					field.Range = types[col]
 				}
 			}
 
@@ -76,8 +78,7 @@ func ParseSql(file string, out string) {
 		}
 
 		bytes, _ := yaml.Marshal(&def)
-		//content := strings.ReplaceAll(string(bytes), "'-'", "\"")
-		content := string(bytes)
+		content := strings.ReplaceAll(string(bytes), "'", "")
 		if out != "" {
 			out = fileUtils.AddSepIfNeeded(out)
 			outFile := out + tableName + ".yaml"
@@ -161,14 +162,13 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 	fieldLines = make([]string, 0)
 	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
 	arr := re.FindAllStringSubmatch(string(sent), -1)
-	//fieldTypes := make([]string, 0)
 	fieldInfo = map[string]string{}
 	for _, item := range arr {
 		line := strings.ToLower(item[0])
 		if !strings.Contains(line, " table ") && !strings.Contains(line, " key ") {
 			field := item[1]
 			field = strings.ReplaceAll(field, "`", "")
-			fieldInfo[field] = judge(item[0])
+			fieldInfo[field] = parseFieldInfo(item[0])
 			fieldLines = append(fieldLines, field)
 		}
 	}
@@ -176,167 +176,83 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 	return fieldLines, fieldInfo
 }
 
-func judge(fieldType string) (ran string) {
+func parseFieldInfo(fieldType string) (ran string) {
 	var ret []string
 
 	fieldType = strings.ToUpper(fieldType)
 	if strings.Contains(fieldType, "UNSIGNED") {
 		fmt.Println("start 0")
 	}
-	//fieldType := strings.Split(strings.TrimSpace(strings.Split(strings.Split(item[0], field)[1], ",")[0]), " ")[0]
 
 	fieldType = strings.ReplaceAll(strings.Fields(fieldType)[1], ",", "")
 	myExp := regexp.MustCompile("([A-Z]*)\\((.*?)\\)")
 	ret = myExp.FindStringSubmatch(fieldType)
 	if ret != nil {
-		switch ret[1] {
-		// value type
-		case "TINYINT":
-			if ret[2] == "1" {
-				ran = "0-1"
-			}
-			ran = "-128-127"
-		case "SMALLINT":
-			ran = "-32768-32767"
-		case "MEDIUMINT":
-			ran = "-8388608~8388607"
-		case "INT", "INTEGER":
-			ran = "-2147483648~2147483647"
-		case "FLOAT":
-			ran = "123.457"
-		case "BIGINT":
-			ran = "BIGINT"
-		case "DOUBLE":
-			ran = "DOUBLE"
-		case "DECIMAL":
-			ran = "DECIMAL"
-
-		// Date and time type
-		case "DATE":
-			ran = "DATE"
-		case "TIME":
-			ran = "TIME"
-		case "YEAR":
-			ran = "YEAR"
-		case "DATETIME":
-			ran = "DATETIME"
-		case "TIMESTAMP":
-			ran = "TIMESTAMP"
-		default:
-		}
+		ran = judgeFieldType(ret[1], ret[2])
 	} else {
-		switch fieldType {
-		// String type
-		case "CHAR":
-			ran = "CHAR"
-		case "VARCHAR":
-			ran = "VARCHAR"
-		case "TINYBLOB":
-			ran = "TINYBLOB"
-		case "TINYTEXT":
-			ran = "TINYTEXT"
-		case "BLOB":
-			ran = "BLOB"
-		case "TEXT":
-			ran = "TEXT"
-		case "MEDIUMBLOB":
-			ran = "MEDIUMBLOB"
-		case "MEDIUMTEXT":
-			ran = "MEDIUMTEXT"
-		case "LONGBLOB":
-			ran = "LONGBLOB"
-		case "LONGTEXT":
-			ran = "LONGTEXT"
-		default:
-		}
+		ran = judgeFieldType(fieldType, "")
 	}
 
 	return ran
 }
 
-func getFieldType(fieldTypes []string) (rans []string) {
-	ran := "0-255"
-	for _, v := range fieldTypes {
-		typ := strings.ToUpper(strings.Split(v, "(")[0])
-		switch typ {
-		// value type
-		case "TINYINT":
-			ran = "-128-127"
-			fmt.Println("TINYINT")
-		case "SMALLINT":
-			ran = "-32768-32767"
-			fmt.Println("SMALLINT")
-		case "MEDIUMINT":
-			ran = "-8388608~8388607"
-			fmt.Println("MEDIUMINT")
-		case "INT", "INTEGER":
-			ran = "-2147483648~2147483647"
-			fmt.Println("INT/INTEGER")
-		case "FLOAT":
-			ran = "123.457"
-			fmt.Println("FLOAT")
-		case "BIGINT":
-			ran = "BIGINT"
-			fmt.Println("BIGINT")
-		case "DOUBLE":
-			ran = "DOUBLE"
-			fmt.Println("DOUBLE")
-		case "DECIMAL":
-			ran = "DECIMAL"
-			fmt.Println("DECIMAL")
+func judgeFieldType(fieldType, num string) (ran string) {
 
-		// Date and time type
-		case "DATE":
-			ran = "2008-12-2"
-			fmt.Println("DATE")
-		case "TIME":
-			ran = "12:25:36"
-			fmt.Println("TIME")
-		case "YEAR":
-			ran = "1901/2155"
-			fmt.Println("YEAR")
-		case "DATETIME":
-			ran = "20210101 000000-20210101 230000:60"
-			fmt.Println("DATETIME")
-		case "TIMESTAMP":
-			ran = "1970-01-01 00:00:00/2038"
-			fmt.Println("TIMESTAMP")
-		// String type
-		case "CHAR":
-			ran = "CHAR"
-			fmt.Println("CHAR")
-		case "VARCHAR":
-			ran = "VARCHAR"
-			fmt.Println("VARCHAR")
-		case "TINYBLOB":
-			ran = "TINYBLOB"
-			fmt.Println("TINYBLOB")
-		case "TINYTEXT":
-			ran = "TINYTEXT"
-			fmt.Println("TINYTEXT")
-		case "BLOB":
-			ran = "BLOB"
-			fmt.Println("BLOB")
-		case "TEXT":
-			ran = "TEXT"
-			fmt.Println("TEXT")
-		case "MEDIUMBLOB":
-			ran = "MEDIUMBLOB"
-			fmt.Println("MEDIUMBLOB")
-		case "MEDIUMTEXT":
-			ran = "MEDIUMTEXT"
-			fmt.Println("MEDIUMTEXT")
-		case "LONGBLOB":
-			ran = "LONGBLOB"
-			fmt.Println("LONGBLOB")
-		case "LONGTEXT":
-			ran = "LONGTEXT"
-			fmt.Println("LONGTEXT")
-		default:
-			ran = "0-255"
-			fmt.Println("other types")
+	switch fieldType {
+	case "TINYINT":
+		ran = "-128-127"
+		if num == "1" {
+			ran = "0-1"
 		}
-		rans = append(rans, ran)
+	case "SMALLINT":
+		ran = "-32768-32767"
+	case "MEDIUMINT":
+		ran = "-8388608~8388607"
+	case "INT", "INTEGER":
+		ran = "-2147483648~2147483647"
+	case "FLOAT":
+		ran = "123.457"
+	case "BIGINT":
+		ran = "BIGINT"
+	case "DOUBLE":
+		ran = "DOUBLE"
+	case "DECIMAL":
+		ran = "DECIMAL"
+
+	// Date and time type
+	case "DATE":
+		ran = `"DATE"`
+	case "TIME":
+		ran = `"TIME"`
+	case "YEAR":
+		ran = `"YEAR"`
+	case "DATETIME":
+		ran = `"DATETIME"`
+	case "TIMESTAMP":
+		ran = `"TIMESTAMP"`
+	// String type
+	case "CHAR":
+		ran = `"CHAR"`
+	case "VARCHAR":
+		ran = `"VARCHAR"`
+	case "TINYBLOB":
+		ran = `"TINYBLOB"`
+	case "TINYTEXT":
+		ran = `"TINYTEXT"`
+	case "BLOB":
+		ran = `"BLOB"`
+	case "TEXT":
+		ran = `"TEXT"`
+	case "MEDIUMBLOB":
+		ran = `"MEDIUMBLOB"`
+	case "MEDIUMTEXT":
+		ran = `"MEDIUMTEXT"`
+	case "LONGBLOB":
+		ran = `"LONGBLOB"`
+	case "LONGTEXT":
+		ran = `"LONGTEXT"`
+	default:
 	}
-	return rans
+
+	return ran
 }
