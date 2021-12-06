@@ -65,17 +65,20 @@ func ParseSql(file string, out string) {
 				field.From = "keys.yaml"
 				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 			} else {
-				if types[col] == `"DATE"` || types[col] == `"TIME"` || types[col] == `"YEAR"` || types[col] == `"DATETIME"` || types[col] == `"TIMESTAMP"` {
+
+				if types[col].(FieldTypeInfo).fieldType == "DATE" || types[col].(FieldTypeInfo).fieldType == "TIME" || types[col].(FieldTypeInfo).fieldType == "YEAR" || types[col].(FieldTypeInfo).fieldType == "DATETIME" || types[col].(FieldTypeInfo).fieldType == "TIMESTAMP" {
 					field.Range = strconv.Quote("20210821 000000:60")
-					field.Type = "timestamp"
 					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
-				} else if types[col] == `"CHAR"` || types[col] == `"VARCHAR"` || types[col] == `"TINYTEXT"` || types[col] == `"TEXT"` || types[col] == `"MEDIUMTEXT"` || types[col] == `"LONGTEXT"` {
-					field.Range = types[col]
+					field.Type = "timestamp"
+				} else if types[col].(FieldTypeInfo).fieldType == "CHAR" || types[col].(FieldTypeInfo).fieldType == "VARCHAR" || types[col].(FieldTypeInfo).fieldType == "TINYTEXT" || types[col].(FieldTypeInfo).fieldType == "TEXT" || types[col].(FieldTypeInfo).fieldType == "MEDIUMTEXT" || types[col].(FieldTypeInfo).fieldType == "LONGTEXT" {
+					field.Range = types[col].(FieldTypeInfo).rang
 					field.Loop = "'3'" // default value of loop
 					field.Loopfix = "_"
 				} else {
-					field.Range = types[col]
+					field.Range = types[col].(FieldTypeInfo).rang
 				}
+				field.Note = types[col].(FieldTypeInfo).note
+
 			}
 
 			def.Fields = append(def.Fields, field)
@@ -162,11 +165,12 @@ func getColumnsFromCreateStatement(sent string) []string {
 	return fieldLines
 }
 
-func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo map[string]string) {
+func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo map[string]interface{}) {
 	fieldLines = make([]string, 0)
 	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
 	arr := re.FindAllStringSubmatch(string(sent), -1)
-	fieldInfo = map[string]string{}
+	fieldInfo = make(map[string]interface{})
+
 	for _, item := range arr {
 		line := strings.ToLower(item[0])
 		if !strings.Contains(line, " table ") && !strings.Contains(line, " key ") {
@@ -180,7 +184,8 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 	return fieldLines, fieldInfo
 }
 
-func parseFieldInfo(fieldTmp, fieldTypeInfo string) (ran string) {
+func parseFieldInfo(fieldTmp, fieldTypeInfo string) (FieldTypeInfoIns FieldTypeInfo) {
+
 	var ret []string
 	isUnsigned := false
 	fieldTypeInfo = strings.ToUpper(fieldTypeInfo)
@@ -191,67 +196,59 @@ func parseFieldInfo(fieldTmp, fieldTypeInfo string) (ran string) {
 	myExp := regexp.MustCompile(fieldTmp + `\s([A-Z]+)\(([^,]*),?([^,]*)\)`)
 	ret = myExp.FindStringSubmatch(fieldTypeInfo)
 	if ret != nil {
-		ran = judgeFieldType(ret[1], ret[2], isUnsigned)
+		FieldTypeInfoIns = judgeFieldType(ret[1], ret[2], isUnsigned)
 	} else {
 		fieldType := strings.Split(strings.Fields(fieldTypeInfo)[1], "(")[0]
-		ran = judgeFieldType(fieldType, "", isUnsigned)
+		FieldTypeInfoIns = judgeFieldType(fieldType, "", isUnsigned)
 	}
 
-	return ran
+	return FieldTypeInfoIns
 }
 
-func judgeFieldType(fieldType, num string, isUnsigned bool) (ran string) {
+type FieldTypeInfo struct {
+	fieldType string
+	note      string
+	rang      string
+}
+
+func judgeFieldType(fieldType, num string, isUnsigned bool) (FieldTypeInfoIns FieldTypeInfo) {
+	ran := ""
+	note := ""
 	switch fieldType {
 	// integer
 	case "BIT":
-		if isUnsigned {
-			ran = "0-255"
-		} else {
-			ran = "-128-127"
-		}
+		ran = "0,1"
 	case "TINYINT":
 		if num == "1" {
-			ran = "0-1"
-		} else if isUnsigned {
-			ran = "0-255"
+			ran = "0,1"
 		} else {
-			ran = "-128-127"
+			ran = "0-255"
 		}
 	case "SMALLINT":
-		if isUnsigned {
-			ran = "0-65535"
-		} else {
-			ran = "-32768-32767"
-		}
+		ran = "0-65535"
 	case "MEDIUMINT":
-		if isUnsigned {
-			ran = "0-65535"
-		} else {
-			ran = "-32768-32767"
-		}
+		ran = "0-65535"
+		note = `"[0,2^24-1]"`
 	case "INT", "INTEGER":
-		if isUnsigned {
-			ran = "[0,2^32-1]"
-		} else {
-			ran = "[-2^31,2^31-1]"
-		}
+		ran = "0-100000"
+		note = `"[0,2^32-1]"`
 	case "BIGINT":
-		if isUnsigned {
-			ran = "[0,2^64-1]"
-		} else {
-			ran = "[-2^63 ,2^63 -1]"
-		}
+		ran = "0-100000"
+		note = `"[0,2^64-1]"`
 	// floating-point
 	case "FLOAT":
-		ran = `"FLOAT"`
+		ran = "1.01-99.99:0.01"
+		note = `"FLOAT"`
 	case "DOUBLE":
-		ran = `"DOUBLE"`
+		ran = "1.01-99.99:0.01"
+		note = `"DOUBLE"`
 	// fixed-point
 	case "DECIMAL":
-		ran = `"DECIMAL"`
+		ran = "123.45"
+		note = `"DECIMAL"`
 	// character string
 	case "CHAR":
-		ran = `"CHAR"`
+		ran = `"a-z"`
 	case "VARCHAR":
 		ran = `"VARCHAR"`
 	case "TINYTEXT":
@@ -310,5 +307,9 @@ func judgeFieldType(fieldType, num string, isUnsigned bool) (ran string) {
 	default:
 	}
 
-	return ran
+	FieldTypeInfoIns.rang = ran
+	FieldTypeInfoIns.note = note
+	FieldTypeInfoIns.fieldType = fieldType
+
+	return FieldTypeInfoIns
 }
