@@ -65,6 +65,7 @@ func ParseSql(file string, out string) {
 				field.From = "keys.yaml"
 				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 			} else {
+
 				if types[col].(FieldTypeInfo).fieldType == "DATE" || types[col].(FieldTypeInfo).fieldType == "TIME" || types[col].(FieldTypeInfo).fieldType == "YEAR" || types[col].(FieldTypeInfo).fieldType == "DATETIME" || types[col].(FieldTypeInfo).fieldType == "TIMESTAMP" {
 					field.Range = strconv.Quote("20210821 000000:60")
 					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
@@ -77,6 +78,7 @@ func ParseSql(file string, out string) {
 					field.Range = types[col].(FieldTypeInfo).rang
 				}
 				field.Note = types[col].(FieldTypeInfo).note
+
 			}
 
 			def.Fields = append(def.Fields, field)
@@ -168,6 +170,7 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
 	arr := re.FindAllStringSubmatch(string(sent), -1)
 	fieldInfo = make(map[string]interface{})
+
 	for _, item := range arr {
 		line := strings.ToLower(item[0])
 		if !strings.Contains(line, " table ") && !strings.Contains(line, " key ") {
@@ -182,6 +185,7 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 }
 
 func parseFieldInfo(fieldTmp, fieldTypeInfo string) (FieldTypeInfoIns FieldTypeInfo) {
+
 	var ret []string
 	isUnsigned := false
 	fieldTypeInfo = strings.ToUpper(fieldTypeInfo)
@@ -302,6 +306,7 @@ func judgeFieldType(fieldType, num string, isUnsigned bool) (FieldTypeInfoIns Fi
 		ran = `"GEOMETRYCOLLECTION"`
 	default:
 	}
+
 	FieldTypeInfoIns.rang = ran
 	FieldTypeInfoIns.note = note
 	FieldTypeInfoIns.fieldType = fieldType
