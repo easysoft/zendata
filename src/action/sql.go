@@ -69,6 +69,10 @@ func ParseSql(file string, out string) {
 					field.Range = strconv.Quote("20210821 000000:60")
 					field.Type = "timestamp"
 					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
+				} else if types[col] == `"CHAR"` || types[col] == `"VARCHAR"` || types[col] == `"TINYTEXT"` || types[col] == `"TEXT"` || types[col] == `"MEDIUMTEXT"` || types[col] == `"LONGTEXT"` {
+					field.Range = types[col]
+					field.Loop = "'3'" // default value of loop
+					field.Loopfix = "_"
 				} else {
 					field.Range = types[col]
 				}
@@ -166,9 +170,9 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 	for _, item := range arr {
 		line := strings.ToLower(item[0])
 		if !strings.Contains(line, " table ") && !strings.Contains(line, " key ") {
-			field := item[1]
-			field = strings.ReplaceAll(field, "`", "")
-			fieldInfo[field] = parseFieldInfo(item[0])
+			fieldTmp := item[1]
+			field := strings.ReplaceAll(fieldTmp, "`", "")
+			fieldInfo[field] = parseFieldInfo(strings.ToUpper(fieldTmp), item[0])
 			fieldLines = append(fieldLines, field)
 		}
 	}
@@ -176,20 +180,20 @@ func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo
 	return fieldLines, fieldInfo
 }
 
-func parseFieldInfo(fieldType string) (ran string) {
+func parseFieldInfo(fieldTmp, fieldTypeInfo string) (ran string) {
 	var ret []string
 	isUnsigned := false
-	fieldType = strings.ToUpper(fieldType)
-	if strings.Contains(fieldType, "UNSIGNED") { // judge unsigned
+	fieldTypeInfo = strings.ToUpper(fieldTypeInfo)
+	if strings.Contains(fieldTypeInfo, "UNSIGNED") { // judge unsigned
 		isUnsigned = true
 	}
 
-	fieldType = strings.TrimSuffix(strings.Fields(fieldType)[1], ",")
-	myExp := regexp.MustCompile("([A-Z]*)\\((.*?)\\)")
-	ret = myExp.FindStringSubmatch(fieldType)
+	myExp := regexp.MustCompile(fieldTmp + `\s([A-Z]+)\(([^,]*),?([^,]*)\)`)
+	ret = myExp.FindStringSubmatch(fieldTypeInfo)
 	if ret != nil {
 		ran = judgeFieldType(ret[1], ret[2], isUnsigned)
 	} else {
+		fieldType := strings.Split(strings.Fields(fieldTypeInfo)[1], "(")[0]
 		ran = judgeFieldType(fieldType, "", isUnsigned)
 	}
 
@@ -214,13 +218,29 @@ func judgeFieldType(fieldType, num string, isUnsigned bool) (ran string) {
 			ran = "-128-127"
 		}
 	case "SMALLINT":
-		ran = "-32768-32767"
+		if isUnsigned {
+			ran = "0-65535"
+		} else {
+			ran = "-32768-32767"
+		}
 	case "MEDIUMINT":
-		ran = "-8388608-8388607"
+		if isUnsigned {
+			ran = "0-65535"
+		} else {
+			ran = "-32768-32767"
+		}
 	case "INT", "INTEGER":
-		ran = "-2147483648-2147483647"
+		if isUnsigned {
+			ran = "[0,2^32-1]"
+		} else {
+			ran = "[-2^31,2^31-1]"
+		}
 	case "BIGINT":
-		ran = `"BIGINT"`
+		if isUnsigned {
+			ran = "[0,2^64-1]"
+		} else {
+			ran = "[-2^63 ,2^63 -1]"
+		}
 	// floating-point
 	case "FLOAT":
 		ran = `"FLOAT"`
