@@ -14,6 +14,27 @@ import (
 	"strings"
 )
 
+func LoadContentDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
+	ret = model.DefData{}
+	for _, f := range files {
+		right := LoadDef2([]byte(f))
+		ret = MergeDef(ret, right, fieldsToExport)
+	}
+
+	return
+}
+
+func LoadDef2(content []byte) (ret model.DefData) {
+	content = stringUtils.ReplaceSpecialChars(content)
+	err := yaml.Unmarshal(content, &ret)
+	if err != nil {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", "D:\\GoProject\\src\\github.com\\Hind3ight\\zendata\\tmp\\.default.yaml"), color.FgCyan)
+		return
+	}
+
+	return
+}
+
 func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
 	newFiles := make([]string, 0)
 	for _, f := range files {

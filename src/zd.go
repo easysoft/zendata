@@ -36,6 +36,9 @@ var (
 	configs     []string
 	defaultFile string
 	configFile  string
+	// content
+	defaultDefContent []byte
+	configDefContent  []byte
 	//count       int
 	fields string
 
@@ -219,10 +222,10 @@ func toGen(files []string) {
 
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		//  use the files from post data
-		files := []string{defaultFile, configFile}
-
+		// todo 直接从流中读取，不生成临时文件
 		vari.Format = constant.FormatJson
-		action.Generate(files, fields, vari.Format, vari.Table)
+		//action.Generate(files, fields, vari.Format, vari.Table)
+		action.Generate2(files, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeGen {
 		if vari.Human {
@@ -310,17 +313,22 @@ func Handler(s *server.Server) http.Handler {
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
-	defaultFile, configFile, fields, vari.Total,
-		vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
+	defaultDefContent, configDefContent, fields, vari.Total,
+		vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams2(req)
+
+	//defaultFile, configFile, fields, vari.Total,
+	//	vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
 
 	if decode {
 		files := []string{defaultFile, configFile}
 		gen.Decode(files, fields, input)
-	} else if defaultFile != "" || configFile != "" {
+		//} else if defaultFile != "" || configFile != "" {
+	} else if defaultDefContent != nil || configDefContent != nil {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
-
-		toGen(nil)
+		files := []string{string(defaultDefContent), string(configDefContent)}
+		//toGen(nil)
+		toGen(files)
 	}
 }
 
