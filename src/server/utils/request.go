@@ -85,14 +85,15 @@ func ParserPostParams(req *http.Request, paramName1, paramName2 string, dft stri
 
 	return
 }
-func ParserPostParams2(req *http.Request, paramName1, paramName2 string, dft string, isFile bool) (ret []byte) {
-	ret1 := ""
+func ParserPostParamsToByte(req *http.Request, paramName1, paramName2 string, dft string, isFile bool) (ret []byte) {
+	value := ""
 	if paramName2 != "" && req.FormValue(paramName2) != "" {
-		ret1 = req.FormValue(paramName2)
+		value = req.FormValue(paramName2)
 	} else if paramName1 != "" && req.FormValue(paramName1) != "" { // high priority than paramName2
-		ret1 = req.FormValue(paramName1)
+		value = req.FormValue(paramName1)
 	}
-	if isFile && ret1 == "" {
+
+	if isFile && value == "" {
 		postFile, _, _ := req.FormFile(paramName2)
 		if postFile != nil {
 			defer postFile.Close()

@@ -57,7 +57,7 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 	return
 }
 
-func ParseGenParams2(req *http.Request) (defaultDefContent, configDefContent []byte, fields string, count int,
+func ParseGenParamsToByte(req *http.Request) (defaultDefContent, configDefContent []byte, fields string, count int,
 	format string, trim bool, table string, decode bool, input, output string) {
 	query := req.URL.Query()
 
@@ -77,11 +77,11 @@ func ParseGenParams2(req *http.Request) (defaultDefContent, configDefContent []b
 	if req.Method == http.MethodPost {
 		req.ParseForm()
 
-		defaultDefContent = ParserPostParams2(req, "default", "d", "", true)
-		configDefContent = ParserPostParams2(req, "config", "c", "", true)
-		trimStr = string(ParserPostParams2(req, "trim", "T", trimStr, false))
-		countStr = string(ParserPostParams2(req, "lines", "n", countStr, false))
-	} else {
+		defaultDefContent = ParserPostParamsToByte(req, "default", "d", "", true)
+		configDefContent = ParserPostParamsToByte(req, "config", "c", "", true)
+		trimStr = string(ParserPostParamsToByte(req, "trim", "T", trimStr, false))
+		countStr = string(ParserPostParamsToByte(req, "lines", "n", countStr, false))
+	} else if req.Method == http.MethodGet {
 		defaultFile = vari.ZdPath + defaultFile
 		configFile = vari.ZdPath + configFile
 
