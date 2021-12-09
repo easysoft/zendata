@@ -26,11 +26,11 @@ func LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret m
 
 func LoadContentDef(content []byte) (ret model.DefData) {
 	content = stringUtils.ReplaceSpecialChars(content)
-	_ = yaml.Unmarshal(content, &ret)
-	//if err != nil {
-	//	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", vari.WorkDir+"tmp\\.default.yaml"), color.FgCyan)
-	//	return
-	//}
+	err := yaml.Unmarshal(content, &ret)
+	if err != nil {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
+		return
+	}
 
 	return
 }
@@ -45,7 +45,11 @@ func LoadFilesContents(files []string) (contents [][]byte) {
 		if !fileUtils.FileExist(pathDefaultFile) {
 			return
 		}
-		content, _ := ioutil.ReadFile(pathDefaultFile)
+		content, err := ioutil.ReadFile(pathDefaultFile)
+		if err != nil {
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
+			return
+		}
 		contents = append(contents, content)
 	}
 

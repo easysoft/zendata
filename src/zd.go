@@ -221,7 +221,6 @@ func toGen(files []string) {
 		startServer() // will init its own db
 
 	} else if vari.RunMode == constant.RunModeServerRequest {
-		//  use the files from post data
 		vari.Format = constant.FormatJson
 		if defaultFile != "" || configFile != "" {
 			files := []string{defaultFile, configFile}
@@ -331,12 +330,19 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	} else if defaultDefContent != nil || configDefContent != nil {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
+
 		toGen(nil)
+		// Avoid variable affecting the results of request.
+		defaultDefContent = nil
+		configDefContent = nil
 	} else if defaultFile != "" || configFile != "" {
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
 		toGen(nil)
+		// Avoid variable affecting the results of request.
+		defaultFile = ""
+		configFile = ""
 	}
 }
 

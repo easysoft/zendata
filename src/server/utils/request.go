@@ -50,15 +50,15 @@ func ParserGetParams(values url.Values, name, short string) (val string) {
 	return val
 }
 
-func ParserPostParams(req *http.Request, paramName1, paramName2 string, dft string, isFile bool) (ret string) {
-	if paramName2 != "" && req.FormValue(paramName2) != "" {
-		ret = req.FormValue(paramName2)
-	} else if paramName1 != "" && req.FormValue(paramName1) != "" { // high priority than paramName2
-		ret = req.FormValue(paramName1)
+func ParserPostParams(req *http.Request, paramName, paramNameShort string, dft string, isFile bool) (ret string) {
+	if paramNameShort != "" && req.FormValue(paramNameShort) != "" {
+		ret = req.FormValue(paramNameShort)
+	} else if paramName != "" && req.FormValue(paramName) != "" { // high priority than paramName2
+		ret = req.FormValue(paramName)
 	}
 
 	if isFile && ret == "" {
-		postFile, _, _ := req.FormFile(paramName2)
+		postFile, _, _ := req.FormFile(paramNameShort)
 		if postFile != nil {
 			defer postFile.Close()
 
@@ -68,7 +68,7 @@ func ParserPostParams(req *http.Request, paramName1, paramName2 string, dft stri
 		}
 
 		if ret == "" {
-			postFile, _, _ = req.FormFile(paramName1)
+			postFile, _, _ = req.FormFile(paramName)
 			if postFile != nil {
 				defer postFile.Close()
 
@@ -81,42 +81,6 @@ func ParserPostParams(req *http.Request, paramName1, paramName2 string, dft stri
 
 	if ret == "" {
 		ret = dft
-	}
-
-	return
-}
-func ParserPostParamsToByte(req *http.Request, paramName1, paramName2 string, dft string, isFile bool) (ret []byte) {
-	value := ""
-	if paramName2 != "" && req.FormValue(paramName2) != "" {
-		value = req.FormValue(paramName2)
-	} else if paramName1 != "" && req.FormValue(paramName1) != "" { // high priority than paramName2
-		value = req.FormValue(paramName1)
-	}
-
-	if isFile && value == "" {
-		postFile, _, _ := req.FormFile(paramName2)
-		if postFile != nil {
-			defer postFile.Close()
-
-			buf := bytes.NewBuffer(nil)
-			io.Copy(buf, postFile)
-			ret = buf.Bytes()
-		}
-
-		if ret == nil {
-			postFile, _, _ = req.FormFile(paramName1)
-			if postFile != nil {
-				defer postFile.Close()
-
-				buf := bytes.NewBuffer(nil)
-				io.Copy(buf, postFile)
-				ret = buf.Bytes()
-			}
-		}
-	}
-
-	if ret == nil {
-		ret = []byte(dft)
 	}
 
 	return
