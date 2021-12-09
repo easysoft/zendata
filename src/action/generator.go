@@ -39,7 +39,72 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 			fieldsToExport = strings.Split(fieldsToExportStr, ",")
 		}
 
-		rows, colIsNumArr, err := gen.GenerateFromYaml(files, &fieldsToExport)
+		rows, colIsNumArr, err := gen.GenerateFromYaml(files, &fieldsToExport, true)
+		if err != nil {
+			return
+		}
+
+		if format == constant.FormatExcel || format == constant.FormatCsv { // for excel and cvs
+			gen.Write(rows, table, colIsNumArr, fieldsToExport)
+		} else { // returned is for preview, sql exec and article writing
+			lines = gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
+		}
+
+		// exec insert sql
+		if vari.DBDsn != "" {
+			helper.ExecSqlInUserDB(lines)
+		}
+
+		// article need to write to more than one files
+		if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle {
+			var filePath = logUtils.FileWriter.Name()
+			defer logUtils.FileWriter.Close()
+			fileUtils.RmFile(filePath)
+
+			for index, line := range lines {
+				articlePath := fileUtils.GenArticleFiles(filePath, index)
+				fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
+				fmt.Fprint(fileWriter, line)
+				fileWriter.Close()
+			}
+		}
+
+		count = len(rows)
+	}
+
+	entTime := time.Now().Unix()
+	if vari.RunMode == constant.RunModeServerRequest {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
+	}
+
+	return
+}
+
+func Generate2(files []string, fieldsToExportStr, format, table string) (lines []interface{}) {
+	startTime := time.Now().Unix()
+
+	if len(files) == 0 {
+		return
+	}
+
+	count := 0
+	if strings.ToLower(filepath.Ext(files[0])) == "."+constant.FormatProto { //gen from protobuf
+		buf, pth := gen.GenerateFromProtobuf(files[0])
+
+		if vari.Verbose {
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
+		}
+		logUtils.PrintLine(buf)
+
+		count = 1
+
+	} else { // default gen from yaml
+		fieldsToExport := make([]string, 0)
+		if fieldsToExportStr != "" {
+			fieldsToExport = strings.Split(fieldsToExportStr, ",")
+		}
+
+		rows, colIsNumArr, err := gen.GenerateFromYaml(files, &fieldsToExport, true)
 		if err != nil {
 			return
 		}

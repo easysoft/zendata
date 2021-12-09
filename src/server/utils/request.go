@@ -58,7 +58,7 @@ func ParserPostParams(req *http.Request, paramName1, paramName2 string, dft stri
 	}
 
 	if isFile && ret == "" {
-		postFile, _, _ := req.FormFile(paramName2)
+		postFile, _, _ := req.FormFile(paramNameShort)
 		if postFile != nil {
 			defer postFile.Close()
 
@@ -68,7 +68,7 @@ func ParserPostParams(req *http.Request, paramName1, paramName2 string, dft stri
 		}
 
 		if ret == "" {
-			postFile, _, _ = req.FormFile(paramName1)
+			postFile, _, _ = req.FormFile(paramName)
 			if postFile != nil {
 				defer postFile.Close()
 
@@ -85,6 +85,7 @@ func ParserPostParams(req *http.Request, paramName1, paramName2 string, dft stri
 
 	return
 }
+
 func ParserPostParamsToByte(req *http.Request, paramName1, paramName2 string, dft string, isFile bool) (ret []byte) {
 	value := ""
 	if paramName2 != "" && req.FormValue(paramName2) != "" {
@@ -95,6 +96,7 @@ func ParserPostParamsToByte(req *http.Request, paramName1, paramName2 string, df
 
 	if isFile && value == "" {
 		postFile, _, _ := req.FormFile(paramName2)
+
 		if postFile != nil {
 			defer postFile.Close()
 
@@ -104,7 +106,9 @@ func ParserPostParamsToByte(req *http.Request, paramName1, paramName2 string, df
 		}
 
 		if ret == nil {
+
 			postFile, _, _ = req.FormFile(paramName1)
+
 			if postFile != nil {
 				defer postFile.Close()
 

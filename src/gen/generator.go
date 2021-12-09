@@ -20,6 +20,7 @@ import (
 	"time"
 )
 
+
 func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
@@ -49,10 +50,16 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 }
 
 func GenerateFromYaml(files []string, fieldsToExport *[]string) (
+
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
-	vari.Def = LoadDataDef(files, fieldsToExport)
+	if isContent {
+		vari.Def = LoadContentDef(files, fieldsToExport)
+		vari.ConfigFileDir = vari.WorkDir + "demo\\"
+	} else {
+		vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+		vari.Def = LoadDataDef(files, fieldsToExport)
+	}
 
 	if len(vari.Def.Fields) == 0 {
 		err = errors.New("")

@@ -325,18 +325,22 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParamsToByte(req)
 	}
 
+
 	if decode {
 		files := []string{defaultFile, configFile}
 		gen.Decode(files, fields, input)
 	} else if defaultDefContent != nil || configDefContent != nil {
+
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 		toGen(nil)
 	} else if defaultFile != "" || configFile != "" {
+
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
+		files := []string{string(defaultDefContent), string(configDefContent)}
 
-		toGen(nil)
+		toGen(files)
 	}
 }
 
