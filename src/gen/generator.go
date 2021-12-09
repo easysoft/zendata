@@ -20,7 +20,37 @@ import (
 	"time"
 )
 
-func GenerateFromYaml(files []string, fieldsToExport *[]string, isContent bool) (
+
+func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
+	rows [][]string, colIsNumArr []bool, err error) {
+
+	vari.Def = LoadDataContentDef(fileContents, fieldsToExport)
+	vari.ConfigFileDir = vari.WorkDir + "demo\\"
+
+	if len(vari.Def.Fields) == 0 {
+		err = errors.New("")
+		return
+	} else if vari.Def.Type == constant.ConfigTypeArticle && vari.Out == "" {
+		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
+		logUtils.PrintErrMsg(errMsg)
+		err = errors.New(errMsg)
+		return
+	}
+
+	if vari.Total < 0 {
+		if vari.Def.Type == constant.ConfigTypeArticle {
+			vari.Total = 1
+		} else {
+			vari.Total = constant.DefaultNumber
+		}
+	}
+
+	rows, colIsNumArr, err = Generate(fieldsToExport)
+	return
+}
+
+func GenerateFromYaml(files []string, fieldsToExport *[]string) (
+
 	rows [][]string, colIsNumArr []bool, err error) {
 
 	if isContent {
@@ -54,6 +84,12 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string, isContent bool) 
 	vari.Res = LoadResDef(*fieldsToExport)
 	vari.ResLoading = false
 
+	rows, colIsNumArr, err = Generate(fieldsToExport)
+
+	return
+}
+
+func Generate(fieldsToExport *[]string) (rows [][]string, colIsNumArr []bool, err error) {
 	// 迭代fields生成值列表
 	topLevelFieldNameToValuesMap := map[string][]string{}
 	for index, field := range vari.Def.Fields {

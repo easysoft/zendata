@@ -222,10 +222,14 @@ func toGen(files []string) {
 
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		//  use the files from post data
-		// todo 直接从流中读取，不生成临时文件
 		vari.Format = constant.FormatJson
-		//action.Generate(files, fields, vari.Format, vari.Table)
-		action.Generate2(files, fields, vari.Format, vari.Table)
+		if defaultFile != "" || configFile != "" {
+			files := []string{defaultFile, configFile}
+			action.Generate(files, fields, vari.Format, vari.Table)
+		} else {
+			contents := [][]byte{defaultDefContent, configDefContent}
+			action.GenerateByContent(contents, fields, vari.Format, vari.Table)
+		}
 
 	} else if vari.RunMode == constant.RunModeGen {
 		if vari.Human {
@@ -313,13 +317,25 @@ func Handler(s *server.Server) http.Handler {
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
-	defaultDefContent, configDefContent, fields, vari.Total,
-		vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParamsToByte(req)
+	if req.Method == http.MethodGet {
+		defaultFile, configFile, fields, vari.Total,
+			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
+	} else if req.Method == http.MethodPost {
+		defaultDefContent, configDefContent, fields, vari.Total,
+			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParamsToByte(req)
+	}
+
 
 	if decode {
 		files := []string{defaultFile, configFile}
 		gen.Decode(files, fields, input)
 	} else if defaultDefContent != nil || configDefContent != nil {
+
+		vari.RunMode = constant.RunModeServerRequest
+		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
+		toGen(nil)
+	} else if defaultFile != "" || configFile != "" {
+
 		vari.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 		files := []string{string(defaultDefContent), string(configDefContent)}
