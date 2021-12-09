@@ -311,7 +311,7 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 
 	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
-	rows, colIsNumArr, _ := GenerateFromYaml([]string{configFile}, &fieldsToExport, false)
+	rows, colIsNumArr, _ := GenerateFromYaml([]string{configFile}, &fieldsToExport)
 	if field.Rand {
 		rows = randomValuesArr(rows)
 	}
