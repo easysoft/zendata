@@ -23,7 +23,7 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 	}
 
 	count := 0
-	if strings.ToLower(filepath.Ext(files[0])) == "."+constant.FormatProto { //gen from protobuf
+	if strings.ToLower(filepath.Ext(files[1])) == "."+constant.FormatProto { //gen from protobuf
 		buf, pth := gen.GenerateFromProtobuf(files[0])
 
 		if vari.Verbose {
