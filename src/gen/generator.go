@@ -20,46 +20,10 @@ import (
 	"time"
 )
 
-
 func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
 	vari.Def = LoadDataContentDef(fileContents, fieldsToExport)
-	vari.ConfigFileDir = vari.WorkDir + "demo\\"
-
-	if len(vari.Def.Fields) == 0 {
-		err = errors.New("")
-		return
-	} else if vari.Def.Type == constant.ConfigTypeArticle && vari.Out == "" {
-		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
-		logUtils.PrintErrMsg(errMsg)
-		err = errors.New(errMsg)
-		return
-	}
-
-	if vari.Total < 0 {
-		if vari.Def.Type == constant.ConfigTypeArticle {
-			vari.Total = 1
-		} else {
-			vari.Total = constant.DefaultNumber
-		}
-	}
-
-	rows, colIsNumArr, err = Generate(fieldsToExport)
-	return
-}
-
-func GenerateFromYaml(files []string, fieldsToExport *[]string) (
-
-	rows [][]string, colIsNumArr []bool, err error) {
-
-	if isContent {
-		vari.Def = LoadContentDef(files, fieldsToExport)
-		vari.ConfigFileDir = vari.WorkDir + "demo\\"
-	} else {
-		vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
-		vari.Def = LoadDataDef(files, fieldsToExport)
-	}
 
 	if len(vari.Def.Fields) == 0 {
 		err = errors.New("")
@@ -84,12 +48,6 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	vari.Res = LoadResDef(*fieldsToExport)
 	vari.ResLoading = false
 
-	rows, colIsNumArr, err = Generate(fieldsToExport)
-
-	return
-}
-
-func Generate(fieldsToExport *[]string) (rows [][]string, colIsNumArr []bool, err error) {
 	// 迭代fields生成值列表
 	topLevelFieldNameToValuesMap := map[string][]string{}
 	for index, field := range vari.Def.Fields {
@@ -165,6 +123,17 @@ func Generate(fieldsToExport *[]string) (rows [][]string, colIsNumArr []bool, er
 	return
 }
 
+func GenerateFromYaml(files []string, fieldsToExport *[]string) (
+	rows [][]string, colIsNumArr []bool, err error) {
+
+	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+
+	contents := LoadFilesContents(files)
+	rows, colIsNumArr, err = GenerateFromContent(contents, fieldsToExport)
+
+	return
+}
+
 func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []string) {
 	if len(field.Fields) > 0 { // has sub fields
 		fieldNameToValuesMap := map[string][]string{} // refer field name to values
@@ -236,9 +205,8 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 				valuesForAdd := getRepeatValuesFromAll(groupValues, numLimit, repeat)
 				values = append(values, valuesForAdd...)
 			} else {
-				//valuesForAdd := getRepeatValuesFromGroups(groupValues, use, numLimit, repeat)
 				infos := parseUse(uses)
-				valuesForAdd := getRepeatValuesFromGroups2(groupValues, infos)
+				valuesForAdd := getRepeatValuesFromGroups(groupValues, infos)
 				values = append(values, valuesForAdd...)
 			}
 		} else if field.Select != "" { // refer to excel
@@ -637,34 +605,8 @@ exit:
 	return
 }
 
-func getRepeatValuesFromGroups(groupValues map[string][]string, use string, numLimit, repeat int) (ret []string) {
-	if repeat == 0 {
-		repeat = 1
-	}
 
-	groupNames := strings.Split(use, ",")
-
-	count := 0
-exit:
-	for _, groupName := range groupNames {
-		arr := groupValues[groupName]
-
-		for _, item := range arr {
-			for i := 0; i < repeat; i++ {
-				ret = append(ret, item)
-				count++
-
-				if numLimit > 0 && count >= numLimit {
-					break exit
-				}
-			}
-		}
-	}
-
-	return
-}
-
-func getRepeatValuesFromGroups2(groupValues map[string][]string, info []retsInfo) (ret []string) {
+func getRepeatValuesFromGroups(groupValues map[string][]string, info []retsInfo) (ret []string) {
 	count := 0
 
 exit:

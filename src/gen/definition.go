@@ -14,26 +14,43 @@ import (
 	"strings"
 )
 
-
 func LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret model.DefData) {
 	ret = model.DefData{}
 	for _, f := range filesContents {
 		right := LoadContentDef(f)
-
 		ret = MergeDef(ret, right, fieldsToExport)
 	}
 
 	return
 }
 
-
 func LoadContentDef(content []byte) (ret model.DefData) {
 	content = stringUtils.ReplaceSpecialChars(content)
 	err := yaml.Unmarshal(content, &ret)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", vari.WorkDir+"tmp\\.default.yaml"), color.FgCyan)
-
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
 		return
+	}
+
+	return
+}
+
+func LoadFilesContents(files []string) (contents [][]byte) {
+	contents = make([][]byte, 0)
+	for _, f := range files {
+		if f == "" {
+			continue
+		}
+		pathDefaultFile := fileUtils.GetAbsolutePath(f)
+		if !fileUtils.FileExist(pathDefaultFile) {
+			return
+		}
+		content, err := ioutil.ReadFile(pathDefaultFile)
+		if err != nil {
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
+			return
+		}
+		contents = append(contents, content)
 	}
 
 	return
