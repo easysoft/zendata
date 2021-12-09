@@ -14,21 +14,21 @@ import (
 	"strings"
 )
 
-func LoadContentDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
+func LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret model.DefData) {
 	ret = model.DefData{}
-	for _, f := range files {
-		right := LoadDef2([]byte(f))
+	for _, f := range filesContents {
+		right := LoadContentDef(f)
 		ret = MergeDef(ret, right, fieldsToExport)
 	}
 
 	return
 }
 
-func LoadDef2(content []byte) (ret model.DefData) {
+func LoadContentDef(content []byte) (ret model.DefData) {
 	content = stringUtils.ReplaceSpecialChars(content)
 	err := yaml.Unmarshal(content, &ret)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", "D:\\GoProject\\src\\github.com\\Hind3ight\\zendata\\tmp\\.default.yaml"), color.FgCyan)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", vari.WorkDir+"tmp\\.default.yaml"), color.FgCyan)
 		return
 	}
 
