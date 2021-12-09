@@ -92,7 +92,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
-	vari.ConfigFileDir = vari.WorkDir + "demo\\"
+
 	rows, colIsNumArr, err := gen.GenerateFromContent(contents, &fieldsToExport)
 	if err != nil {
 		return
