@@ -205,9 +205,8 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 				valuesForAdd := getRepeatValuesFromAll(groupValues, numLimit, repeat)
 				values = append(values, valuesForAdd...)
 			} else {
-				//valuesForAdd := getRepeatValuesFromGroups(groupValues, use, numLimit, repeat)
 				infos := parseUse(uses)
-				valuesForAdd := getRepeatValuesFromGroups2(groupValues, infos)
+				valuesForAdd := getRepeatValuesFromGroups(groupValues, infos)
 				values = append(values, valuesForAdd...)
 			}
 		} else if field.Select != "" { // refer to excel
@@ -606,34 +605,8 @@ exit:
 	return
 }
 
-func getRepeatValuesFromGroups(groupValues map[string][]string, use string, numLimit, repeat int) (ret []string) {
-	if repeat == 0 {
-		repeat = 1
-	}
 
-	groupNames := strings.Split(use, ",")
-
-	count := 0
-exit:
-	for _, groupName := range groupNames {
-		arr := groupValues[groupName]
-
-		for _, item := range arr {
-			for i := 0; i < repeat; i++ {
-				ret = append(ret, item)
-				count++
-
-				if numLimit > 0 && count >= numLimit {
-					break exit
-				}
-			}
-		}
-	}
-
-	return
-}
-
-func getRepeatValuesFromGroups2(groupValues map[string][]string, info []retsInfo) (ret []string) {
+func getRepeatValuesFromGroups(groupValues map[string][]string, info []retsInfo) (ret []string) {
 	count := 0
 
 exit:
