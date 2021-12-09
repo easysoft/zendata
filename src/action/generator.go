@@ -43,33 +43,32 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 		if err != nil {
 			return
 		}
-		lines, count = handleRows(rows, colIsNumArr, fieldsToExport, format, table)
-		//if format == constant.FormatExcel || format == constant.FormatCsv { // for excel and cvs
-		//	gen.Write(rows, table, colIsNumArr, fieldsToExport)
-		//} else { // returned is for preview, sql exec and article writing
-		//	lines = gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
-		//}
-		//
-		//// exec insert sql
-		//if vari.DBDsn != "" {
-		//	helper.ExecSqlInUserDB(lines)
-		//}
-		//
-		//// article need to write to more than one files
-		//if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle {
-		//	var filePath = logUtils.FileWriter.Name()
-		//	defer logUtils.FileWriter.Close()
-		//	fileUtils.RmFile(filePath)
-		//
-		//	for index, line := range lines {
-		//		articlePath := fileUtils.GenArticleFiles(filePath, index)
-		//		fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
-		//		fmt.Fprint(fileWriter, line)
-		//		fileWriter.Close()
-		//	}
-		//}
-		//
-		//count = len(rows)
+		if format == constant.FormatExcel || format == constant.FormatCsv { // for excel and cvs
+			gen.Write(rows, table, colIsNumArr, fieldsToExport)
+		} else { // returned is for preview, sql exec and article writing
+			lines = gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
+		}
+
+		// exec insert sql
+		if vari.DBDsn != "" {
+			helper.ExecSqlInUserDB(lines)
+		}
+
+		// article need to write to more than one files
+		if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle {
+			var filePath = logUtils.FileWriter.Name()
+			defer logUtils.FileWriter.Close()
+			fileUtils.RmFile(filePath)
+
+			for index, line := range lines {
+				articlePath := fileUtils.GenArticleFiles(filePath, index)
+				fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
+				fmt.Fprint(fileWriter, line)
+				fileWriter.Close()
+			}
+		}
+
+		count = len(rows)
 	}
 
 	entTime := time.Now().Unix()
@@ -93,22 +92,11 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
-
+	vari.ConfigFileDir = vari.WorkDir + "demo\\"
 	rows, colIsNumArr, err := gen.GenerateFromContent(contents, &fieldsToExport)
 	if err != nil {
 		return
 	}
-	lines, count = handleRows(rows, colIsNumArr, fieldsToExport, format, table)
-
-	entTime := time.Now().Unix()
-	if vari.RunMode == constant.RunModeServerRequest {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
-	}
-
-	return
-}
-
-func handleRows(rows [][]string, colIsNumArr []bool, fieldsToExport []string, format, table string) (lines []interface{}, count int) {
 	if format == constant.FormatExcel || format == constant.FormatCsv { // for excel and cvs
 		gen.Write(rows, table, colIsNumArr, fieldsToExport)
 	} else { // returned is for preview, sql exec and article writing
@@ -135,5 +123,11 @@ func handleRows(rows [][]string, colIsNumArr []bool, fieldsToExport []string, fo
 	}
 
 	count = len(rows)
+
+	entTime := time.Now().Unix()
+	if vari.RunMode == constant.RunModeServerRequest {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
+	}
+
 	return
 }
