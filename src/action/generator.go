@@ -17,7 +17,6 @@ import (
 
 func Generate(files []string, fieldsToExportStr, format, table string) (lines []interface{}) {
 	startTime := time.Now().Unix()
-
 	if len(files) == 0 {
 		return
 	}
@@ -37,6 +36,7 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 		}
 	} else { // default gen from yaml
+		vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 		contents := gen.LoadFilesContents(files)
 		lines = GenerateByContent(contents, fieldsToExportStr, format, table)
 	}
