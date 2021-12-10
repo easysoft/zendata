@@ -2,8 +2,6 @@ package serverUtils
 
 import (
 	constant "github.com/easysoft/zendata/src/utils/const"
-	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	"github.com/easysoft/zendata/src/utils/vari"
 	"net/http"
 	"strconv"
 	"strings"
@@ -20,7 +18,6 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 	if countStr == "" {
 		countStr = "10"
 	}
-	vari.ConfigFileDir = fileUtils.GetAbsDir(defaultFile)
 
 	fields = ParserGetParams(query, "field", "F")
 
