@@ -46,7 +46,7 @@ func ParseSql(file string, out string) {
 	for tableName, statement := range statementMap {
 		createStr := statement
 
-		columns, types := getColumnsFromCreateStatement2(createStr)
+		columns, types := getColumnsFromCreateStatement(createStr)
 
 		def := model.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
@@ -148,24 +148,7 @@ func getCreateStatement(file string) (statementMap map[string]string, pkMap map[
 	return
 }
 
-func getColumnsFromCreateStatement(sent string) []string {
-	fieldLines := make([]string, 0)
-
-	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
-	arr := re.FindAllStringSubmatch(string(sent), -1)
-	for _, item := range arr {
-		line := strings.ToLower(item[0])
-		if !strings.Contains(line, " table ") && !strings.Contains(line, " key ") {
-			field := item[1]
-			field = strings.ReplaceAll(field, "`", "")
-			fieldLines = append(fieldLines, field)
-		}
-	}
-
-	return fieldLines
-}
-
-func getColumnsFromCreateStatement2(sent string) (fieldLines []string, fieldInfo map[string]interface{}) {
+func getColumnsFromCreateStatement(sent string) (fieldLines []string, fieldInfo map[string]interface{}) {
 	fieldLines = make([]string, 0)
 	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
 	arr := re.FindAllStringSubmatch(string(sent), -1)
