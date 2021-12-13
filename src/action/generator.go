@@ -17,14 +17,13 @@ import (
 
 func Generate(files []string, fieldsToExportStr, format, table string) (lines []interface{}) {
 	startTime := time.Now().Unix()
-
 	if len(files) == 0 {
 		return
 	}
 
 	count := 0
-	if strings.ToLower(filepath.Ext(files[0])) == "."+constant.FormatProto { //gen from protobuf
-		buf, pth := gen.GenerateFromProtobuf(files[0])
+	if strings.ToLower(filepath.Ext(files[1])) == "."+constant.FormatProto { //gen from protobuf
+		buf, pth := gen.GenerateFromProtobuf(files[1])
 
 		if vari.Verbose {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
@@ -37,7 +36,11 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 		}
 	} else { // default gen from yaml
-		vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+		if files[0] != "" {
+			vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+		} else {
+			vari.ConfigFileDir = fileUtils.GetAbsDir(files[1])
+		}
 		contents := gen.LoadFilesContents(files)
 		lines = GenerateByContent(contents, fieldsToExportStr, format, table)
 	}
