@@ -8,7 +8,8 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"regexp"
 	"strings"
 )
@@ -26,14 +27,20 @@ func ExecSqlInUserDB(lines []interface{}) (count int) {
 	}
 
 	//typ, user, password, host, port, db, code := parserDsn(vari.DBDsn)
-	conn, _ := parserDsnAndConn(vari.DBDsn)
-	defer conn.Close()
+	db, _ := parserDsnAndConnByGorm(vari.DBDsn)
+	defer db.Close()
 
 	if vari.DBClear && vari.Table != "" {
 		deleteSql := fmt.Sprintf("delete from %s where 1=1", vari.Table)
-		conn.Exec(deleteSql)
+		err := db.Exec(deleteSql).Error
+		if err != nil {
+			logUtils.PrintErrMsg(err.Error())
+		}
 	}
-	conn.Exec(sql)
+	err := db.Exec(sql).Error
+	if err != nil {
+		logUtils.PrintErrMsg(err.Error())
+	}
 
 	return
 }
@@ -117,6 +124,45 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 			logUtils.PrintErrMsg(
 				fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteFile, err.Error()))
 		}
+	}
+
+	return
+}
+
+func parserDsnAndConnByGorm(dsn string) (db *gorm.DB, err error) {
+	var (
+		driver, user, password, host, port, dbName, code string
+	)
+
+	// mysql://root:1234@localhost:3306/dbname#utf8
+	reg := regexp.MustCompile(`([a-z,A-Z]+)://(.+):(.*)@(.+):(\d+)/(.+)#(.+)`)
+	arr := reg.FindAllStringSubmatch(dsn, -1)
+
+	if len(arr) == 0 {
+		return
+	}
+
+	sections := arr[0]
+
+	driver = strings.ToLower(sections[1])
+	user = sections[2]
+	password = sections[3]
+	host = sections[4]
+	port = sections[5]
+	dbName = sections[6]
+	code = sections[7]
+
+	if driver == "mysql" {
+		str := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=%s&parseTime=True&loc=Local", user, password, host, port, dbName, code)
+		db, err = gorm.Open(driver, str)
+		if err != nil { // make sure database is accessible
+			logUtils.PrintErrMsg(
+				fmt.Sprintf("Error on opening db %s, error is %s", dbName, err.Error()))
+		}
+	}
+
+	if vari.Verbose {
+		db = db.Debug()
 	}
 
 	return
