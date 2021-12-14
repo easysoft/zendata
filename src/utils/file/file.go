@@ -482,3 +482,19 @@ func GetFilesFromParams(args []string) (files []string, count int) {
 
 	return
 }
+
+func HandleFiles(files []string) []string {
+	if len(files) != 2 {
+		return files
+	}
+
+	if files[0] == "" && files[1] != "" { // no defaultFile
+		files[0] = files[1]
+		files[1] = ""
+	} else if files[1] == "" && files[0] != "" { // no configFile
+		files[1] = files[0]
+		files[0] = ""
+	}
+
+	return files
+}
