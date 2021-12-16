@@ -605,29 +605,36 @@ exit:
 	return
 }
 
-
 func getRepeatValuesFromGroups(groupValues map[string][]string, info []retsInfo) (ret []string) {
 	count := 0
 
 exit:
 	for _, v := range info {
 		if v.repeat == 0 {
+			v.repeat = 1
 		}
-		v.repeat = 1
 
 		arr := groupValues[v.ret]
 		if len(arr) == 0 {
 			break exit
 		}
-
-		for i := 0; (v.numLimit > 0 && i < v.numLimit) || i < vari.Total; i++ {
-			index := i / v.repeat % len(arr)
-			ret = append(ret, arr[index])
-			count++
+		if v.numLimit != 0 { // privateB{n}
+			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < vari.Total; i++ {
+				index := i / v.repeat
+				ret = append(ret, arr[index])
+				count++
+			}
+		} else { // privateA
+			for i := 0; i < vari.Total; i++ {
+				index := i / v.repeat % len(arr)
+				ret = append(ret, arr[index])
+				count++
+			}
 		}
 		if count >= vari.Total {
 			break exit
 		}
+
 	}
 	return
 }
