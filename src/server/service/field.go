@@ -11,7 +11,7 @@ type FieldService struct {
 	FieldRepo *serverRepo.FieldRepo `inject:""`
 	ReferRepo *serverRepo.ReferRepo `inject:""`
 
-	DefService *DefService
+	DefService *DefService `inject:""`
 }
 
 func (s *FieldService) GetTree(defId uint) (root *model.ZdField, err error) {
