@@ -1,7 +1,6 @@
 title: 数据测试1
 desc: 数据测试1
 fields:
-
 - field: field_with_children
   fields:
   - field: field_text
@@ -19,8 +18,8 @@ fields:
     use: medium{33}
   - field: field_use_instance
     postfix: "\t"
-    from: ip.v1.yaml
-    use: privateC{33}
+    from: time.time.v1.yaml
+    use: time{33}
   - field: field_use_excel
     postfix: "\t"
     rand: true
@@ -48,3 +47,4 @@ fields:
   use: small{2}
 - from: zentao.number.v1.yaml
   use: large{3}
+content: ""
