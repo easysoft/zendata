@@ -229,6 +229,7 @@ func PathToName(path, key, tp string) string {
 	if tp != constant.ResTypeText && tp != constant.ResTypeYaml && tp != constant.ResTypeConfig {
 		nameSep = "."
 		path = strings.ReplaceAll(path, constant.PthSep, nameSep)
+		path = path[strings.Index(path, nameSep)+len(nameSep):]
 	}
 	if isWorkData {
 		return path
@@ -236,11 +237,15 @@ func PathToName(path, key, tp string) string {
 
 	sep := nameSep + key + nameSep
 	name := path[strings.Index(path, sep)+len(sep):]
-	if key == constant.ResDirData { // remove .xlsx postfix
+	if key == constant.ResDirData { // remove .xlsx postfix for excel data
 		name = name[:strings.LastIndex(name, nameSep)]
 	}
 
 	return name
+}
+func removeDirPrefix(name, seq string) (ret string) {
+
+	return
 }
 
 func SortByName(arr []model.ResFile) []model.ResFile {

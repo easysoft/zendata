@@ -251,6 +251,9 @@ export default {
           this.refer.colName = this.referColNames
         }
 
+        console.log('###')
+        console.log(this.refer.file)
+
         let data = JSON.parse(JSON.stringify(this.refer))
         if (data.type === 'excel') data.file = data.file + '.' + data.sheet
 
