@@ -5,6 +5,9 @@ import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
+	"github.com/easysoft/zendata/src/utils/vari"
+	"github.com/oklog/ulid/v2"
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -28,6 +31,23 @@ func CreateTimestampField(field *model.DefField, fieldWithValue *model.FieldWith
 	}
 
 	fieldWithValue.Values = values
+}
+
+func CreateUlidField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+	count := 0
+
+	t := time.Unix(1000000, 0)
+	entropy := ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0)
+
+	for true {
+		val := ulid.MustNew(ulid.Timestamp(t), entropy).String()
+		fieldWithValue.Values = append(fieldWithValue.Values, val)
+
+		count++
+		if count >= constant.MaxNumb || count > vari.Total {
+			break
+		}
+	}
 }
 
 func convertTmFormat(field *model.DefField) { // to 2006-01-02 15:04:05

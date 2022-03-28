@@ -56,6 +56,7 @@ var (
 
 	FieldTypeList      = "list"
 	FieldTypeTimestamp = "timestamp"
+	FieldTypeUlid      = "ulid"
 	FieldTypeArticle   = "article"
 
 	LeftBrackets  rune = '('

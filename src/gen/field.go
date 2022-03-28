@@ -22,6 +22,8 @@ func CreateField(field *model.DefField) model.FieldWithValues {
 		CreateListField(field, &fieldWithValue)
 	} else if field.Type == constant.FieldTypeTimestamp {
 		CreateTimestampField(field, &fieldWithValue)
+	} else if field.Type == constant.FieldTypeUlid {
+		CreateUlidField(field, &fieldWithValue)
 	} else if field.Type == constant.FieldTypeArticle {
 		CreateArticleField(field, &fieldWithValue)
 	}

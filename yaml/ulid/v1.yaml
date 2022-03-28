@@ -1,0 +1,12 @@
+title: ULID
+desc: 通用唯一词典分类标识符。
+author: wwccss
+version: 1.0
+
+field: ulid
+instances:
+  - instance: ulid
+    note: 标准26位长度，按字母升序排序。
+    fields:
+     - field: part1
+       type: ulid

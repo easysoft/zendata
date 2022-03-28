@@ -1,0 +1,13 @@
+title: UUID
+desc: 通用唯一识别码。
+author: wwccss
+version: 1.0
+
+field: uuid
+instances:
+  - instance: by_format
+    note: 以-为分隔符的随机UUID
+    fields:
+    - field: part1
+      range: 1-9
+      format: "uuid(-)"
