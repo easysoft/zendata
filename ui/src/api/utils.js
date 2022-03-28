@@ -42,7 +42,7 @@ export function checkDirIsData (rule, value, callback){
 export function checkDirIsUsers (rule, value, callback){
   console.log('checkDirIsUsers', value)
 
-  if (value.indexOf('users/') != 0) {
+  if (value.indexOf('users/') != 0 && value.indexOf('users\\') != 0) {
     callback(i18nRender('valid.folder.users'))
   }
 

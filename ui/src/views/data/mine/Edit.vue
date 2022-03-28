@@ -68,7 +68,7 @@ export default {
           { validator: checkDirIsUsers, trigger: 'change' },
         ],
       },
-      model: { folder: 'users/', type: 'text' },
+      model: {},
       dirs: [],
       workDir: '',
     };
@@ -83,18 +83,11 @@ export default {
   },
   methods: {
     loadData() {
-      if (this.id === null) {
-        return;
-      }
-      if (this.id) {
-        getDef(this.id).then(json => {
-          this.model = json.data
-          this.dirs = json.res
-          this.workDir = json.workDir
-        })
-      } else {
-        this.reset();
-      }
+      getDef(this.id).then(json => {
+        this.model = json.data
+        this.dirs = json.res
+        this.workDir = json.workDir
+      })
     },
     save() {
       this.$refs.editForm.validate(valid => {
@@ -114,8 +107,7 @@ export default {
       })
     },
     reset () {
-      this.model = { folder: 'users/', type: 'text' };
-      this.$refs.editForm.resetFields()
+      this.loadData()
     },
   }
 }

@@ -34,7 +34,12 @@ func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total
 }
 
 func (s *DefService) Get(id int) (def model.ZdDef, dirs []model.Dir) {
-	def, _ = s.DefRepo.Get(uint(id))
+	if id > 0 {
+		def, _ = s.DefRepo.Get(uint(id))
+	} else {
+		def.Folder = "users" + constant.PthSep
+		def.Type = "text"
+	}
 
 	serverUtils.GetDirs(constant.ResDirUsers, &dirs)
 

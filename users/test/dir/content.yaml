@@ -1,6 +1,6 @@
 title: test
 desc: 描述
-version: 1.0
 fields:
-  - field: f1
-    range: 1-9
+- field: f1
+  range: 1-9
+content: ""
