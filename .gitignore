@@ -1,5 +1,6 @@
 /log/
 /.idea/
+/.vscode/
 /build/
 /tmp/cache/.data.db-shm
 /tmp/cache/.data.db-wal

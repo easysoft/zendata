@@ -108,6 +108,15 @@ type FieldSimple struct {
 	LoopIndex          int  `yaml:"-"`
 	IsRand             bool `yaml:"-"`
 	ReferToAnotherYaml bool `yaml:"-"`
+
+	PrefixRange  *Range `yaml:"-"`
+	PostfixRange *Range `yaml:"-"`
+}
+
+// add by Leo [2022/04/27]
+type Range struct {
+	Values []interface{}
+	IsRand bool
 }
 
 type FieldWithValues struct {

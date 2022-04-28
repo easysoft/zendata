@@ -3,6 +3,11 @@ package gen
 import (
 	"errors"
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/easysoft/zendata/src/gen/helper"
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
@@ -14,10 +19,6 @@ import (
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
 	"github.com/mattn/go-runewidth"
-	"regexp"
-	"strconv"
-	"strings"
-	"time"
 )
 
 func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
@@ -135,6 +136,9 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 }
 
 func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []string) {
+	field.PrefixRange = CreateFieldFixValuesFromList(field.Prefix, field)
+	field.PostfixRange = CreateFieldFixValuesFromList(field.Postfix, field)
+
 	if len(field.Fields) > 0 { // has sub fields
 		fieldNameToValuesMap := map[string][]string{} // refer field name to values
 		fieldMap := map[string]model.DefField{}
@@ -248,30 +252,41 @@ func GenerateValuesForField(field *model.DefField) []string {
 	computerLoop(field)
 	indexOfRow := 0
 	count := 0
+
+	uniqueTotal := len(fieldWithValues.Values)
+
+	if l := len(field.PostfixRange.Values); l > 0 {
+		uniqueTotal *= l
+	}
+	if l := len(field.PrefixRange.Values); l > 0 {
+		uniqueTotal *= l
+	}
+
 	for {
 		// 2. random replacement
 		isRandomAndLoopEnd := !vari.ResLoading && //  ignore rand in resource
 			!(*field).ReferToAnotherYaml &&
 			(*field).IsRand && (*field).LoopIndex > (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
-		if count >= vari.Total || count >= len(fieldWithValues.Values) || isRandomAndLoopEnd {
+		if count >= vari.Total || count >= uniqueTotal || isRandomAndLoopEnd {
 			for _, v := range fieldWithValues.Values {
 				str := fmt.Sprintf("%v", v)
-				str = addFix(str, field, true)
+				str = addFix(str, field, count, true)
 				values = append(values, str)
 			}
 			break
 		}
 
 		// 处理格式、前后缀、loop等
-		val := loopFieldValWithFix(field, fieldWithValues, &indexOfRow, true)
+		val := loopFieldValWithFix(field, fieldWithValues, &indexOfRow, count, true)
 		values = append(values, val)
 
 		count++
 
-		if count >= vari.Total || count >= len(fieldWithValues.Values) {
+		if count >= vari.Total || count >= uniqueTotal {
 			break
 		}
+
 		(*field).LoopIndex = (*field).LoopIndex + 1
 		if (*field).LoopIndex > (*field).LoopEnd {
 			(*field).LoopIndex = (*field).LoopStart
@@ -349,7 +364,7 @@ func loopFieldValues(field *model.DefField, oldValues []string, total int, withF
 	count := 0
 	for {
 		// 处理格式、前后缀、loop等
-		str := loopFieldValWithFix(field, fieldValue, &indexOfRow, withFix)
+		str := loopFieldValWithFix(field, fieldValue, &indexOfRow, count, withFix)
 		values = append(values, str)
 
 		count++
@@ -369,7 +384,7 @@ func loopFieldValues(field *model.DefField, oldValues []string, total int, withF
 }
 
 func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
-	indexOfRow *int, withFix bool) (loopStr string) {
+	indexOfRow *int, count int, withFix bool) (loopStr string) {
 
 	for j := 0; j < (*field).LoopIndex; j++ {
 		if loopStr != "" {
@@ -385,14 +400,14 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 		*indexOfRow++
 	}
 
-	loopStr = addFix(loopStr, field, withFix)
+	loopStr = addFix(loopStr, field, count, withFix)
 
 	return
 }
 
-func addFix(str string, field *model.DefField, withFix bool) (ret string) {
-	prefix := field.Prefix
-	postfix := field.Postfix
+func addFix(str string, field *model.DefField, count int, withFix bool) (ret string) {
+	prefix := GetStrValueFromRange(field.PrefixRange, count)
+	postfix := GetStrValueFromRange(field.PostfixRange, count)
 	divider := field.Divider
 
 	if field.Length > runewidth.StringWidth(str) {
@@ -407,6 +422,62 @@ func addFix(str string, field *model.DefField, withFix bool) (ret string) {
 
 	ret = str
 	return
+}
+
+func GetStrValueFromRange(rang *model.Range, index int) string {
+	if len(rang.Values) == 0 {
+		return ""
+	}
+
+	idx := index % len(rang.Values)
+	x := rang.Values[idx]
+	return convPrefixVal2Str(x, "")
+}
+
+func convPrefixVal2Str(val interface{}, format string) string {
+	str := "n/a"
+	success := false
+
+	switch val.(type) {
+	case int64:
+		if format != "" {
+			str, success = stringUtils.FormatStr(format, val.(int64), 0)
+		}
+		if !success {
+			str = strconv.FormatInt(val.(int64), 10)
+		}
+	case float64:
+		precision := 0
+		if format != "" {
+			str, success = stringUtils.FormatStr(format, val.(float64), precision)
+		}
+		if !success {
+			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
+		}
+	case byte:
+		str = string(val.(byte))
+		if format != "" {
+			str, success = stringUtils.FormatStr(format, str, 0)
+		}
+		if !success {
+			str = string(val.(byte))
+		}
+	case string:
+		str = val.(string)
+
+		match, _ := regexp.MatchString("%[0-9]*d", format)
+		if match {
+			valInt, err := strconv.Atoi(str)
+			if err == nil {
+				str, success = stringUtils.FormatStr(format, valInt, 0)
+			}
+		} else {
+			str, success = stringUtils.FormatStr(format, str, 0)
+		}
+	default:
+	}
+
+	return str
 }
 
 func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {

@@ -1,14 +1,15 @@
 package gen
 
 import (
+	"math"
+	"strconv"
+	"strings"
+
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"math"
-	"strconv"
-	"strings"
 )
 
 func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
@@ -82,6 +83,52 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 	if len(fieldValue.Values) == 0 {
 		fieldValue.Values = append(fieldValue.Values, "N/A")
 	}
+}
+
+func CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *model.Range) {
+	rang = &model.Range{}
+
+	if strRang == "" {
+		return
+	}
+
+	rangeSections := ParseRangeProperty(strRang) // parse 1
+
+	index := 0
+	for _, rangeSection := range rangeSections {
+		if index >= constant.MaxNumb {
+			break
+		}
+		if rangeSection == "" {
+			continue
+		}
+
+		descStr, stepStr, count, countTag := ParseRangeSection(rangeSection) // parse 2
+		if strings.ToLower(stepStr) == "r" {
+			rang.IsRand = true
+		}
+
+		typ, desc := ParseRangeSectionDesc(descStr) // parse 3
+
+		items := make([]interface{}, 0)
+		if typ == "literal" {
+			items = CreateValuesFromLiteral(field, desc, stepStr, count, countTag)
+		} else if typ == "interval" {
+			items = CreateValuesFromInterval(field, desc, stepStr, count, countTag)
+		} else if typ == "yaml" { // load from a yaml
+			items = CreateValuesFromYaml(field, desc, stepStr, count, countTag)
+			field.ReferToAnotherYaml = true
+		}
+
+		rang.Values = append(rang.Values, items...)
+		index = index + len(items)
+	}
+
+	if len(rang.Values) == 0 {
+		rang.Values = append(rang.Values, "N/A")
+	}
+
+	return
 }
 
 func CheckRangeType(startStr string, endStr string, stepStr string) (dataType string, step interface{}, precision int,
