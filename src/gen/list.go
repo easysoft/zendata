@@ -137,105 +137,78 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 
 	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
 
-	int1, errInt1 := strconv.ParseInt(startStr, 0, 64)
-	int2, errInt2 := strconv.ParseInt(endStr, 0, 64)
-	var errInt3 error
-	if stepStr != "" && stepStr != "r" {
-		_, errInt3 = strconv.ParseInt(stepStr, 0, 64)
-	}
-	if errInt1 == nil && errInt2 == nil && errInt3 == nil { // is int
-		if stepStr != "" && stepStr != "r" {
-			stepInt, errInt3 := strconv.Atoi(stepStr)
-			if errInt3 == nil {
-				step = stepInt
+	if start, end, stepi, ok := checkRangeTypeIsInt(startStr, endStr, stepStr); ok { // is int
+		if stepStr == "r" {
+			rand = true
+		}
+
+		count = (int)(start-end) / int(stepi)
+		if count < 0 {
+			count = count * -1
+		}
+
+		dataType = "int"
+		step = int(stepi)
+		return
+	} else if start, end, stepf, ok := checkRangeTypeIsFloat(startStr, endStr, stepStr); ok { // is float
+		if stepStr == "r" {
+			rand = true
+		}
+
+		step = stepf
+
+		precision1, step1 := GetPrecision(start, step)
+		precision2, step2 := GetPrecision(end, step)
+		if precision1 < precision2 {
+			precision = precision2
+			step = step2
+		} else {
+			precision = precision1
+			step = step1
+		}
+
+		if (start > end && stepf > 0) || (start < end && stepf < 0) {
+			step = -1 * stepf
+		}
+
+		dataType = "float"
+		count = int(math.Floor(math.Abs(start-end)/stepf + 0.5))
+		return
+
+	} else if len(startStr) == 1 && len(endStr) == 1 { // is char
+		if stepStr != "r" {
+			stepChar, errChar3 := strconv.Atoi(stepStr)
+			if errChar3 == nil {
+				step = stepChar
 			}
 		} else if stepStr == "r" {
 			rand = true
 		}
 
-		if (int1 > int2 && step.(int) > 0) || (int1 < int2 && step.(int) < 0) {
+		if (strings.Compare(startStr, endStr) > 0 && step.(int) > 0) ||
+			(strings.Compare(startStr, endStr) < 0 && step.(int) < 0) {
 			step = -1 * step.(int)
 		}
 
-		dataType = "int"
-		count = (int)(int1-int2) / step.(int)
+		dataType = "char"
+
+		startChar := startStr[0]
+		endChar := endStr[0]
+
+		gap := 0
+		if endChar > startChar { // 负数转uint单独处理
+			gap = int(endChar - startChar)
+		} else {
+			gap = int(startChar - endChar)
+		}
+		count = gap / step.(int)
 		if count < 0 {
 			count = count * -1
 		}
 		return
-
-	} else {
-		float1, errFloat1 := strconv.ParseFloat(startStr, 64)
-		float2, errFloat2 := strconv.ParseFloat(endStr, 64)
-		var errFloat3 error
-		if stepStr != "" && stepStr != "r" {
-			_, errFloat3 = strconv.ParseFloat(stepStr, 64)
-		}
-		if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
-			if stepStr != "" && stepStr != "r" {
-				stepFloat, errFloat3 := strconv.ParseFloat(stepStr, 64)
-				if errFloat3 == nil {
-					step = stepFloat
-				}
-			} else if stepStr == "r" {
-				rand = true
-			}
-
-			precision1, step1 := GetPrecision(float1, step)
-			precision2, step2 := GetPrecision(float2, step)
-			if precision1 < precision2 {
-				precision = precision2
-				step = step2
-			} else {
-				precision = precision1
-				step = step1
-			}
-
-			if (float1 > float2 && step.(float64) > 0) || (float1 < float2 && step.(float64) < 0) {
-				step = -1 * step.(float64)
-			}
-
-			dataType = "float"
-			count = int(math.Floor((float1-float2)/step.(float64) + 0/5))
-			if count < 0 {
-				count = count * -1
-			}
-			return
-
-		} else if len(startStr) == 1 && len(endStr) == 1 { // is char
-			if stepStr != "r" {
-				stepChar, errChar3 := strconv.Atoi(stepStr)
-				if errChar3 == nil {
-					step = stepChar
-				}
-			} else if stepStr == "r" {
-				rand = true
-			}
-
-			if (strings.Compare(startStr, endStr) > 0 && step.(int) > 0) ||
-				(strings.Compare(startStr, endStr) < 0 && step.(int) < 0) {
-				step = -1 * step.(int)
-			}
-
-			dataType = "char"
-
-			startChar := startStr[0]
-			endChar := endStr[0]
-
-			gap := 0
-			if endChar > startChar { // 负数转uint单独处理
-				gap = int(endChar - startChar)
-			} else {
-				gap = int(startChar - endChar)
-			}
-			count = gap / step.(int)
-			if count < 0 {
-				count = count * -1
-			}
-			return
-		}
 	}
 
+	// else is string
 	dataType = "string"
 	step = 1
 	return
@@ -435,4 +408,56 @@ func appendArrItems(items *[]interface{}, arr []string, total int, isRand bool) 
 	}
 
 	return total
+}
+
+func checkRangeTypeIsInt(startStr string, endStr string, stepStr string) (
+	start int64, end int64, step int64, ok bool) {
+	step = 1
+
+	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
+
+	start, errInt1 := strconv.ParseInt(startStr, 0, 64)
+	end, errInt2 := strconv.ParseInt(endStr, 0, 64)
+	var errInt3 error
+
+	if stepStr != "" && stepStr != "r" {
+		step, errInt3 = strconv.ParseInt(stepStr, 0, 64)
+	}
+
+	if errInt1 == nil && errInt2 == nil && errInt3 == nil { // is int
+		if (start > end && step > 0) || (start < end && step < 0) {
+			step = -1 * step
+		}
+
+		ok = true
+		return
+
+	}
+
+	return
+}
+
+func checkRangeTypeIsFloat(startStr string, endStr string, stepStr string) (
+	start float64, end float64, step float64, ok bool) {
+	step = 1.0
+	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
+
+	start, errFloat1 := strconv.ParseFloat(startStr, 64)
+	end, errFloat2 := strconv.ParseFloat(endStr, 64)
+	var errFloat3 error
+
+	if stepStr != "" && stepStr != "r" {
+		step, errFloat3 = strconv.ParseFloat(stepStr, 64)
+	}
+
+	if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
+		if (start > end && step > 0) || (start < end && step < 0) {
+			step = -1 * step
+		}
+
+		ok = true
+		return
+	}
+
+	return
 }
