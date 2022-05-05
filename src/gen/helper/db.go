@@ -3,15 +3,17 @@ package helper
 import (
 	"database/sql"
 	"fmt"
+	"regexp"
+	"strings"
+
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mssql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"regexp"
-	"strings"
 )
 
 var (
@@ -130,34 +132,33 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 }
 
 func parserDsnAndConnByGorm(dsn string) (db *gorm.DB, err error) {
-	var (
-		driver, user, password, host, port, dbName, code string
-	)
-
-	// mysql://root:1234@localhost:3306/dbname#utf8
-	reg := regexp.MustCompile(`([a-z,A-Z]+)://(.+):(.*)@(.+):(\d+)/(.+)#(.+)`)
-	arr := reg.FindAllStringSubmatch(dsn, -1)
-
-	if len(arr) == 0 {
-		return
-	}
-
-	sections := arr[0]
-
-	driver = strings.ToLower(sections[1])
-	user = sections[2]
-	password = sections[3]
-	host = sections[4]
-	port = sections[5]
-	dbName = sections[6]
-	code = sections[7]
-
-	if driver == "mysql" {
-		str := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=%s&parseTime=True&loc=Local", user, password, host, port, dbName, code)
-		db, err = gorm.Open(driver, str)
+	if vari.DBDsnParsing.Driver == "mysql" {
+		str := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
+			vari.DBDsnParsing.User,
+			vari.DBDsnParsing.Password,
+			vari.DBDsnParsing.Host,
+			vari.DBDsnParsing.Port,
+			vari.DBDsnParsing.DbName,
+			vari.DBDsnParsing.Code)
+		db, err = gorm.Open(vari.DBDsnParsing.Driver, str)
 		if err != nil { // make sure database is accessible
 			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", dbName, err.Error()))
+				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
+		}
+	} else if vari.DBDsnParsing.Driver == "sqlserver" {
+		//str := "sqlserver://sa:12345678Abc@192.168.198.128:1433?database=TestDB"
+		// sqlserver 忽略 code （字符编码），该编码暂无发现通过dsn设置，而且由数据库端设置
+		str := fmt.Sprintf("%s://%s:%s@%s:%s?database=%s",
+			vari.DBDsnParsing.Driver,
+			vari.DBDsnParsing.User,
+			vari.DBDsnParsing.Password,
+			vari.DBDsnParsing.Host,
+			vari.DBDsnParsing.Port,
+			vari.DBDsnParsing.DbName)
+		db, err = gorm.Open("mssql", str)
+		if err != nil { // make sure database is accessible
+			logUtils.PrintErrMsg(
+				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
 		}
 	}
 

@@ -3,14 +3,15 @@ package gen
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
+	"strings"
+
 	"github.com/easysoft/zendata/src/gen/helper"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/mattn/go-runewidth"
-	"regexp"
-	"strings"
 )
 
 func Print(rows [][]string, format string, table string, colIsNumArr []bool,
@@ -111,7 +112,10 @@ func getInsertSqlHeader(fields []string, table string) string {
 	for _, f := range fields {
 		if vari.Server == "mysql" {
 			f = "`" + f + "`"
+		} else if vari.Server == "sqlserver" {
+			f = "[" + f + "]"
 		}
+
 		fieldNames = append(fieldNames, f)
 	}
 	ret := fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", "))
