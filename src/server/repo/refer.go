@@ -2,7 +2,7 @@ package serverRepo
 
 import (
 	"github.com/easysoft/zendata/src/model"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type ReferRepo struct {

@@ -2,6 +2,12 @@ package gen
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/src/gen/helper"
 	"github.com/easysoft/zendata/src/model"
@@ -11,12 +17,7 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
-	"github.com/jinzhu/gorm"
-	"log"
-	"os"
-	"strconv"
-	"strings"
-	"time"
+	"gorm.io/gorm"
 )
 
 func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField, total int) (values map[string][]string) {

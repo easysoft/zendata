@@ -11,9 +11,9 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mssql"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlserver"
+	"gorm.io/gorm"
 )
 
 var (
@@ -30,7 +30,6 @@ func ExecSqlInUserDB(lines []interface{}) (count int) {
 
 	//typ, user, password, host, port, db, code := parserDsn(vari.DBDsn)
 	db, _ := parserDsnAndConnByGorm(vari.DBDsn)
-	defer db.Close()
 
 	if vari.DBClear && vari.Table != "" {
 		deleteSql := fmt.Sprintf("delete from %s where 1=1", vari.Table)
@@ -133,14 +132,14 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 
 func parserDsnAndConnByGorm(dsn string) (db *gorm.DB, err error) {
 	if vari.DBDsnParsing.Driver == "mysql" {
-		str := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
+		dsn := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
 			vari.DBDsnParsing.User,
 			vari.DBDsnParsing.Password,
 			vari.DBDsnParsing.Host,
 			vari.DBDsnParsing.Port,
 			vari.DBDsnParsing.DbName,
 			vari.DBDsnParsing.Code)
-		db, err = gorm.Open(vari.DBDsnParsing.Driver, str)
+		db, err = gorm.Open(mysql.Open(dsn))
 		if err != nil { // make sure database is accessible
 			logUtils.PrintErrMsg(
 				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
@@ -148,14 +147,14 @@ func parserDsnAndConnByGorm(dsn string) (db *gorm.DB, err error) {
 	} else if vari.DBDsnParsing.Driver == "sqlserver" {
 		//str := "sqlserver://sa:12345678Abc@192.168.198.128:1433?database=TestDB"
 		// sqlserver 忽略 code （字符编码），该编码暂无发现通过dsn设置，而且由数据库端设置
-		str := fmt.Sprintf("%s://%s:%s@%s:%s?database=%s",
+		dsn := fmt.Sprintf("%s://%s:%s@%s:%s?database=%s",
 			vari.DBDsnParsing.Driver,
 			vari.DBDsnParsing.User,
 			vari.DBDsnParsing.Password,
 			vari.DBDsnParsing.Host,
 			vari.DBDsnParsing.Port,
 			vari.DBDsnParsing.DbName)
-		db, err = gorm.Open("mssql", str)
+		db, err = gorm.Open(sqlserver.Open(dsn))
 		if err != nil { // make sure database is accessible
 			logUtils.PrintErrMsg(
 				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))

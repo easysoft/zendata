@@ -1,12 +1,13 @@
 package serverRepo
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"github.com/jinzhu/gorm"
-	"strconv"
-	"strings"
+	"gorm.io/gorm"
 )
 
 type SectionRepo struct {

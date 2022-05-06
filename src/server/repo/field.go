@@ -2,8 +2,9 @@ package serverRepo
 
 import (
 	"fmt"
+
 	"github.com/easysoft/zendata/src/model"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type FieldRepo struct {
@@ -151,7 +152,7 @@ func (r *FieldRepo) AddOrderForNextCases(srcID uint, targetOrder int, targetPare
 }
 
 func (r *FieldRepo) UpdateOrdAndParent(field model.ZdField) (err error) {
-	err = r.DB.Model(&field).UpdateColumn(model.ZdField{Ord: field.Ord, ParentID: field.ParentID}).Error
+	err = r.DB.Model(&field).UpdateColumns(model.ZdField{Ord: field.Ord, ParentID: field.ParentID}).Error
 
 	return
 }

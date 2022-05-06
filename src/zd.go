@@ -153,7 +153,6 @@ func main() {
 
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
-	defer vari.DB.Close()
 
 	switch os.Args[1] {
 	default:

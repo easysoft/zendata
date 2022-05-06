@@ -3,7 +3,7 @@ package vari
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 var (

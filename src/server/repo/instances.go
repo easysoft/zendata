@@ -3,7 +3,7 @@ package serverRepo
 import (
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type InstancesRepo struct {
@@ -26,8 +26,10 @@ func (r *InstancesRepo) List(keywords string, page int) (models []*model.ZdInsta
 
 	err = query.Find(&models).Error
 
-	err = r.DB.Model(&model.ZdInstances{}).Count(&total).Error
+	var total64 int64
+	err = r.DB.Model(&model.ZdInstances{}).Count(&total64).Error
 
+	total = int(total64)
 	return
 }
 

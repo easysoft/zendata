@@ -1,15 +1,16 @@
 package serverService
 
 import (
+	"strings"
+
 	"github.com/easysoft/zendata/src/model"
-	"github.com/easysoft/zendata/src/server/repo"
+	serverRepo "github.com/easysoft/zendata/src/server/repo"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"github.com/jinzhu/gorm"
-	"strings"
+	"gorm.io/gorm"
 )
 
 type ExcelService struct {

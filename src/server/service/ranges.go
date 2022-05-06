@@ -1,19 +1,20 @@
 package serverService
 
 import (
+	"io/ioutil"
+	"strings"
+
 	"github.com/easysoft/zendata/src/gen"
 	"github.com/easysoft/zendata/src/model"
-	"github.com/easysoft/zendata/src/server/repo"
+	serverRepo "github.com/easysoft/zendata/src/server/repo"
 	serverUtils "github.com/easysoft/zendata/src/server/utils"
 	"github.com/easysoft/zendata/src/service"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"github.com/jinzhu/gorm"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
-	"strings"
+	"gorm.io/gorm"
 )
 
 type RangesService struct {
