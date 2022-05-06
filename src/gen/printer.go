@@ -11,7 +11,6 @@ import (
 	logUtils "github.com/easysoft/zendata/src/utils/log"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
 	"github.com/easysoft/zendata/src/utils/vari"
-	"github.com/mattn/go-runewidth"
 )
 
 func Print(rows [][]string, format string, table string, colIsNumArr []bool,
@@ -24,6 +23,7 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 		if vari.DBDsn != "" {
 			lines = append(lines, sqlHeader)
 		} else {
+			sqlHeader = "INSERT INTO " + sqlHeader
 			logUtils.PrintLine(sqlHeader)
 		}
 	} else if format == constant.FormatJson {
@@ -42,9 +42,9 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 			// 3. random replacement
 			col = replacePlaceholder(col)
 			field := vari.TopFieldMap[fields[j]]
-			if field.Length > runewidth.StringWidth(col) {
-				//col = stringUtils.AddPad(col, field)
-			}
+			//if field.Length > runewidth.StringWidth(col) {
+			//col = stringUtils.AddPad(col, field)
+			//}
 
 			if j > 0 && vari.Human { // use a tab
 				lineForText = strings.TrimRight(lineForText, "\t")
@@ -72,11 +72,12 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 			logUtils.PrintLine(lineForText)
 
 		} else if format == constant.FormatSql {
-			sql := genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows))
 
 			if vari.DBDsn != "" { // add to return array for exec sql
+				sql := strings.Join(valuesForSql, ", ")
 				lines = append(lines, sql)
 			} else {
+				sql := genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows))
 				logUtils.PrintLine(sql)
 			}
 
@@ -114,11 +115,23 @@ func getInsertSqlHeader(fields []string, table string) string {
 			f = "`" + f + "`"
 		} else if vari.Server == "sqlserver" {
 			f = "[" + f + "]"
+		} else if vari.Server == "oracle" {
+			f = `"` + f + `"`
 		}
 
 		fieldNames = append(fieldNames, f)
 	}
-	ret := fmt.Sprintf("INSERT INTO %s(%s)", table, strings.Join(fieldNames, ", "))
+
+	var ret string
+	switch vari.Server {
+	case "mysql":
+		ret = fmt.Sprintf("`%s` (%s)", table, strings.Join(fieldNames, ", "))
+	case "sqlserver":
+		ret = fmt.Sprintf("[%s] (%s)", table, strings.Join(fieldNames, ", "))
+	case "oracle":
+		ret = fmt.Sprintf(`"%s" (%s)`, table, strings.Join(fieldNames, ", "))
+	}
+
 	return ret
 }
 

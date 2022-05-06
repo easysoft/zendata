@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/dzwvip/oracle"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	i118Utils "github.com/easysoft/zendata/src/utils/i118"
 	logUtils "github.com/easysoft/zendata/src/utils/log"
@@ -22,23 +23,49 @@ var (
 )
 
 func ExecSqlInUserDB(lines []interface{}) (count int) {
-	sql := ""
-
-	for _, line := range lines {
-		sql += line.(string) + " "
-	}
 
 	//typ, user, password, host, port, db, code := parserDsn(vari.DBDsn)
 	db, _ := parserDsnAndConnByGorm(vari.DBDsn)
 
 	if vari.DBClear && vari.Table != "" {
-		deleteSql := fmt.Sprintf("delete from %s where 1=1", vari.Table)
+		var deleteSql string
+		switch vari.DBDsnParsing.Driver {
+		case "mysql":
+			deleteSql = fmt.Sprintf("delete from `%s` where 1=1", vari.Table)
+		case "sqlserver":
+			deleteSql = fmt.Sprintf("delete from [%s] where 1=1", vari.Table)
+		case "oracle":
+			deleteSql = fmt.Sprintf(`delete from "%s" where 1=1`, vari.Table)
+		}
+
 		err := db.Exec(deleteSql).Error
 		if err != nil {
 			logUtils.PrintErrMsg(err.Error())
 		}
 	}
-	err := db.Exec(sql).Error
+
+	var insertSql = ""
+	switch vari.DBDsnParsing.Driver {
+	case "mysql", "sqlserver":
+		insertSql = "INSERT INTO " + lines[0].(string) + " VALUES (" + lines[1].(string) + ")"
+
+		for _, line := range lines[2:] {
+			insertSql += ", (" + line.(string) + ")"
+		}
+		insertSql += ";"
+
+	case "oracle":
+		insertSql = "INSERT ALL "
+		headerStr := " INTO " + lines[0].(string) + " VALUES ( "
+
+		for _, line := range lines[1:] {
+			insertSql += headerStr + line.(string) + ") "
+		}
+
+		insertSql += " SELECT 1 FROM DUAL"
+	}
+
+	err := db.Exec(insertSql).Error
 	if err != nil {
 		logUtils.PrintErrMsg(err.Error())
 	}
@@ -119,7 +146,7 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 
 	if driver == "mysql" {
 		str := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", user, password, host, port, db, code)
-		conn, err = sql.Open(driver, str)
+		conn, _ = sql.Open(driver, str)
 		err = conn.Ping() // make sure database is accessible
 		if err != nil {
 			logUtils.PrintErrMsg(
@@ -155,6 +182,20 @@ func parserDsnAndConnByGorm(dsn string) (db *gorm.DB, err error) {
 			vari.DBDsnParsing.Port,
 			vari.DBDsnParsing.DbName)
 		db, err = gorm.Open(sqlserver.Open(dsn))
+		if err != nil { // make sure database is accessible
+			logUtils.PrintErrMsg(
+				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
+		}
+	} else if vari.DBDsnParsing.Driver == "oracle" {
+		// orcale 目前使用的gorm orcale适配驱动库不能应用于生产环境，
+		// 但作为简单的数据导入需求足以
+		dsn := fmt.Sprintf("%s/%s@%s:%s/%s",
+			vari.DBDsnParsing.User,
+			vari.DBDsnParsing.Password,
+			vari.DBDsnParsing.Host,
+			vari.DBDsnParsing.Port,
+			vari.DBDsnParsing.DbName)
+		db, err = gorm.Open(oracle.Open(dsn), &gorm.Config{})
 		if err != nil { // make sure database is accessible
 			logUtils.PrintErrMsg(
 				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
