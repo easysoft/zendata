@@ -3,6 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"os/signal"
+	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
+	"syscall"
+	"time"
+
 	"github.com/easysoft/zendata/res"
 	"github.com/easysoft/zendata/src/action"
 	"github.com/easysoft/zendata/src/gen"
@@ -21,15 +32,6 @@ import (
 	"github.com/easysoft/zendata/src/utils/vari"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/fatih/color"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"os/signal"
-	"path/filepath"
-	"strconv"
-	"strings"
-	"syscall"
-	"time"
 )
 
 var (
@@ -151,7 +153,6 @@ func main() {
 
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
-	defer vari.DB.Close()
 
 	switch os.Args[1] {
 	default:
@@ -256,6 +257,26 @@ func toGen(files []string) {
 		}
 		if vari.DBDsn != "" {
 			vari.Format = constant.FormatSql
+			// mysql://root:1234@localhost:3306/dbname#utf8
+			reg := regexp.MustCompile(`([a-z,A-Z]+)://(.+):(.*)@(.+):(\d+)/(.+)#(.+)`)
+			arr := reg.FindAllStringSubmatch(vari.DBDsn, -1)
+
+			if len(arr) == 0 && len(arr) < 8 {
+				logUtils.PrintErrMsg(i118Utils.I118Prt.Sprintf("dsn_param_parsing_error"))
+				return
+			}
+
+			sections := arr[0]
+
+			vari.DBDsnParsing.Driver = strings.ToLower(sections[1])
+			vari.DBDsnParsing.User = sections[2]
+			vari.DBDsnParsing.Password = sections[3]
+			vari.DBDsnParsing.Host = sections[4]
+			vari.DBDsnParsing.Port = sections[5]
+			vari.DBDsnParsing.DbName = sections[6]
+			vari.DBDsnParsing.Code = sections[7]
+
+			vari.Server = vari.DBDsnParsing.Driver
 		}
 
 		if vari.Format == constant.FormatSql && vari.Table == "" {

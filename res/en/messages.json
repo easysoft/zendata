@@ -243,6 +243,10 @@
     {
       "id": "protobuf_path",
       "translation": "ProtoBuf data write to file %s."
+    },
+    {
+      "id": "dsn_param_parsing_error",
+      "translation": "the -dsn parameter parsing error"
     }
   ]
 }

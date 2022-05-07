@@ -29,3 +29,4 @@
 /runtime/protobuf/go
 /runtime/protobuf/out/
 /users/common/
+*.exe

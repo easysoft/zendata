@@ -2,6 +2,13 @@ package configUtils
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"os/user"
+	"path/filepath"
+	"reflect"
+	"strings"
+
 	"github.com/easysoft/zendata/src/model"
 	commonUtils "github.com/easysoft/zendata/src/utils/common"
 	constant "github.com/easysoft/zendata/src/utils/const"
@@ -12,14 +19,8 @@ import (
 	stdinUtils "github.com/easysoft/zendata/src/utils/stdin"
 	"github.com/easysoft/zendata/src/utils/vari"
 	"github.com/fatih/color"
-	"github.com/jinzhu/gorm"
 	"gopkg.in/ini.v1"
-	"log"
-	"os"
-	"os/user"
-	"path/filepath"
-	"reflect"
-	"strings"
+	"gorm.io/gorm"
 )
 
 func InitConfig(root string) {

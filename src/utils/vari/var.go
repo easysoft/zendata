@@ -2,8 +2,8 @@ package vari
 
 import (
 	"github.com/easysoft/zendata/src/model"
-	"github.com/easysoft/zendata/src/utils/const"
-	"github.com/jinzhu/gorm"
+	constant "github.com/easysoft/zendata/src/utils/const"
+	"gorm.io/gorm"
 )
 
 var (
@@ -32,13 +32,14 @@ var (
 	Recursive bool
 	Format    = constant.FormatText
 
-	Out      string
-	Table    string
-	Type     string
-	Server   string // database type
-	DBDsn    string
-	DBClear  bool
-	ProtoCls string
+	Out          string
+	Table        string
+	Type         string
+	Server       string // database type
+	DBDsn        string
+	DBDsnParsing DBDsnData
+	DBClear      bool
+	ProtoCls     string
 
 	JsonResp string = "[]"
 	Ip       string
@@ -57,3 +58,14 @@ var (
 
 	AgentLogDir string
 )
+
+// parsing from  DBDsn [added by Leo [2022/5/5]]
+type DBDsnData struct {
+	Driver   string
+	User     string
+	Password string
+	Host     string
+	Port     string
+	DbName   string
+	Code     string
+}
