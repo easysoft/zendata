@@ -128,7 +128,7 @@ func main() {
 	flagSet.StringVar(&vari.Table, "table", "", "")
 	flagSet.StringVar(&vari.Server, "s", "mysql", "")
 	flagSet.StringVar(&vari.Server, "server", "mysql", "")
-	flagSet.StringVar(&vari.DBDsn, "dns", "", "")
+	flagSet.StringVar(&vari.DBDsn, "dsn", "", "")
 	flagSet.BoolVar(&vari.DBClear, "clear", false, "")
 
 	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
