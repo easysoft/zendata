@@ -90,11 +90,26 @@ func main() {
 		insertSqls = append(insertSqls, insert)
 	}
 
-	sql := fmt.Sprintf(insertTemplate, tableName, strings.Join(insertSqls, ","))
-	err = db.Exec(sql).Error
-	if err != nil {
-		fmt.Printf("insert data failed, err %s", err.Error())
-		return
+	for i := 0; i < 1000; i++ {
+		start := i * 10000
+		end := (i + 1) * 10000
+
+		if end > len(insertSqls) {
+			end = len(insertSqls)
+		}
+
+		arr := insertSqls[start:end]
+
+		sql := fmt.Sprintf(insertTemplate, tableName, strings.Join(arr, ","))
+		err = db.Exec(sql).Error
+		if err != nil {
+			fmt.Printf("insert data failed, err %s", err.Error())
+			return
+		}
+
+		if end >= len(insertSqls) {
+			break
+		}
 	}
 }
 
