@@ -7,9 +7,7 @@ import (
 	"strings"
 )
 
-func GetExcelTable() (records []map[string]interface{}) {
-	filePath := "data/address/cn.v1.xlsx"
-	sheetName := "china"
+func GetExcelTable(filePath, sheetName string) (records []map[string]interface{}) {
 
 	excel, err := excelize.OpenFile(filePath)
 	if err != nil {

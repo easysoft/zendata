@@ -6,19 +6,19 @@ import (
 )
 
 func main() {
-	filePath := "data/address/cn.v1.xlsx"
-	sheetName := "china"
+	filePath := "data/color/v1.xlsx"
+	sheetName := "color"
 
 	db := comm.GetDB()
 
 	records := comm.GetExcelTable(filePath, sheetName)
 
 	for _, record := range records {
-		po := model.DataCity{
-			Name:    record["city"].(string),
-			Code:    record["cityCode"].(string),
-			ZipCode: record["zipCode"].(string),
-			State:   record["state"].(string),
+		po := model.DataColor{
+			Chinese: record["chinese"].(string),
+			English: record["english"].(string),
+			Hex:     record["hex"].(string),
+			Rgb:     record["rgb"].(string),
 		}
 
 		db.Save(&po)
