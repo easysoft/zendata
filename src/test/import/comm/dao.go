@@ -6,6 +6,7 @@ import (
 	"github.com/fatih/color"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
 	"time"
 )
@@ -44,7 +45,7 @@ func GetDB() *gorm.DB {
 
 		&model.DataCity{},
 		&model.DataColor{},
-		&model.DataColor{},
+		&model.DataCountry{},
 		&model.DataChineseFamily{},
 		&model.DataChineseGiven{},
 		&model.DataEnglishFamily{},
@@ -68,7 +69,10 @@ func GormMySQL() *gorm.DB {
 		DontSupportRenameColumn:   true,  // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 		SkipInitializeWithVersion: false, // 根据版本自动配置
 	}
-	if db, err := gorm.Open(mysql.New(mysqlConfig)); err != nil {
+
+	if db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	}); err != nil {
 		return nil
 	} else {
 		sqlDB, _ := db.DB()

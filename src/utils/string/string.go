@@ -288,3 +288,9 @@ func ConvertYamlStringToMapFormat(bytes []byte) (ret string) {
 	//}
 	return
 }
+
+func ParseInt(str string) (ret int) {
+	ret, _ = strconv.Atoi(str)
+
+	return
+}

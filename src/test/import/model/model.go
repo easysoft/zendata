@@ -38,6 +38,7 @@ type BaseModel struct {
 type DataCountry struct {
 	BaseModel
 
+	ContinentId  int    `json:"continentId"`
 	Continent    string `json:"continent"`
 	AreaCode     string `json:"areaCode"`
 	EnglishShort string `json:"englishShort"`
