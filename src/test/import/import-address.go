@@ -7,20 +7,16 @@ import (
 )
 
 func main() {
-	tableName := model.DataCity{}.TableName()
+	filePath := "data/address/cn.v1.xlsx"
+	sheetName := "china"
+
 	db := comm.GetDB()
+	db.Exec(fmt.Sprintf(comm.TruncateTable, model.DataCity{}.TableName()))
+	db.AutoMigrate(
+		&model.DataCity{},
+	)
 
-	truncateTableSql := fmt.Sprintf(comm.TruncateTable, tableName)
-	db.Exec(truncateTableSql)
-
-	createTableSql := fmt.Sprintf(comm.CreateTableTempl, tableName)
-	err := db.Exec(createTableSql).Error
-	if err != nil {
-		fmt.Printf("create table %s failed, err %s", tableName, err.Error())
-		return
-	}
-
-	records := comm.GetExcelTable()
+	records := comm.GetExcelTable(filePath, sheetName)
 
 	for _, record := range records {
 		po := model.DataCity{

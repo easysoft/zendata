@@ -38,6 +38,7 @@ type BaseModel struct {
 type DataCountry struct {
 	BaseModel
 
+	ContinentId  int    `json:"continentId"`
 	Continent    string `json:"continent"`
 	AreaCode     string `json:"areaCode"`
 	EnglishShort string `json:"englishShort"`
@@ -81,7 +82,7 @@ type DataChineseFamily struct {
 
 	Name   string `json:"name"`
 	Pinyin string `json:"pinyin"`
-	Double string `json:"double"`
+	Double bool   `json:"double"`
 }
 
 func (DataChineseFamily) TableName() string {
