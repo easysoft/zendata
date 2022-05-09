@@ -42,14 +42,6 @@ func GetDB() *gorm.DB {
 	err := DB.AutoMigrate(
 		&model.DataCategory1{},
 		&model.DataCategory2{},
-
-		&model.DataCity{},
-		&model.DataColor{},
-		&model.DataCountry{},
-		&model.DataChineseFamily{},
-		&model.DataChineseGiven{},
-		&model.DataEnglishFamily{},
-		&model.DataEnglishFamily{},
 	)
 	if err != nil {
 		fmt.Printf(color.RedString("migrate models failed, error: %s.", err.Error()))

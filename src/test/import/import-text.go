@@ -23,9 +23,7 @@ func main() {
 
 	tableName = "biz_" + strings.TrimLeft(tableName, "biz_")
 	db := comm.GetDB()
-
-	truncateTableSql := fmt.Sprintf(comm.TruncateTable, tableName)
-	db.Exec(truncateTableSql)
+	db.Exec(fmt.Sprintf(comm.TruncateTable, tableName))
 
 	createTableSql := fmt.Sprintf(comm.CreateTableTempl, tableName)
 	err := db.Exec(createTableSql).Error

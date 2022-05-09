@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/src/test/import/comm"
 	"github.com/easysoft/zendata/src/test/import/model"
 	stringUtils "github.com/easysoft/zendata/src/utils/string"
@@ -11,6 +12,10 @@ func main() {
 	sheetName := "country"
 
 	db := comm.GetDB()
+	db.Exec(fmt.Sprintf(comm.TruncateTable, model.DataCountry{}.TableName()))
+	db.AutoMigrate(
+		&model.DataCountry{},
+	)
 
 	records := comm.GetExcelTable(filePath, sheetName)
 
