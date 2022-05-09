@@ -7,6 +7,6 @@ go run src/test/import/import-text.go -t data_five_elements -f /Users/aaron/work
 go run src/test/import/import-text.go -t data_occupation -f /Users/aaron/work/zentao/product/zd/行业数据/职业.txt -c 0
 go run src/test/import/import-text.go -t data_chinese_chronology -f /Users/aaron/work/zentao/product/zd/行业数据/朝代.txt -c 0
 go run src/test/import/import-text.go -t data_animal -f /Users/aaron/work/zentao/product/zd/行业数据/动物.txt -c 0
-go run src/test/import/import-text.go -t data_company_abbreviation -f /Users/aaron/work/zentao/product/zd/行业数据/公司简称（28W）.txt -c 0
 
+go run src/test/import/import-text.go -t data_company_abbreviation -f /Users/aaron/work/zentao/product/zd/行业数据/公司简称（28W）.txt -c 0
 # go run src/test/import/import-text.go -t data_company -f /Users/aaron/work/zentao/product/zd/行业数据/公司全名（480W）.txt -c 0

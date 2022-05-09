@@ -81,7 +81,11 @@ func main() {
 			continue
 		}
 
-		content := arr[colNum]
+		content := strings.TrimSpace(arr[colNum])
+		if content == "" {
+			continue
+		}
+
 		insert := fmt.Sprintf("('%s')", content)
 		insertSqls = append(insertSqls, insert)
 	}
