@@ -294,3 +294,8 @@ func ParseInt(str string) (ret int) {
 
 	return
 }
+func ParseBool(str string) (ret bool) {
+	ret, _ = strconv.ParseBool(str)
+
+	return
+}

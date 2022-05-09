@@ -82,7 +82,7 @@ type DataChineseFamily struct {
 
 	Name   string `json:"name"`
 	Pinyin string `json:"pinyin"`
-	Double string `json:"double"`
+	Double bool   `json:"double"`
 }
 
 func (DataChineseFamily) TableName() string {
