@@ -10,3 +10,29 @@ go run src/test/import/import-text.go -t data_animal -f /Users/aaron/work/zentao
 
 go run src/test/import/import-text.go -t data_company_abbreviation -f /Users/aaron/work/zentao/product/zd/行业数据/公司简称（28W）.txt -c 0
 go run src/test/import/import-text.go -t data_company -f /Users/aaron/work/zentao/product/zd/行业数据/公司全名（480W）.txt -c 0
+
+商业
+	行业
+	职业
+	公司
+	公司简称
+	汽车
+	汽车零件
+
+宇宙
+	颜色
+	动物
+	植物
+	水果
+	食物
+
+时空
+	行星
+	星座
+	属相
+	朝代
+	时令
+	天干
+	地支
+	五行
+	八卦
