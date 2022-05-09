@@ -1,7 +1,7 @@
 package comm
 
 const (
-	TruncateTable = `truncate table %s IF EXISTS;`
+	TruncateTable = `truncate table %s;`
 
 	CreateTableTempl = `CREATE TABLE IF NOT EXISTS %s (
 		id bigint auto_increment,
