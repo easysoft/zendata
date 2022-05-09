@@ -1,0 +1,12 @@
+go run src/test/import/import-text.go -t data_color -f /Users/aaron/work/zentao/product/zd/行业数据/颜色.txt -c 0
+go run src/test/import/import-text.go -t data_season -f /Users/aaron/work/zentao/product/zd/行业数据/时间-时令.txt -c 0
+go run src/test/import/import-text.go -t data_planet -f /Users/aaron/work/zentao/product/zd/行业数据/八大行星.txt -c 0
+go run src/test/import/import-text.go -t data_heavenly_stems -f /Users/aaron/work/zentao/product/zd/行业数据/天干.txt -c 0
+go run src/test/import/import-text.go -t data_earthly_branches -f /Users/aaron/work/zentao/product/zd/行业数据/地支.txt -c 0
+go run src/test/import/import-text.go -t data_five_elements -f /Users/aaron/work/zentao/product/zd/行业数据/五行.txt -c 0
+go run src/test/import/import-text.go -t data_occupation -f /Users/aaron/work/zentao/product/zd/行业数据/职业.txt -c 0
+go run src/test/import/import-text.go -t data_chinese_chronology -f /Users/aaron/work/zentao/product/zd/行业数据/朝代.txt -c 0
+go run src/test/import/import-text.go -t data_animal -f /Users/aaron/work/zentao/product/zd/行业数据/动物.txt -c 0
+go run src/test/import/import-text.go -t data_company_abbreviation -f /Users/aaron/work/zentao/product/zd/行业数据/公司简称（28W）.txt -c 0
+
+# go run src/test/import/import-text.go -t data_company -f /Users/aaron/work/zentao/product/zd/行业数据/公司全名（480W）.txt -c 0

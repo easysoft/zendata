@@ -18,6 +18,8 @@ const (
 	dbPasswd = "P2ssw0rd"
 	dbName   = "zendata"
 
+	truncateTable = `truncate table %s;`
+
 	createTableTempl = `CREATE TABLE IF NOT EXISTS %s (
 		id bigint auto_increment,
 		content varchar(1000) not null unique,
@@ -25,7 +27,7 @@ const (
 		primary key(id)
 	) engine=innodb default charset=utf8 auto_increment=1;`
 
-	deleteAllSql = "DELETE FROM %s WHERE 1=1;"
+	//deleteAllSql = "DELETE FROM %s WHERE 1=1;"
 
 	insertTemplate = "INSERT INTO %s (content) VALUES %s;"
 )
@@ -48,19 +50,26 @@ func main() {
 	tableName = "biz_" + strings.TrimLeft(tableName, "biz_")
 	db := GetDB()
 
-	createTableSql := fmt.Sprintf(createTableTempl, tableName)
-	err := db.Exec(createTableSql).Error
+	truncateTableSql := fmt.Sprintf(truncateTable, tableName)
+	err := db.Exec(truncateTableSql).Error
 	if err != nil {
 		fmt.Printf("create table %s failed, err %s", tableName, err.Error())
 		return
 	}
 
-	deleteDataSql := fmt.Sprintf(deleteAllSql, tableName)
-	err = db.Exec(deleteDataSql).Error
+	createTableSql := fmt.Sprintf(createTableTempl, tableName)
+	err = db.Exec(createTableSql).Error
 	if err != nil {
-		fmt.Printf("insert data failed, err %s", err.Error())
+		fmt.Printf("create table %s failed, err %s", tableName, err.Error())
 		return
 	}
+
+	//deleteDataSql := fmt.Sprintf(deleteAllSql, tableName)
+	//err = db.Exec(deleteDataSql).Error
+	//if err != nil {
+	//	fmt.Printf("insert data failed, err %s", err.Error())
+	//	return
+	//}
 
 	content := fileUtils.ReadFile(filePath)
 	insertSqls := make([]string, 0)
