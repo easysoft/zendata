@@ -291,7 +291,6 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 
 	sqlStr := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", colStr, from, where)
 	rows, err := vari.DB.Raw(sqlStr).Rows()
-	defer rows.Close()
 
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_exec_query", "", err.Error()))
@@ -300,6 +299,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 		return list, ""
 	}
 
+	defer rows.Close()
 	valMapArr := make([]map[string]string, 0)
 	columns, err := rows.Columns()
 	colNum := len(columns)
