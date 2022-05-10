@@ -54,10 +54,12 @@ func (DataCountry) TableName() string {
 type DataCity struct {
 	BaseModel
 
-	Name    string `json:"name"`
-	Code    string `json:"code"`
-	ZipCode string `json:"zipCode"`
-	State   string `json:"state"`
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	ZipCode     string `json:"zipCode"`
+	State       string `json:"state"`
+	StateShort  string `json:"stateShort"`
+	StateShort2 string `json:"stateShort2"`
 }
 
 func (DataCity) TableName() string {
