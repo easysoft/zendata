@@ -9,7 +9,7 @@ require (
 	github.com/Chain-Zhang/pinyin v0.1.3
 	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/andybalholm/brotli v1.0.1 // indirect
-	github.com/dzwvip/oracle v1.2.1 // indirect
+	github.com/dzwvip/oracle v1.2.1
 	github.com/elazarl/go-bindata-assetfs v1.0.1
 	github.com/emirpasic/gods v1.12.0
 	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect
@@ -46,5 +46,5 @@ require (
 	gorm.io/driver/sqlite v1.3.2
 	gorm.io/driver/sqlserver v1.3.2
 	gorm.io/gorm v1.23.5
-	gorm.io/plugin/dbresolver v1.2.0 // indirect
+	gorm.io/plugin/dbresolver v1.2.0
 )
