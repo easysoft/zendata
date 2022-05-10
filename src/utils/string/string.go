@@ -8,17 +8,18 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"net/url"
+	"regexp"
+	"strconv"
+	"strings"
+	"unicode"
+
 	"github.com/Chain-Zhang/pinyin"
 	"github.com/easysoft/zendata/src/model"
 	constant "github.com/easysoft/zendata/src/utils/const"
 	"github.com/mattn/go-runewidth"
 	uuid "github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
-	"net/url"
-	"regexp"
-	"strconv"
-	"strings"
-	"unicode"
 )
 
 func TrimAll(str string) string {
@@ -204,6 +205,50 @@ func ConvertForSql(str string) (ret string) {
 
 	return
 }
+
+func Escape(in string, shouldEscape []rune) (out string) {
+	out = ""
+	escapeChar := shouldEscape[0]
+
+	for _, v := range in {
+		for _, se := range shouldEscape {
+			if v == se {
+				out += string(escapeChar)
+				break
+			}
+		}
+
+		out += string(v)
+	}
+
+	return
+}
+
+func EscapeValueOfMysql(in string) string {
+	return Escape(in, []rune{'\\', '\'', '"'})
+}
+
+func EscapeValueOfSqlServer(in string) string {
+
+	return Escape(in, []rune{'\''})
+}
+
+func EscapeValueOfOracle(in string) string {
+
+	return Escape(in, []rune{'\''})
+}
+
+func EscapeColumnOfMysql(in string) string {
+
+	return Escape(in, []rune{'`'})
+}
+
+func EscapeColumnOfSqlServer(in string) string {
+	return Escape(in, []rune{']'})
+}
+
+// oracle limit
+//func EscapeColumnOfOracle(in string) string
 
 func GetPinyin(word string) string {
 	p, _ := pinyin.New(word).Split("").Mode(pinyin.WithoutTone).Convert()
