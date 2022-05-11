@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"strings"
+
 	"github.com/easysoft/zendata/src/test/import/comm"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	"strings"
 )
 
 var (
@@ -36,7 +37,7 @@ func main() {
 	insertSqlArr := make([]string, 0)
 
 	for _, line := range strings.Split(content, "\n") {
-		arr := strings.Split(strings.TrimSpace(line), " ")
+		arr := strings.Fields(strings.TrimSpace(line))
 
 		if colNum >= len(arr) {
 			continue
