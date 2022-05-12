@@ -2,9 +2,10 @@ package comm
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	fileUtils "github.com/easysoft/zendata/src/utils/file"
-	"strings"
 )
 
 func GetExcelTable(filePath, sheetName string) (records []map[string]interface{}) {
@@ -54,6 +55,48 @@ func GetExcelTable(filePath, sheetName string) (records []map[string]interface{}
 
 			records = append(records, record)
 		}
+	}
+
+	return
+}
+
+func GetExceTablelHeader(filePath string) []string {
+
+	excel, err := excelize.OpenFile(filePath)
+	if err != nil {
+		fmt.Printf("fail to read file %s, error: %s", filePath, err.Error())
+		return nil
+	}
+
+	sheet := excel.GetSheetList()[0]
+	rows, err := excel.GetRows(sheet)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	if len(rows) == 0 {
+		return nil
+	} else {
+		return rows[0]
+	}
+
+}
+
+func GetExcel1stSheet(filePath string) (sheetName string, rows [][]string) {
+
+	excel, err := excelize.OpenFile(filePath)
+	if err != nil {
+		fmt.Printf("fail to read file %s, error: %s", filePath, err.Error())
+		return
+	}
+
+	sheetName = excel.GetSheetList()[0]
+	rows, err = excel.GetRows(sheetName)
+
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	return

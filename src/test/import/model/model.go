@@ -162,3 +162,35 @@ type DataWordsConjunction struct {
 type DataWordsMeasure struct {
 	BaseModel
 }
+
+type DataWordTagGroup struct {
+	BaseModel
+	Name string         `gorm:"uniqueIndex" json:"name"`
+	Tags []*DataWordTag `gorm:"many2many:biz_data_word_tag_group_biz_data_word_tag" json:"tags"`
+}
+
+func (DataWordTagGroup) TableName() string {
+	return "biz_data_word_tag_group"
+}
+
+type DataWordTag struct {
+	BaseModel
+	Name  string      `gorm:"uniqueIndex" json:"name"`
+	Words []*DataWord `gorm:"many2many:biz_data_word_biz_data_word_tag" json:"words"`
+
+	Groups []*DataWordTagGroup `gorm:"many2many:biz_data_word_tag_group_biz_data_word_tag" json:"tags"`
+}
+
+func (DataWordTag) TableName() string {
+	return "biz_data_word_tag"
+}
+
+type DataWord struct {
+	BaseModel
+	Word string         `json:"word"`
+	Tags []*DataWordTag `gorm:"many2many:biz_data_word_biz_data_word_tag" json:"tags"`
+}
+
+func (DataWord) TableName() string {
+	return "biz_data_word"
+}
