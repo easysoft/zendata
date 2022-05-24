@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/test/import/comm"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	"github.com/easysoft/zendata/src/test/import/comm"
+	fileUtils "github.com/easysoft/zendata/src/utils/file"
 	"strings"
 )
 

@@ -95,4 +95,9 @@ var (
 
 	TablePrefix = "zd_"
 	PageSize    = 15
+
+	// database type  [added by leo 2022/05/10]
+	DBTypeMysql     = "mysql"
+	DBTypeSqlServer = "sqlserver"
+	DBTypeOracle    = "oracle"
 )

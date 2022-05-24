@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/test/import/comm"
-	"github.com/easysoft/zendata/internal/pkg/test/import/model"
+	"github.com/easysoft/zendata/src/test/import/comm"
+	"github.com/easysoft/zendata/src/test/import/model"
 )
 
 func main() {

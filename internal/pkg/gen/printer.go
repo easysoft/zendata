@@ -16,15 +16,14 @@ import (
 func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 	fields []string) (lines []interface{}) {
 
+	var sqlHeader string
+
 	if format == constant.FormatText {
 		printTextHeader(fields)
 	} else if format == constant.FormatSql {
-		sqlHeader := getInsertSqlHeader(fields, table)
+		sqlHeader = getInsertSqlHeader(fields, table)
 		if vari.DBDsn != "" {
 			lines = append(lines, sqlHeader)
-		} else {
-			sqlHeader = "INSERT INTO " + sqlHeader
-			logUtils.PrintLine(sqlHeader)
 		}
 	} else if format == constant.FormatJson {
 		printJsonHeader()
@@ -58,12 +57,20 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 			row = append(row, col)
 			rowMap[field.Field] = col
 
-			colVal := stringUtils.ConvertForSql(col)
+			colVal := col
 			if !colIsNumArr[j] {
-				colVal = "'" + colVal + "'"
+				switch vari.Server {
+				case constant.DBTypeSqlServer:
+					colVal = "'" + stringUtils.EscapeValueOfSqlServer(colVal) + "'"
+				case constant.DBTypeOracle:
+					colVal = "'" + stringUtils.EscapeValueOfOracle(colVal) + "'"
+				// case constant.DBTypeMysql:
+				default:
+					colVal = "'" + stringUtils.EscapeValueOfMysql(colVal) + "'"
+				}
 			}
 			valuesForSql = append(valuesForSql, colVal)
-		}
+		} // for cols
 
 		if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle { // article need to write to more than one files
 			lines = append(lines, lineForText)
@@ -72,15 +79,14 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 			logUtils.PrintLine(lineForText)
 
 		} else if format == constant.FormatSql {
-
 			if vari.DBDsn != "" { // add to return array for exec sql
 				sql := strings.Join(valuesForSql, ", ")
 				lines = append(lines, sql)
 			} else {
-				sql := genSqlLine(strings.Join(valuesForSql, ", "), i, len(rows))
+
+				sql := genSqlLine(sqlHeader, valuesForSql, vari.Server)
 				logUtils.PrintLine(sql)
 			}
-
 		} else if format == constant.FormatJson {
 			logUtils.PrintLine(genJsonLine(i, row, len(rows), fields))
 		} else if format == constant.FormatXml {
@@ -108,15 +114,17 @@ func printTextHeader(fields []string) {
 	logUtils.PrintLine(headerLine)
 }
 
+// return "Table> (<column1, column2,...)"
 func getInsertSqlHeader(fields []string, table string) string {
 	fieldNames := make([]string, 0)
 	for _, f := range fields {
-		if vari.Server == "mysql" {
-			f = "`" + f + "`"
-		} else if vari.Server == "sqlserver" {
-			f = "[" + f + "]"
-		} else if vari.Server == "oracle" {
+		if vari.Server == constant.DBTypeSqlServer {
+			f = "[" + stringUtils.EscapeColumnOfSqlServer(f) + "]"
+		} else if vari.Server == constant.DBTypeOracle {
 			f = `"` + f + `"`
+		} else {
+			f = "`" + stringUtils.EscapeColumnOfMysql(f) + "`"
+			//vari.Server == constant.DBTypeMysql {
 		}
 
 		fieldNames = append(fieldNames, f)
@@ -124,12 +132,13 @@ func getInsertSqlHeader(fields []string, table string) string {
 
 	var ret string
 	switch vari.Server {
-	case "mysql":
-		ret = fmt.Sprintf("`%s` (%s)", table, strings.Join(fieldNames, ", "))
-	case "sqlserver":
+	case constant.DBTypeSqlServer:
 		ret = fmt.Sprintf("[%s] (%s)", table, strings.Join(fieldNames, ", "))
-	case "oracle":
+	case constant.DBTypeOracle:
 		ret = fmt.Sprintf(`"%s" (%s)`, table, strings.Join(fieldNames, ", "))
+	// case constant.DBTypeMysql:
+	default:
+		ret = fmt.Sprintf("`%s` (%s)", table, strings.Join(fieldNames, ", "))
 	}
 
 	return ret
@@ -155,22 +164,19 @@ func RowToJson(cols []string, fieldsToExport []string) string {
 	return respJson
 }
 
-func genSqlLine(valuesForSql string, i int, length int) string {
-
-	temp := ""
-	if i == 0 {
-		temp = fmt.Sprintf("  VALUES (%s)", valuesForSql)
-	} else {
-		temp = fmt.Sprintf("         (%s)", valuesForSql)
+// @return ""
+func genSqlLine(sqlheader string, values []string, dbtype string) string {
+	var tmp string
+	switch dbtype {
+	case constant.DBTypeSqlServer:
+		tmp = "INSERT INTO " + sqlheader + " VALUES (" + strings.Join(values, ",") + "); GO"
+	default:
+		// constant.DBTypeMysql
+		// constant.DBTypeOracle:
+		tmp = "INSERT INTO " + sqlheader + " VALUES (" + strings.Join(values, ",") + ");"
 	}
 
-	if i < length-1 {
-		temp = temp + ", "
-	} else {
-		temp = temp + "; "
-	}
-
-	return temp
+	return tmp
 }
 
 func genJsonLine(i int, row []string, length int, fields []string) string {
