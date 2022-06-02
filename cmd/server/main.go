@@ -8,6 +8,7 @@ import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
+	"github.com/easysoft/zendata/internal/server/core/web"
 	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -26,7 +27,7 @@ import (
 
 var (
 	flagSet *flag.FlagSet
-	root   string
+	root    string
 )
 
 func main() {
@@ -55,10 +56,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	startServer()
+	startDataServer()
 }
 
-func startServer() {
+func startAdminServer() {
+	webServer := web.Init(vari.Port)
+	if webServer == nil {
+		return
+	}
+
+	webServer.Run()
+}
+
+func startDataServer() {
 	if vari.Ip == "" {
 		vari.Ip = commonUtils.GetIp()
 	}
@@ -91,7 +101,7 @@ func handler(server *server.Server) http.Handler {
 	mux.Handle("/", http.FileServer(
 		&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir, AssetInfo: res.AssetInfo, Prefix: "ui/dist"}))
 
-	mux.HandleFunc("/admin", server.AdminHandler)
+	//mux.HandleFunc("/admin", server.AdminHandler)
 	mux.HandleFunc("/data", agent.DataHandler)
 
 	return mux

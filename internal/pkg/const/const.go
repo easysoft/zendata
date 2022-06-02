@@ -11,6 +11,9 @@ const (
 )
 
 var (
+	ApiPath = "/api/v1"
+	WsPath  = ApiPath + "/ws"
+
 	PthSep = string(os.PathSeparator)
 
 	ConfigVer      = 1.0
