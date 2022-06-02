@@ -35,7 +35,13 @@ type WebServer struct {
 // Init 初始化web服务
 func Init(port int) *WebServer {
 	app := iris.New()
-	app.Logger().SetLevel("debug")
+
+	level := "info"
+	if vari.Verbose {
+		level = "debug"
+	}
+	app.Logger().SetLevel(level)
+
 	idleConnClosed := make(chan struct{})
 	iris.RegisterOnInterrupt(func() { //优雅退出
 		timeout := 10 * time.Second

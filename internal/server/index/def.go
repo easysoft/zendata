@@ -25,5 +25,5 @@ func (m *DefModule) Party() module.WebModule {
 
 		index.Post("/sync", m.DefCtrl.Create).Name = "同步"
 	}
-	return module.NewModule("/sites", handler)
+	return module.NewModule("/defs", handler)
 }

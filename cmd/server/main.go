@@ -45,6 +45,7 @@ func main() {
 	flagSet.StringVar(&vari.Ip, "bind", "", "")
 	flagSet.IntVar(&vari.Port, "p", 0, "")
 	flagSet.IntVar(&vari.Port, "port", 0, "")
+	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
@@ -56,6 +57,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	startAdminServer()
 	startDataServer()
 }
 
