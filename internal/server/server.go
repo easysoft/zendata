@@ -56,7 +56,7 @@ func InitServer(config *serverConfig.Config) (server *Server, err error) {
 	return
 }
 
-func (s *Server) Admin(writer http.ResponseWriter, req *http.Request) {
+func (s *Server) AdminHandler(writer http.ResponseWriter, req *http.Request) {
 	serverUtils.SetupCORS(&writer, req)
 
 	bytes, err := ioutil.ReadAll(req.Body)
@@ -259,6 +259,7 @@ func (s *Server) Admin(writer http.ResponseWriter, req *http.Request) {
 		ret.Code = 0
 		ret.Msg = "api not found"
 	}
+
 	if err != nil {
 		ret.Code = 0
 		ret.Msg = "api error: " + err.Error()

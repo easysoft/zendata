@@ -62,3 +62,14 @@ func (c ResultStatus) String() string {
 
 	return "UNKNOWN"
 }
+
+type ResponseCode struct {
+	Code    int64  `json:"code"`
+	Message string `json:"message"`
+}
+
+var (
+	Success         = ResponseCode{0, "Request Successfully"}
+	CommErr         = ResponseCode{100, "Common Error"}
+	ParamErr        = ResponseCode{200, "Parameter Error"}
+)

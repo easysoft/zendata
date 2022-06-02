@@ -1,0 +1,44 @@
+测试环境：
+    型号名称：    MacBook Pro
+    处理器名称：  八核Intel Core i9
+    处理器速度：	2.3 GHz
+    处理器数目：	1
+    核总数：	    8
+    内存：	    16 GB
+
+1. 基本区间和随机生成耗时
+    配置：demo/04_rand.yaml
+    数量：10000
+    命令：./zd demo/04_rand.yaml  -n 100000 --verbose
+    耗时：2 sec
+
+2. 引用实例ip.v1.yaml生成耗时
+    配置：demo/16_from_instance.yaml
+    数量： 10000
+    命令：./zd demo/16_from_instance.yaml -F field_use_instance  -n 100000 --verbose
+    耗时： 5 sec
+
+3. 引用Excel数据生成耗时
+    配置：demo/19_from_excel.yaml
+    数量： 10000
+    命令：./zd demo/19_from_excel.yaml -F field_use_excel  -n 100000 --verbose
+    耗时：2 sec
+
+4. 综合例子生成耗时
+    配置：demo/19_from_excel.yaml
+    数量： 10000
+    命令：./zd demo/default.yaml -n 100000 --verbose
+    耗时：12 sec
+
+5. 综合例子百万级生成耗时
+    配置：demo/19_from_excel.yaml
+    数量： 10000
+    命令：./zd demo/default.yaml -n 1000000 --verbose
+    耗时：123 sec
+
+6. 综合例子百万级内存占用
+    配置：demo/19_from_excel.yaml
+    数量： 10000
+    命令：./zd demo/default.yaml -n 1000000 --verbose
+    耗时：119 sec
+    内存占用：1008.4兆

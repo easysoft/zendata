@@ -9,24 +9,16 @@ import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/server"
-	serverConfig "github.com/easysoft/zendata/internal/server/config"
-	serverUtils "github.com/easysoft/zendata/internal/server/utils"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/easysoft/zendata/res"
-	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/fatih/color"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -36,10 +28,10 @@ var (
 	configs     []string
 	defaultFile string
 	configFile  string
-	// content
+
 	defaultDefContent []byte
 	configDefContent  []byte
-	//count       int
+
 	fields string
 
 	root   string
@@ -250,77 +242,6 @@ func toGen(files []string) {
 
 		dur := tmEnd.Unix() - tmStart.Unix()
 		logUtils.PrintTo(fmt.Sprintf("Duriation %d sec.", dur))
-	}
-}
-
-func startServer() {
-	if vari.Ip == "" {
-		vari.Ip = commonUtils.GetIp()
-	}
-	if vari.Port == 0 {
-		vari.Port = constant.DefaultPort
-	}
-
-	port := strconv.Itoa(vari.Port)
-	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server",
-		vari.Ip, port, vari.Ip, port, vari.Ip, port), color.FgCyan)
-
-	// start admin server
-	config := serverConfig.NewConfig()
-	server, err := server.InitServer(config)
-	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server_fail", port), color.FgRed)
-	}
-
-	httpServer := &http.Server{
-		Addr:    fmt.Sprintf(":%d", server.Config.ServerPort),
-		Handler: Handler(server),
-	}
-
-	httpServer.ListenAndServe()
-}
-
-func Handler(s *server.Server) http.Handler {
-	mux := http.NewServeMux()
-
-	mux.Handle("/", http.FileServer( // client static
-		&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir, AssetInfo: res.AssetInfo, Prefix: "ui/dist"}))
-	mux.HandleFunc("/admin", s.Admin)    // data admin
-	mux.HandleFunc("/data", DataHandler) // data gen
-
-	return mux
-}
-
-func DataHandler(writer http.ResponseWriter, req *http.Request) {
-	logUtils.HttpWriter = writer
-
-	if req.Method == http.MethodGet {
-		defaultFile, configFile, fields, vari.Total,
-			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
-	} else if req.Method == http.MethodPost {
-		defaultDefContent, configDefContent, fields, vari.Total,
-			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParamsToByte(req)
-	}
-
-	if decode {
-		files := []string{defaultFile, configFile}
-		gen.Decode(files, fields, input)
-	} else if defaultDefContent != nil || configDefContent != nil {
-		vari.RunMode = constant.RunModeServerRequest
-		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
-
-		toGen(nil)
-		// Avoid variable affecting the results of request.
-		defaultDefContent = nil
-		configDefContent = nil
-	} else if defaultFile != "" || configFile != "" {
-		vari.RunMode = constant.RunModeServerRequest
-		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
-
-		toGen(nil)
-		// Avoid variable affecting the results of request.
-		defaultFile = ""
-		configFile = ""
 	}
 }
 

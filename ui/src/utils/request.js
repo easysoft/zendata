@@ -1,11 +1,19 @@
 import notification from 'ant-design-vue/es/notification'
-import axios from 'axios'
+import axios, {AxiosInstance} from 'axios'
 import { VueAxios } from './axios'
 
-const request = axios.create({
-  baseURL: getUrl(),
-  timeout: 100000,
-})
+let request = null
+initRequest()
+
+// used to switch to another remote service
+function initRequest(remoteUrl) {
+  const url = remoteUrl ? remoteUrl : getUrl()
+
+  request = axios.create({
+    baseURL: url,
+    timeout: 100000,
+  })
+}
 
 function getUrl() {
   let url = ''
