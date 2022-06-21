@@ -2,7 +2,7 @@ package comm
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/test/import/model"
+	"github.com/easysoft/zendata/cmd/test/import/model"
 	"github.com/fatih/color"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

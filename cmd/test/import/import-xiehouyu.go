@@ -1,23 +1,30 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/easysoft/zendata/cmd/test/import/comm"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	"github.com/kataras/iris/v12"
 	"strings"
 )
 
-var (
-	tableName string
-	filePath  string
-	colNum    int
-)
-
 func main() {
+	var insertTemplate = "INSERT INTO %s (riddle, answer) VALUES %s;"
+	var createTableTempl = `CREATE TABLE IF NOT EXISTS %s (
+		id bigint auto_increment,
+		riddle varchar(1000) not null,
+		answer varchar(1000) not null,
+		tag varchar(50),
+		primary key(id)
+	) engine=innodb default charset=utf8 auto_increment=1;`
+
+	var tableName string
+	var filePath string
+
 	flag.StringVar(&tableName, "t", "", "")
 	flag.StringVar(&filePath, "f", "", "")
-	flag.IntVar(&colNum, "c", 0, "")
 
 	flag.Parse()
 
@@ -25,29 +32,24 @@ func main() {
 	db := comm.GetDB()
 	db.Exec(fmt.Sprintf(comm.TruncateTable, tableName))
 
-	createTableSql := fmt.Sprintf(comm.CreateTableTempl, tableName)
+	createTableSql := fmt.Sprintf(createTableTempl, tableName)
 	err := db.Exec(createTableSql).Error
 	if err != nil {
 		fmt.Printf("create table %s failed, err %s", tableName, err.Error())
 		return
 	}
 
-	content := fileUtils.ReadFile(filePath)
+	content := fileUtils.ReadFileBuf(filePath)
+	records := make([]iris.Map, 0)
+	json.Unmarshal(content, &records)
+
 	insertSqlArr := make([]string, 0)
 
-	for _, line := range strings.Split(content, "\n") {
-		arr := strings.Split(strings.TrimSpace(line), " ")
+	for _, record := range records {
+		riddle := record["riddle"]
+		answer := record["answer"]
 
-		if colNum >= len(arr) {
-			continue
-		}
-
-		content := strings.TrimSpace(arr[colNum])
-		if content == "" {
-			continue
-		}
-
-		insert := fmt.Sprintf("('%s')", content)
+		insert := fmt.Sprintf("('%s', '%s')", riddle, answer)
 		insertSqlArr = append(insertSqlArr, insert)
 	}
 
@@ -61,7 +63,7 @@ func main() {
 
 		arr := insertSqlArr[start:end]
 
-		sql := fmt.Sprintf(comm.InsertTemplate, tableName, strings.Join(arr, ","))
+		sql := fmt.Sprintf(insertTemplate, tableName, strings.Join(arr, ","))
 		err = db.Exec(sql).Error
 		if err != nil {
 			fmt.Printf("insert data failed, err %s", err.Error())

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/cmd/test/import/comm"
+	"github.com/easysoft/zendata/cmd/test/import/model"
 	"strings"
 
-	"github.com/easysoft/zendata/src/test/import/comm"
-	"github.com/easysoft/zendata/src/test/import/model"
 	"gorm.io/gorm"
 )
 

@@ -3,7 +3,7 @@ package comm
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"strings"
 )
 
