@@ -34,7 +34,7 @@ func main() {
 
 	logs := []string{}
 	for i, path := range filePathArr {
-		sheetName, count := ImoprtWordsFromExcel(path, db)
+		sheetName, count := ImportWordsFromExcel(path, db)
 		str := fmt.Sprintf("%d) Path:[%s] SheetName:[%s], count:[%d]\n", i, path, sheetName, count)
 		fmt.Print(str)
 		logs = append(logs, str)
@@ -45,8 +45,8 @@ func main() {
 	}
 }
 
-func ImoprtWordsFromExcel(filePath string, db *gorm.DB) (sheetName string, count int) {
-	sheetName, rows := comm.GetExcel1stSheet(filePath)
+func ImportWordsFromExcel(filePath string, db *gorm.DB) (sheetName string, count int) {
+	sheetName, rows := comm.GetExcelFirstSheet(filePath)
 	fmt.Printf("importing ... : [%s] \n", sheetName)
 	// fmt.Print(rows)
 
