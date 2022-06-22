@@ -52,7 +52,7 @@ func (DataCountry) TableName() string {
 }
 
 type DataCity struct {
-	BaseModel
+	Id int `json:"id"`
 
 	Name        string `json:"name"`
 	Code        string `json:"code"`
@@ -193,4 +193,22 @@ type DataWord struct {
 
 func (DataWord) TableName() string {
 	return "biz_data_word"
+}
+
+type DataContent struct {
+	BaseModel
+	Content string `json:"content"`
+}
+
+func (DataContent) TableName() string {
+	return "biz_data_word"
+}
+
+type TableInfo struct {
+	Field   string
+	Type    string
+	Null    string
+	Key     string
+	Default string
+	Extra   string
 }
