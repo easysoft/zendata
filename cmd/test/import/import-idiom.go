@@ -5,8 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/easysoft/zendata/cmd/test/import/comm"
+	"github.com/easysoft/zendata/cmd/test/import/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	"github.com/kataras/iris/v12"
 	"strings"
 )
 
@@ -46,18 +46,18 @@ func main() {
 	}
 
 	content := fileUtils.ReadFileBuf(filePath)
-	records := make([]iris.Map, 0)
+	records := make([]model.DataIdiom, 0)
 	json.Unmarshal(content, &records)
 
 	insertSqlArr := make([]string, 0)
 
 	for _, record := range records {
-		derivation := strings.ReplaceAll(record["derivation"].(string), "'", "''")
-		example := strings.ReplaceAll(record["example"].(string), "'", "''")
-		explanation := strings.ReplaceAll(record["explanation"].(string), "'", "''")
-		pinyin := strings.ReplaceAll(record["pinyin"].(string), "'", "''")
-		word := strings.ReplaceAll(record["word"].(string), "'", "''")
-		abbreviation := strings.ReplaceAll(record["abbreviation"].(string), "'", "''")
+		derivation := strings.ReplaceAll(record.Derivation, "'", "''")
+		example := strings.ReplaceAll(record.Example, "'", "''")
+		explanation := strings.ReplaceAll(record.Explanation, "'", "''")
+		pinyin := strings.ReplaceAll(record.Pinyin, "'", "''")
+		word := strings.ReplaceAll(record.Word, "'", "''")
+		abbreviation := strings.ReplaceAll(record.Abbreviation, "'", "''")
 
 		insert := fmt.Sprintf("('%s', '%s', '%s', '%s', '%s', '%s')",
 			derivation, example, explanation, pinyin, word, abbreviation)

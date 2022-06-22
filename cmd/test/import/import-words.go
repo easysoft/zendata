@@ -101,7 +101,7 @@ func ImportWordsFromExcel(filePath string, db *gorm.DB) (sheetName string, count
 
 		word := model.DataWord{
 			Word:       strings.TrimSpace(r[0]),
-			TagGroupId: group.ID,
+			TagGroupId: group.Id,
 		}
 
 		flag := false

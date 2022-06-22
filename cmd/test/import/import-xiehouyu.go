@@ -5,8 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/easysoft/zendata/cmd/test/import/comm"
+	"github.com/easysoft/zendata/cmd/test/import/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	"github.com/kataras/iris/v12"
 	"strings"
 )
 
@@ -40,14 +40,14 @@ func main() {
 	}
 
 	content := fileUtils.ReadFileBuf(filePath)
-	records := make([]iris.Map, 0)
+	records := make([]model.DataXiehouyu, 0)
 	json.Unmarshal(content, &records)
 
 	insertSqlArr := make([]string, 0)
 
 	for _, record := range records {
-		riddle := record["riddle"]
-		answer := record["answer"]
+		riddle := record.Riddle
+		answer := record.Answer
 
 		insert := fmt.Sprintf("('%s', '%s')", riddle, answer)
 		insertSqlArr = append(insertSqlArr, insert)
