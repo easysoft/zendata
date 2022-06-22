@@ -36,7 +36,11 @@ type BaseModel struct {
 }
 
 type DataCountry struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 
 	ContinentId  int    `json:"continentId"`
 	Continent    string `json:"continent"`
@@ -52,7 +56,11 @@ func (DataCountry) TableName() string {
 }
 
 type DataCity struct {
-	Id int `json:"id"`
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 
 	Name        string `json:"name"`
 	Code        string `json:"code"`
@@ -66,8 +74,47 @@ func (DataCity) TableName() string {
 	return "biz_data_city"
 }
 
+type DataIdiom struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Derivation   string `json:"derivation"`
+	Example      string `json:"derivation"`
+	Explanation  string `json:"derivation"`
+	Pinyin       string `json:"derivation"`
+	Word         string `json:"derivation"`
+	Abbreviation string `json:"derivation"`
+}
+
+func (DataIdiom) TableName() string {
+	return "biz_data_idiom"
+}
+
+type DataXiehouyu struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Riddle string `json:"riddle"`
+	Answer string `json:"answer"`
+	Tag    string `json:"tag"`
+}
+
+func (DataXiehouyu) TableName() string {
+	return "biz_data_xiehouyu"
+}
+
 type DataColor struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 
 	English string `json:"english"`
 	Chinese string `json:"chinese"`
@@ -79,8 +126,138 @@ func (DataColor) TableName() string {
 	return "biz_data_color"
 }
 
+type DataChineseChronology struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataChineseChronology) TableName() string {
+	return "biz_data_chinese_chronology"
+}
+
+type DataCompany struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataCompany) TableName() string {
+	return "biz_data_company"
+}
+
+type DataFiveElements struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataFiveElements) TableName() string {
+	return "biz_data_five_elements"
+}
+
+type DataHeavenlyStems struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataHeavenlyStems) TableName() string {
+	return "biz_data_heavenly_stems"
+}
+
+type DataOccupation struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataOccupation) TableName() string {
+	return "biz_data_occupation"
+}
+
+type DataPlanet struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataPlanet) TableName() string {
+	return "biz_data_planet"
+}
+
+type DataSeason struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataSeason) TableName() string {
+	return "biz_data_season"
+}
+
+type DataEarthlyBranches struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataEarthlyBranches) TableName() string {
+	return "biz_data_earthly_branches"
+}
+
+type DataCompanyAbbreviation struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Content string `json:"content"`
+}
+
+func (DataCompanyAbbreviation) TableName() string {
+	return "biz_data_company_abbreviation"
+}
+
 type DataChineseFamily struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 
 	Name   string `json:"name"`
 	Pinyin string `json:"pinyin"`
@@ -92,7 +269,11 @@ func (DataChineseFamily) TableName() string {
 }
 
 type DataChineseGiven struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 
 	Name   string `json:"name"`
 	Pinyin string `json:"pinyin"`
@@ -104,7 +285,11 @@ func (DataChineseGiven) TableName() string {
 }
 
 type DataEnglishFamily struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 
 	Name  string `json:"name"`
 	Index string `json:"index"`
@@ -115,7 +300,11 @@ func (DataEnglishFamily) TableName() string {
 }
 
 type DataEnglishGiven struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 
 	Name  string `json:"name"`
 	Index string `json:"index"`
@@ -127,46 +316,98 @@ func (DataEnglishGiven) TableName() string {
 }
 
 type DataWordsInternetArgot struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsPreposition struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsPronoun struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsAdverb struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsVerb struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsAuxiliary struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsNoun struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsAdjectivePredicate struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsAdjective struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsNumeral struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsConjunction struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 type DataWordsMeasure struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
 }
 
 type DataWordTagGroup struct {
-	BaseModel
-	Name string         `gorm:"uniqueIndex" json:"name"`
-	Tags []*DataWordTag `gorm:"many2many:biz_data_word_tag_group_biz_data_word_tag" json:"tags"`
+	Id        uint           `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time     `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time     `json:"updatedAt,omitempty"`
+	Deleted   bool           `json:"-" gorm:"default:false"`
+	Disabled  bool           `json:"disabled,omitempty" gorm:"default:false"`
+	Name      string         `gorm:"uniqueIndex" json:"name"`
+	Tags      []*DataWordTag `gorm:"many2many:biz_data_word_tag_group_biz_data_word_tag" json:"tags"`
 }
 
 func (DataWordTagGroup) TableName() string {
@@ -174,7 +415,12 @@ func (DataWordTagGroup) TableName() string {
 }
 
 type DataWordTag struct {
-	BaseModel
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
 	Name  string      `gorm:"uniqueIndex" json:"name"`
 	Words []*DataWord `gorm:"many2many:biz_data_word_biz_data_word_tag" json:"words"`
 
@@ -186,21 +432,19 @@ func (DataWordTag) TableName() string {
 }
 
 type DataWord struct {
-	BaseModel
-	Word string         `json:"word"`
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Word       string `json:"word"`
+	TagGroupId uint   `json:"tagGroupId"`
+
 	Tags []*DataWordTag `gorm:"many2many:biz_data_word_biz_data_word_tag" json:"tags"`
 }
 
 func (DataWord) TableName() string {
-	return "biz_data_word"
-}
-
-type DataContent struct {
-	BaseModel
-	Content string `json:"content"`
-}
-
-func (DataContent) TableName() string {
 	return "biz_data_word"
 }
 

@@ -11,18 +11,18 @@ import (
 )
 
 func main() {
-	filePath := "data/city/v2.xlsx"
-	sheetName := "city"
+	filePath := "data/heavenly_stems/v2.xlsx"
+	sheetName := "heavenly_stems"
 
 	fileUtils.MkDirIfNeeded(filepath.Dir(filePath))
 
 	db := comm.GetDB()
 	db.AutoMigrate(
-		&model.DataCity{},
+		&model.DataHeavenlyStems{},
 	)
 
-	pos := make([]model.DataCity, 0)
-	db.Where("NOT deleted").Find(&pos)
+	pos := make([]model.DataHeavenlyStems, 0)
+	db.Find(&pos)
 
 	f := excelize.NewFile()
 	index := f.NewSheet(sheetName)
@@ -32,10 +32,10 @@ func main() {
 	f.DeleteSheet(sheet1)
 
 	var infos []model.TableInfo
-	db.Raw("desc " + model.DataCity{}.TableName()).Scan(&infos)
+	db.Raw("desc " + model.DataHeavenlyStems{}.TableName()).Scan(&infos)
 
 	excelColNameArr, excelColNameHeader := comm.GetExcelColsByTableDef(infos)
-	fieldNames := comm.GetStructFields(model.DataCity{})
+	fieldNames := comm.GetStructFields(model.DataHeavenlyStems{})
 
 	// gen headers
 	for index, name := range excelColNameHeader {

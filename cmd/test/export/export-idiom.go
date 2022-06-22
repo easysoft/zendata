@@ -11,17 +11,17 @@ import (
 )
 
 func main() {
-	filePath := "data/city/v2.xlsx"
-	sheetName := "city"
+	filePath := "data/idiom/v2.xlsx"
+	sheetName := "idiom"
 
 	fileUtils.MkDirIfNeeded(filepath.Dir(filePath))
 
 	db := comm.GetDB()
 	db.AutoMigrate(
-		&model.DataCity{},
+		&model.DataIdiom{},
 	)
 
-	pos := make([]model.DataCity, 0)
+	pos := make([]model.DataIdiom, 0)
 	db.Where("NOT deleted").Find(&pos)
 
 	f := excelize.NewFile()
@@ -32,10 +32,10 @@ func main() {
 	f.DeleteSheet(sheet1)
 
 	var infos []model.TableInfo
-	db.Raw("desc " + model.DataCity{}.TableName()).Scan(&infos)
+	db.Raw("desc " + model.DataIdiom{}.TableName()).Scan(&infos)
 
 	excelColNameArr, excelColNameHeader := comm.GetExcelColsByTableDef(infos)
-	fieldNames := comm.GetStructFields(model.DataCity{})
+	fieldNames := comm.GetStructFields(model.DataIdiom{})
 
 	// gen headers
 	for index, name := range excelColNameHeader {
@@ -52,6 +52,8 @@ func main() {
 
 			if fieldName == "Id" {
 				val = fmt.Sprintf("%d", reflect.ValueOf(po).FieldByName(fieldName).Uint())
+			} else if reflect.ValueOf(po).FieldByName(fieldName).Kind() == reflect.Int {
+				val = fmt.Sprintf("%d", reflect.ValueOf(po).FieldByName(fieldName).Int())
 			} else {
 				val = reflect.ValueOf(po).FieldByName(fieldName).String()
 			}
