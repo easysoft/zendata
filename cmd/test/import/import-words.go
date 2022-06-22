@@ -48,7 +48,6 @@ func main() {
 func ImportWordsFromExcel(filePath string, db *gorm.DB) (sheetName string, count int) {
 	sheetName, rows := comm.GetExcelFirstSheet(filePath)
 	fmt.Printf("importing ... : [%s] \n", sheetName)
-	// fmt.Print(rows)
 
 	if len(rows) == 0 {
 		return
