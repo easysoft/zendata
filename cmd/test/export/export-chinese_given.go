@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/easysoft/zendata/cmd/test/import/comm"
-	"github.com/easysoft/zendata/cmd/test/import/model"
+	"github.com/easysoft/zendata/cmd/test/comm"
+	"github.com/easysoft/zendata/cmd/test/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"path/filepath"
 	"reflect"

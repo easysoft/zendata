@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/easysoft/zendata/cmd/test/import/comm"
-	"github.com/easysoft/zendata/cmd/test/import/model"
+	"github.com/easysoft/zendata/cmd/test/comm"
+	"github.com/easysoft/zendata/cmd/test/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"gorm.io/gorm"
 	"path/filepath"
@@ -33,8 +33,8 @@ func main() {
 		sheet1 := f.GetSheetName(0)
 		f.DeleteSheet(sheet1)
 
-		allTags := loadTagsByGroup(group.ID, db)
-		words := loadWordsByGroup(group.ID, db)
+		allTags := loadTagsByGroup(group.Id, db)
+		words := loadWordsByGroup(group.Id, db)
 
 		// gen headers
 		excelColIndex := 'A'
@@ -52,7 +52,7 @@ func main() {
 		// gen word row
 		wordIndex := 2
 		for _, word := range words {
-			tags := loadTagsByWord(word.ID, group.ID, db)
+			tags := loadTagsByWord(word.Id, group.Id, db)
 
 			// gen word's tag data
 			wordTagMap := map[string]bool{}

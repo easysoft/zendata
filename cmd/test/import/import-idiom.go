@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/import/comm"
-	"github.com/easysoft/zendata/cmd/test/import/model"
+	"github.com/easysoft/zendata/cmd/test/comm"
+	"github.com/easysoft/zendata/cmd/test/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"strings"
 )
