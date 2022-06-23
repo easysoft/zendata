@@ -5,21 +5,22 @@ author: zentao
 version: 1.0
 
 fields:
-#  - field: f11
-#    range: a-z
-#    prefix: "1-9"
-#    postfix: "\t"
-#
-#  - field: f22
-#    range: a-z
-#    postfix: ", "
-
   - field: f1
     from: chronology.v2.yaml
     use: chronology
     postfix: ", "
 
   - field: f2
+    from: city.v2.yaml
+    use: name
+    postfix: "\t"
+
+  - field: f3
     from: color.v1.yaml
     use: chinese
+    postfix: "\t"
+
+  - field: f4
+    from: company.v2.yaml
+    use: name
     postfix: "\t"
