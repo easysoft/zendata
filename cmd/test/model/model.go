@@ -126,7 +126,7 @@ func (DataColor) TableName() string {
 	return "biz_data_color"
 }
 
-type DataChineseChronology struct {
+type DataChronology struct {
 	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
@@ -136,8 +136,8 @@ type DataChineseChronology struct {
 	Content string `json:"content"`
 }
 
-func (DataChineseChronology) TableName() string {
-	return "biz_data_chinese_chronology"
+func (DataChronology) TableName() string {
+	return "biz_data_chronology"
 }
 
 type DataCompany struct {

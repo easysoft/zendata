@@ -1,0 +1,13 @@
+title: 朝代年历表
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: chronology
+    note:
+    fields:
+     - field: content
+       from: chronology.v2.chronology
+       select: content

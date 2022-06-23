@@ -22,7 +22,7 @@ func main() {
 	)
 
 	pos := make([]model.DataOccupation, 0)
-	db.Find(&pos)
+	db.Order("id ASC").Find(&pos)
 
 	f := excelize.NewFile()
 	index := f.NewSheet(sheetName)

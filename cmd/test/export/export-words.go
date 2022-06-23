@@ -18,7 +18,7 @@ func main() {
 
 	// load tag groups
 	groups := make([]model.DataWordTagGroup, 0)
-	db.Find(&groups)
+	db.Order("id ASC").Find(&groups)
 
 	// gen sheet by tag group
 	for _, group := range groups {

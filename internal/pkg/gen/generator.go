@@ -135,9 +135,27 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	return
 }
 
+func isRangeFix(fix string) bool {
+	index := strings.Index(fix, "-")
+
+	return index > 0 && index < len(fix)-1
+}
+
 func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []string) {
-	field.PrefixRange = CreateFieldFixValuesFromList(field.Prefix, field)
-	field.PostfixRange = CreateFieldFixValuesFromList(field.Postfix, field)
+	if isRangeFix(field.Prefix) {
+		field.PrefixRange = CreateFieldFixValuesFromList(field.Prefix, field)
+	} else {
+		var tmp interface{}
+		tmp = field.Prefix
+		field.PrefixRange = &model.Range{Values: []interface{}{tmp}}
+	}
+	if isRangeFix(field.Postfix) {
+		field.PostfixRange = CreateFieldFixValuesFromList(field.Postfix, field)
+	} else {
+		var tmp interface{}
+		tmp = field.Postfix
+		field.PostfixRange = &model.Range{Values: []interface{}{tmp}}
+	}
 
 	if len(field.Fields) > 0 { // has sub fields
 		fieldNameToValuesMap := map[string][]string{} // refer field name to values

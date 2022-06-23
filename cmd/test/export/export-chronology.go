@@ -11,18 +11,18 @@ import (
 )
 
 func main() {
-	filePath := "data/chinese_chronology/v2.xlsx"
-	sheetName := "chinese_chronology"
+	filePath := "data/chronology/v2.xlsx"
+	sheetName := "chronology"
 
 	fileUtils.MkDirIfNeeded(filepath.Dir(filePath))
 
 	db := comm.GetDB()
 	db.AutoMigrate(
-		&model.DataChineseChronology{},
+		&model.DataChronology{},
 	)
 
-	pos := make([]model.DataChineseChronology, 0)
-	db.Find(&pos)
+	pos := make([]model.DataChronology, 0)
+	db.Order("id ASC").Find(&pos)
 
 	f := excelize.NewFile()
 	index := f.NewSheet(sheetName)
@@ -32,10 +32,10 @@ func main() {
 	f.DeleteSheet(sheet1)
 
 	var infos []model.TableInfo
-	db.Raw("desc " + model.DataChineseChronology{}.TableName()).Scan(&infos)
+	db.Raw("desc " + model.DataChronology{}.TableName()).Scan(&infos)
 
 	excelColNameArr, excelColNameHeader := comm.GetExcelColsByTableDef(infos)
-	fieldNames := comm.GetStructFields(model.DataChineseChronology{})
+	fieldNames := comm.GetStructFields(model.DataChronology{})
 
 	// gen headers
 	for index, name := range excelColNameHeader {
