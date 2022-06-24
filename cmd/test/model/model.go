@@ -109,6 +109,25 @@ func (DataXiehouyu) TableName() string {
 	return "biz_data_xiehouyu"
 }
 
+type DataDict struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Word        string `json:"word"`
+	OldWord     string `json:"oldWord"`
+	Strokes     string `json:"strokes"`
+	Pinyin      string `json:"pinyin"`
+	Radicals    string `json:"radicals"`
+	Explanation string `json:"explanation"`
+}
+
+func (DataDict) TableName() string {
+	return "biz_data_dict"
+}
+
 type DataColor struct {
 	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
