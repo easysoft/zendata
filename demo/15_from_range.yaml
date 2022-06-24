@@ -55,7 +55,7 @@ fields:
     postfix: "\t"
 
   - field: field_use_ranges_medium    
-    from: zentao.number.v1.yaml 
+    from: zentao.number.v1.yaml
     use: medium{4}                    # 使用该文件中定义的medium分组。
     postfix: "\t"
 

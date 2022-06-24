@@ -1,0 +1,13 @@
+title: 地支
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: earthly_branches
+    note:
+    fields:
+     - field: content
+       from: earthly_branches.v1.earthly_branches
+       select: content

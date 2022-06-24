@@ -23,7 +23,7 @@ func main() {
 	// gen sheet by tag group
 	for _, group := range groups {
 		sheetName := group.Name
-		filePath := fmt.Sprintf("data/words/v2/%s.xlsx", sheetName)
+		filePath := fmt.Sprintf("data/words/v1/%s.xlsx", sheetName)
 
 		fileUtils.MkDirIfNeeded(filepath.Dir(filePath))
 

@@ -1,0 +1,17 @@
+title: 歇后语
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: idiom
+    note:
+    fields:
+     - field: word
+       from: idiom.v1.idiom
+       select: word
+
+     - field: explanation
+       from: idiom.v1.idiom
+       select: explanation

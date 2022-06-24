@@ -132,6 +132,7 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 			}
 			valList = valList + "("
 
+			dataColCount := 0
 			for colIndex, colCell := range row {
 				if colIndex >= colCount {
 					break
@@ -142,7 +143,15 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 				}
 				colCell = strings.Replace(colCell, "'", "''", -1)
 				valList = valList + "'" + colCell + "'"
+
+				dataColCount++
 			}
+
+			for dataColCount < colCount {
+				valList = valList + ", ''"
+				dataColCount++
+			}
+
 			valList = valList + ")"
 		}
 

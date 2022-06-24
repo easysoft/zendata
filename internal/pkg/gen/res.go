@@ -55,8 +55,8 @@ func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string]
 		resFile, resType, sheet := fileUtils.GetResProp(field.From, field.FileDir) // relate to current file
 		valueMap, _ = getResValue(resFile, resType, sheet, field)
 
-		if (*res)[field.From] == nil {
-			(*res)[field.From] = map[string][]string{}
+		if (*res)[getFromKey(field)] == nil {
+			(*res)[getFromKey(field)] = map[string][]string{}
 		}
 		for key, val := range valueMap {
 			resKey := key
@@ -64,7 +64,7 @@ func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string]
 			if vari.Def.Type == constant.ConfigTypeArticle {
 				resKey = resKey + "_" + field.Field
 			}
-			(*res)[field.From][resKey] = val
+			(*res)[getFromKey(field)][resKey] = val
 		}
 
 	} else if field.Config != "" { // from a config
@@ -177,7 +177,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 	instField.FileDir = insts.FileDir
 
 	if instField.Use != "" { // refer to another instances or ranges
-		if vari.Res[instField.From] == nil {
+		if vari.Res[getFromKey(&instField)] == nil {
 			referencedRanges, referencedInstants := getReferencedRangeOrInstant(instField)
 			groupedValueReferenced := map[string][]string{}
 
@@ -198,12 +198,12 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 				}
 			}
 
-			vari.Res[instField.From] = groupedValueReferenced
+			vari.Res[getFromKey(&instField)] = groupedValueReferenced
 		}
 	} else if instField.Select != "" { // refer to excel
 		resFile, resType, sheet := fileUtils.GetResProp(instField.From, instField.FileDir)
 		values, _ := getResValue(resFile, resType, sheet, &instField)
-		vari.Res[instField.From] = values
+		vari.Res[getFromKey(&instField)] = values
 	}
 }
 

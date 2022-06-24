@@ -1,0 +1,13 @@
+title: 行星
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: planet
+    note:
+    fields:
+     - field: content
+       from: planet.v1.planet
+       select: content

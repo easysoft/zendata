@@ -1,0 +1,42 @@
+title: 城市
+desc:
+author: wwccss
+version: 1.0
+
+field: city
+instances:
+  - instance: name
+    fields:
+     - field: part1
+       from: city.v1.city
+       select: name
+
+  - instance: code
+    fields:
+      - field: part1
+        from: city.v1.city
+        select: code
+
+  - instance: zip_code
+    fields:
+      - field: part1
+        from: city.v1.city
+        select: name
+
+  - instance: state
+    fields:
+      - field: part1
+        from: city.v1.city
+        select: zip_code
+
+  - instance: state_short
+    fields:
+      - field: part1
+        from: city.v1.city
+        select: state_short
+
+  - instance: state_short2
+    fields:
+      - field: part1
+        from: city.v1.city
+        select: state_short2

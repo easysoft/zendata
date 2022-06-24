@@ -219,7 +219,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 
 	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
 		if field.Use != "" { // refer to ranges or instance
-			groupValues := vari.Res[field.From]
+			groupValues := vari.Res[getFromKey(field)]
 
 			uses := strings.TrimSpace(field.Use) // like group{limit:repeat}
 			use, numLimit, repeat := getNum(uses)
@@ -232,7 +232,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 				values = append(values, valuesForAdd...)
 			}
 		} else if field.Select != "" { // refer to excel
-			groupValues := vari.Res[field.From]
+			groupValues := vari.Res[getFromKey(field)]
 			resKey := field.Select
 
 			// deal with the key
@@ -726,4 +726,8 @@ exit:
 
 	}
 	return
+}
+
+func getFromKey(field *model.DefField) string {
+	return fmt.Sprintf("%s-%s-%s", field.From, field.Use, field.Select)
 }

@@ -6,12 +6,12 @@ version: 1.0
 
 fields:
   - field: f1
-    from: chronology.v2.yaml
+    from: chronology.v1.yaml
     use: chronology
-    postfix: ", "
+    postfix: "\t"
 
   - field: f2
-    from: city.v2.yaml
+    from: city.v1.yaml
     use: name
     postfix: "\t"
 
@@ -21,6 +21,57 @@ fields:
     postfix: "\t"
 
   - field: f4
-    from: company.v2.yaml
+    from: company.v1.yaml
     use: name
     postfix: "\t"
+
+  - field: f5
+    from: company.v1.yaml
+    use: abbreviation
+    postfix: "\t"
+
+  - field: f6
+    from: country.v1.yaml
+    use: cnfull
+    postfix: "\t"
+
+  - field: f7
+    from: earthly_branches.v1.yaml
+    use: earthly_branches
+    postfix: "\t"
+
+  - field: f8
+    from: five_elements.v1.yaml
+    use: five_elements
+    postfix: "\t"
+
+  - field: f9
+    from: heavenly_stems.v1.yaml
+    use: heavenly_stems
+    postfix: "\t"
+
+  - field: f10
+    from: idiom.v1.yaml
+    use: idiom
+    postfix: "\t"
+
+  - field: f11
+    from: occupation.v1.yaml
+    use: occupation
+    postfix: "\t"
+
+  - field: f12
+    from: planet.v1.yaml
+    use: planet
+    postfix: "\t"
+
+  - field: f13
+    from: season.v1.yaml
+    use: season
+    postfix: "\t"
+
+  - field: f14
+    from: xiehouyu.v1.yaml
+    use: xiehouyu
+    postfix: "\t"
+

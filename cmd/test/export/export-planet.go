@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	filePath := "data/planet/v2.xlsx"
+	filePath := "data/planet/v1.xlsx"
 	sheetName := "planet"
 
 	fileUtils.MkDirIfNeeded(filepath.Dir(filePath))

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"github.com/360EntSecGroup-Skylar/excelize/v1"
 	"github.com/easysoft/zendata/cmd/test/comm"
 	"github.com/easysoft/zendata/cmd/test/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	filePath := "data/name/cn.family.v2.xlsx"
+	filePath := "data/name/cn.family.v1.xlsx"
 	sheetName := "chinese_family"
 
 	fileUtils.MkDirIfNeeded(filepath.Dir(filePath))

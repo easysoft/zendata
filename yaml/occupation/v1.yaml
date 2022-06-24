@@ -1,0 +1,13 @@
+title: 职业
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: occupation
+    note:
+    fields:
+     - field: content
+       from: occupation.v1.occupation
+       select: content

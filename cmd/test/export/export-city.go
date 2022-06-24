@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	filePath := "data/city/v2.xlsx"
+	filePath := "data/city/v1.xlsx"
 	sheetName := "city"
 
 	fileUtils.MkDirIfNeeded(filepath.Dir(filePath))

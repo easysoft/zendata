@@ -4,7 +4,7 @@ fields:
     froms:
       - from: ip.v1.yaml
         use: privateB{10}
-      - from: ip.v2.yaml
+      - from: ip.v1.yaml
         use: ipA{10} 
 
 

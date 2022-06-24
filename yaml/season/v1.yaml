@@ -1,0 +1,13 @@
+title: 季节
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: season
+    note:
+    fields:
+     - field: content
+       from: season.v1.season
+       select: content
