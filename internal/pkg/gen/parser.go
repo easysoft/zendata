@@ -5,6 +5,7 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -207,6 +208,12 @@ func isScopeStr(str string) bool {
 	right := strings.TrimSpace(arr[1])
 
 	if len(left) != 1 || len(right) != 1 { // more than on char, must be number
+		if len(left) == 0 {
+			log.Println("")
+		}
+		if len(right) == 0 {
+			log.Println("")
+		}
 		leftRune := []rune(string(left[0]))[0]
 		rightRune := []rune(string(right[0]))[0]
 

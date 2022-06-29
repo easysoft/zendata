@@ -1,8 +1,0 @@
-title: 数据测试3
-desc: 数据测试3
-fields:
-- field: refer1
-  range: 0-3{2!}
-  postfix: '-'
-- from: zentao.number.v1.yaml
-  use: large{3}

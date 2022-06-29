@@ -2,6 +2,7 @@ package serverConfig
 
 import (
 	"fmt"
+	"gorm.io/gorm/logger"
 
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -11,7 +12,9 @@ import (
 )
 
 func NewGormDB() (gormDb *gorm.DB, err error) {
-	gormDb, err = gorm.Open(sqlite.Open(constant.SqliteFile), &gorm.Config{})
+	gormDb, err = gorm.Open(sqlite.Open(constant.SqliteFile), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 
 	if vari.Verbose {
 		gormDb = gormDb.Debug()
