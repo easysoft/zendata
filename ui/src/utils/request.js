@@ -18,7 +18,7 @@ function initRequest(remoteUrl) {
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8848'
+    url = 'http://127.0.0.1:8085'
     console.log('dev env, url is ' + url)
   } else {
     const location = unescape(window.location.href);

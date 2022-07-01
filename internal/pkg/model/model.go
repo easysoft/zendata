@@ -71,10 +71,10 @@ type ZdField struct {
 
 	// for range edit
 	IsRange  bool        `gorm:"column:isRange;default:true" json:"isRange"`
-	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections"`
+	Sections []ZdSection `gorm:"ForeignKey:ownerID" json:"sections"`
 
 	// for refer edit
-	Refer ZdRefer `gorm:"ForeignKey:fieldID" json:"refer"`
+	Refer ZdRefer `gorm:"ForeignKey:ownerID" json:"refer"`
 }
 
 func (*ZdField) TableName() string {
@@ -158,7 +158,7 @@ type ZdRangesItem struct {
 	Ord      int    `gorm:"column:ord" json:"ord"`
 
 	Value    string      `gorm:"column:value" json:"value"`
-	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections"`
+	Sections []ZdSection `gorm:"ForeignKey:ownerID" json:"sections"`
 
 	// for tree node
 	ParentID uint            `gorm:"-" json:"parentID"`
@@ -228,10 +228,10 @@ type ZdInstancesItem struct {
 
 	// for range edit
 	IsRange  bool        `gorm:"column:isRange;default:true" json:"isRange" yaml:"-"`
-	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections" yaml:"-"`
+	Sections []ZdSection `gorm:"ForeignKey:ownerID" json:"sections" yaml:"-"`
 
 	// for refer edit
-	Refer ZdRefer `gorm:"ForeignKey:fieldID" json:"refer" yaml:"-"`
+	Refer ZdRefer `gorm:"ForeignKey:ownerID" json:"refer" yaml:"-"`
 }
 
 func (*ZdInstancesItem) TableName() string {
@@ -258,7 +258,7 @@ type ZdConfig struct {
 
 	// for range edit
 	IsRange  bool        `gorm:"column:isRange;default:true" json:"isRange" yaml:"-"`
-	Sections []ZdSection `gorm:"ForeignKey:fieldID" json:"sections" yaml:"-"`
+	Sections []ZdSection `gorm:"ForeignKey:ownerID" json:"sections" yaml:"-"`
 }
 
 func (*ZdConfig) TableName() string {

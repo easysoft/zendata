@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	constant "github.com/easysoft/zendata/internal/pkg/const"
@@ -221,7 +222,8 @@ func replacePlaceholder(col string) string {
 		values := getValForPlaceholder(placeholderStr, matchTimes)
 
 		for _, str := range values {
-			temp := Placeholder(placeholderStr)
+			key, _ := strconv.Atoi(placeholderStr)
+			temp := Placeholder(key)
 			ret = strings.Replace(ret, temp, str, 1)
 		}
 	}
@@ -230,7 +232,8 @@ func replacePlaceholder(col string) string {
 }
 
 func getValForPlaceholder(placeholderStr string, count int) []string {
-	mp := vari.RandFieldNameToValuesMap[placeholderStr]
+	placeholderInt, _ := strconv.Atoi(placeholderStr)
+	mp := vari.RandFieldSectionPathToValuesMap[placeholderInt]
 
 	tp := mp["type"].(string)
 	repeatObj := mp["repeat"]

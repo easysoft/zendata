@@ -25,20 +25,20 @@
     耗时：2 sec
 
 4. 综合例子生成耗时
-    配置：demo/19_from_excel.yaml
+    配置：demo/default.yaml
     数量： 10000
     命令：./zd demo/default.yaml -n 100000 --verbose
     耗时：12 sec
 
 5. 综合例子百万级生成耗时
-    配置：demo/19_from_excel.yaml
-    数量： 10000
+    配置：demo/default.yaml
+    数量： 100000
     命令：./zd demo/default.yaml -n 1000000 --verbose
     耗时：123 sec
 
 6. 综合例子百万级内存占用
-    配置：demo/19_from_excel.yaml
-    数量： 10000
+    配置：demo/default.yaml
+    数量： 100000
     命令：./zd demo/default.yaml -n 1000000 --verbose
     耗时：119 sec
     内存占用：1008.4兆

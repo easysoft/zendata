@@ -1,6 +1,8 @@
 package gen
 
 import (
+	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"math"
 	"strconv"
 	"strings"
@@ -223,11 +225,15 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	total := 0
 
 	if field.Path != "" && stepStr == "r" {
-		items = append(items, Placeholder(field.Path))
+		pth := field.Path
+		key := helper.GetRandFieldSection(pth)
+
+		items = append(items, Placeholder(key))
 		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "",
 			field.Format, repeat, repeatTag)
 
-		vari.RandFieldNameToValuesMap[field.Path] = mp
+		vari.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.RandFieldSectionPathToValuesMap[key] = mp
 		return
 	}
 
@@ -273,20 +279,26 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		endStr = elemArr[1]
 	}
 
-	dataType, step, precision, rand, count := CheckRangeType(startStr, endStr, stepStr)
+	dataType, step, precision, rand, _ := CheckRangeType(startStr, endStr, stepStr)
 
 	// 1. random replacement
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
-		val := Placeholder(field.Path + "->" + desc)
+		pth := field.Path + "->" + desc
+		key := helper.GetRandFieldSection(pth)
+
+		val := Placeholder(key)
 		strItems := make([]string, 0)
-		for i := 0; i < repeat*count; i++ {
-			items = append(items, val)
-			strItems = append(strItems, val)
-		}
+
+		//for i := 0; i < repeat*count; i++ { // chang to add only one placeholder item
+		items = append(items, val)
+		strItems = append(strItems, val)
+		//}
 
 		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, stepStr,
 			strconv.Itoa(precision), field.Format, repeat, repeatTag)
-		vari.RandFieldNameToValuesMap[field.Path+"->"+desc] = mp
+
+		vari.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.RandFieldSectionPathToValuesMap[key] = mp
 
 		return
 	}
@@ -353,8 +365,8 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 	return
 }
 
-func Placeholder(str string) string {
-	return "${" + str + "}"
+func Placeholder(key int) string {
+	return fmt.Sprintf("${%d}", key)
 }
 
 func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string,

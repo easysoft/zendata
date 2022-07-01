@@ -57,8 +57,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	go func() {
+		startDataServer()
+	}()
+
 	startAdminServer()
-	startDataServer()
 }
 
 func startAdminServer() {

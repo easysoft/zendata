@@ -137,10 +137,6 @@ func main() {
 		files = []string{defaultFile, configFile}
 	}
 
-	if vari.Ip != "" || vari.Port != 0 {
-		vari.RunMode = constant.RunModeServer
-	}
-
 	configUtils.InitConfig(root)
 	vari.DB, _ = commandConfig.NewGormDB()
 	//defer vari.DB.Close()

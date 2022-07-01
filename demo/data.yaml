@@ -20,16 +20,6 @@ fields:
     use: chinese
     postfix: "\t"
 
-  - field: f4
-    from: company.v1.yaml
-    use: name
-    postfix: "\t"
-
-  - field: f5
-    from: company.v1.yaml
-    use: abbreviation
-    postfix: "\t"
-
   - field: f6
     from: country.v1.yaml
     use: cnfull

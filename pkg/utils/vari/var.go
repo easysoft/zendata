@@ -45,11 +45,12 @@ var (
 	Ip       string
 	Port     int
 
-	ResLoading               = false
-	Def                      = model.DefData{}
-	Res                      = map[string]map[string][]string{}
-	RandFieldNameToValuesMap = map[string]map[string]interface{}{}
-	TopFieldMap              = map[string]model.DefField{}
+	ResLoading                         = false
+	Def                                = model.DefData{}
+	Res                                = map[string]map[string][]string{}
+	RandFieldSectionPathToValuesMap    = map[int]map[string]interface{}{}
+	RandFieldSectionShortKeysToPathMap = map[int]string{}
+	TopFieldMap                        = map[string]model.DefField{}
 
 	CacheResFileToMap  = map[string]map[string][]string{}
 	CacheResFileToName = map[string]string{}
