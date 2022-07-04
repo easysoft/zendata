@@ -23,7 +23,16 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 
 	count := 0
 	files = fileUtils.HandleFiles(files)
-	if strings.ToLower(filepath.Ext(files[0])) == "."+constant.FormatProto { //gen from protobuf
+	if !isFromProtobuf(files[0]) { // default gen from yaml
+		if files[0] != "" {
+			vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+		} else {
+			vari.ConfigFileDir = fileUtils.GetAbsDir(files[1])
+		}
+		contents := gen.LoadFilesContents(files)
+		lines = GenerateByContent(contents, fieldsToExportStr, format, table)
+
+	} else { // gen from protobuf
 		buf, pth := gen.GenerateFromProtobuf(files[0])
 
 		if vari.Verbose {
@@ -36,14 +45,6 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 		if vari.RunMode == constant.RunModeServerRequest {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 		}
-	} else { // default gen from yaml
-		if files[0] != "" {
-			vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
-		} else {
-			vari.ConfigFileDir = fileUtils.GetAbsDir(files[1])
-		}
-		contents := gen.LoadFilesContents(files)
-		lines = GenerateByContent(contents, fieldsToExportStr, format, table)
 	}
 	return
 }
@@ -66,10 +67,11 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	if err != nil {
 		return
 	}
-	if format == constant.FormatExcel || format == constant.FormatCsv { // for excel and cvs
-		gen.Write(rows, table, colIsNumArr, fieldsToExport)
-	} else { // returned is for preview, sql exec and article writing
+
+	if !isFromExcel(format) { // returned is for preview, sql exec and article writing
 		lines = gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
+	} else { // for Excel and cvs
+		gen.Write(rows, table, colIsNumArr, fieldsToExport)
 	}
 
 	// exec insert sql
@@ -78,7 +80,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	}
 
 	// article need to write to more than one files
-	if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle {
+	if isGenArticle(format) {
 		var filePath = logUtils.FileWriter.Name()
 		defer logUtils.FileWriter.Close()
 		fileUtils.RmFile(filePath)
@@ -99,4 +101,16 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	}
 
 	return
+}
+
+func isFromProtobuf(file string) bool {
+	return strings.ToLower(filepath.Ext(file)) == "."+constant.FormatProto
+}
+
+func isFromExcel(format string) bool {
+	return format == constant.FormatExcel || format == constant.FormatCsv
+}
+
+func isGenArticle(format string) bool {
+	return format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle
 }

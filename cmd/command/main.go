@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
@@ -131,9 +132,9 @@ func main() {
 		os.Args = append(os.Args, "-help")
 	}
 
-	files, count := fileUtils.GetFilesFromParams(os.Args[1:])
+	files, count := fileUtils.GetFilesFromParams(os.Args[1:]) // zd.exe demo\default.yaml demo\test.yaml
 	flagSet.Parse(os.Args[1+count:])
-	if count == 0 {
+	if count == 0 { // not has a def file list, use -d and -c files
 		files = []string{defaultFile, configFile}
 	}
 
@@ -188,57 +189,64 @@ func toGen(files []string) {
 		logUtils.PrintTo(fmt.Sprintf("Start at %s.", tmStart.Format("2006-01-02 15:04:05")))
 	}
 
-	if vari.RunMode == constant.RunModeParse {
+	if vari.RunMode == constant.RunModeGen {
+		if err := getFormat(); err != nil {
+			return
+		}
+		action.Generate(files, fields, vari.Format, vari.Table)
+
+	} else if vari.RunMode == constant.RunModeParse {
 		ext := filepath.Ext(input)
 		if ext == ".sql" {
 			action.ParseSql(input, vari.Out)
 		} else if ext == ".txt" {
 			action.ParseArticle(input, vari.Out)
 		}
-
-	} else if vari.RunMode == constant.RunModeGen {
-		if vari.Human {
-			vari.WithHead = true
-		}
-
-		if vari.Out != "" {
-			fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
-			fileUtils.RemoveExist(vari.Out)
-
-			ext := strings.ToLower(filepath.Ext(vari.Out))
-			if len(ext) > 1 {
-				ext = strings.TrimLeft(ext, ".")
-			}
-			if stringUtils.InArray(ext, constant.Formats) {
-				vari.Format = ext
-			}
-
-			if vari.Format == constant.FormatExcel {
-				logUtils.FilePath = vari.Out
-			} else {
-				logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
-				defer logUtils.FileWriter.Close()
-			}
-		}
-		if vari.DBDsn != "" {
-			vari.Format = constant.FormatSql
-		}
-
-		if vari.Format == constant.FormatSql && vari.Table == "" {
-			logUtils.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
-			return
-		}
-
-		action.Generate(files, fields, vari.Format, vari.Table)
 	}
 
 	tmEnd := time.Now()
 	if vari.Verbose {
 		logUtils.PrintTo(fmt.Sprintf("End at %s.", tmEnd.Format("2006-01-02 15:04:05")))
-
 		dur := tmEnd.Unix() - tmStart.Unix()
 		logUtils.PrintTo(fmt.Sprintf("Duriation %d sec.", dur))
 	}
+}
+
+func getFormat() (err error) {
+	if vari.Human {
+		vari.WithHead = true
+	}
+
+	if vari.Out != "" {
+		fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
+		fileUtils.RemoveExist(vari.Out)
+
+		ext := strings.ToLower(filepath.Ext(vari.Out))
+		if len(ext) > 1 {
+			ext = strings.TrimLeft(ext, ".")
+		}
+		if stringUtils.InArray(ext, constant.Formats) {
+			vari.Format = ext
+		}
+
+		if vari.Format == constant.FormatExcel {
+			logUtils.FilePath = vari.Out
+		} else {
+			logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
+			defer logUtils.FileWriter.Close()
+		}
+	}
+	if vari.DBDsn != "" {
+		vari.Format = constant.FormatSql
+	}
+
+	if vari.Format == constant.FormatSql && vari.Table == "" {
+		msg := i118Utils.I118Prt.Sprintf("miss_table_name")
+		logUtils.PrintErrMsg(msg)
+		err = errors.New(msg)
+	}
+
+	return
 }
 
 func init() {

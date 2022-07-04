@@ -5,8 +5,7 @@ fields:
   - field: nesting
     fields:
       - field: child1
-        range: A-C:R, a-z:R
-#        rand: true
+        range: A-Z:R
         prefix: part1_
         postfix: "\t"
 
