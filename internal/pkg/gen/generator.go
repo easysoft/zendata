@@ -29,7 +29,7 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	if len(vari.Def.Fields) == 0 {
 		err = errors.New("")
 		return
-	} else if vari.Def.Type == constant.ConfigTypeArticle && vari.Out == "" {
+	} else if vari.Def.Type == constant.DefTypeArticle && vari.Out == "" {
 		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
 		logUtils.PrintErrMsg(errMsg)
 		err = errors.New(errMsg)
@@ -37,7 +37,7 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	}
 
 	if vari.Total < 0 {
-		if vari.Def.Type == constant.ConfigTypeArticle {
+		if vari.Def.Type == constant.DefTypeArticle {
 			vari.Total = 1
 		} else {
 			vari.Total = constant.DefaultNumber
@@ -236,7 +236,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 			resKey := field.Select
 
 			// deal with the key
-			if vari.Def.Type == constant.ConfigTypeArticle {
+			if vari.Def.Type == constant.DefTypeArticle {
 				resKey = resKey + "_" + field.Field
 			}
 

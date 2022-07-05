@@ -166,7 +166,7 @@ func GetRelatedPathWithResDir(p string) (ret string) {
 //	field.Loop = item.Loop
 //	field.Loopfix = item.Loopfix
 //	field.Format = item.Format
-//	field.Type = item.Type
+//	field.DefType = item.DefType
 //	field.Mode = item.Mode
 //	field.Length = item.Length
 //	field.LeftPad = item.LeftPad

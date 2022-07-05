@@ -1,11 +1,14 @@
 package gen
 
 import (
+	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -175,4 +178,17 @@ func getNumMap(content string) (numMap map[string]int, nameMap map[string]string
 	contentWithoutComments = strings.Join(arrWithoutComments, "\n")
 
 	return
+}
+
+func GenArticle(lines []interface{}) {
+	var filePath = logUtils.FileWriter.Name()
+	defer logUtils.FileWriter.Close()
+	fileUtils.RmFile(filePath)
+
+	for index, line := range lines {
+		articlePath := fileUtils.GenArticleFiles(filePath, index)
+		fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
+		fmt.Fprint(fileWriter, line)
+		fileWriter.Close()
+	}
 }

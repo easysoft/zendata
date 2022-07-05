@@ -247,6 +247,13 @@
     {
       "id": "dsn_param_parsing_error",
       "translation": "the -dsn parameter parsing error"
+    },    {
+      "id" : "success_to_clear_cache",
+      "translation": "Success to clear cache '%s'."
+    },
+    {
+      "id" : "success_to_clear_all_cache",
+      "translation": "Success to clear all cache."
     }
   ]
 }

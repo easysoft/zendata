@@ -23,8 +23,10 @@ var (
 	LanguageEN      = "en"
 	LanguageZH      = "zh"
 
-	EnRes = fmt.Sprintf("res%sen%smessages.json", PthSep, PthSep)
-	ZhRes = fmt.Sprintf("res%szh%smessages.json", PthSep, PthSep)
+	CachePrefix  = "cache_"
+	CachePostfix = "_is_num"
+	EnRes        = fmt.Sprintf("res%sen%smessages.json", PthSep, PthSep)
+	ZhRes        = fmt.Sprintf("res%szh%smessages.json", PthSep, PthSep)
 
 	LeftWidth = 36
 	MinWidth  = 130
@@ -51,11 +53,11 @@ var (
 	ModeRecursiveShort = "r"
 	Modes              = []string{ModeParallel, ModeRecursive, ModeParallelShort, ModeRecursiveShort}
 
-	ConfigTypeText    = "text"
-	ConfigTypeArticle = "article"
-	ConfigTypeImage   = "image"
-	ConfigTypeVoice   = "voice"
-	ConfigTypeVideo   = "video"
+	DefTypeText    = "text"
+	DefTypeArticle = "article"
+	DefTypeImage   = "image"
+	DefTypeVoice   = "voice"
+	DefTypeVideo   = "video"
 
 	FieldTypeList      = "list"
 	FieldTypeTimestamp = "timestamp"

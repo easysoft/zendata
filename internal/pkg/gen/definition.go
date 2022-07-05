@@ -135,11 +135,11 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	sortedKeys := make([]string, 0)
 
 	if configDef.Type != "" {
-		vari.Type = configDef.Type
+		vari.DefType = configDef.Type
 	} else if defaultDef.Type != "" {
-		vari.Type = defaultDef.Type
+		vari.DefType = defaultDef.Type
 	} else {
-		vari.Type = constant.ConfigTypeText
+		vari.DefType = constant.DefTypeText
 	}
 
 	if configDef.Content != "" && defaultDef.Content == "" {

@@ -108,6 +108,9 @@ func main() {
 	flagSet.BoolVar(&vari.Recursive, "r", false, "")
 	flagSet.BoolVar(&vari.Recursive, "recursive", false, "")
 
+	flagSet.StringVar(&vari.CacheParam, "C", "", "")
+	flagSet.StringVar(&vari.CacheParam, "cache", "", "")
+
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")
 
@@ -190,6 +193,10 @@ func toGen(files []string) {
 	}
 
 	if vari.RunMode == constant.RunModeGen {
+		if clearCache() {
+			return
+		}
+
 		if err := getFormat(); err != nil {
 			return
 		}
@@ -210,6 +217,25 @@ func toGen(files []string) {
 		dur := tmEnd.Unix() - tmStart.Unix()
 		logUtils.PrintTo(fmt.Sprintf("Duriation %d sec.", dur))
 	}
+}
+
+func clearCache() (ret bool) {
+	cacheKey, cacheOpt, hasCache := gen.ParseCache()
+	if cacheOpt == "clear" {
+		if cacheKey == "all" {
+			gen.ClearAllCache()
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_all_cache"))
+		} else {
+			if hasCache {
+				gen.ClearCache(cacheKey)
+			}
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_cache", cacheKey))
+		}
+
+		ret = true
+	}
+
+	return
 }
 
 func getFormat() (err error) {

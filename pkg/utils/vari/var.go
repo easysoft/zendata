@@ -25,16 +25,17 @@ var (
 	Verbose     bool
 	Interpreter string
 
-	Total     int
-	WithHead  bool
-	Human     bool
-	Trim      bool
-	Recursive bool
-	Format    = constant.FormatText
+	Total      int
+	WithHead   bool
+	Human      bool
+	Trim       bool
+	Recursive  bool
+	CacheParam string
+	Format     = constant.FormatText
 
 	Out          string
 	Table        string
-	Type         string
+	DefType      string
 	Server       string // database type
 	DBDsn        string
 	DBDsnParsing DBDsnData

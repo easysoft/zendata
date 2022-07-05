@@ -238,6 +238,15 @@
     {
       "id" : "dsn_param_parsing_error",
       "translation": "-dsn 参数解析错误"
+    },
+
+    {
+      "id" : "success_to_clear_cache",
+      "translation": "成功清除缓存'%s'。"
+    },
+    {
+      "id" : "success_to_clear_all_cache",
+      "translation": "成功清除所有缓存。"
     }
   ]
 }

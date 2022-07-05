@@ -1,7 +1,6 @@
 package action
 
 import (
-	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/gen/helper"
@@ -9,13 +8,12 @@ import (
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
 
-func Generate(files []string, fieldsToExportStr, format, table string) (lines []interface{}) {
+func Generate(files []string, fieldsToExportStr, format, table string) {
 	startTime := time.Now().Unix()
 	if len(files) == 0 {
 		return
@@ -30,7 +28,7 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 			vari.ConfigFileDir = fileUtils.GetAbsDir(files[1])
 		}
 		contents := gen.LoadFilesContents(files)
-		lines = GenerateByContent(contents, fieldsToExportStr, format, table)
+		GenerateByContent(contents, fieldsToExportStr, format, table)
 
 	} else { // gen from protobuf
 		buf, pth := gen.GenerateFromProtobuf(files[0])
@@ -63,7 +61,20 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
 
-	rows, colIsNumArr, err := gen.GenerateFromContent(contents, &fieldsToExport)
+	var rows [][]string
+	var colIsNumArr []bool
+	var err error
+
+	cacheKey, cacheOpt, hasCache := gen.ParseCache()
+	if hasCache && cacheOpt != "new" { // retrieve from cache
+		rows, colIsNumArr, err = gen.RetrieveCache(cacheKey, &fieldsToExport)
+		vari.DefType = constant.DefTypeText
+
+	} else { // gen new data and save
+		rows, colIsNumArr, err = gen.GenerateFromContent(contents, &fieldsToExport)
+		gen.CreateCache(cacheKey, fieldsToExport, rows, colIsNumArr)
+	}
+
 	if err != nil {
 		return
 	}
@@ -81,16 +92,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 
 	// article need to write to more than one files
 	if isGenArticle(format) {
-		var filePath = logUtils.FileWriter.Name()
-		defer logUtils.FileWriter.Close()
-		fileUtils.RmFile(filePath)
-
-		for index, line := range lines {
-			articlePath := fileUtils.GenArticleFiles(filePath, index)
-			fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
-			fmt.Fprint(fileWriter, line)
-			fileWriter.Close()
-		}
+		gen.GenArticle(lines)
 	}
 
 	count = len(rows)
@@ -112,5 +114,5 @@ func isFromExcel(format string) bool {
 }
 
 func isGenArticle(format string) bool {
-	return format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle
+	return format == constant.FormatText && vari.Def.Type == constant.DefTypeArticle
 }

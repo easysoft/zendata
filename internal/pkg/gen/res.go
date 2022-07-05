@@ -61,7 +61,7 @@ func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string]
 		for key, val := range valueMap {
 			resKey := key
 			// avoid article key to be duplicate
-			if vari.Def.Type == constant.ConfigTypeArticle {
+			if vari.Def.Type == constant.DefTypeArticle {
 				resKey = resKey + "_" + field.Field
 			}
 			(*res)[getFromKey(field)][resKey] = val
