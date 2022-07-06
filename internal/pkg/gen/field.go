@@ -2,6 +2,7 @@ package gen
 
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 )
 
@@ -21,9 +22,9 @@ func CreateField(field *model.DefField) model.FieldWithValues {
 	if field.Type == constant.FieldTypeList {
 		CreateListField(field, &fieldWithValue)
 	} else if field.Type == constant.FieldTypeTimestamp {
-		CreateTimestampField(field, &fieldWithValue)
+		valueGen.CreateTimestampField(field, &fieldWithValue)
 	} else if field.Type == constant.FieldTypeUlid {
-		CreateUlidField(field, &fieldWithValue)
+		valueGen.CreateUlidField(field, &fieldWithValue)
 	} else if field.Type == constant.FieldTypeArticle {
 		CreateArticleField(field, &fieldWithValue)
 	}

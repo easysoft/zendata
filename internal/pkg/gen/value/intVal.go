@@ -1,4 +1,4 @@
-package gen
+package valueGen
 
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"

@@ -2,6 +2,7 @@ package gen
 
 import (
 	"fmt"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"log"
 	"os"
 	"strconv"
@@ -41,7 +42,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 
 	list, fieldSelect := ReadDataFromSQLite(*field, dbName, sheet, total, filePath)
 	// get index for data retrieve
-	numbs := GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1, "")
+	numbs := valueGen.GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1, "")
 	// get data by index
 	index := 0
 	for _, numb := range numbs {

@@ -3,6 +3,7 @@ package gen
 import (
 	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"math"
 	"strconv"
 	"strings"
@@ -159,8 +160,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 
 		step = stepf
 
-		precision1, step1 := GetPrecision(start, step)
-		precision2, step2 := GetPrecision(end, step)
+		precision1, step1 := valueGen.GetPrecision(start, step)
+		precision2, step2 := valueGen.GetPrecision(end, step)
 		if precision1 < precision2 {
 			precision = precision2
 			step = step2
@@ -307,17 +308,17 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = GenerateIntItems(startInt, endInt, step.(int), rand, repeat, repeatTag)
+		items = valueGen.GenerateIntItems(startInt, endInt, step.(int), rand, repeat, repeatTag)
 
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItems(startFloat, endFloat, step, rand, precision, repeat, repeatTag)
+		items = valueGen.GenerateFloatItems(startFloat, endFloat, step, rand, precision, repeat, repeatTag)
 
 	} else if dataType == "char" {
-		items = GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat, repeatTag)
+		items = valueGen.GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat, repeatTag)
 
 	} else if dataType == "string" {
 		if repeat == 0 {

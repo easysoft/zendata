@@ -3,6 +3,7 @@ package gen
 import (
 	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -61,7 +62,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 		}
 
 		// get index for data retrieve
-		numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1, "")
+		numbs := valueGen.GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1, "")
 		// gen data by index
 		count := 0
 		if repeatTag == "" {

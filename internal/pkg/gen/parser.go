@@ -3,6 +3,7 @@ package gen
 import (
 	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/const"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"regexp"
@@ -160,7 +161,7 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 				values := CreateValuesFromInterval(&tempField, item, "", 1, "")
 
 				for _, val := range values {
-					temp += InterfaceToStr(val) + ","
+					temp += valueGen.InterfaceToStr(val) + ","
 				}
 			} else {
 				temp += item + ","
