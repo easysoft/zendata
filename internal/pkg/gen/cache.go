@@ -12,6 +12,10 @@ import (
 )
 
 func ParseCache() (cacheKey, cacheOpt string, hasCache bool) {
+	if vari.CacheParam == "" {
+		return
+	}
+
 	arr := strings.Split(vari.CacheParam, "=")
 
 	if len(arr) > 0 {

@@ -31,7 +31,7 @@ func LoadResDef(fieldsToExport []string) (res map[string]map[string][]string) {
 }
 
 func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string][]string) {
-	if len(field.Fields) > 0 { // sub fields
+	if len(field.Fields) > 0 { // child fields
 		for _, child := range field.Fields {
 			if child.Use != "" && child.From == "" {
 				child.From = field.From
@@ -113,18 +113,21 @@ func getResFromYaml(resFile string) (valueMap map[string][]string) { // , resNam
 		insts.FileDir = fileUtils.GetAbsDir(resFile)
 		valueMap = getResFromInstances(insts)
 		//resName = insts.Field
+
 	} else {
 		ranges := model.ResRanges{}
 		err = yaml.Unmarshal(yamlContent, &ranges)
 		if err == nil && ranges.Ranges != nil && len(ranges.Ranges) > 0 { // ranges
 			valueMap = getResFromRanges(ranges)
 			//resName = ranges.Field
+
 		} else {
 			configRes := model.DefField{}
 			err = yaml.Unmarshal(yamlContent, &configRes)
 			if err == nil { // config
 				valueMap = getResForConfig(configRes)
 				//resName = configRes.Field
+
 			}
 		}
 	}
@@ -157,7 +160,6 @@ func getResFromRanges(ranges model.ResRanges) map[string][]string {
 
 	for group, expression := range ranges.Ranges {
 		field := convertRangesToField(ranges, expression)
-
 		groupedValue[group] = GenerateForFieldRecursive(&field, false)
 	}
 

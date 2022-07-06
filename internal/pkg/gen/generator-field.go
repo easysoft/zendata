@@ -65,19 +65,13 @@ func genValuesForChildFields(field *model.DefField, withFix bool) (values []stri
 	}
 
 	// 3. get combined values for parent field
-	count := vari.Total
-	count = getRecordCount(arrOfArr)
-	if count > vari.Total {
-		count = vari.Total
-	}
-
-	recursive := vari.Recursive
+	isRecursive := vari.Recursive
 	if stringUtils.InArray(field.Mode, constant.Modes) { // set on field level
-		recursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
+		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
 
-	values = combineChildrenValues(arrOfArr, recursive)
-	values = loopFieldValues(field, values, count, true)
+	values = combineChildrenValues(arrOfArr, isRecursive)
+	values = loopFieldValues(field, values, len(values), true)
 
 	return
 }
@@ -371,19 +365,28 @@ func computerLoop(field *model.DefField) {
 	(*field).LoopIndex = (*field).LoopStart
 }
 
-func putChildrenToArr(arrOfArr [][]string, recursive bool) (values [][]string) {
+func populateRowsFromTwoDimArr(arrOfArr [][]string, isRecursive, isOnTopLevel bool) (values [][]string) {
+	count := vari.Total
+	if !isOnTopLevel {
+		if isRecursive {
+			count = getRecordCountForRecursive(arrOfArr)
+		} else {
+			count = getRecordCountForParallel(arrOfArr)
+		}
+	}
+
 	indexArr := make([]int, 0)
-	if recursive {
+	if isRecursive {
 		indexArr = getModArr(arrOfArr)
 	}
 
-	for i := 0; i < vari.Total; i++ {
+	for i := 0; i < count; i++ {
 		strArr := make([]string, 0)
 		for j := 0; j < len(arrOfArr); j++ {
 			child := arrOfArr[j]
 
 			var index int
-			if recursive {
+			if isRecursive {
 				mod := indexArr[j]
 				index = i / mod % len(child)
 			} else {
@@ -428,8 +431,8 @@ func randomValues(values []string) (ret []string) {
 	return
 }
 
-func combineChildrenValues(arrOfArr [][]string, recursive bool) (ret []string) {
-	valueArr := putChildrenToArr(arrOfArr, recursive)
+func combineChildrenValues(arrOfArr [][]string, isRecursive bool) (ret []string) {
+	valueArr := populateRowsFromTwoDimArr(arrOfArr, isRecursive, false)
 
 	for _, arr := range valueArr {
 		ret = append(ret, strings.Join(arr, ""))
@@ -437,7 +440,23 @@ func combineChildrenValues(arrOfArr [][]string, recursive bool) (ret []string) {
 	return
 }
 
-func getRecordCount(arrOfArr [][]string) int {
+func getRecordCountForParallel(arrOfArr [][]string) int {
+	// get max count of 2nd dim arr
+	count := 1
+	for _, arr := range arrOfArr {
+		if count < len(arr) {
+			count = len(arr)
+		}
+	}
+
+	if count > vari.Total {
+		count = vari.Total
+	}
+
+	return count
+}
+
+func getRecordCountForRecursive(arrOfArr [][]string) int {
 	count := 1
 	for i := 0; i < len(arrOfArr); i++ {
 		arr := arrOfArr[i]
@@ -543,18 +562,19 @@ exit:
 			break exit
 		}
 		if v.numLimit != 0 { // privateB{n}
-			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < vari.Total; i++ {
+			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.Total; i++ {
 				index := i / v.repeat
 				ret = append(ret, arr[index])
 				count++
 			}
 		} else { // privateA
-			for i := 0; i < vari.Total; i++ {
+			for i := 0; i < len(arr) && i < vari.Total; i++ {
 				index := i / v.repeat % len(arr)
 				ret = append(ret, arr[index])
 				count++
 			}
 		}
+
 		if count >= vari.Total {
 			break exit
 		}
