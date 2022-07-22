@@ -11,22 +11,28 @@ import (
 	"strings"
 )
 
-func ParseCache() (cacheKey, cacheOpt string, hasCache bool) {
+func ParseCache() (cacheKey, cacheOpt string, batch int, hasCache, isBatch bool) {
 	if vari.CacheParam == "" {
 		return
 	}
 
-	arr := strings.Split(vari.CacheParam, "=")
+	arr := strings.Split(vari.CacheParam, "-")
 
 	if len(arr) > 0 {
 		cacheKey = arr[0]
 	}
 
 	if len(arr) > 1 {
-		cacheOpt = arr[1]
-	} else {
-		hasCache = HasCache(cacheKey)
+		var err error
+		batch, err = strconv.Atoi(arr[1])
+
+		if err != nil {
+			cacheOpt = arr[1]
+		}
+
 	}
+
+	hasCache, isBatch = HasCache(cacheKey)
 
 	return
 }
@@ -69,16 +75,62 @@ func RetrieveCache(cacheKey string, fieldsToExport *[]string) (rows [][]string, 
 	return
 }
 
-func CreateCache(cacheKey string, fieldsToExport []string, rows [][]string, colIsNumArr []bool) (err error) {
-	ClearCache(cacheKey)
-	CreateCacheTable(cacheKey, fieldsToExport)
+func RetrieveCacheBatch(cacheKey string, fieldsToExport *[]string, batch int) (
+	rows [][]string, colIsNumArr []bool, err error) {
 
-	err = SaveCache(cacheKey, fieldsToExport, rows, colIsNumArr)
+	cacheKey = getBatchKey(cacheKey, batch)
+
+	record := iris.Map{}
+	baseKey := removeBatchNumInKey(cacheKey)
+	sql2 := "SELECT * FROM `" + getTableNameIsNum(baseKey) + "`;"
+	err = vari.DB.Raw(sql2).
+		Scan(&record).
+		Error
+
+	colIsNumArr = stringToBoolArr(record["is_nums"].(string))
+
+	selectedCols := ""
+	if len(*fieldsToExport) > 0 {
+		selectedCols = strings.Join(*fieldsToExport, ",")
+	} else {
+		selectedCols = record["fields"].(string)
+		*fieldsToExport = strings.Split(selectedCols, ",")
+	}
+
+	var records []iris.Map
+	sql := "SELECT " + selectedCols +
+		" FROM " + getTableName(cacheKey) +
+		" LIMIT " + strconv.Itoa(vari.Total) + " ;"
+	err = vari.DB.Raw(sql).
+		Scan(&records).
+		Error
+
+	selectedColArr := strings.Split(selectedCols, ",")
+	for _, record := range records {
+		row := make([]string, 0)
+		for _, col := range selectedColArr {
+			row = append(row, record[col].(string))
+		}
+
+		rows = append(rows, row)
+	}
 
 	return
 }
 
-func SaveCache(cacheKey string, fieldsToExport []string, rows [][]string, colIsNumArr []bool) (err error) {
+func CreateCache(cacheKey string, fieldsToExport []string, rows [][]string, colIsNumArr []bool) {
+	ClearCache(cacheKey)
+
+	CreateCacheIsNumTable(cacheKey, fieldsToExport)
+	CreateCacheDataTable(cacheKey, fieldsToExport)
+
+	CreateCacheData(cacheKey, fieldsToExport, rows)
+	CreateCacheIsNum(cacheKey, fieldsToExport, colIsNumArr)
+
+	return
+}
+
+func CreateCacheData(cacheKey string, fieldsToExport []string, rows [][]string) (err error) {
 	insertTemplate := "INSERT INTO `" + getTableName(cacheKey) + "` (%s) VALUES %s;"
 
 	cols := make([]string, 0)
@@ -103,6 +155,10 @@ func SaveCache(cacheKey string, fieldsToExport []string, rows [][]string, colIsN
 		logUtils.PrintLine(i118Utils.I118Prt.Sprintf("fail_to_exec_query", insertSql, err.Error()))
 	}
 
+	return
+}
+
+func CreateCacheIsNum(cacheKey string, fieldsToExport []string, colIsNumArr []bool) (err error) {
 	insertTemplate2 := "INSERT INTO `" + getTableNameIsNum(cacheKey) +
 		"` (is_nums, fields) VALUES ('%s', '%s');"
 	insertSql2 := fmt.Sprintf(insertTemplate2, boolArrToString(colIsNumArr), strings.Join(fieldsToExport, ","))
@@ -114,7 +170,7 @@ func SaveCache(cacheKey string, fieldsToExport []string, rows [][]string, colIsN
 	return
 }
 
-func CreateCacheTable(cacheKey string, fieldsToExport []string) (err error) {
+func CreateCacheDataTable(cacheKey string, fieldsToExport []string) (err error) {
 	var ddlFields []string
 
 	for _, colName := range fieldsToExport {
@@ -135,6 +191,10 @@ func CreateCacheTable(cacheKey string, fieldsToExport []string) (err error) {
 		return
 	}
 
+	return
+}
+
+func CreateCacheIsNumTable(cacheKey string, fieldsToExport []string) (err error) {
 	ddlTemplate2 :=
 		`CREATE TABLE %s (
 			id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -143,6 +203,8 @@ func CreateCacheTable(cacheKey string, fieldsToExport []string) (err error) {
 		);`
 	ddlSql2 := fmt.Sprintf(ddlTemplate2, getTableNameIsNum(cacheKey))
 	err = vari.DB.Exec(ddlSql2).Error
+
+	c.Inc("is_nums_table_created")
 
 	return
 }
@@ -176,15 +238,40 @@ func ClearAllCache() (err error) {
 	return
 }
 
-func HasCache(key string) (hasCache bool) {
+func ClearBatchCache(key string) (err error) {
+	tables := make([]string, 0)
+	vari.DB.Raw("SELECT name fROM sqlite_master").
+		Scan(&tables)
+
+	for _, table := range tables {
+		batchTablePrefix := fmt.Sprintf("%s%s_", constant.CachePrefix, key)
+		if strings.Index(table, batchTablePrefix) < 0 {
+			continue
+		}
+		dropSql := fmt.Sprintf("DROP TABLE IF EXISTS %s;", table)
+		err = vari.DB.Exec(dropSql).Error
+	}
+
+	return
+}
+
+func HasCache(key string) (hasCache, isBatch bool) {
 	records := make(iris.Map, 0)
 
 	err := vari.DB.Raw(fmt.Sprintf("select id from %s LIMIT 1", getTableName(key))).
 		Scan(&records).
 		Error
-
 	if err == nil && len(records) > 0 {
 		hasCache = true
+		return
+	}
+
+	err = vari.DB.Raw(fmt.Sprintf("select id from %s LIMIT 1", getTableName(key)+"_0")).
+		Scan(&records).
+		Error
+	if err == nil && len(records) > 0 {
+		hasCache = true
+		isBatch = true
 	}
 
 	return

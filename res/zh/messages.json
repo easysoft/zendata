@@ -247,6 +247,11 @@
     {
       "id" : "success_to_clear_all_cache",
       "translation": "成功清除所有缓存。"
+    },
+    {
+      "id" : "miss_cache_param",
+      "translation": "生成数量超多%d，请提供-cache参数。"
     }
+
   ]
 }

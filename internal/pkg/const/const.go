@@ -34,8 +34,8 @@ var (
 
 	CmdViewHeight = 10
 
-	MaxNumb = 100000 // max number in array
-	//MaxNumbForLangeRange = 1000000
+	MaxNumb         = 100000
+	MaxNumbForAsync = 100
 
 	FormatText  = "text"
 	FormatJson  = "json"

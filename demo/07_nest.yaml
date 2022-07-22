@@ -1,6 +1,10 @@
+title: range
+desc: 描述
+version: 1.0
+
 fields:
   - field: f1
-    range: 1-5
+    range: 1-6
     postfix: "\t"
 
   - field: field_loop       # 自循环的字段。
@@ -9,10 +13,10 @@ fields:
     loopfix: _              # 每次循环的连接符。
     postfix: "\t"
 
-#  - field: f2
-#    from: zentao.number.v1.yaml
-#    use: small
-#    postfix: "\t"
+  - field: f2
+    from: zentao.number.v1.yaml
+    use: small
+    postfix: "\t"
 
   - field: nesting          # 字段多层嵌套
     mode: r

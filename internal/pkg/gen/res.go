@@ -149,7 +149,7 @@ func getResFromInstances(insts model.ResInstances) (groupedValue map[string][]st
 		// gen values
 		fieldFromInst := convertInstantToField(insts, inst)
 		group := inst.Instance
-		groupedValue[group] = GenerateForFieldRecursive(&fieldFromInst, false)
+		groupedValue[group] = GenerateForFieldRecursive(&fieldFromInst, false, vari.Total)
 	}
 
 	return groupedValue
@@ -160,7 +160,7 @@ func getResFromRanges(ranges model.ResRanges) map[string][]string {
 
 	for group, expression := range ranges.Ranges {
 		field := convertRangesToField(ranges, expression)
-		groupedValue[group] = GenerateForFieldRecursive(&field, false)
+		groupedValue[group] = GenerateForFieldRecursive(&field, false, vari.Total)
 	}
 
 	return groupedValue
@@ -196,7 +196,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 
 					// gen values
 					group := referencedInst.Instance
-					groupedValueReferenced[group] = GenerateForFieldRecursive(&field, false)
+					groupedValueReferenced[group] = GenerateForFieldRecursive(&field, false, vari.Total)
 				}
 			}
 
@@ -268,7 +268,7 @@ func getResForConfig(configRes model.DefField) map[string][]string {
 	groupedValue := map[string][]string{}
 
 	// config field is a standard field
-	groupedValue["all"] = GenerateForFieldRecursive(&configRes, false)
+	groupedValue["all"] = GenerateForFieldRecursive(&configRes, false, vari.Total)
 
 	return groupedValue
 }

@@ -254,6 +254,10 @@
     {
       "id" : "success_to_clear_all_cache",
       "translation": "Success to clear all cache."
+    },
+    {
+      "id" : "miss_cache_param",
+      "translation": "Please provide -cache parameter if record number is larger than %d."
     }
   ]
 }

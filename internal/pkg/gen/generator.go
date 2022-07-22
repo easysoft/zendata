@@ -25,9 +25,9 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	fixTotalNum()
 	genResData(fieldsToExport)
 
-	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr)
-	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport)
-	rows = populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true)
+	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.Total)
+	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, vari.Total)
+	rows = populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true, vari.Total)
 
 	return
 }
@@ -43,23 +43,23 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	return
 }
 
-func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []string) {
+func GenerateForFieldRecursive(field *model.DefField, withFix bool, total int) (values []string) {
 	dealwithFixRange(field)
 
 	if len(field.Fields) > 0 { // has child fields
-		values = genValuesForChildFields(field, withFix)
+		values = genValuesForChildFields(field, withFix, total)
 
 	} else if len(field.Froms) > 0 { // refer to multi res
-		values = genValuesForMultiRes(field, withFix)
+		values = genValuesForMultiRes(field, withFix, total)
 
 	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
-		values = genValuesForSingleRes(field)
+		values = genValuesForSingleRes(field, total)
 
 	} else if field.Config != "" { // refer to config
-		values = genValuesForConfig(field)
+		values = genValuesForConfig(field, total)
 
 	} else { // leaf field
-		values = GenerateValuesForField(field)
+		values = GenerateValuesForField(field, total)
 	}
 
 	if field.Rand && field.Type != constant.FieldTypeArticle {
@@ -69,7 +69,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []st
 	return values
 }
 
-func GenerateValuesForField(field *model.DefField) []string {
+func GenerateValuesForField(field *model.DefField, total int) []string {
 	values := make([]string, 0)
 
 	fieldWithValues := CreateField(field)
@@ -93,7 +93,7 @@ func GenerateValuesForField(field *model.DefField) []string {
 			!(*field).ReferToAnotherYaml &&
 			(*field).IsRand && (*field).LoopIndex > (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
-		if count >= vari.Total || count >= uniqueTotal || isRandomAndLoopEnd {
+		if count >= total || count >= uniqueTotal || isRandomAndLoopEnd {
 			for _, v := range fieldWithValues.Values {
 				str := fmt.Sprintf("%v", v)
 				str = addFix(str, field, count, true)
@@ -108,7 +108,7 @@ func GenerateValuesForField(field *model.DefField) []string {
 
 		count++
 
-		if count >= vari.Total || count >= uniqueTotal {
+		if count >= total || count >= uniqueTotal {
 			break
 		}
 
@@ -150,7 +150,7 @@ func genResData(fieldsToExport *[]string) {
 	vari.ResLoading = false
 }
 
-func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool) (topLevelFieldNameToValuesMap map[string][]string) {
+func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool, total int) (topLevelFieldNameToValuesMap map[string][]string) {
 	topLevelFieldNameToValuesMap = map[string][]string{}
 
 	for index, field := range vari.Def.Fields {
@@ -161,7 +161,11 @@ func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool) (topLevelField
 		if field.Use != "" && field.From == "" {
 			field.From = vari.Def.From
 		}
-		values := GenerateForFieldRecursive(&field, true)
+		values := GenerateForFieldRecursive(&field, true, total)
+
+		if index > len(vari.Def.Fields)-1 {
+			logUtils.PrintLine("")
+		}
 
 		vari.Def.Fields[index].Precision = field.Precision
 
@@ -172,7 +176,7 @@ func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool) (topLevelField
 	return
 }
 
-func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsToExport *[]string) (
+func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsToExport *[]string, total int) (
 	arrOfArr [][]string) { // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 
 	for _, child := range vari.Def.Fields {
@@ -203,19 +207,19 @@ func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsTo
 
 				//	问题描述：
 				//	原代码为：`selectCount := vari.Toal / len(selects)`
-				//	因为整除的向下取整，如果`len(selects)`为3，`vari.Total`为8，则`selectCount`为2
+				//	因为整除的向下取整，如果`len(selects)`为3，`total`为8，则`selectCount`为2
 				//	对于每一个`selects`的元素来说，都只会查两个元素，这样加起来一共只有6个结果，
 				//	导致另外两个结果只能通过重复查到的数据的方式补充。
 				//	解决方案：
-				//  将代码改为: `selectCount := vari.Total / len(selects) + 1`,以达到使用人员的真正想要的
+				//  将代码改为: `selectCount := total / len(selects) + 1`,以达到使用人员的真正想要的
 				//	即查到足够的数量，而不是通过重复补齐
-				selectCount := vari.Total/len(selects) + 1
+				selectCount := total/len(selects) + 1
 				mp := generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
 				for _, items := range mp {
 					childMapValues = append(childMapValues, items)
 				}
 			}
-			for index := 0; len(childValues) < vari.Total; {
+			for index := 0; len(childValues) < total; {
 				for i, _ := range selects {
 					childValues = append(childValues, childMapValues[i][index%len(childMapValues[i])])
 				}

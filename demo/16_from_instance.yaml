@@ -3,5 +3,3 @@ fields:
     from: ip.v1.yaml               # yaml/ip/v1.yaml
     use: privateB{3},privateC{6:2} # 使用该文件中定义的2个实例，privateB取3行，privateC取6行（前3个值各重复2次）。
     postfix: "\t"
-
-

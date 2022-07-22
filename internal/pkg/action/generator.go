@@ -65,14 +65,28 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	var colIsNumArr []bool
 	var err error
 
-	cacheKey, cacheOpt, hasCache := gen.ParseCache()
+	cacheKey, cacheOpt, batch, hasCache, isBatch := gen.ParseCache()
 	if hasCache && cacheOpt != "new" { // retrieve from cache
-		rows, colIsNumArr, err = gen.RetrieveCache(cacheKey, &fieldsToExport)
+		if !isBatch {
+			rows, colIsNumArr, err = gen.RetrieveCache(cacheKey, &fieldsToExport)
+		} else {
+			rows, colIsNumArr, err = gen.RetrieveCacheBatch(cacheKey, &fieldsToExport, batch)
+		}
+
 		vari.DefType = constant.DefTypeText
 
-	} else { // gen new data and save
+	} else if cacheKey != "" {
+		if vari.Total > constant.MaxNumbForAsync { // gen batch data and cache
+			rows, colIsNumArr, err = gen.SyncGenCacheAndReturnFirstPart(contents, &fieldsToExport)
+		} else {
+			rows, colIsNumArr, err = gen.GenerateFromContent(contents, &fieldsToExport)
+			gen.CreateCache(cacheKey, fieldsToExport, rows, colIsNumArr)
+		}
+	} else if cacheKey == "" && vari.Total > constant.MaxNumbForAsync {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("miss_cache_param", constant.MaxNumbForAsync))
+		return
+	} else {
 		rows, colIsNumArr, err = gen.GenerateFromContent(contents, &fieldsToExport)
-		gen.CreateCache(cacheKey, fieldsToExport, rows, colIsNumArr)
 	}
 
 	if err != nil {

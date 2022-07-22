@@ -37,7 +37,7 @@ func dealwithFixRange(field *model.DefField) {
 	}
 }
 
-func genValuesForChildFields(field *model.DefField, withFix bool) (values []string) {
+func genValuesForChildFields(field *model.DefField, withFix bool, total int) (values []string) {
 	fieldNameToValuesMap := map[string][]string{} // refer field name to values
 	fieldMap := map[string]model.DefField{}
 
@@ -48,7 +48,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool) (values []stri
 		}
 
 		child.FileDir = field.FileDir
-		childValues := GenerateForFieldRecursive(&child, withFix)
+		childValues := GenerateForFieldRecursive(&child, withFix, total)
 		fieldNameToValuesMap[child.Field] = childValues
 		fieldMap[child.Field] = child
 	}
@@ -70,13 +70,13 @@ func genValuesForChildFields(field *model.DefField, withFix bool) (values []stri
 		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
 
-	values = combineChildrenValues(arrOfArr, isRecursive)
+	values = combineChildrenValues(arrOfArr, isRecursive, total)
 	values = loopFieldValues(field, values, len(values), true)
 
 	return
 }
 
-func genValuesForMultiRes(field *model.DefField, withFix bool) (values []string) {
+func genValuesForMultiRes(field *model.DefField, withFix bool, total int) (values []string) {
 	unionValues := make([]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 	for _, child := range field.Froms {
 		if child.From == "" {
@@ -84,7 +84,7 @@ func genValuesForMultiRes(field *model.DefField, withFix bool) (values []string)
 		}
 
 		child.FileDir = field.FileDir
-		childValues := GenerateForFieldRecursive(&child, withFix)
+		childValues := GenerateForFieldRecursive(&child, withFix, total)
 		unionValues = append(unionValues, childValues...)
 	}
 
@@ -97,7 +97,7 @@ func genValuesForMultiRes(field *model.DefField, withFix bool) (values []string)
 	return
 }
 
-func genValuesForSingleRes(field *model.DefField) (values []string) {
+func genValuesForSingleRes(field *model.DefField, total int) (values []string) {
 	if field.Use != "" { // refer to ranges or instance
 		groupValues := vari.Res[getFromKey(field)]
 
@@ -123,16 +123,16 @@ func genValuesForSingleRes(field *model.DefField) (values []string) {
 		values = append(values, groupValues[resKey]...)
 	}
 
-	values = loopFieldValues(field, values, vari.Total, true)
+	values = loopFieldValues(field, values, total, true)
 
 	return
 }
 
-func genValuesForConfig(field *model.DefField) (values []string) {
+func genValuesForConfig(field *model.DefField, total int) (values []string) {
 	groupValues := vari.Res[field.Config]
 	values = append(values, groupValues["all"]...)
 
-	values = loopFieldValues(field, values, vari.Total, true)
+	values = loopFieldValues(field, values, total, true)
 
 	return
 }
@@ -365,8 +365,8 @@ func computerLoop(field *model.DefField) {
 	(*field).LoopIndex = (*field).LoopStart
 }
 
-func populateRowsFromTwoDimArr(arrOfArr [][]string, isRecursive, isOnTopLevel bool) (values [][]string) {
-	count := vari.Total
+func populateRowsFromTwoDimArr(arrOfArr [][]string, isRecursive, isOnTopLevel bool, total int) (values [][]string) {
+	count := total
 	if !isOnTopLevel {
 		if isRecursive {
 			count = getRecordCountForRecursive(arrOfArr)
@@ -431,8 +431,8 @@ func randomValues(values []string) (ret []string) {
 	return
 }
 
-func combineChildrenValues(arrOfArr [][]string, isRecursive bool) (ret []string) {
-	valueArr := populateRowsFromTwoDimArr(arrOfArr, isRecursive, false)
+func combineChildrenValues(arrOfArr [][]string, isRecursive bool, total int) (ret []string) {
+	valueArr := populateRowsFromTwoDimArr(arrOfArr, isRecursive, false, total)
 
 	for _, arr := range valueArr {
 		ret = append(ret, strings.Join(arr, ""))

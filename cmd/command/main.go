@@ -220,16 +220,22 @@ func toGen(files []string) {
 }
 
 func clearCache() (ret bool) {
-	cacheKey, cacheOpt, hasCache := gen.ParseCache()
+	cacheKey, cacheOpt, _, hasCache, isBatch := gen.ParseCache()
 	if cacheOpt == "clear" {
-		if cacheKey == "all" {
+		if isBatch {
+			gen.ClearBatchCache(cacheKey)
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_cache", cacheKey))
+
+		} else if cacheKey == "all" {
 			gen.ClearAllCache()
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_all_cache"))
+
 		} else {
 			if hasCache {
 				gen.ClearCache(cacheKey)
 			}
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_cache", cacheKey))
+
 		}
 
 		ret = true
