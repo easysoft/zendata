@@ -104,9 +104,9 @@ fields:
     range: user.txt:R                   # 相对当前文件路径。
     postfix: "\t"
 
-#  - field: field_yaml                   # 引用其他的定义文件整体内容。
-#    range: 01_range.yaml{3}             # 相对当前文件路径。
-#    postfix: "\t"
+  - field: field_yaml                   # 引用其他的定义文件整体内容。
+    range: 01_range.yaml{3}             # 相对当前文件路径。
+    postfix: "\t"
 
   - field: field_use_config             # 引用其他的config定义文件。
     config: number.yaml                 # 相对当前文件路径，config内包含单个字段。

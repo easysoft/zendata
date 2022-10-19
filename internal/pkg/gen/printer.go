@@ -14,7 +14,7 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
-func Print(rows [][]string, format string, table string, colIsNumArr []bool,
+func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool,
 	fields []string) (lines []interface{}) {
 
 	var sqlHeader string

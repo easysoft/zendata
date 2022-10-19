@@ -1,15 +1,32 @@
-title: zendata数据配置语法说明
-desc:
-
-author: zentao
+title: range
+desc: 描述
 version: 1.0
 
 fields:
   - field: f1
-    from: uuid.v1.yaml
-    use: by_format
+    range: 1-6
     postfix: "\t"
 
-  - field: f2
-    from: ulid.v1.yaml
-    use: ulid{3}
+  - field: nesting1
+    postfix: "\t"
+    union: true
+    fields:
+      - field: child1
+        range: A-C
+        prefix: part1_
+        postfix: ' | '
+
+      - field:  child2
+        range: 1-9
+        prefix: part2_
+
+  - field: nesting2
+    fields:
+      - field: child1
+        range: A-C
+        prefix: part1_
+        postfix: ' | '
+
+      - field:  child2
+        range: 1-9
+        prefix: part2_

@@ -14,9 +14,9 @@ import (
 )
 
 var (
-	configs     []string
-	defaultFile string
-	configFile  string
+	configs           []string
+	defaultFile       string
+	configFile        string
 	defaultDefContent []byte
 	configDefContent  []byte
 
@@ -61,6 +61,8 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		defaultFile = ""
 		configFile = ""
 	}
+
+	//writer.WriteHeader(http.StatusAccepted)
 }
 
 func genData() {

@@ -62,6 +62,6 @@ $zd.exe -p 80 -R d:\zd\config                                        # 监听80�
 
 客户端调用：
 
-$curl http://localhost:8848/?d=demo/default.yaml&c=demo/config.yaml&n=100&T=true    # 通过GET方式指定服务器端配置文件。
-$curl http://localhost:8848/?default=demo/default.yaml&output=test.sql&table=user   # 参数名可以用全拼。
-$curl -i -X POST http://localhost:8848?lines=3 -F default=@demo/default.yaml        # 可以通过POST方式上传配置文件。
+$curl http://localhost:8848/data?d=demo/default.yaml&c=demo/config.yaml&n=100&T=true    # 通过GET方式指定服务器端配置文件。
+$curl http://localhost:8848/data?default=demo/default.yaml&output=test.sql&table=user   # 参数名可以用全拼。
+$curl -i -X POST http://localhost:8848/data?lines=3 -F default=@demo/default.yaml       # 可以通过POST方式上传配置文件。

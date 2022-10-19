@@ -349,7 +349,7 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 		rows = randomValuesArr(rows)
 	}
 
-	items = Print(rows, constant.FormatData, "", colIsNumArr, fieldsToExport)
+	items = PrintLines(rows, constant.FormatData, "", colIsNumArr, fieldsToExport)
 
 	if repeat > 0 {
 		if repeat > len(items) {

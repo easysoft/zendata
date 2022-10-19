@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func Generate(files []string, fieldsToExportStr, format, table string) {
+func Generate(files []string, fieldsToExportStr, format, table string) (lines []interface{}) {
 	startTime := time.Now().Unix()
 	if len(files) == 0 {
 		return
@@ -28,7 +28,7 @@ func Generate(files []string, fieldsToExportStr, format, table string) {
 			vari.ConfigFileDir = fileUtils.GetAbsDir(files[1])
 		}
 		contents := gen.LoadFilesContents(files)
-		GenerateByContent(contents, fieldsToExportStr, format, table)
+		lines = GenerateByContent(contents, fieldsToExportStr, format, table)
 
 	} else { // gen from protobuf
 		buf, pth := gen.GenerateFromProtobuf(files[0])
@@ -94,7 +94,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	}
 
 	if !isFromExcel(format) { // returned is for preview, sql exec and article writing
-		lines = gen.Print(rows, format, table, colIsNumArr, fieldsToExport)
+		lines = gen.PrintLines(rows, format, table, colIsNumArr, fieldsToExport)
 	} else { // for Excel and cvs
 		gen.Write(rows, table, colIsNumArr, fieldsToExport)
 	}

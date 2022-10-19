@@ -114,9 +114,6 @@ func main() {
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")
 
-	flagSet.BoolVar(&help, "h", false, "")
-	flagSet.BoolVar(&help, "help", false, "")
-
 	flagSet.BoolVar(&set, "S", false, "")
 	flagSet.BoolVar(&set, "set", false, "")
 
@@ -130,6 +127,9 @@ func main() {
 	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
+
+	flagSet.BoolVar(&help, "h", false, "")
+	flagSet.BoolVar(&help, "help", false, "")
 
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, "-help")
