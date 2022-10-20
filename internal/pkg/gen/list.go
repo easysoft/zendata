@@ -136,11 +136,11 @@ func CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *
 
 func CheckRangeType(startStr string, endStr string, stepStr string) (dataType string, step interface{}, precision int,
 	rand bool, count int) {
-	step = 1
 
 	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
 
 	if start, end, stepi, ok := checkRangeTypeIsInt(startStr, endStr, stepStr); ok { // is int
+		step = 1
 		if stepStr == "r" {
 			rand = true
 		}
@@ -154,11 +154,11 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 		step = int(stepi)
 		return
 	} else if start, end, stepf, ok := checkRangeTypeIsFloat(startStr, endStr, stepStr); ok { // is float
+		step = stepf
+
 		if stepStr == "r" {
 			rand = true
 		}
-
-		step = stepf
 
 		precision1, step1 := valueGen.GetPrecision(start, step)
 		precision2, step2 := valueGen.GetPrecision(end, step)
@@ -179,6 +179,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 		return
 
 	} else if len(startStr) == 1 && len(endStr) == 1 { // is char
+		step = 1
+
 		if stepStr != "r" {
 			stepChar, errChar3 := strconv.Atoi(stepStr)
 			if errChar3 == nil {
@@ -281,6 +283,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	}
 
 	dataType, step, precision, rand, _ := CheckRangeType(startStr, endStr, stepStr)
+	field.Precision = precision
 
 	// 1. random replacement
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
@@ -295,7 +298,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		strItems = append(strItems, val)
 		//}
 
-		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, stepStr,
+		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
 			strconv.Itoa(precision), field.Format, repeat, repeatTag)
 
 		vari.RandFieldSectionShortKeysToPathMap[key] = pth
@@ -452,7 +455,7 @@ func checkRangeTypeIsInt(startStr string, endStr string, stepStr string) (
 
 func checkRangeTypeIsFloat(startStr string, endStr string, stepStr string) (
 	start float64, end float64, step float64, ok bool) {
-	step = 1.0
+
 	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
 
 	start, errFloat1 := strconv.ParseFloat(startStr, 64)
@@ -461,6 +464,8 @@ func checkRangeTypeIsFloat(startStr string, endStr string, stepStr string) (
 
 	if stepStr != "" && stepStr != "r" {
 		step, errFloat3 = strconv.ParseFloat(stepStr, 64)
+	} else {
+		step = 0
 	}
 
 	if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float

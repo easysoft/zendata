@@ -252,13 +252,17 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		format := mp["format"].(string)
 
 		strs = helper.GetRandFromRange("int", start, end, "1", repeat, repeatTag, precision, count, format)
+
 	} else if tp == "float" {
 		start := mp["start"].(string)
 		end := mp["end"].(string)
+		stepStr := fmt.Sprintf("%v", mp["step"])
+
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strs = helper.GetRandFromRange("float", start, end, "1", repeat, repeatTag, precision, count, format)
+		strs = helper.GetRandFromRange("float", start, end, stepStr, repeat, repeatTag, precision, count, format)
+
 	} else if tp == "char" {
 		start := mp["start"].(string)
 		end := mp["end"].(string)
@@ -266,9 +270,11 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		format := mp["format"].(string)
 
 		strs = helper.GetRandFromRange("char", start, end, "1", repeat, repeatTag, precision, count, format)
+
 	} else if tp == "list" {
 		list := mp["list"].([]string)
 		strs = helper.GetRandFromList(list, repeat, count)
+
 	}
 
 	strs = strs[:count]

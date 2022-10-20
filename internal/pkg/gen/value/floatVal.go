@@ -129,30 +129,38 @@ func generateFloatItemsRand(start float64, end float64, step float64, precision,
 }
 
 func GetPrecision(base float64, step interface{}) (precision int, newStep float64) {
-	var flt float64 = 1
-	if step == nil {
-		step = flt
-	}
-	str1 := strconv.FormatFloat(base, 'f', -1, 64)
+	baseStr := strconv.FormatFloat(base, 'f', -1, 64)
+
 	var stepFloat float64 = 1
+
 	switch step.(type) {
 	case float64:
 		stepFloat = step.(float64)
 	case int:
 		stepFloat = float64(step.(int))
 	}
-	str2 := strconv.FormatFloat(stepFloat, 'f', -1, 64)
+	stepStr := strconv.FormatFloat(stepFloat, 'f', -1, 64)
 
-	index1 := strings.LastIndex(str1, ".")
-	index2 := strings.LastIndex(str2, ".")
+	baseIndex := strings.LastIndex(baseStr, ".")
+	stepIndex := strings.LastIndex(stepStr, ".")
 
-	if index1 < index2 {
-		precision = len(str1) - index1 - 1
-	} else {
-		precision = len(str2) - index2 - 1
+	if baseIndex < 0 {
+		baseIndex = 0
+	}
+	if stepIndex < 0 {
+		stepIndex = 0
 	}
 
-	if step == nil || step == 0 {
+	baseWidth := len(baseStr) - baseIndex - 1
+	stepWidth := len(stepStr) - stepIndex - 1
+
+	if baseWidth > stepWidth {
+		precision = baseWidth
+	} else {
+		precision = stepWidth
+	}
+
+	if step == nil || step.(float64) == 0 {
 		newStep = float64(1)
 		for i := 0; i < precision; i++ {
 			newStep = newStep / 10
@@ -176,7 +184,7 @@ func InterfaceToStr(val interface{}) string {
 	case int64:
 		str = strconv.FormatInt(val.(int64), 10)
 	case float64:
-		precision, _ := GetPrecision(val.(float64), nil)
+		precision, _ := GetPrecision(val.(float64), 0)
 		str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
 	case byte:
 		str = string(val.(byte))

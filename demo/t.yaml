@@ -4,29 +4,29 @@ version: 1.0
 
 fields:
   - field: f1
-    range: 1-6
+    range: 1.001-9:R
     postfix: "\t"
 
-  - field: nesting1
-    postfix: "\t"
-    union: true
-    fields:
-      - field: child1
-        range: A-C
-        prefix: part1_
-        postfix: ' | '
-
-      - field:  child2
-        range: 1-9
-        prefix: part2_
-
-  - field: nesting2
-    fields:
-      - field: child1
-        range: A-C
-        prefix: part1_
-        postfix: ' | '
-
-      - field:  child2
-        range: 1-9
-        prefix: part2_
+#  - field: nesting1
+#    postfix: "\t"
+#    union: true
+#    fields:
+#      - field: child1
+#        range: A-C
+#        prefix: part1_
+#        postfix: ' | '
+#
+#      - field:  child2
+#        range: 1-9
+#        prefix: part2_
+#
+#  - field: nesting2
+#    fields:
+#      - field: child1
+#        range: A-C
+#        prefix: part1_
+#        postfix: ' | '
+#
+#      - field:  child2
+#        range: 1-9
+#        prefix: part2_
