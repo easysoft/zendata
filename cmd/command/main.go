@@ -197,9 +197,12 @@ func toGen(files []string) {
 			return
 		}
 
-		if err := getFormat(); err != nil {
+		err := getFormat()
+		defer logUtils.FileWriter.Close()
+		if err != nil {
 			return
 		}
+
 		action.Generate(files, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeParse {
@@ -265,9 +268,9 @@ func getFormat() (err error) {
 			logUtils.FilePath = vari.Out
 		} else {
 			logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
-			defer logUtils.FileWriter.Close()
 		}
 	}
+
 	if vari.DBDsn != "" {
 		vari.Format = constant.FormatSql
 	}

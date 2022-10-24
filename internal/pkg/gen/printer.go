@@ -21,15 +21,19 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 
 	if format == constant.FormatText {
 		printTextHeader(fields)
+
 	} else if format == constant.FormatSql {
 		sqlHeader = getInsertSqlHeader(fields, table)
 		if vari.DBDsn != "" {
 			lines = append(lines, sqlHeader)
 		}
+
 	} else if format == constant.FormatJson {
 		printJsonHeader()
+
 	} else if format == constant.FormatXml {
 		printXmlHeader(fields, table)
+
 	}
 
 	for i, cols := range rows {
@@ -153,14 +157,16 @@ func printXmlHeader(fields []string, table string) {
 	logUtils.PrintLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<testdata>\n  <title>Test Data</title>")
 }
 
-func RowToJson(cols []string, fieldsToExport []string) string {
+func rowToJson(cols []string, fieldsToExport []string) string {
 	rowMap := map[string]string{}
 	for j, col := range cols {
 		rowMap[fieldsToExport[j]] = col
 	}
 
-	jsonObj, _ := json.Marshal(rowMap)
+	jsonObj, _ := json.MarshalIndent(rowMap, "", "\t")
 	respJson := string(jsonObj)
+
+	respJson = strings.ReplaceAll("\t"+respJson, "\n", "\n\t")
 
 	return respJson
 }
@@ -181,7 +187,7 @@ func genSqlLine(sqlheader string, values []string, dbtype string) string {
 }
 
 func genJsonLine(i int, row []string, length int, fields []string) string {
-	temp := "  " + RowToJson(row, fields)
+	temp := rowToJson(row, fields)
 	if i < length-1 {
 		temp = temp + ", "
 	} else {
