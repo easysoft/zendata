@@ -3,9 +3,18 @@ desc: 描述
 version: 1.0
 
 fields:
-  - field: f1
-    range: 1.001-9:R
+  - field: name # 操作员姓名
     postfix: "\t"
+    fields:
+    - field: family_name
+      from: name.cn.family.v2.chinese_family
+      select: name
+      rand: true
+
+    - field: given_name
+      from: name.cn.given.v2.chinese_given
+      select: name
+      where: id = 3
 
 #  - field: nesting1
 #    postfix: "\t"

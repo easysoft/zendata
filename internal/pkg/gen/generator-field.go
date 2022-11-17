@@ -424,8 +424,8 @@ func randomInterfaces(values []interface{}) (ret []interface{}) {
 func randomValues(values []string) (ret []string) {
 	length := len(values)
 	for i := 0; i < length; i++ {
-		val := commonUtils.RandNum(length)
-		ret = append(ret, values[val])
+		num := commonUtils.RandNum(length * 10000)
+		ret = append(ret, values[num%len(values)])
 	}
 
 	return
