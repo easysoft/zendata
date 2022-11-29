@@ -43,6 +43,7 @@ var (
 	//count       int
 	fields string
 
+	uuid   = ""
 	root   string
 	input  string
 	decode bool
@@ -69,6 +70,8 @@ func main() {
 	}()
 
 	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
+
+	flagSet.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
 
 	flagSet.StringVar(&defaultFile, "d", "", "")
 	flagSet.StringVar(&defaultFile, "default", "", "")

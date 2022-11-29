@@ -10,7 +10,7 @@ BIN_OUT=${BIN_DIR}/${PROJECT}/${VERSION}/
 BIN_WIN64=${BIN_OUT}win64/${BINARY}/
 BIN_WIN32=${BIN_OUT}win32/${BINARY}/
 BIN_LINUX=${BIN_OUT}linux/${BINARY}/
-BIN_MAC=${BIN_OUT}mac/${BINARY}/
+BIN_MAC=${BIN_OUT}darwin/${BINARY}/
 
 default: update_version_in_config gen_version_file prepare_res compile_all copy_files package
 
@@ -34,19 +34,19 @@ build_ui:
 
 compile_win64:
 	@echo 'start compile win64'
-	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -ldflags "-s -w" -o ${BIN_WIN64}${BINARY}.exe src/zd.go
+	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -ldflags "-s -w" -o ${BIN_WIN64}${BINARY}.exe cmd/command/main.go
 
 compile_win32:
 	@echo 'start compile win32'
-	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -x -v -ldflags "-s -w" -o ${BIN_WIN32}${BINARY}.exe src/zd.go
+	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -x -v -ldflags "-s -w" -o ${BIN_WIN32}${BINARY}.exe cmd/command/main.go
 
 compile_linux:
 	@echo 'start compile linux'
-	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ go build -o ${BIN_LINUX}${BINARY} src/zd.go
+	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ go build -o ${BIN_LINUX}${BINARY} cmd/command/main.go
 
 compile_mac:
 	@echo 'start compile mac'
-	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -o ${BIN_MAC}${BINARY} src/zd.go
+	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -o ${BIN_MAC}${BINARY} cmd/command/main.go
 
 copy_files:
 	@echo 'start copy files'
@@ -61,9 +61,9 @@ copy_files:
 	@rm -rf ${BIN_OUT}linux/${BINARY}/runtime/php \
 		${BIN_OUT}linux/${BINARY}/runtime/protobuf/bin/mac \
 		${BIN_OUT}linux/${BINARY}/runtime/protobuf/bin/win*
-	@rm -rf ${BIN_OUT}mac/${BINARY}/runtime/php \
-		${BIN_OUT}mac/${BINARY}/runtime/protobuf/bin/linux \
-		${BIN_OUT}mac/${BINARY}/runtime/protobuf/bin/win*
+	@rm -rf ${BIN_OUT}darwin/${BINARY}/runtime/php \
+		${BIN_OUT}darwin/${BINARY}/runtime/protobuf/bin/linux \
+		${BIN_OUT}darwin/${BINARY}/runtime/protobuf/bin/win*
 	@rm -rf ${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/mac \
 		${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/linux \
 		${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/win64
@@ -97,4 +97,4 @@ upload_to:
 	@echo 'upload...'
 	@find ${QINIU_DIR} -name ".DS_Store" -type f -delete
 	@qshell qupload2 --src-dir=${QINIU_DIR} --bucket=download --thread-count=10 --log-file=qshell.log \
-                     --skip-path-prefixes=ztf,zmanager,driver --rescan-local --overwrite --check-hash
+                     --skip-path-prefixes=ztf,zv,zmanager,driver --rescan-local --overwrite --check-hash
