@@ -12,6 +12,7 @@ import (
 	"github.com/easysoft/zendata/internal/server"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
+	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -206,6 +207,25 @@ func toGen(files []string) {
 			action.ParseSql(input, vari.Out)
 		} else if ext == ".txt" {
 			action.ParseArticle(input, vari.Out)
+		}
+	} else if vari.RunMode == constant.RunModeServer {
+		vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + constant.PthSep
+		err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
+		if err != nil {
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)
+			os.Exit(1)
+		}
+
+		startServer() // will init its own db
+
+	} else if vari.RunMode == constant.RunModeServerRequest {
+		vari.Format = constant.FormatJson
+		if defaultFile != "" || configFile != "" {
+			files := []string{defaultFile, configFile}
+			action.Generate(files, fields, vari.Format, vari.Table)
+		} else {
+			contents := [][]byte{defaultDefContent, configDefContent}
+			action.GenerateByContent(contents, fields, vari.Format, vari.Table)
 		}
 
 	} else if vari.RunMode == constant.RunModeGen {
