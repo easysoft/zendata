@@ -7,10 +7,10 @@ BINARY=zd
 BIN_DIR=bin
 BIN_ZIP_DIR=${BIN_DIR}/zip/${PROJECT}/${VERSION}/
 BIN_OUT=${BIN_DIR}/${PROJECT}/${VERSION}/
-BIN_WIN64=${BIN_OUT}win64/${BINARY}/
-BIN_WIN32=${BIN_OUT}win32/${BINARY}/
-BIN_LINUX=${BIN_OUT}linux/${BINARY}/
-BIN_MAC=${BIN_OUT}darwin/${BINARY}/
+BIN_WIN64=${BIN_OUT}win64/
+BIN_WIN32=${BIN_OUT}win32/
+BIN_LINUX=${BIN_OUT}linux/
+BIN_MAC=${BIN_OUT}darwin/
 
 default: update_version_in_config gen_version_file prepare_res compile_all copy_files package
 
@@ -56,20 +56,20 @@ copy_files:
 	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
 	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
 
-	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/runtime,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}/${BINARY}"; done
+	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/runtime,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}"; done
 
-	@rm -rf ${BIN_OUT}linux/${BINARY}/runtime/php \
-		${BIN_OUT}linux/${BINARY}/runtime/protobuf/bin/mac \
-		${BIN_OUT}linux/${BINARY}/runtime/protobuf/bin/win*
-	@rm -rf ${BIN_OUT}darwin/${BINARY}/runtime/php \
-		${BIN_OUT}darwin/${BINARY}/runtime/protobuf/bin/linux \
-		${BIN_OUT}darwin/${BINARY}/runtime/protobuf/bin/win*
-	@rm -rf ${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/mac \
-		${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/linux \
-		${BIN_OUT}win32/${BINARY}/runtime/protobuf/bin/win64
-	@rm -rf ${BIN_OUT}win64/${BINARY}/runtime/protobuf/bin/mac \
-		${BIN_OUT}win64/${BINARY}/runtime/protobuf/bin/linux \
-		${BIN_OUT}win64/${BINARY}/runtime/protobuf/bin/win32
+	@rm -rf ${BIN_OUT}linux/runtime/php \
+		${BIN_OUT}linux/runtime/protobuf/bin/mac \
+		${BIN_OUT}linux/runtime/protobuf/bin/win*
+	@rm -rf ${BIN_OUT}darwin/runtime/php \
+		${BIN_OUT}darwin/runtime/protobuf/bin/linux \
+		${BIN_OUT}darwin/runtime/protobuf/bin/win*
+	@rm -rf ${BIN_OUT}win32/runtime/protobuf/bin/mac \
+		${BIN_OUT}win32/runtime/protobuf/bin/linux \
+		${BIN_OUT}win32/runtime/protobuf/bin/win64
+	@rm -rf ${BIN_OUT}win64/runtime/protobuf/bin/mac \
+		${BIN_OUT}win64/runtime/protobuf/bin/linux \
+		${BIN_OUT}win64/runtime/protobuf/bin/win32
 
 package:
 	@echo 'start package'
@@ -79,7 +79,7 @@ package:
 	@cd ${BIN_OUT} && \
 		for platform in `ls ./`; \
 			do  cd $${platform} && \
-				zip -r ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip "${BINARY}" && \
+				zip -r ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip ./* && \
 				md5sum ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip | awk '{print $$1}' | \
 					xargs echo > ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip.md5 && \
 				cd ..; \
