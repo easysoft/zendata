@@ -27,7 +27,7 @@ import (
 
 var (
 	flagSet *flag.FlagSet
-	root    string
+	uuid    = ""
 )
 
 func main() {
@@ -41,13 +41,15 @@ func main() {
 
 	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
 
+	flag.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
+
 	flagSet.StringVar(&vari.Ip, "b", "", "")
 	flagSet.StringVar(&vari.Ip, "bind", "", "")
 	flagSet.IntVar(&vari.Port, "p", 0, "")
 	flagSet.IntVar(&vari.Port, "port", 0, "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
-	configUtils.InitConfig(root)
+	configUtils.InitConfig("")
 	vari.DB, _ = serverConfig.NewGormDB()
 
 	vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + constant.PthSep
