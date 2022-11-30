@@ -3,7 +3,7 @@ package comm
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	fileUtils "github.com/easysoft/zendata/src/utils/file"
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"strings"
 )
 
@@ -54,6 +54,47 @@ func GetExcelTable(filePath, sheetName string) (records []map[string]interface{}
 
 			records = append(records, record)
 		}
+	}
+
+	return
+}
+
+func GetExcel1stSheet(filePath string) (sheetName string, records [][]string) {
+	excel, err := excelize.OpenFile(filePath)
+	if err != nil {
+		fmt.Printf("fail to read file %s, error: %s", filePath, err.Error())
+		return
+	}
+
+	fileName := fileUtils.GetFileName(filePath)
+	fileName = strings.TrimSuffix(fileName, "词库")
+
+	sheetName = excel.GetSheetList()[0]
+
+	rows, _ := excel.GetRows(sheetName)
+	if len(rows) == 0 {
+		return
+	}
+
+	colCount := len(rows[0])
+
+	for rowIndex, row := range rows {
+		if rowIndex == 0 { // ignore header
+			continue
+		}
+
+		record := make([]string, 0)
+
+		for colIndex, col := range row {
+			if colIndex >= colCount {
+				break
+			}
+
+			colVal := strings.TrimSpace(col)
+			record = append(record, colVal)
+		}
+
+		records = append(records, record)
 	}
 
 	return

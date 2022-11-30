@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/cmd/test/import/comm"
+	"github.com/easysoft/zendata/cmd/test/import/model"
 	"strings"
 
-	"github.com/easysoft/zendata/src/test/import/comm"
-	"github.com/easysoft/zendata/src/test/import/model"
 	"gorm.io/gorm"
 )
 
@@ -34,7 +34,7 @@ func main() {
 
 	logs := []string{}
 	for i, path := range filePathArr {
-		sheetName, count := ImoprtWordsFromExcel(path, db)
+		sheetName, count := ImportWordsFromExcel(path, db)
 		str := fmt.Sprintf("%d) Path:[%s] SheetName:[%s], count:[%d]\n", i, path, sheetName, count)
 		fmt.Print(str)
 		logs = append(logs, str)
@@ -45,7 +45,7 @@ func main() {
 	}
 }
 
-func ImoprtWordsFromExcel(filePath string, db *gorm.DB) (sheetName string, count int) {
+func ImportWordsFromExcel(filePath string, db *gorm.DB) (sheetName string, count int) {
 	sheetName, rows := comm.GetExcel1stSheet(filePath)
 	fmt.Printf("importing ... : [%s] \n", sheetName)
 	// fmt.Print(rows)
