@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
@@ -9,6 +10,7 @@ import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
+	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/server"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
@@ -22,6 +24,7 @@ import (
 	"github.com/easysoft/zendata/res"
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/fatih/color"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -311,7 +314,30 @@ func Handler(s *server.Server) http.Handler {
 	mux.HandleFunc("/admin", s.Admin)    // data admin
 	mux.HandleFunc("/data", DataHandler) // data gen
 
+	mux.HandleFunc("/api/v1/heartbeat", heartbeat) // data gen
+
 	return mux
+}
+
+func heartbeat(writer http.ResponseWriter, req *http.Request) {
+	serverUtils.SetupCORS(&writer, req)
+
+	bytes, err := ioutil.ReadAll(req.Body)
+	if len(bytes) == 0 {
+		return
+	}
+
+	reqData := model.ReqData{}
+	err = serverUtils.ParserJsonReq(bytes, &reqData)
+	if err != nil {
+		serverUtils.OutputErr(err, writer)
+		return
+	}
+
+	ret := map[string]interface{}{"code": 0, "msg": "ok"}
+
+	bytes, _ = json.Marshal(ret)
+	io.WriteString(writer, string(bytes))
 }
 
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
