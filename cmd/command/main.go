@@ -10,7 +10,6 @@ import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/server"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
@@ -322,21 +321,9 @@ func Handler(s *server.Server) http.Handler {
 func heartbeat(writer http.ResponseWriter, req *http.Request) {
 	serverUtils.SetupCORS(&writer, req)
 
-	bytes, err := ioutil.ReadAll(req.Body)
-	if len(bytes) == 0 {
-		return
-	}
-
-	reqData := model.ReqData{}
-	err = serverUtils.ParserJsonReq(bytes, &reqData)
-	if err != nil {
-		serverUtils.OutputErr(err, writer)
-		return
-	}
-
 	ret := map[string]interface{}{"code": 0, "msg": "ok"}
 
-	bytes, _ = json.Marshal(ret)
+	bytes, _ := json.Marshal(ret)
 	io.WriteString(writer, string(bytes))
 }
 
