@@ -314,7 +314,7 @@ func Handler(s *server.Server) http.Handler {
 	mux.HandleFunc("/admin", s.Admin)    // data admin
 	mux.HandleFunc("/data", DataHandler) // data gen
 
-	mux.HandleFunc("/api/v1/heartbeat", heartbeat) // data gen
+	mux.HandleFunc("/api/v1/heartbeat", heartbeat) // test
 
 	return mux
 }
