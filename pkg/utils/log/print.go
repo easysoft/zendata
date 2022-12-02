@@ -51,7 +51,7 @@ func PrintUsage() {
 		regx, _ = regexp.Compile(`zd.exe`)
 		usage = regx.ReplaceAllString(usage, "zd")
 
-		regx, _ = regexp.Compile(`d:\zd\config        `)
+		regx, _ = regexp.Compile(`d:\\zd\\config        `)
 		usage = regx.ReplaceAllString(usage, "/home/user/zd/config")
 	}
 	fmt.Printf("%s\n", usage)
