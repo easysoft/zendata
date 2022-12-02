@@ -12,7 +12,6 @@ import (
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -171,10 +170,6 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 }
 
 func ReadYamlInfo(path string) (title, desc, resType string) {
-	if strings.Index(path, "01_range.yaml") > -1 {
-		log.Print("")
-	}
-
 	info := model.DefInfo{}
 
 	if strings.Index(path, "apache") > -1 {
