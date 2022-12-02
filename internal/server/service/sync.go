@@ -25,6 +25,7 @@ func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
 		if fileMap[fi.ResType] == nil {
 			fileMap[fi.ResType] = make([]model.ResFile, 0)
 		}
+
 		fileMap[fi.ResType] = append(fileMap[fi.ResType], fi)
 	}
 
