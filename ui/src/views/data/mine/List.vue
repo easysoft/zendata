@@ -162,11 +162,9 @@ export default {
   methods: {
     loadData() {
       listDef(this.keywords, this.page).then(json => {
-        console.log('listDefs', json)
-        const that = this
-        that.defs = json.data
-        that.total = json.total
-        that.selected = json.data.length ? json.data[0].id : null
+        this.defs = json.data.list
+        this.total = json.data.total
+        this.selected = json.data.list.length ? json.data.list[0].id : null
       })
     },
     create() {

@@ -1,6 +1,5 @@
 import notification from 'ant-design-vue/es/notification'
 import axios, {AxiosInstance} from 'axios'
-import { VueAxios } from './axios'
 
 let request = null
 initRequest()
@@ -18,7 +17,7 @@ function initRequest(remoteUrl) {
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8085'
+    url = 'http://127.0.0.1:8085/api/v1'
     console.log('dev env, url is ' + url)
   } else {
     const location = unescape(window.location.href);
@@ -52,21 +51,14 @@ const errorHandler = error => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-  console.log('===Axios Request===', config.url, config.data);
+  console.log('---Request---', config.url);
   return config
 }, errorHandler)
 
 // response interceptor
-request.interceptors.response.use(response => {
-  return response.data
+request.interceptors.response.use(resp => {
+  console.log('---Response---', resp.config.url, resp.data);
+  return resp.data
 }, errorHandler)
 
-const installer = {
-  vm: {},
-  install (Vue) {
-    Vue.use(VueAxios, request)
-  }
-}
-
 export default request
-export { installer as VueAxios, request as axios }

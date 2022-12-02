@@ -19,14 +19,15 @@ func NewDefCtrl() *DefCtrl {
 func (c *DefCtrl) List(ctx iris.Context) {
 	req := model.ReqData{}
 
-	if err := ctx.ReadQuery(&req); err != nil {
+	err := ctx.ReadQuery(&req)
+	if err != nil {
 		ctx.JSON(c.ErrResp(constant.CommErr, err.Error()))
 		return
 	}
 
-	data, total := c.DefService.List(req.Keywords, req.Page)
+	list, total := c.DefService.List(req.Keywords, req.Page)
 
-	ctx.JSON(c.SuccessResp(iris.Map{"data": data, "total": total}))
+	ctx.JSON(c.SuccessResp(iris.Map{"list": list, "total": total}))
 }
 
 func (c *DefCtrl) Get(ctx iris.Context) {

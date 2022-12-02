@@ -41,10 +41,7 @@ export default {
   },
   created () {
     getWorkDir().then(json => {
-      console.log('getWorkDir', json)
-      const that = this
-      that.defs = json.data
-      this.workDir = json.workDir
+      this.workDir = json.data
       config.workDir = this.workDir
     })
   },

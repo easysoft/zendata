@@ -8,17 +8,23 @@ export default api
 
 export function getWorkDir () {
   return request({
-    url: api.admin,
+    url: `${api.admin}/comm/getWorkDir`,
+    method: 'get',
+  })
+}
+
+export function syncData () {
+  return request({
+    url: `${api.admin}/comm/syncData`,
     method: 'post',
-    data: {'action': 'getWorkDir'}
   })
 }
 
 export function listDef (keywords, page) {
   return request({
-    url: api.admin,
-    method: 'post',
-    data: {'action': 'listDef', keywords: keywords, page: page}
+    url: `${api.admin}/defs`,
+    method: 'get',
+    params: {keywords: keywords, page: page}
   })
 }
 export function getDef (id) {
@@ -422,12 +428,3 @@ export function removeExcel (id) {
   })
 }
 
-export function syncData () {
-  const data = {'action': 'syncData', mode: ''}
-
-  return request({
-    url: api.admin,
-    method: 'post',
-    data: data
-  })
-}

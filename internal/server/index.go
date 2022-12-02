@@ -8,7 +8,8 @@ import (
 )
 
 type IndexModule struct {
-	DefModule *index.DefModule `inject:""`
+	CommModule *index.CommModule `inject:""`
+	DefModule  *index.DefModule  `inject:""`
 }
 
 func NewIndexModule() *IndexModule {
@@ -20,6 +21,7 @@ func (m *IndexModule) Party() module.WebModule {
 
 	modules := []module.WebModule{
 		m.DefModule.Party(),
+		m.CommModule.Party(),
 	}
 	return module.NewModule(constant.ApiPath, handler, modules...)
 }

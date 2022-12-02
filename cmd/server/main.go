@@ -96,13 +96,13 @@ func startDataServer() {
 
 	httpServer := &http.Server{
 		Addr:    fmt.Sprintf(":%d", server.Config.ServerPort),
-		Handler: handler(server),
+		Handler: dataHandler(server),
 	}
 
 	httpServer.ListenAndServe()
 }
 
-func handler(server *server.Server) http.Handler {
+func dataHandler(server *server.Server) http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("/", http.FileServer(
