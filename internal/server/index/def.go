@@ -23,6 +23,7 @@ func (m *DefModule) Party() module.WebModule {
 		index.Put("/{id:int}", m.DefCtrl.Update).Name = "更新"
 		index.Delete("/{id:int}", m.DefCtrl.Delete).Name = "删除"
 
+		index.Get("/previewData", m.DefCtrl.PreviewData).Name = "预览数据"
 		index.Post("/sync", m.DefCtrl.Create).Name = "同步"
 	}
 	return module.NewModule("/defs", handler)

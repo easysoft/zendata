@@ -17,7 +17,7 @@ type SyncService struct {
 	ResService       *ResService       `inject:""`
 }
 
-func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
+func (s *SyncService) SyncData() {
 	files := s.ResService.LoadRes("")
 
 	fileMap := map[string][]model.ResFile{}

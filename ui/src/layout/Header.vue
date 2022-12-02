@@ -48,11 +48,13 @@ export default {
   methods: {
     syncData() {
       syncData().then(json => {
-        if (json.code == 1) {
-          this.$notification['success']({
-            message: this.$i18n.t('tips.success.to.import'),
-            duration: 3,
-          });
+        if (json.code == 0) {
+          this.$router.go(0)
+
+          // this.$notification['success']({
+          //   message: this.$i18n.t('tips.success.to.import'),
+          //   duration: 3,
+          // });
         }
       })
     },

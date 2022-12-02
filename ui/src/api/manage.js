@@ -27,6 +27,7 @@ export function listDef (keywords, page) {
     params: {keywords: keywords, page: page}
   })
 }
+
 export function getDef (id) {
   const data = {'action': 'getDef', id: id}
   console.log(data)
@@ -116,14 +117,15 @@ export function moveDefField (src, dist, mode) {
 }
 
 export function previewDefData (defId) {
-  const data = {'action': 'previewDefData', id: defId}
+  const params = {defId: defId}
 
   return request({
-    url: api.admin,
-    method: 'post',
-    data: data
+    url: `${api.admin}/defs/previewData`,
+    method: 'get',
+    params
   })
 }
+
 export function previewFieldData (fieldId, type) {
   const data = {'action': 'previewFieldData', id: fieldId, mode: type}
   return request({

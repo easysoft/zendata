@@ -86,6 +86,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	//	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("miss_cache_param", constant.MaxNumbForAsync))
 	//	return
 	//} else {
+
 	rows, colIsNumArr, err = gen.GenerateFromContent(contents, &fieldsToExport)
 	//}
 

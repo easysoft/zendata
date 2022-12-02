@@ -79,7 +79,7 @@ func (s *Server) AdminHandler(writer http.ResponseWriter, req *http.Request) {
 
 	// def
 	case "syncData":
-		s.SyncService.SyncData(reqData.Mode)
+		s.SyncService.SyncData()
 	case "listDef":
 		ret.Data, ret.Total = s.DefService.List(reqData.Keywords, reqData.Page)
 	case "getDef":

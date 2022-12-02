@@ -33,7 +33,6 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 
 	} else if format == constant.FormatXml {
 		printXmlHeader(fields, table)
-
 	}
 
 	for i, cols := range rows {

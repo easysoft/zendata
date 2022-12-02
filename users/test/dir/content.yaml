@@ -1,6 +1,5 @@
 title: test
-desc: 描述
+desc: ""
 fields:
-- field: f1
+- field: 新字段
   range: 1-9
-content: ""

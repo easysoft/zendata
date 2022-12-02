@@ -8,12 +8,9 @@ import (
 )
 
 type DefCtrl struct {
-	DefService *serverService.DefService `inject:""`
+	DefService     *serverService.DefService     `inject:""`
+	PreviewService *serverService.PreviewService `inject:""`
 	BaseCtrl
-}
-
-func NewDefCtrl() *DefCtrl {
-	return &DefCtrl{}
 }
 
 func (c *DefCtrl) List(ctx iris.Context) {
@@ -89,4 +86,15 @@ func (c *DefCtrl) Delete(ctx iris.Context) {
 	//}
 	//
 	//ctx.JSON(c.SuccessResp(nil))
+}
+
+func (c *DefCtrl) PreviewData(ctx iris.Context) {
+	defId, err := ctx.URLParamInt("defId")
+	if err != nil {
+		ctx.JSON(constant.ParamErr.Code)
+	}
+
+	data := c.PreviewService.PreviewDefData(uint(defId))
+
+	ctx.JSON(c.SuccessResp(data))
 }
