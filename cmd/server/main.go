@@ -41,10 +41,10 @@ func main() {
 
 	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
 
-	flag.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
+	flagSet.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
 
-	flagSet.StringVar(&vari.Ip, "b", "", "")
-	flagSet.StringVar(&vari.Ip, "bind", "", "")
+	flagSet.StringVar(&vari.Ip, "i", "", "")
+	flagSet.StringVar(&vari.Ip, "ip", "", "")
 	flagSet.IntVar(&vari.Port, "p", 0, "")
 	flagSet.IntVar(&vari.Port, "port", 0, "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")

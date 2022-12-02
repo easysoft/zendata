@@ -136,10 +136,14 @@ export default {
   },
   computed: {
     hasSelected: function() {
+      if (!this.defs) return false
+
       return this.defs.some(x => x.id == this.selected);
     },
     selectedRecord: function() {
-      return this.defs.find(x => x.id == this.selected);
+      if (!this.defs) return null
+
+      return this.defs?.find(x => x.id == this.selected);
     }
   },
   created () {

@@ -78,11 +78,13 @@ func ParseDesc(desc string) (items []string) {
 	return
 }
 
-/**
-	convert range item to entity, step, repeat
-	[user1,user2]{2} -> entry  =>[user1,user2]
-                        step   =>1
-                        repeat =>2
+/*
+*
+
+		convert range item to entity, step, repeat
+		[user1,user2]{2} -> entry  =>[user1,user2]
+	                        step   =>1
+	                        repeat =>2
 */
 func ParseRangeSection(rang string) (entry string, step string, repeat int, repeatTag string) {
 	rang = strings.TrimSpace(rang)
@@ -127,12 +129,14 @@ func ParseRangeSection(rang string) (entry string, step string, repeat int, repe
 	return entry, step, repeat, repeatTag
 }
 
-/**
-	get range item entity's type and desc
-	1-9 or [1-9]  -> type => interval
-                     desc => 1-9 or [1-9]
-	[user1,user2] -> type => literal
-                     desc => user2,user3
+/*
+*
+
+		get range item entity's type and desc
+		1-9 or [1-9]  -> type => interval
+	                     desc => 1-9 or [1-9]
+		[user1,user2] -> type => literal
+	                     desc => user2,user3
 */
 func ParseRangeSectionDesc(str string) (typ string, desc string) {
 	desc = strings.TrimSpace(str)
@@ -200,7 +204,7 @@ func removeBoundary(str string) string {
 
 func isScopeStr(str string) bool {
 	arr := strings.Split(str, "-")
-	if len(arr) < 2 {
+	if len(arr) < 2 || strings.TrimSpace(str) == "-" {
 		return false
 	}
 

@@ -7,7 +7,7 @@ const (
 	CheckUpgradeInterval = 30
 
 	AgentRunTime = 30 * 60
-	AgentLogDir  = "log-zd"
+	AgentLogDir  = "log"
 
 	QiNiuURL         = "https://dl.cnezsoft.com/" + constant.AppName + "/"
 	AgentVersionURL  = QiNiuURL + "version.txt"

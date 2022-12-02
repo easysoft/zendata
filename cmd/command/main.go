@@ -95,10 +95,6 @@ func main() {
 	flagSet.BoolVar(&decode, "D", false, "")
 	flagSet.BoolVar(&decode, "decode", false, "")
 
-	flagSet.StringVar(&vari.Ip, "b", "", "")
-	flagSet.StringVar(&vari.Ip, "bind", "", "")
-	flagSet.IntVar(&vari.Port, "p", 0, "")
-	flagSet.IntVar(&vari.Port, "port", 0, "")
 	flagSet.StringVar(&root, "R", "", "")
 	flagSet.StringVar(&root, "root", "", "")
 
