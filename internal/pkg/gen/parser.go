@@ -200,7 +200,7 @@ func removeBoundary(str string) string {
 
 func isScopeStr(str string) bool {
 	arr := strings.Split(str, "-")
-	if len(arr) < 2 {
+	if len(arr) < 2 || strings.TrimSpace(str) == "-" {
 		return false
 	}
 

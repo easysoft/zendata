@@ -1,13 +1,8 @@
 package helper
 
 import (
-	"database/sql"
 	"fmt"
-	"regexp"
-	"strings"
-
 	"github.com/dzwvip/oracle"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -115,42 +110,6 @@ func LoadAllWords() (ret map[string]string) {
 
 				break
 			}
-		}
-	}
-
-	return
-}
-
-func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
-	var (
-		driver, user, password, host, port, db, code string
-	)
-
-	// mysql://root:1234@localhost:3306/dbname#utf8
-	reg := regexp.MustCompile(`([a-z,A-Z]+)://(.+):(.*)@(.+):(\d+)/(.+)#(.+)`)
-	arr := reg.FindAllStringSubmatch(dsn, -1)
-
-	if len(arr) == 0 {
-		return
-	}
-
-	sections := arr[0]
-
-	driver = strings.ToLower(sections[1])
-	user = sections[2]
-	password = sections[3]
-	host = sections[4]
-	port = sections[5]
-	db = sections[6]
-	code = sections[7]
-
-	if driver == "mysql" {
-		str := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s", user, password, host, port, db, code)
-		conn, _ = sql.Open(driver, str)
-		err = conn.Ping() // make sure database is accessible
-		if err != nil {
-			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteFile, err.Error()))
 		}
 	}
 

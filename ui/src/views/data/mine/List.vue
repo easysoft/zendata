@@ -13,9 +13,9 @@
     <a-row :gutter="10">
       <a-col :span="hasSelected ? 12 : 24">
         <div class="main-table">
-          <div v-if="defs.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
+          <div v-if="!defs || defs.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
 
-          <template v-if="defs.length>0">
+          <template v-if="defs && defs.length>0">
             <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id" :custom-row="customRow">
               <a slot="recordTitle" slot-scope="text, record" @click="design(record)">{{record.title}}</a>
 
@@ -136,10 +136,10 @@ export default {
   },
   computed: {
     hasSelected: function() {
-      return this.defs.some(x => x.id == this.selected);
+      return this.defs?.some(x => x.id == this.selected);
     },
     selectedRecord: function() {
-      return this.defs.find(x => x.id == this.selected);
+      return this.defs?.find(x => x.id == this.selected);
     }
   },
   created () {
@@ -162,7 +162,8 @@ export default {
         const that = this
         that.defs = json.data
         that.total = json.total
-        that.selected = json.data.length ? json.data[0].id : null
+
+        that.selected = json.data? (json.data.length ? json.data[0].id : null) : null
       })
     },
     create() {
