@@ -1,4 +1,4 @@
-VERSION=2.2
+VERSION=3.0
 PROJECT=zd
 QINIU_DIR=/Users/aaron/work/zentao/qiniu/
 QINIU_DIST_DIR=${QINIU_DIR}${PROJECT}/${VERSION}/
@@ -23,7 +23,6 @@ upload: upload_to
 prepare_res:
 	@echo 'start prepare res'
 	@cp res/zh/sample.yaml demo/default.yaml
-	@go-bindata -o=res/res.go -pkg=res res/... ui/dist/...
 	@rm -rf ${BIN_DIR}
 
 compile_all: compile_win64 compile_win32 compile_linux compile_mac

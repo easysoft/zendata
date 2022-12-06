@@ -7,7 +7,6 @@ import (
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/easysoft/zendata/res"
 	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
@@ -102,12 +101,6 @@ func GetAbsoluteDir(pth string) string {
 	return pth
 }
 
-func GetRelatPath(pth string) string {
-	pth = strings.TrimPrefix(pth, vari.ZdPath)
-
-	return pth
-}
-
 func IsAbsPath(pth string) bool {
 	return filepath.IsAbs(pth) ||
 		strings.Index(pth, ":") == 1 // windows
@@ -120,20 +113,6 @@ func AddSepIfNeeded(pth string) string {
 		pth += sepa
 	}
 	return pth
-}
-
-func ReadResData(path string) string {
-	isRelease := commonUtils.IsRelease()
-
-	var jsonStr string
-	if isRelease {
-		data, _ := res.Asset(path)
-		jsonStr = string(data)
-	} else {
-		jsonStr = ReadFile(path)
-	}
-
-	return jsonStr
 }
 
 func GetExeDir() string { // where zd.exe file in

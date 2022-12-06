@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	zd "github.com/easysoft/zendata"
 	"github.com/easysoft/zendata/internal/agent"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
@@ -15,8 +16,6 @@ import (
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/easysoft/zendata/res"
-	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/fatih/color"
 	"net/http"
 	"os"
@@ -105,8 +104,11 @@ func startDataServer() {
 func dataHandler(server *server.Server) http.Handler {
 	mux := http.NewServeMux()
 
-	mux.Handle("/", http.FileServer(
-		&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir, AssetInfo: res.AssetInfo, Prefix: "ui/dist"}))
+	resFs, err := zd.GetUiFileSys()
+	if err != nil {
+		panic(err)
+	}
+	mux.Handle("/", http.FileServer(http.FS(resFs)))
 
 	//mux.HandleFunc("/admin", server.AdminHandler)
 	mux.HandleFunc("/data", agent.DataHandler)

@@ -2,9 +2,9 @@ package logUtils
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
 	"net/http"
@@ -28,7 +28,7 @@ func PrintExample() {
 		usageFile = strings.Replace(usageFile, "en", "zh", 1)
 	}
 
-	content := fileUtils.ReadResData(exampleFile)
+	content, _ := zd.ReadResData(exampleFile)
 	fmt.Printf("%s\n", content)
 }
 
@@ -38,7 +38,8 @@ func PrintUsage() {
 		usageFile = strings.Replace(usageFile, "en", "zh", 1)
 	}
 
-	usage := fileUtils.ReadResData(usageFile)
+	usageBytes, _ := zd.ReadResData(usageFile)
+	usage := string(usageBytes)
 	exeFile := "zd"
 	if commonUtils.IsWin() {
 		exeFile += ".exe"

@@ -2,10 +2,10 @@ package i118Utils
 
 import (
 	"encoding/json"
+	"github.com/easysoft/zendata"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/easysoft/zendata/res"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"io/ioutil"
@@ -27,7 +27,7 @@ func InitI118(lang string) {
 	}
 
 	if isRelease {
-		data, _ := res.Asset(langRes)
+		data, _ := zd.ReadResData(langRes)
 		InitResFromAsset(data)
 	} else {
 		InitRes(filepath.Join(vari.ZdPath, langRes))
