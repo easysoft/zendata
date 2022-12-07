@@ -11,3 +11,10 @@ fields:
   - field: f3    # 区间， 浮点型
     range: 1.1-2.1:0.6
     postfix: "\t"
+
+  - field: f4
+    range: a-c{3} # 逐个重复，生成类似 a、a、a、b、b、b、c、c、c
+    postfix: "\t"
+  - field: f5
+    range: a-c{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+    postfix: "\t"

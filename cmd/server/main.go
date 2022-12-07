@@ -104,11 +104,11 @@ func startDataServer() {
 func dataHandler(server *server.Server) http.Handler {
 	mux := http.NewServeMux()
 
-	resFs, err := zd.GetUiFileSys()
+	uiFs, err := zd.GetUiFileSys()
 	if err != nil {
 		panic(err)
 	}
-	mux.Handle("/", http.FileServer(http.FS(resFs)))
+	mux.Handle("/", http.FileServer(http.FS(uiFs)))
 
 	//mux.HandleFunc("/admin", server.AdminHandler)
 	mux.HandleFunc("/data", agent.DataHandler)

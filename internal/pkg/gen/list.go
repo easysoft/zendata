@@ -311,7 +311,8 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = valueGen.GenerateIntItems(startInt, endInt, step.(int), rand, repeat, repeatTag)
+		//items = valueGen.GenerateIntItems(startInt, endInt, step.(int), rand, repeat, repeatTag)
+		items = valueGen.GenerateItems(startInt, endInt, int64(step.(int)), 0, rand, repeat, repeatTag)
 
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)

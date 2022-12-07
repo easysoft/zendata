@@ -19,7 +19,7 @@ func generateByteItemsByStep(start byte, end byte, step int, repeat int, repeatT
 	total := 0
 	if repeatTag == "" {
 		for i := 0; true; {
-			val := start + byte(int(i)*step)
+			val := start + byte(i*step)
 			if (val > end && step > 0) || (val < end && step < 0) {
 				break
 			}
@@ -41,8 +41,8 @@ func generateByteItemsByStep(start byte, end byte, step int, repeat int, repeatT
 	} else if repeatTag == "!" {
 		for round := 0; round < repeat; round++ {
 			for i := 0; true; {
-				val := start + byte(int(i)*step)
-				if (val >= end && step > 0) || (val <= end && step < 0) {
+				val := start + byte(i*step)
+				if (val > end && step > 0) || (val < end && step < 0) {
 					break
 				}
 

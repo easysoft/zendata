@@ -1,41 +1,27 @@
 title: range
-desc: 描述
+desc:
 version: 1.0
 
 fields:
-  - field: name # 操作员姓名
+  - field: f1
+    range: 0-9
     postfix: "\t"
-    fields:
-    - field: family_name
-      from: name.cn.family.v2.chinese_family
-      select: name
-      rand: true
+  - field: f2
+    range: a-z
+    postfix: "\t"
+  - field: f3
+    range: 0.01-9
+    postfix: "\t"
 
-    - field: given_name
-      from: name.cn.given.v2.chinese_given
-      select: name
-      where: id = 3
-
-#  - field: nesting1
-#    postfix: "\t"
-#    union: true
-#    fields:
-#      - field: child1
-#        range: A-C
-#        prefix: part1_
-#        postfix: ' | '
-#
-#      - field:  child2
-#        range: 1-9
-#        prefix: part2_
-#
-#  - field: nesting2
-#    fields:
-#      - field: child1
-#        range: A-C
-#        prefix: part1_
-#        postfix: ' | '
-#
-#      - field:  child2
-#        range: 1-9
-#        prefix: part2_
+  - field: f4
+    range: 1-3{3} # 逐个重复，生成类似 a、a、a、b、b、b、c、c、c
+    postfix: "\t"
+  - field: f5
+    range: 1-3{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+    postfix: "\t"
+  - field: f6
+    range: a-c{3} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+    postfix: "\t"
+  - field: f7
+    range: a-c{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+    postfix: "\t"
