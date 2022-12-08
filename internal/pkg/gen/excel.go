@@ -42,7 +42,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 
 	list, fieldSelect := ReadDataFromSQLite(*field, dbName, sheet, total, filePath)
 	// get index list for data retrieve
-	numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(1), 0, false, 1, "")
+	numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(1), 0, false, 1, "", 0)
 
 	// get data by index
 	index := 0

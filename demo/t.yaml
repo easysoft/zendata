@@ -20,7 +20,7 @@ fields:
   - field: f5
     range: a-c{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
     postfix: "\t"
-
+#
   - field: f6
     range: 0.01-9
     postfix: "\t"
@@ -34,19 +34,14 @@ fields:
     postfix: "\t"
 
   - field: f9
-    range: 0-9
-    postfix: "\t"
-
-  - field: f10
-    range: a,二:R
-    format: "urlencode"
+    range: 0-9:R
     postfix: "\t"
 
   - field: f11
     range: 0.01-9
     postfix: "\t"
 
-  - field: field_format                 # 通过格式化字符串输出。
-    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
-    format: "passwd%02d"                # 用%02d补零，使密码整体保持8位。
-    postfix: "\t"
+#  - field: field_format                 # 通过格式化字符串输出。
+#    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
+#    format: "passwd%02d"                # 用%02d补零，使密码整体保持8位。
+#    postfix: "\t"

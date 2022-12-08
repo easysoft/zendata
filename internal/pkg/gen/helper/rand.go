@@ -28,7 +28,7 @@ func GetRandFromList(list []string, repeat, count int) []string {
 }
 
 func GetRandFromRange(dataType, start, end, step string, repeat int, repeatTag, precisionStr string,
-	count int, format string) (ret []string) {
+	format string, count int) (ret []string) {
 
 	precision, _ := strconv.Atoi(precisionStr)
 
@@ -43,7 +43,7 @@ func GetRandFromRange(dataType, start, end, step string, repeat int, repeatTag, 
 			stepInt = stepInt * -1
 		}
 
-		items = valueGen.GenerateItems(startInt, endInt, stepInt, 0, true, repeat, repeatTag)
+		items = valueGen.GenerateItems(startInt, endInt, stepInt, 0, true, repeat, repeatTag, count)
 
 		//countInRound := (endInt-startInt)/stepInt + 1 // stepInt should be 1
 		//
@@ -78,7 +78,7 @@ func GetRandFromRange(dataType, start, end, step string, repeat int, repeatTag, 
 			stepInt = stepInt * -1
 		}
 
-		items = valueGen.GenerateItems(startChar, endChar, stepInt, 0, true, repeat, repeatTag)
+		items = valueGen.GenerateItems(startChar, endChar, stepInt, 0, true, repeat, repeatTag, count)
 
 		//countInRound := (int64(endChar)-int64(startChar))/stepInt + 1 // stepInt should be 1
 		//
@@ -115,7 +115,7 @@ func GetRandFromRange(dataType, start, end, step string, repeat int, repeatTag, 
 			stepFloat = stepFloat * -1
 		}
 
-		items = valueGen.GenerateItems(startFloat, endFloat, stepFloat, precision, true, repeat, repeatTag)
+		items = valueGen.GenerateItems(startFloat, endFloat, stepFloat, precision, true, repeat, repeatTag, count)
 
 		//countInRound := (endFloat-startFloat)/stepFloat + 1 // stepInt should be 1
 		//

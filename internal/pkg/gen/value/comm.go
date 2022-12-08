@@ -10,12 +10,18 @@ import (
 	"strings"
 )
 
-func GenerateItems[TV ValType, TS StepType](start, end TV, step TS, precision int, isRand bool, repeat int, repeatTag string) (
+func GenerateItems[TV ValType, TS StepType](start, end TV, step TS,
+	precision int, isRand bool, repeat int, repeatTag string, count int) (
 	arr []interface{}) {
 
 	typ := GetType(start)
 
 	limit := getLimit(start, end, step, typ, isRand)
+
+	total := constant.MaxNumb
+	if count > 0 && count < total {
+		total = count
+	}
 
 	if repeatTag == "" { // repeat one by one
 		for i := int64(0); i < limit; i++ {
@@ -26,6 +32,10 @@ func GenerateItems[TV ValType, TS StepType](start, end TV, step TS, precision in
 			}
 
 			RepeatSameVal(val, repeat, &arr)
+
+			if len(arr) > total {
+				break
+			}
 		}
 	} else if repeatTag == "!" { // repeat the list
 		for round := 0; round < repeat; round++ {
@@ -37,7 +47,7 @@ func GenerateItems[TV ValType, TS StepType](start, end TV, step TS, precision in
 				}
 
 				arr = append(arr, val)
-				if len(arr) > constant.MaxNumb {
+				if len(arr) > total {
 					break
 				}
 			}

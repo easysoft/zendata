@@ -62,7 +62,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 		}
 
 		// get index list for data retrieve
-		numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(step), 0, rand, 1, "")
+		numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(step), 0, rand, 1, "", 0)
 
 		// gen data by index
 		count := 0
