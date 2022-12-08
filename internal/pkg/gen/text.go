@@ -61,8 +61,9 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 			}
 		}
 
-		// get index for data retrieve
-		numbs := valueGen.GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1, "")
+		// get index list for data retrieve
+		numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(step), 0, rand, 1, "")
+
 		// gen data by index
 		count := 0
 		if repeatTag == "" {

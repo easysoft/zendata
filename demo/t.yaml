@@ -6,22 +6,47 @@ fields:
   - field: f1
     range: 0-9
     postfix: "\t"
+
   - field: f2
-    range: a-z
+    range: 1-3{3} # 逐个重复，生成类似 a、a、a、b、b、b、c、c、c
     postfix: "\t"
   - field: f3
-    range: 0.01-9
+    range: 1-3{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
     postfix: "\t"
 
   - field: f4
-    range: 1-3{3} # 逐个重复，生成类似 a、a、a、b、b、b、c、c、c
-    postfix: "\t"
-  - field: f5
-    range: 1-3{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
-    postfix: "\t"
-  - field: f6
     range: a-c{3} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
     postfix: "\t"
-  - field: f7
+  - field: f5
     range: a-c{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+    postfix: "\t"
+
+  - field: f6
+    range: 0.01-9
+    postfix: "\t"
+
+  - field: f7
+    range: 0.01-0.03{3}
+    postfix: "\t"
+
+  - field: f8
+    range: 0.01-0.03{3!}
+    postfix: "\t"
+
+  - field: f9
+    range: 0-9
+    postfix: "\t"
+
+  - field: f10
+    range: a,二:R
+    format: "urlencode"
+    postfix: "\t"
+
+  - field: f11
+    range: 0.01-9
+    postfix: "\t"
+
+  - field: field_format                 # 通过格式化字符串输出。
+    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
+    format: "passwd%02d"                # 用%02d补零，使密码整体保持8位。
     postfix: "\t"

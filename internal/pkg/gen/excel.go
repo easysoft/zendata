@@ -41,8 +41,9 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 	}
 
 	list, fieldSelect := ReadDataFromSQLite(*field, dbName, sheet, total, filePath)
-	// get index for data retrieve
-	numbs := valueGen.GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1, "")
+	// get index list for data retrieve
+	numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(1), 0, false, 1, "")
+
 	// get data by index
 	index := 0
 	for _, numb := range numbs {

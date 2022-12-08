@@ -248,7 +248,7 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		repeat = repeatObj.(int)
 	}
 
-	strs := make([]string, 0)
+	strArr := make([]string, 0)
 	repeatTag := mp["repeatTag"].(string)
 	if tp == "int" {
 		start := mp["start"].(string)
@@ -256,7 +256,7 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strs = helper.GetRandFromRange("int", start, end, "1", repeat, repeatTag, precision, count, format)
+		strArr = helper.GetRandFromRange("int", start, end, "1", repeat, repeatTag, precision, count, format)
 
 	} else if tp == "float" {
 		start := mp["start"].(string)
@@ -266,7 +266,7 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strs = helper.GetRandFromRange("float", start, end, stepStr, repeat, repeatTag, precision, count, format)
+		strArr = helper.GetRandFromRange("float", start, end, stepStr, repeat, repeatTag, precision, count, format)
 
 	} else if tp == "char" {
 		start := mp["start"].(string)
@@ -274,14 +274,14 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strs = helper.GetRandFromRange("char", start, end, "1", repeat, repeatTag, precision, count, format)
+		strArr = helper.GetRandFromRange("char", start, end, "1", repeat, repeatTag, precision, count, format)
 
 	} else if tp == "list" {
 		list := mp["list"].([]string)
-		strs = helper.GetRandFromList(list, repeat, count)
+		strArr = helper.GetRandFromList(list, repeat, count)
 
 	}
 
-	strs = strs[:count]
-	return strs
+	strArr = strArr[:count]
+	return strArr
 }
