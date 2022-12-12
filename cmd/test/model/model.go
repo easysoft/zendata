@@ -2,6 +2,15 @@ package model
 
 import "time"
 
+type TableInfo struct {
+	Field   string
+	Type    string
+	Null    string
+	Key     string
+	Default string
+	Extra   string
+}
+
 type DataCategory1 struct {
 	BaseModel
 
@@ -126,23 +135,6 @@ type DataDict struct {
 
 func (DataDict) TableName() string {
 	return "biz_data_dict"
-}
-
-type DataColor struct {
-	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
-	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
-	Deleted   bool       `json:"-" gorm:"default:false"`
-	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
-
-	English string `json:"english"`
-	Chinese string `json:"chinese"`
-	Hex     string `json:"hex"`
-	Rgb     string `json:"rgb"`
-}
-
-func (DataColor) TableName() string {
-	return "biz_data_color"
 }
 
 type DataChronology struct {
@@ -467,11 +459,139 @@ func (DataWord) TableName() string {
 	return "biz_data_word"
 }
 
-type TableInfo struct {
-	Field   string
-	Type    string
-	Null    string
-	Key     string
-	Default string
-	Extra   string
+type DataColor struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	English string `json:"english"`
+	Chinese string `json:"chinese"`
+	Hex     string `json:"hex"`
+	Rgb     string `json:"rgb"`
+}
+
+func (DataColor) TableName() string {
+	return "biz_data_color"
+}
+
+type DataComm struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Name string `json:"name"`
+}
+
+type DataFood struct {
+	DataComm
+}
+
+func (DataFood) TableName() string {
+	return "biz_data_food"
+}
+
+type DataAnimalPlant struct {
+	DataComm
+}
+
+func (DataAnimalPlant) TableName() string {
+	return "biz_data_animal_plant"
+}
+
+type DataFruit struct {
+	DataComm
+}
+
+func (DataFruit) TableName() string {
+	return "biz_data_fruit"
+}
+
+type DataConstellation struct {
+	DataComm
+}
+
+func (DataConstellation) TableName() string {
+	return "biz_data_constellation"
+}
+
+type DataZodiac struct {
+	DataComm
+}
+
+func (DataZodiac) TableName() string {
+	return "biz_data_zodiac"
+}
+
+type EightDiagram struct {
+	DataComm
+}
+
+func (EightDiagram) TableName() string {
+	return "biz_data_eight_diagram"
+}
+
+type Dynasty struct {
+	DataComm
+}
+
+func (Dynasty) TableName() string {
+	return "biz_data_dynasty"
+}
+
+type CarBrand struct {
+	DataComm
+}
+
+func (CarBrand) TableName() string {
+	return "biz_data_car_brand"
+}
+
+type CarComponent struct {
+	DataComm
+}
+
+func (CarComponent) TableName() string {
+	return "biz_data_car_component"
+}
+
+type PcOs struct {
+	DataComm
+	Desc string `json:"shotName"`
+}
+
+func (PcOs) TableName() string {
+	return "biz_data_pc_os"
+}
+
+type PcFileExt struct {
+	DataComm
+	Desc string `json:"desc"`
+}
+
+func (PcFileExt) TableName() string {
+	return "biz_data_pc_file_ext"
+}
+
+type PhoneModel struct {
+	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	Deleted   bool       `json:"-" gorm:"default:false"`
+	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+
+	Brand     string `json:"brand"`
+	BrandName string `json:"brandName"`
+
+	Model     string `json:"model"`
+	ModelName string `json:"modelName"`
+
+	Area string `json:"area"`
+}
+
+func (PhoneModel) TableName() string {
+	return "biz_data_phone_model"
 }
