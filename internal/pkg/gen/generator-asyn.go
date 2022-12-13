@@ -16,7 +16,7 @@ var (
 func SyncGenCacheAndReturnFirstPart(fileContents [][]byte, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	fixTotalNum()
+	FixTotalNum()
 	genResData(fieldsToExport)
 
 	threadCount := getTheadCount(vari.GenVars.Total, constant.MaxNumbForAsync)
@@ -26,7 +26,7 @@ func SyncGenCacheAndReturnFirstPart(fileContents [][]byte, fieldsToExport *[]str
 
 	vari.GenVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
 
-	if err = checkParams(); err != nil {
+	if err = CheckParams(); err != nil {
 		return
 	}
 

@@ -8,6 +8,7 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/action"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/ctrl"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -199,6 +200,7 @@ func toGen(files []string) {
 			return
 		}
 
+		ctrl.NewDefCtrl().Generate(files, fields, vari.Format, vari.Table)
 		action.Generate(files, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeParse {

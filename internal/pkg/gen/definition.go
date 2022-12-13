@@ -1,7 +1,6 @@
 package gen
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -134,13 +133,13 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	configFieldMap := map[string]*model.DefField{}
 	sortedKeys := make([]string, 0)
 
-	if configDef.Type != "" {
-		vari.GenVars.DefDataType = configDef.Type
-	} else if defaultDef.Type != "" {
-		vari.GenVars.DefDataType = defaultDef.Type
-	} else {
-		vari.GenVars.DefDataType = constant.DefTypeText
-	}
+	//if configDef.Type != "" {
+	//	vari.GenVars.DefDataType = configDef.Type
+	//} else if defaultDef.Type != "" {
+	//	vari.GenVars.DefDataType = defaultDef.Type
+	//} else {
+	//	vari.GenVars.DefDataType = constant.DefTypeText
+	//}
 
 	if configDef.Content != "" && defaultDef.Content == "" {
 		defaultDef.Content = configDef.Content

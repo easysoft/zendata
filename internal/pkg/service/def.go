@@ -6,6 +6,7 @@ import (
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
 	"time"
@@ -37,8 +38,16 @@ func (c *DefService) GenerateFromContent(files []string, fieldsToExportStr, form
 	contents := gen.LoadFilesContents(files)
 	vari.GenVars.DefData = gen.LoadDataContentDef(contents, &fieldsToExport)
 
-	// lines = c.GenerateByContent(contents, fieldsToExportStr, format, table)
-	for i, _ := range vari.GenVars.DefData.Fields {
+	if err := gen.CheckParams(); err != nil {
+		return
+	}
+	gen.FixTotalNum()
+
+	// gen fields's data
+	for i, field := range vari.GenVars.DefData.Fields {
+		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
+			continue
+		}
 		c.FieldService.Generate(&vari.GenVars.DefData.Fields[i])
 	}
 

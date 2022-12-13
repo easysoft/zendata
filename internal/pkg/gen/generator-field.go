@@ -20,7 +20,7 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
-func dealwithFixRange(field *model.DefField) {
+func DealwithFixRange(field *model.DefField) {
 	if isRangeFix(field.Prefix) {
 		field.PrefixRange = CreateFieldFixValuesFromList(field.Prefix, field)
 	} else {
@@ -76,7 +76,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 	return
 }
 
-func genValuesForMultiRes(field *model.DefField, withFix bool, total int) (values []string) {
+func GenValuesForMultiRes(field *model.DefField, withFix bool, total int) (values []string) {
 	unionValues := make([]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 	for _, child := range field.Froms {
 		if child.From == "" {
@@ -97,7 +97,7 @@ func genValuesForMultiRes(field *model.DefField, withFix bool, total int) (value
 	return
 }
 
-func genValuesForSingleRes(field *model.DefField, total int) (values []string) {
+func GenValuesForSingleRes(field *model.DefField, total int) (values []string) {
 	if field.Use != "" { // refer to ranges or instance
 		groupValues := vari.Res[getFromKey(field)]
 
@@ -128,7 +128,7 @@ func genValuesForSingleRes(field *model.DefField, total int) (values []string) {
 	return
 }
 
-func genValuesForConfig(field *model.DefField, total int) (values []string) {
+func GenValuesForConfig(field *model.DefField, total int) (values []string) {
 	groupValues := vari.Res[field.Config]
 	values = append(values, groupValues["all"]...)
 
@@ -421,8 +421,19 @@ func RandomInterfaces(values []interface{}) (ret []interface{}) {
 
 	return
 }
-func randomValues(values []string) (ret []string) {
+func RandomValues(values []interface{}) (ret []interface{}) {
 	length := len(values)
+
+	for i := 0; i < length; i++ {
+		num := commonUtils.RandNum(length * 10000)
+		ret = append(ret, values[num%len(values)])
+	}
+
+	return
+}
+func RandomStrValues(values []string) (ret []string) {
+	length := len(values)
+
 	for i := 0; i < length; i++ {
 		num := commonUtils.RandNum(length * 10000)
 		ret = append(ret, values[num%len(values)])

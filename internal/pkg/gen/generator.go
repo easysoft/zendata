@@ -18,11 +18,11 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 
 	vari.GenVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
 
-	if err = checkParams(); err != nil {
+	if err = CheckParams(); err != nil {
 		return
 	}
 
-	fixTotalNum()
+	FixTotalNum()
 	genResData(fieldsToExport)
 
 	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.GenVars.Total)
@@ -44,26 +44,26 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 }
 
 func GenerateForFieldRecursive(field *model.DefField, withFix bool, total int) (values []string) {
-	dealwithFixRange(field)
+	DealwithFixRange(field)
 
 	if len(field.Fields) > 0 { // has child fields
 		values = genValuesForChildFields(field, withFix, total)
 
 	} else if len(field.Froms) > 0 { // refer to multi res
-		values = genValuesForMultiRes(field, withFix, total)
+		values = GenValuesForMultiRes(field, withFix, total)
 
 	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
-		values = genValuesForSingleRes(field, total)
+		values = GenValuesForSingleRes(field, total)
 
 	} else if field.Config != "" { // refer to config
-		values = genValuesForConfig(field, total)
+		values = GenValuesForConfig(field, total)
 
 	} else { // leaf field
 		values = GenerateValuesForField(field, total)
 	}
 
 	if field.Rand && field.Type != constant.FieldTypeArticle {
-		values = randomValues(values)
+		values = RandomStrValues(values)
 	}
 
 	return values
@@ -121,7 +121,7 @@ func GenerateValuesForField(field *model.DefField, total int) []string {
 	return values
 }
 
-func checkParams() (err error) {
+func CheckParams() (err error) {
 	if len(vari.GenVars.DefData.Fields) == 0 {
 		err = errors.New("")
 	} else if vari.GenVars.DefData.Type == constant.DefTypeArticle && vari.Out == "" { // gen article
@@ -133,7 +133,7 @@ func checkParams() (err error) {
 	return
 }
 
-func fixTotalNum() {
+func FixTotalNum() {
 	if vari.GenVars.Total < 0 {
 		if vari.GenVars.DefData.Type == constant.DefTypeArticle {
 			vari.GenVars.Total = 1

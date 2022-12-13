@@ -25,33 +25,53 @@ func NewFieldService() *FieldService {
 }
 
 func (s *FieldService) Generate(field *model.DefField) {
+	gen.DealwithFixRange(field)
 
-}
-
-func (s *FieldService) CreateListField(field *model.DefField) {
+	// has children
 	if len(field.Fields) > 0 {
-		for _, child := range field.Fields {
-			s.CreateListField(&child)
+		for i, _ := range field.Fields {
+			s.Generate(&field.Fields[i])
 		}
-	} else {
-		s.CreateListFieldValues(field)
+		return
 	}
-}
 
-func (s *FieldService) CreateListFieldValues(field *model.DefField) {
+	//
+	if len(field.Froms) > 0 { // refer to multi res
+		field.Values = gen.GenValuesForMultiRes(field, withFix, vari.GenVars.Total)
+
+	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
+		field.Values = gen.GenValuesForSingleRes(field, vari.GenVars.Total)
+
+	} else if field.Config != "" { // refer to config
+		field.Values = gen.GenValuesForConfig(field, vari.GenVars.Total)
+
+	} else { // leaf field
+		field.Values = gen.GenerateValuesForField(field, vari.GenVars.Total)
+	}
+
+	// random values
+	if field.Rand && field.Type != constant.FieldTypeArticle {
+		field.Values = gen.RandomValues(field.Values)
+	}
+
+	if field.Use != "" && field.From == "" {
+		field.From = vari.GenVars.DefData.From
+	}
+
 	if strings.Index(field.Range, ".txt") > -1 {
 		s.TextService.CreateFieldValuesFromText(field)
 	} else {
-		s.CreateFieldValuesFromList(field)
+		//s.CreateFieldValuesFromRange(field)
 	}
 }
 
-func (s *FieldService) CreateFieldValuesFromList(field *model.DefField) {
+func (s *FieldService) CreateFieldValuesFromRange(field *model.DefField) {
 	rang := field.Range
+
+	// gen empty values
 	if rang == "" {
 		for i := 0; i < vari.GenVars.Total; i++ {
 			field.Values = append(field.Values, "")
-
 			if strings.Index(field.Format, "uuid") == -1 {
 				break
 			}
@@ -60,6 +80,7 @@ func (s *FieldService) CreateFieldValuesFromList(field *model.DefField) {
 		return
 	}
 
+	// gen from field's range
 	rangeSections := gen.ParseRangeProperty(rang) // parse 1
 
 	index := 0
