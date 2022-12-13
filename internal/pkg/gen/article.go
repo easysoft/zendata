@@ -20,7 +20,7 @@ func CreateArticleField(field *model.DefField, fieldWithValue *model.FieldWithVa
 	resFile, resType, sheet := fileUtils.GetResProp(field.From, "")
 	dataMap := getDataMap(numMap, nameMap, field, resFile, resType, sheet)
 
-	for i := 0; i < vari.Total; i++ {
+	for i := 0; i < vari.GenVars.Total; i++ {
 		content := genArticle(contentWithoutComments, dataMap, nameMap, indexMap) + "\n"
 		fieldWithValue.Values = append(fieldWithValue.Values, content)
 	}
@@ -100,8 +100,8 @@ func getDataMap(numMap map[string]int, nameMap map[string]string, field *model.D
 
 	field.Rand = false
 	for key, _ := range numMap {
-		originTotal := vari.Total
-		vari.Total = constant.MaxNumb // load all words
+		originTotal := vari.GenVars.Total
+		vari.GenVars.Total = constant.MaxNumb // load all words
 
 		slct, ok := nameMap[key]
 		if ok {
@@ -113,7 +113,7 @@ func getDataMap(numMap map[string]int, nameMap map[string]string, field *model.D
 		valueMap, _ := getResValue(resFile, resType, sheet, field)
 		ret[key] = valueMap[field.Select]
 
-		vari.Total = originTotal // rollback
+		vari.GenVars.Total = originTotal // rollback
 	}
 
 	return

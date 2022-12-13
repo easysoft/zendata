@@ -22,16 +22,16 @@ func Decode(files []string, fieldsToExportStr, input string) {
 		defer logUtils.FileWriter.Close()
 	}
 
-	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
-	vari.Total = 10
+	vari.GenVars.Total = 10
 
 	fieldsToExport := make([]string, 0)
 	if fieldsToExportStr != "" {
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
 
-	vari.Def = LoadDataDef(files, &fieldsToExport)
+	vari.GenVars.DefData = LoadDataDef(files, &fieldsToExport)
 	vari.Res = LoadResDef(fieldsToExport)
 
 	data := fileUtils.ReadFile(input)
@@ -57,7 +57,7 @@ func linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface
 		}
 
 		rowMap := map[string]interface{}{}
-		decodeOneLevel(line, vari.Def.Fields, &rowMap)
+		decodeOneLevel(line, vari.GenVars.DefData.Fields, &rowMap)
 		*ret = append(*ret, rowMap)
 	}
 	return

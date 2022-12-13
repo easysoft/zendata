@@ -22,7 +22,7 @@ type PreviewService struct {
 func (s *PreviewService) PreviewDefData(defId uint) (data string) {
 	def, _ := s.DefRepo.Get(defId)
 
-	vari.Total = 10
+	vari.GenVars.Total = 10
 	lines := action.Generate([]string{def.Path}, "", constant.FormatData, "")
 	data = s.linesToStr(lines)
 

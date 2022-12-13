@@ -89,8 +89,8 @@ func genValuesForMultiRes(field *model.DefField, withFix bool, total int) (value
 	}
 
 	count := len(unionValues)
-	if count > vari.Total {
-		count = vari.Total
+	if count > vari.GenVars.Total {
+		count = vari.GenVars.Total
 	}
 	values = loopFieldValues(field, unionValues, count, true)
 
@@ -116,7 +116,7 @@ func genValuesForSingleRes(field *model.DefField, total int) (values []string) {
 		resKey := field.Select
 
 		// deal with the key
-		if vari.Def.Type == constant.DefTypeArticle {
+		if vari.GenVars.DefData.Type == constant.DefTypeArticle {
 			resKey = resKey + "_" + field.Field
 		}
 
@@ -403,7 +403,7 @@ func populateRowsFromTwoDimArr(arrOfArr [][]string, isRecursive, isOnTopLevel bo
 	return
 }
 
-func randomValuesArr(values [][]string) (ret [][]string) {
+func RandomValuesArr(values [][]string) (ret [][]string) {
 	length := len(values)
 	for i := 0; i < length; i++ {
 		val := commonUtils.RandNum(length)
@@ -412,7 +412,7 @@ func randomValuesArr(values [][]string) (ret [][]string) {
 
 	return
 }
-func randomInterfaces(values []interface{}) (ret []interface{}) {
+func RandomInterfaces(values []interface{}) (ret []interface{}) {
 	length := len(values)
 	for i := 0; i < length; i++ {
 		val := commonUtils.RandNum(length)
@@ -449,8 +449,8 @@ func getRecordCountForParallel(arrOfArr [][]string) int {
 		}
 	}
 
-	if count > vari.Total {
-		count = vari.Total
+	if count > vari.GenVars.Total {
+		count = vari.GenVars.Total
 	}
 
 	return count
@@ -562,20 +562,20 @@ exit:
 			break exit
 		}
 		if v.numLimit != 0 { // privateB{n}
-			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.Total; i++ {
+			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.GenVars.Total; i++ {
 				index := i / v.repeat
 				ret = append(ret, arr[index])
 				count++
 			}
 		} else { // privateA
-			for i := 0; i < len(arr) && i < vari.Total; i++ {
+			for i := 0; i < len(arr) && i < vari.GenVars.Total; i++ {
 				index := i / v.repeat % len(arr)
 				ret = append(ret, arr[index])
 				count++
 			}
 		}
 
-		if count >= vari.Total {
+		if count >= vari.GenVars.Total {
 			break exit
 		}
 

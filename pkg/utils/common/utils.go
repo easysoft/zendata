@@ -1,7 +1,7 @@
 package commonUtils
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/emirpasic/gods/maps"
@@ -33,9 +33,9 @@ func RemoveBlankLine(str string) string {
 
 func BoolToPass(b bool) string {
 	if b {
-		return constant.PASS.String()
+		return consts.PASS.String()
 	} else {
-		return constant.FAIL.String()
+		return consts.FAIL.String()
 	}
 }
 
@@ -61,7 +61,7 @@ func IsMac() bool {
 func IsRelease() bool {
 	arg1 := strings.ToLower(os.Args[0])
 	name := filepath.Base(arg1)
-	return strings.Index(name, constant.AppName) == 0 && strings.Index(arg1, "go-build") < 0
+	return strings.Index(name, consts.AppName) == 0 && strings.Index(arg1, "go-build") < 0
 
 	//if _, err := os.Stat("res"); os.IsNotExist(err) {
 	//	return true

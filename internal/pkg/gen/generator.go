@@ -16,7 +16,7 @@ import (
 func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.Def = LoadDataContentDef(fileContents, fieldsToExport)
+	vari.GenVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
 
 	if err = checkParams(); err != nil {
 		return
@@ -25,9 +25,9 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	fixTotalNum()
 	genResData(fieldsToExport)
 
-	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.Total)
-	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, vari.Total)
-	rows = populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true, vari.Total)
+	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.GenVars.Total)
+	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, vari.GenVars.Total)
+	rows = populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true, vari.GenVars.Total)
 
 	return
 }
@@ -35,7 +35,7 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
 	contents := LoadFilesContents(files)
 	rows, colIsNumArr, err = GenerateFromContent(contents, fieldsToExport)
@@ -122,9 +122,9 @@ func GenerateValuesForField(field *model.DefField, total int) []string {
 }
 
 func checkParams() (err error) {
-	if len(vari.Def.Fields) == 0 {
+	if len(vari.GenVars.DefData.Fields) == 0 {
 		err = errors.New("")
-	} else if vari.Def.Type == constant.DefTypeArticle && vari.Out == "" { // gen article
+	} else if vari.GenVars.DefData.Type == constant.DefTypeArticle && vari.Out == "" { // gen article
 		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
 		logUtils.PrintErrMsg(errMsg)
 		err = errors.New(errMsg)
@@ -134,11 +134,11 @@ func checkParams() (err error) {
 }
 
 func fixTotalNum() {
-	if vari.Total < 0 {
-		if vari.Def.Type == constant.DefTypeArticle {
-			vari.Total = 1
+	if vari.GenVars.Total < 0 {
+		if vari.GenVars.DefData.Type == constant.DefTypeArticle {
+			vari.GenVars.Total = 1
 		} else {
-			vari.Total = constant.DefaultNumber
+			vari.GenVars.Total = constant.DefaultNumber
 		}
 	}
 }
@@ -153,21 +153,21 @@ func genResData(fieldsToExport *[]string) {
 func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool, total int) (topLevelFieldNameToValuesMap map[string][]string) {
 	topLevelFieldNameToValuesMap = map[string][]string{}
 
-	for index, field := range vari.Def.Fields {
+	for index, field := range vari.GenVars.DefData.Fields {
 		if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
 			continue
 		}
 
 		if field.Use != "" && field.From == "" {
-			field.From = vari.Def.From
+			field.From = vari.GenVars.DefData.From
 		}
 		values := GenerateForFieldRecursive(&field, true, total)
 
-		if index > len(vari.Def.Fields)-1 {
+		if index > len(vari.GenVars.DefData.Fields)-1 {
 			logUtils.PrintLine("")
 		}
 
-		vari.Def.Fields[index].Precision = field.Precision
+		vari.GenVars.DefData.Fields[index].Precision = field.Precision
 
 		topLevelFieldNameToValuesMap[field.Field] = values
 		*colIsNumArr = append(*colIsNumArr, field.IsNumb)
@@ -179,7 +179,7 @@ func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool, total int) (to
 func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsToExport *[]string, total int) (
 	arrOfArr [][]string) { // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 
-	for _, child := range vari.Def.Fields {
+	for _, child := range vari.GenVars.DefData.Fields {
 		if !stringUtils.StrInArr(child.Field, *fieldsToExport) {
 			continue
 		}

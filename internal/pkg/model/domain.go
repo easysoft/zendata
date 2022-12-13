@@ -58,6 +58,9 @@ type DefField struct {
 	Union     bool       `yaml:"union,omitempty"`
 
 	Froms []DefField `yaml:"froms,flow,omitempty"`
+
+	Values                []interface{} `yaml:"-"`
+	ValuesWithPlaceholder []string      `yaml:"-"`
 }
 
 type DefArticle struct {

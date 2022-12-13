@@ -135,11 +135,11 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	sortedKeys := make([]string, 0)
 
 	if configDef.Type != "" {
-		vari.DefType = configDef.Type
+		vari.GenVars.DefDataType = configDef.Type
 	} else if defaultDef.Type != "" {
-		vari.DefType = defaultDef.Type
+		vari.GenVars.DefDataType = defaultDef.Type
 	} else {
-		vari.DefType = constant.DefTypeText
+		vari.GenVars.DefDataType = constant.DefTypeText
 	}
 
 	if configDef.Content != "" && defaultDef.Content == "" {
@@ -157,7 +157,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 
-		defaultDef.Fields[i].FileDir = vari.ConfigFileDir
+		defaultDef.Fields[i].FileDir = vari.GenVars.ConfigFileDir
 		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 	for i, field := range configDef.Fields {
@@ -168,7 +168,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 			}
 		}
 
-		configDef.Fields[i].FileDir = vari.ConfigFileDir
+		configDef.Fields[i].FileDir = vari.GenVars.ConfigFileDir
 		CreatePathToFieldMap(&configDef.Fields[i], configFieldMap, &sortedKeys)
 	}
 

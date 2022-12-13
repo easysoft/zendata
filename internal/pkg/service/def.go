@@ -1,0 +1,67 @@
+package service
+
+import (
+	constant "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/gen"
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	"github.com/easysoft/zendata/pkg/utils/vari"
+	"strings"
+	"time"
+)
+
+type DefService struct {
+	FieldService *FieldService
+}
+
+func NewDefService() *DefService {
+	return &DefService{}
+}
+
+func (c *DefService) GenerateFromContent(files []string, fieldsToExportStr, format, table string) {
+	startTime := time.Now().Unix()
+	count := 0
+
+	if files[0] != "" {
+		vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	} else {
+		vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[1])
+	}
+
+	fieldsToExport := make([]string, 0)
+	if fieldsToExportStr != "" {
+		fieldsToExport = strings.Split(fieldsToExportStr, ",")
+	}
+
+	contents := gen.LoadFilesContents(files)
+	vari.GenVars.DefData = gen.LoadDataContentDef(contents, &fieldsToExport)
+
+	// lines = c.GenerateByContent(contents, fieldsToExportStr, format, table)
+	for i, _ := range vari.GenVars.DefData.Fields {
+		c.FieldService.Generate(&vari.GenVars.DefData.Fields[i])
+	}
+
+	entTime := time.Now().Unix()
+	if vari.RunMode == constant.RunModeServerRequest {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
+	}
+}
+
+func (c *DefService) GenerateFromProtobuf(files []string) {
+	startTime := time.Now().Unix()
+	count := 0
+
+	buf, pth := gen.GenerateFromProtobuf(files[0])
+
+	if vari.Verbose {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
+	}
+	logUtils.PrintLine(buf)
+
+	count = 1
+	entTime := time.Now().Unix()
+	if vari.RunMode == constant.RunModeServerRequest {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
+	}
+}

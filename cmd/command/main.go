@@ -71,8 +71,8 @@ func main() {
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
 
-	flagSet.IntVar(&vari.Total, "n", -1, "")
-	flagSet.IntVar(&vari.Total, "lines", -1, "")
+	flagSet.IntVar(&vari.GenVars.Total, "n", -1, "")
+	flagSet.IntVar(&vari.GenVars.Total, "lines", -1, "")
 
 	flagSet.StringVar(&fields, "F", "", "")
 	flagSet.StringVar(&fields, "field", "", "")

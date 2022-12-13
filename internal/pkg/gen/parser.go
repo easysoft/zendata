@@ -2,7 +2,6 @@ package gen
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/const"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -25,13 +24,13 @@ func ParseRangeProperty(rang string) []string {
 	for i := 0; i < len(runeArr); i++ {
 		c := runeArr[i]
 
-		if c == constant.RightBrackets {
+		if c == consts.RightBrackets {
 			bracketsOpen = false
-		} else if c == constant.LeftBrackets {
+		} else if c == consts.LeftBrackets {
 			bracketsOpen = true
-		} else if !backtickOpen && c == constant.Backtick {
+		} else if !backtickOpen && c == consts.Backtick {
 			backtickOpen = true
-		} else if backtickOpen && c == constant.Backtick {
+		} else if backtickOpen && c == consts.Backtick {
 			backtickOpen = false
 		}
 
@@ -63,11 +62,11 @@ func ParseDesc(desc string) (items []string) {
 
 	runeArr := []rune(desc)
 
-	if runeArr[0] == constant.Backtick && runeArr[len(runeArr)-1] == constant.Backtick { // `xxx`
+	if runeArr[0] == consts.Backtick && runeArr[len(runeArr)-1] == consts.Backtick { // `xxx`
 		desc = string(runeArr[1 : len(runeArr)-1])
 		items = append(items, desc)
 
-	} else if runeArr[0] == constant.LeftBrackets && runeArr[len(runeArr)-1] == constant.RightBrackets { // [abc,123]
+	} else if runeArr[0] == consts.LeftBrackets && runeArr[len(runeArr)-1] == consts.RightBrackets { // [abc,123]
 		desc = string(runeArr[1 : len(runeArr)-1])
 		items = strings.Split(desc, ",")
 
@@ -95,9 +94,9 @@ func ParseRangeSection(rang string) (entry string, step string, repeat int, repe
 	}
 
 	runeArr := []rune(rang)
-	if (runeArr[0] == constant.Backtick && runeArr[len(runeArr)-1] == constant.Backtick) || // `xxx`
-		(string(runeArr[0]) == string(constant.LeftBrackets) && // (xxx)
-			string(runeArr[len(runeArr)-1]) == string(constant.RightBrackets)) {
+	if (runeArr[0] == consts.Backtick && runeArr[len(runeArr)-1] == consts.Backtick) || // `xxx`
+		(string(runeArr[0]) == string(consts.LeftBrackets) && // (xxx)
+			string(runeArr[len(runeArr)-1]) == string(consts.RightBrackets)) {
 
 		entry = rang
 		if repeat == 0 {
@@ -152,8 +151,8 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		return
 	}
 
-	if string(runeArr[0]) == string(constant.LeftBrackets) && // [a-z,1-9,userA,UserB]
-		string(runeArr[len(runeArr)-1]) == string(constant.RightBrackets) {
+	if string(runeArr[0]) == string(consts.LeftBrackets) && // [a-z,1-9,userA,UserB]
+		string(runeArr[len(runeArr)-1]) == string(consts.RightBrackets) {
 
 		desc = removeBoundary(desc)
 		arr := strings.Split(desc, ",")
@@ -173,7 +172,7 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		}
 
 		temp = strings.TrimSuffix(temp, ",")
-		desc = string(constant.LeftBrackets) + temp + string(constant.RightBrackets)
+		desc = string(consts.LeftBrackets) + temp + string(consts.RightBrackets)
 		typ = "literal"
 
 		return
@@ -196,8 +195,8 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 }
 
 func removeBoundary(str string) string {
-	str = strings.TrimLeft(str, string(constant.LeftBrackets))
-	str = strings.TrimRight(str, string(constant.RightBrackets))
+	str = strings.TrimLeft(str, string(consts.LeftBrackets))
+	str = strings.TrimRight(str, string(consts.RightBrackets))
 
 	return str
 }

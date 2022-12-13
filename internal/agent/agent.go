@@ -29,10 +29,10 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
 
 	if req.Method == http.MethodGet {
-		defaultFile, configFile, fields, vari.Total,
+		defaultFile, configFile, fields, vari.GenVars.Total,
 			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
 	} else if req.Method == http.MethodPost {
-		defaultDefContent, configDefContent, fields, vari.Total,
+		defaultDefContent, configDefContent, fields, vari.GenVars.Total,
 			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParamsToByte(req)
 	}
 

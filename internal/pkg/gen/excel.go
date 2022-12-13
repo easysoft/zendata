@@ -256,7 +256,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	where := strings.TrimSpace(field.Where)
-	if vari.Def.Type == constant.DefTypeArticle {
+	if vari.GenVars.DefData.Type == constant.DefTypeArticle {
 		if where == "" {
 			where = "y"
 		}
@@ -296,7 +296,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	colStr := fieldSelect
-	if vari.Def.Type == constant.DefTypeArticle {
+	if vari.GenVars.DefData.Type == constant.DefTypeArticle {
 		colStr = "`词语` AS `" + fieldSelect + "`"
 	}
 

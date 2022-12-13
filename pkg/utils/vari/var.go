@@ -6,6 +6,18 @@ import (
 	"gorm.io/gorm"
 )
 
+type GenVarType struct {
+	Total         int
+	ConfigFileDir string
+	DefData       model.DefData
+}
+
+var (
+	GenVars = GenVarType{
+		DefData: model.DefData{},
+	}
+)
+
 var (
 	Config = model.Config{Version: 1, Language: "en"}
 	DB     *gorm.DB
@@ -25,7 +37,6 @@ var (
 	Verbose     bool
 	Interpreter string
 
-	Total      int
 	WithHead   bool
 	Human      bool
 	Trim       bool
@@ -47,7 +58,6 @@ var (
 	Port     int
 
 	ResLoading                         = false
-	Def                                = model.DefData{}
 	Res                                = map[string]map[string][]string{}
 	RandFieldSectionPathToValuesMap    = map[int]map[string]interface{}{}
 	RandFieldSectionShortKeysToPathMap = map[int]string{}
@@ -55,8 +65,6 @@ var (
 
 	CacheResFileToMap  = map[string]map[string][]string{}
 	CacheResFileToName = map[string]string{}
-
-	ConfigFileDir string
 
 	AgentLogDir string
 )

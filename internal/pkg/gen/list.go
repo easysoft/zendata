@@ -40,7 +40,7 @@ func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithVal
 func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
 	rang := field.Range
 	if rang == "" {
-		for i := 0; i < vari.Total; i++ {
+		for i := 0; i < vari.GenVars.Total; i++ {
 			fieldValue.Values = append(fieldValue.Values, "")
 
 			if strings.Index(field.Format, "uuid") == -1 {
@@ -232,7 +232,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 		key := helper.GetRandFieldSection(pth)
 
 		items = append(items, Placeholder(key))
-		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "",
+		mp := PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
 			field.Format, repeat, repeatTag)
 
 		vari.RandFieldSectionShortKeysToPathMap[key] = pth
@@ -248,7 +248,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 			}
 
 			val := elemArr[idx]
-			total = appendValues(&items, val, repeat, total)
+			total = AppendValues(&items, val, repeat, total)
 
 			if total >= constant.MaxNumb {
 				break
@@ -258,7 +258,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	} else if repeatTag == "!" {
 		isRand := field.Path == "" && stepStr == "r"
 		for i := 0; i < repeat; {
-			total = appendArrItems(&items, elemArr, total, isRand)
+			total = AppendArrItems(&items, elemArr, total, isRand)
 
 			if total >= constant.MaxNumb {
 				break
@@ -268,7 +268,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	}
 
 	if field.Path == "" && stepStr == "r" { // for ranges and instances, random
-		items = randomInterfaces(items)
+		items = RandomInterfaces(items)
 	}
 
 	return
@@ -298,7 +298,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		strItems = append(strItems, val)
 		//}
 
-		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
+		mp := PlaceholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
 			strconv.Itoa(precision), field.Format, repeat, repeatTag)
 
 		vari.RandFieldSectionShortKeysToPathMap[key] = pth
@@ -333,7 +333,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	}
 
 	if field.Path == "" && stepStr == "r" { // for ranges and instances, random again
-		items = randomInterfaces(items)
+		items = RandomInterfaces(items)
 	}
 
 	return
@@ -341,15 +341,15 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 
 func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
-	rootDef := vari.Def
-	configDir := vari.ConfigFileDir
+	rootDef := vari.GenVars.DefData
+	configDir := vari.GenVars.ConfigFileDir
 	res := vari.Res
 
 	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
 	rows, colIsNumArr, _ := GenerateFromYaml([]string{configFile}, &fieldsToExport)
 	if field.Rand {
-		rows = randomValuesArr(rows)
+		rows = RandomValuesArr(rows)
 	}
 
 	items = PrintLines(rows, constant.FormatData, "", colIsNumArr, fieldsToExport)
@@ -362,8 +362,8 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 	}
 
 	// rollback root def when finish to deal with refer yaml file
-	vari.Def = rootDef
-	vari.ConfigFileDir = configDir
+	vari.GenVars.DefData = rootDef
+	vari.GenVars.ConfigFileDir = configDir
 	vari.Res = res
 
 	return
@@ -373,7 +373,7 @@ func Placeholder(key int) string {
 	return fmt.Sprintf("${%d}", key)
 }
 
-func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string,
+func PlaceholderMapForRandValues(tp string, list []string, start, end, step, precision, format string,
 	repeat int, repeatTag string) map[string]interface{} {
 	ret := map[string]interface{}{}
 
@@ -395,7 +395,7 @@ func placeholderMapForRandValues(tp string, list []string, start, end, step, pre
 	return ret
 }
 
-func appendValues(items *[]interface{}, val string, repeat int, total int) int {
+func AppendValues(items *[]interface{}, val string, repeat int, total int) int {
 	for round := 0; round < repeat; round++ {
 		*items = append(*items, val)
 
@@ -408,7 +408,7 @@ func appendValues(items *[]interface{}, val string, repeat int, total int) int {
 	return total
 }
 
-func appendArrItems(items *[]interface{}, arr []string, total int, isRand bool) int {
+func AppendArrItems(items *[]interface{}, arr []string, total int, isRand bool) int {
 	for i := 0; i < len(arr); i++ {
 		idx := i
 		if isRand {

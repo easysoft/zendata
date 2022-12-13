@@ -14,7 +14,7 @@ import (
 )
 
 func CreateTimestampField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
-	convertTmFormat(field)
+	ConvertTmFormat(field)
 
 	fieldWithValue.Field = field.Field
 
@@ -23,7 +23,7 @@ func CreateTimestampField(field *model.DefField, fieldWithValue *model.FieldWith
 
 	values := make([]interface{}, 0)
 	for _, section := range rangeSections {
-		createTimestampSectionValue(section, &values)
+		CreateTimestampSectionValue(section, &values)
 	}
 
 	if len(values) == 0 {
@@ -44,13 +44,13 @@ func CreateUlidField(field *model.DefField, fieldWithValue *model.FieldWithValue
 		fieldWithValue.Values = append(fieldWithValue.Values, val)
 
 		count++
-		if count >= constant.MaxNumb || count > vari.Total {
+		if count >= constant.MaxNumb || count > vari.GenVars.Total {
 			break
 		}
 	}
 }
 
-func convertTmFormat(field *model.DefField) { // to 2006-01-02 15:04:05
+func ConvertTmFormat(field *model.DefField) { // to 2006-01-02 15:04:05
 	format := field.Format
 
 	if strings.Index(format, "YYYY") > -1 {
@@ -68,7 +68,7 @@ func convertTmFormat(field *model.DefField) { // to 2006-01-02 15:04:05
 	field.Format = format
 }
 
-func createTimestampSectionValue(section string, values *[]interface{}) {
+func CreateTimestampSectionValue(section string, values *[]interface{}) {
 	desc, step, unit := parseTsSection(section)
 	start, end := parseTsDesc(desc)
 
