@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// 成语
 func main() {
 	var insertTemplate = "INSERT INTO %s (derivation, example, explanation, pinyin, word, abbreviation) VALUES %s;"
 	var createTableTempl = `CREATE TABLE IF NOT EXISTS %s (

@@ -482,12 +482,11 @@ type DataComm struct {
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 	Deleted   bool       `json:"-" gorm:"default:false"`
 	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
-
-	Name string `json:"name"`
 }
 
 type DataFood struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (DataFood) TableName() string {
@@ -496,6 +495,7 @@ func (DataFood) TableName() string {
 
 type DataAnimalPlant struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (DataAnimalPlant) TableName() string {
@@ -504,6 +504,7 @@ func (DataAnimalPlant) TableName() string {
 
 type DataFruit struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (DataFruit) TableName() string {
@@ -512,6 +513,7 @@ func (DataFruit) TableName() string {
 
 type DataConstellation struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (DataConstellation) TableName() string {
@@ -520,6 +522,7 @@ func (DataConstellation) TableName() string {
 
 type DataZodiac struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (DataZodiac) TableName() string {
@@ -528,6 +531,7 @@ func (DataZodiac) TableName() string {
 
 type EightDiagram struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (EightDiagram) TableName() string {
@@ -536,6 +540,7 @@ func (EightDiagram) TableName() string {
 
 type Dynasty struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (Dynasty) TableName() string {
@@ -544,6 +549,7 @@ func (Dynasty) TableName() string {
 
 type CarBrand struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (CarBrand) TableName() string {
@@ -552,6 +558,7 @@ func (CarBrand) TableName() string {
 
 type CarComponent struct {
 	DataComm
+	Name string `json:"name"`
 }
 
 func (CarComponent) TableName() string {
@@ -560,7 +567,10 @@ func (CarComponent) TableName() string {
 
 type PcOs struct {
 	DataComm
-	Desc string `json:"shotName"`
+	Name      string `json:"name"`
+	ShortName string `json:"shortName"`
+	Version   string `json:"version"`
+	Website   string `json:"website"`
 }
 
 func (PcOs) TableName() string {
@@ -569,6 +579,7 @@ func (PcOs) TableName() string {
 
 type PcFileExt struct {
 	DataComm
+	Name string `json:"name"`
 	Desc string `json:"desc"`
 }
 
@@ -577,11 +588,7 @@ func (PcFileExt) TableName() string {
 }
 
 type PhoneModel struct {
-	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
-	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
-	Deleted   bool       `json:"-" gorm:"default:false"`
-	Disabled  bool       `json:"disabled,omitempty" gorm:"default:false"`
+	DataComm
 
 	Brand     string `json:"brand"`
 	BrandName string `json:"brandName"`
@@ -594,4 +601,78 @@ type PhoneModel struct {
 
 func (PhoneModel) TableName() string {
 	return "biz_data_phone_model"
+}
+
+type Place struct {
+	DataComm
+	Name string `json:"name"`
+}
+
+func (Place) TableName() string {
+	return "biz_data_place"
+}
+
+type SongData struct {
+	DataComm
+	Name   string `json:"name"`
+	Singer string
+	Lyric  []string
+}
+
+type Song struct {
+	DataComm
+	Name   string `json:"name"`
+	Singer string
+	Lyric  string
+}
+
+func (Song) TableName() string {
+	return "biz_data_song"
+}
+
+type Bank struct {
+	DataComm
+	Name string `json:"name"`
+}
+
+func (Bank) TableName() string {
+	return "biz_data_bank"
+}
+
+type Advert struct {
+	DataComm
+	Name string `json:"name"`
+}
+
+func (Advert) TableName() string {
+	return "biz_data_advert"
+}
+
+type IdiomSimple struct {
+	DataComm
+	Name string `json:"name"`
+}
+
+func (IdiomSimple) TableName() string {
+	return "biz_data_idiom_simple"
+}
+
+type PoetryAncient struct {
+	DataComm
+	Content    string `json:"content"`
+	CategoryId uint   `json:"categoryId"`
+}
+
+func (PoetryAncient) TableName() string {
+	return "biz_data_poetry_ancient"
+}
+
+type PoetryCategory struct {
+	DataComm
+	Name   string `json:"name" gorm:"unique_index, not null"`
+	EnName string `json:"cnName" gorm:"unique_index, not null"`
+}
+
+func (PoetryCategory) TableName() string {
+	return "biz_data_poetry_category"
 }

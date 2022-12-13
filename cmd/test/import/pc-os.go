@@ -27,9 +27,7 @@ func main() {
 		website := strings.TrimSpace(arr[3])
 
 		po := model.PcOs{
-			DataComm: model.DataComm{
-				Name: name,
-			},
+			Name:      name,
 			ShortName: shortName,
 			Version:   version,
 			Website:   website,
