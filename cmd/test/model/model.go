@@ -676,3 +676,21 @@ type PoetryCategory struct {
 func (PoetryCategory) TableName() string {
 	return "biz_data_poetry_category"
 }
+
+type Medicine struct {
+	DataComm
+	Name string `json:"name"`
+}
+
+func (Medicine) TableName() string {
+	return "biz_data_medicine"
+}
+
+type Joke struct {
+	DataComm
+	Content string `json:"content"`
+}
+
+func (Joke) TableName() string {
+	return "biz_data_joke"
+}

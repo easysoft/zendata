@@ -9,9 +9,9 @@ import (
 )
 
 func main() {
-	filePath := "/Users/aaron/work/zentao/product/zd/行业数据/广告.txt"
+	filePath := "/Users/aaron/work/zentao/product/zd/行业数据/医学.txt"
 
-	tableName := model.Advert{}.TableName()
+	tableName := model.Medicine{}.TableName()
 	db := comm.GetDB()
 	err := db.Exec(fmt.Sprintf(comm.TruncateTable, tableName)).Error
 	if err != nil {
@@ -24,7 +24,7 @@ func main() {
 		arr := strings.Split(strings.TrimSpace(line), " ")
 		col1 := arr[0]
 
-		po := model.Advert{
+		po := model.Medicine{
 			Name: col1,
 		}
 
