@@ -14,11 +14,7 @@ import (
 )
 
 type ArticleService struct {
-	ResService *ResService
-}
-
-func NewArticleService() *ArticleService {
-	return &ArticleService{}
+	ResService *ResService `inject:""`
 }
 
 func (s *ArticleService) CreateArticleField(field *model.DefField) {

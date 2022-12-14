@@ -24,10 +24,6 @@ import (
 type ExcelService struct {
 }
 
-func NewExcelService() *ExcelService {
-	return &ExcelService{}
-}
-
 func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField, total int) (
 	values map[string][]interface{}) {
 	values = map[string][]interface{}{}

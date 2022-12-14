@@ -19,10 +19,6 @@ import (
 type TextService struct {
 }
 
-func NewTextService() *TextService {
-	return &TextService{}
-}
-
 func (c *TextService) CreateFieldValuesFromText(field *model.DefField) {
 	ranges := strings.Split(strings.TrimSpace(field.Range), ",")
 

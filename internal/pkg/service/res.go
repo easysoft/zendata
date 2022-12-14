@@ -16,12 +16,8 @@ import (
 )
 
 type ResService struct {
-	FieldService *FieldService
-	ExcelService *ExcelService
-}
-
-func NewResService() *ResService {
-	return &ResService{}
+	FieldService *FieldService `inject:""`
+	ExcelService *ExcelService `inject:""`
 }
 
 func (s *ResService) LoadResDef(fieldsToExport []string) (res map[string]map[string][]interface{}) {

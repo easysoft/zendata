@@ -13,18 +13,11 @@ import (
 )
 
 type DefService struct {
-	ResService   *ResService
-	FieldService *FieldService
+	ResService   *ResService   `inject:""`
+	FieldService *FieldService `inject:""`
 }
 
-func NewDefService() *DefService {
-	return &DefService{
-		ResService:   NewResService(),
-		FieldService: NewFieldService(),
-	}
-}
-
-func (c *DefService) GenerateFromContent(files []string, fieldsToExportStr, format, table string) {
+func (s *DefService) GenerateFromContent(files []string, fieldsToExportStr, format, table string) {
 	startTime := time.Now().Unix()
 	count := 0
 
@@ -41,19 +34,27 @@ func (c *DefService) GenerateFromContent(files []string, fieldsToExportStr, form
 
 	contents := gen.LoadFilesContents(files)
 	vari.GenVars.DefData = gen.LoadDataContentDef(contents, &fieldsToExport)
-	vari.GenVars.ResData = c.ResService.LoadResDef(fieldsToExport)
+	vari.GenVars.ResData = s.ResService.LoadResDef(fieldsToExport)
 
 	if err := gen.CheckParams(); err != nil {
 		return
 	}
 	gen.FixTotalNum()
 
-	// gen fields's data
+	// gen for each field
 	for i, field := range vari.GenVars.DefData.Fields {
 		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
 			continue
 		}
-		c.FieldService.Generate(&vari.GenVars.DefData.Fields[i])
+		s.FieldService.Generate(&vari.GenVars.DefData.Fields[i], false)
+	}
+
+	// combine children fields
+	for i, field := range vari.GenVars.DefData.Fields {
+		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
+			continue
+		}
+		s.FieldService.Generate(&vari.GenVars.DefData.Fields[i], false)
 	}
 
 	entTime := time.Now().Unix()
@@ -62,7 +63,7 @@ func (c *DefService) GenerateFromContent(files []string, fieldsToExportStr, form
 	}
 }
 
-func (c *DefService) GenerateFromProtobuf(files []string) {
+func (s *DefService) GenerateFromProtobuf(files []string) {
 	startTime := time.Now().Unix()
 	count := 0
 

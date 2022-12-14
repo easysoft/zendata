@@ -16,6 +16,7 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"github.com/facebookgo/inject"
 	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
@@ -200,7 +201,8 @@ func toGen(files []string) {
 			return
 		}
 
-		ctrl.NewDefCtrl().Generate(files, fields, vari.Format, vari.Table)
+		InitGenCtrl()
+		defCtrl.Generate(files, fields, vari.Format, vari.Table)
 		//action.Generate(files, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeParse {
@@ -277,6 +279,27 @@ func getFormat() (err error) {
 		msg := i118Utils.I118Prt.Sprintf("miss_table_name")
 		logUtils.PrintErrMsg(msg)
 		err = errors.New(msg)
+	}
+
+	return
+}
+
+var defCtrl *ctrl.DefCtrl
+
+func InitGenCtrl() (err error) {
+	var g inject.Graph
+
+	defCtrl = &ctrl.DefCtrl{}
+
+	if err := g.Provide(
+		&inject.Object{Value: vari.DB},
+		&inject.Object{Value: defCtrl},
+	); err != nil {
+		logUtils.PrintErrMsg(fmt.Sprintf("provide usecase objects to the Graph: %v", err))
+	}
+	err = g.Populate()
+	if err != nil {
+		logUtils.PrintErrMsg(fmt.Sprintf("populate the incomplete Objects: %v", err))
 	}
 
 	return

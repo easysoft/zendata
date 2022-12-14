@@ -28,6 +28,7 @@ func DealwithFixRange(field *model.DefField) {
 		tmp = field.Prefix
 		field.PrefixRange = &model.Range{Values: []interface{}{tmp}}
 	}
+
 	if isRangeFix(field.Postfix) {
 		field.PostfixRange = CreateFieldFixValuesFromList(field.Postfix, field)
 	} else {
@@ -39,6 +40,7 @@ func DealwithFixRange(field *model.DefField) {
 
 func genValuesForChildFields(field *model.DefField, withFix bool, total int) (values []string) {
 	fieldNameToValuesMap := map[string][]string{} // refer field name to values
+
 	fieldMap := map[string]model.DefField{}
 
 	// 1. generate values for sub fields

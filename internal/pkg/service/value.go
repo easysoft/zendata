@@ -14,10 +14,6 @@ import (
 type ValueService struct {
 }
 
-func NewValueService() *ValueService {
-	return &ValueService{}
-}
-
 func (s *ValueService) CreateTimestampField(field *model.DefField) {
 	valueGen.ConvertTmFormat(field)
 

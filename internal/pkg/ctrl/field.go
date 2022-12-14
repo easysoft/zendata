@@ -13,14 +13,6 @@ type FieldCtrl struct {
 	ValueService *service.ValueService
 }
 
-func NewFieldCtrl(field *model.DefField) *FieldCtrl {
-	return &FieldCtrl{
-		Field:        field,
-		FieldService: service.NewFieldService(),
-		ValueService: service.NewValueService(),
-	}
-}
-
 func (c *FieldCtrl) CreateField() {
 	fieldWithValue := model.FieldWithValues{}
 

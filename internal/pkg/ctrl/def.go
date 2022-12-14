@@ -7,13 +7,7 @@ import (
 )
 
 type DefCtrl struct {
-	DefService *service.DefService
-}
-
-func NewDefCtrl() *DefCtrl {
-	return &DefCtrl{
-		DefService: service.NewDefService(),
-	}
+	DefService *service.DefService `inject:""`
 }
 
 func (c *DefCtrl) Generate(files []string, fieldsToExportStr, format, table string) {
