@@ -23,6 +23,7 @@ import (
 )
 
 type FieldService struct {
+	ResService     *ResService
 	TextService    *TextService
 	ValueService   *ValueService
 	ArticleService *ArticleService
@@ -30,6 +31,7 @@ type FieldService struct {
 
 func NewFieldService() *FieldService {
 	return &FieldService{
+		ResService:   NewResService(),
 		TextService:  NewTextService(),
 		ValueService: NewValueService(),
 	}
@@ -48,10 +50,10 @@ func (s *FieldService) Generate(field *model.DefField) {
 
 	//
 	if len(field.Froms) > 0 { // refer to multi res
-		//field.Values = s.GenValuesForMultiRes(field, true, vari.GenVars.Total)
+		s.GenValuesForMultiRes(field, true)
 
 	} else if field.From != "" && field.Type != consts.FieldTypeArticle { // refer to res
-		//field.Values = s.GenValuesForSingleRes(field, vari.GenVars.Total)
+		s.GenValuesForSingleRes(field)
 
 	} else if field.Config != "" { // refer to config
 		s.GenValuesForConfig(field)
@@ -430,6 +432,62 @@ func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []inter
 	return
 }
 
+func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
+	if field.Use != "" { // refer to ranges or instance
+		groupValues := vari.GenVars.ResData[s.ResService.getFromKey(field)]
+
+		uses := strings.TrimSpace(field.Use) // like group{limit:repeat}
+		use, numLimit, repeat := s.getNum(uses)
+		if strings.Index(use, "all") == 0 {
+			valuesForAdd := s.getRepeatValuesFromAll(groupValues, numLimit, repeat)
+			field.Values = append(field.Values, valuesForAdd...)
+		} else {
+			infos := s.parseUse(uses)
+			valuesForAdd := s.getRepeatValuesFromGroups(groupValues, infos)
+			field.Values = append(field.Values, valuesForAdd...)
+		}
+	} else if field.Select != "" { // refer to excel
+		groupValues := vari.GenVars.ResData[s.ResService.getFromKey(field)]
+		resKey := field.Select
+
+		// deal with the key
+		if vari.GenVars.DefData.Type == consts.DefTypeArticle {
+			resKey = resKey + "_" + field.Field
+		}
+
+		field.Values = append(field.Values, groupValues[resKey]...)
+	}
+
+	s.loopFieldValues(field, true)
+
+	return
+}
+
+func (s *FieldService) GenValuesForMultiRes(field *model.DefField, withFix bool) {
+	unionValues := make([]interface{}, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+
+	for _, child := range field.Froms {
+		if child.From == "" {
+			child.From = field.From
+		}
+
+		child.FileDir = field.FileDir
+		childValues := s.GenerateForFieldRecursive(&child, withFix, vari.GenVars.Total)
+		unionValues = append(unionValues, childValues...)
+	}
+
+	count := len(unionValues)
+	if count > vari.GenVars.Total {
+		count = vari.GenVars.Total
+	}
+
+	field.Values = unionValues
+
+	s.loopFieldValues(field, true)
+
+	return
+}
+
 func (s *FieldService) addFix(str string, field *model.DefField, count int, withFix bool) (ret string) {
 	prefix := s.GetStrValueFromRange(field.PrefixRange, count)
 	postfix := s.GetStrValueFromRange(field.PostfixRange, count)
@@ -637,6 +695,106 @@ func (s *FieldService) computerUniqueTotal(field *model.DefField) (ret int) {
 	if field.PrefixRange != nil && len(field.PrefixRange.Values) > 0 {
 		ret *= len(field.PrefixRange.Values)
 	}
+
+	return
+}
+
+func (s *FieldService) getRepeatValuesFromAll(groupValues map[string][]string, numLimit, repeat int) (ret []string) {
+	if repeat == 0 {
+		repeat = 1
+	}
+
+	count := 0
+exit:
+	for _, arr := range groupValues {
+		for _, item := range arr {
+			for i := 0; i < repeat; i++ {
+				ret = append(ret, item)
+				count++
+
+				if numLimit > 0 && count >= numLimit {
+					break exit
+				}
+			}
+		}
+	}
+
+	return
+}
+
+func (s *FieldService) getRepeatValuesFromGroups(groupValues map[string][]string, info []retsInfo) (ret []string) {
+	count := 0
+
+exit:
+	for _, v := range info {
+		if v.repeat == 0 {
+			v.repeat = 1
+		}
+
+		arr := groupValues[v.ret]
+		if len(arr) == 0 {
+			break exit
+		}
+		if v.numLimit != 0 { // privateB{n}
+			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.GenVars.Total; i++ {
+				index := i / v.repeat
+				ret = append(ret, arr[index])
+				count++
+			}
+		} else { // privateA
+			for i := 0; i < len(arr) && i < vari.GenVars.Total; i++ {
+				index := i / v.repeat % len(arr)
+				ret = append(ret, arr[index])
+				count++
+			}
+		}
+
+		if count >= vari.GenVars.Total {
+			break exit
+		}
+
+	}
+	return
+}
+
+// pars Uses
+type retsInfo struct {
+	ret      string
+	numLimit int
+	repeat   int
+}
+
+func (s *FieldService) parseUse(groups string) (results []retsInfo) {
+	rets := strings.Split(groups, ",")
+	results = make([]retsInfo, len(rets))
+	regx := regexp.MustCompile(`\{([^:]*):?([^:]*)\}`)
+	for k, v := range rets {
+		results[k].ret = regx.ReplaceAllString(v, "")
+		arr := regx.FindStringSubmatch(v)
+		if len(arr) >= 2 {
+			results[k].numLimit, _ = strconv.Atoi(arr[1])
+		}
+		if len(arr) >= 3 {
+			results[k].repeat, _ = strconv.Atoi(arr[2])
+			if results[k].repeat == 0 {
+				results[k].repeat = 1
+			}
+		}
+	}
+	return
+}
+
+func (s *FieldService) getNum(group string) (ret string, numLimit, repeat int) {
+	regx := regexp.MustCompile(`\{([^:]*):?([^:]*)\}`)
+	arr := regx.FindStringSubmatch(group)
+	if len(arr) >= 2 {
+		numLimit, _ = strconv.Atoi(arr[1])
+	}
+	if len(arr) >= 3 {
+		repeat, _ = strconv.Atoi(arr[2])
+	}
+
+	ret = regx.ReplaceAllString(group, "")
 
 	return
 }
