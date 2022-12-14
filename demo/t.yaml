@@ -5,31 +5,36 @@ version: 1.0
 fields:
   - field: f1
     range: 0-9
+    loop:  1-3
+    prefix: a-c
+    postfix: "\t"
+  - field: field_use_config
+    config: number.yaml
     postfix: "\t"
 
-  - field: union_false
-#    mode: r
-    fields:
-      - field: child1
-        range: A-D
-        prefix: part1_
-        postfix: ' | '
-
-      - field: child2
-        range: x-z
-        prefix: part2_
-
-  - field: union_true
-#    mode: r
-    union: true
-    fields:
-      - field: child1
-        range: A-D
-        prefix: part1_
-        postfix: ' | '
-      - field: child2
-        range: x-z
-        prefix: part2_
+#  - field: union_false
+##    mode: r
+#    fields:
+#      - field: child1
+#        range: A-D
+#        prefix: part1_
+#        postfix: ' | '
+#
+#      - field: child2
+#        range: x-z
+#        prefix: part2_
+#
+#  - field: union_true
+##    mode: r
+#    union: true
+#    fields:
+#      - field: child1
+#        range: A-D
+#        prefix: part1_
+#        postfix: ' | '
+#      - field: child2
+#        range: x-z
+#        prefix: part2_
 
 #  - field: f1
 #    range: 0-9

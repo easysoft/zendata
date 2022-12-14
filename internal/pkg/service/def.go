@@ -13,11 +13,15 @@ import (
 )
 
 type DefService struct {
+	ResService   *ResService
 	FieldService *FieldService
 }
 
 func NewDefService() *DefService {
-	return &DefService{}
+	return &DefService{
+		ResService:   NewResService(),
+		FieldService: NewFieldService(),
+	}
 }
 
 func (c *DefService) GenerateFromContent(files []string, fieldsToExportStr, format, table string) {
@@ -37,6 +41,7 @@ func (c *DefService) GenerateFromContent(files []string, fieldsToExportStr, form
 
 	contents := gen.LoadFilesContents(files)
 	vari.GenVars.DefData = gen.LoadDataContentDef(contents, &fieldsToExport)
+	vari.GenVars.ResData = c.ResService.LoadResDef(fieldsToExport)
 
 	if err := gen.CheckParams(); err != nil {
 		return

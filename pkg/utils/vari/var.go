@@ -9,12 +9,17 @@ import (
 type GenVarType struct {
 	Total         int
 	ConfigFileDir string
-	DefData       model.DefData
+
+	DefData model.DefData
+	ResData map[string]map[string][]interface{}
+
+	CacheResFileToMap map[string]map[string][]interface{}
 }
 
 var (
 	GenVars = GenVarType{
-		DefData: model.DefData{},
+		DefData:           model.DefData{},
+		CacheResFileToMap: map[string]map[string][]interface{}{},
 	}
 )
 

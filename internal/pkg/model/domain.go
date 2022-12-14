@@ -117,7 +117,6 @@ type FieldSimple struct {
 	PostfixRange *Range `yaml:"-"`
 }
 
-// add by Leo [2022/04/27]
 type Range struct {
 	Values []interface{}
 	IsRand bool

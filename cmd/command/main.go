@@ -201,7 +201,7 @@ func toGen(files []string) {
 		}
 
 		ctrl.NewDefCtrl().Generate(files, fields, vari.Format, vari.Table)
-		action.Generate(files, fields, vari.Format, vari.Table)
+		//action.Generate(files, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeParse {
 		ext := filepath.Ext(input)
