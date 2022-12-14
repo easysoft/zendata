@@ -13,8 +13,9 @@ import (
 )
 
 type DefService struct {
-	ResService   *ResService   `inject:""`
-	FieldService *FieldService `inject:""`
+	ResService     *ResService     `inject:""`
+	FieldService   *FieldService   `inject:""`
+	CombineService *CombineService `inject:""`
 }
 
 func (s *DefService) GenerateFromContent(files []string, fieldsToExportStr, format, table string) {
@@ -32,6 +33,7 @@ func (s *DefService) GenerateFromContent(files []string, fieldsToExportStr, form
 		fieldsToExport = strings.Split(fieldsToExportStr, ",")
 	}
 
+	// get def and res data
 	contents := gen.LoadFilesContents(files)
 	vari.GenVars.DefData = gen.LoadDataContentDef(contents, &fieldsToExport)
 	vari.GenVars.ResData = s.ResService.LoadResDef(fieldsToExport)
@@ -54,9 +56,10 @@ func (s *DefService) GenerateFromContent(files []string, fieldsToExportStr, form
 		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
 			continue
 		}
-		s.FieldService.Generate(&vari.GenVars.DefData.Fields[i], false)
+		s.CombineService.CombineChildrenIfNeeded(&vari.GenVars.DefData.Fields[i])
 	}
 
+	// print end msg
 	entTime := time.Now().Unix()
 	if vari.RunMode == constant.RunModeServerRequest {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))

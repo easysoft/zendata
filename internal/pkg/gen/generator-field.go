@@ -39,9 +39,8 @@ func DealwithFixRange(field *model.DefField) {
 }
 
 func genValuesForChildFields(field *model.DefField, withFix bool, total int) (values []string) {
-	fieldNameToValuesMap := map[string][]string{} // refer field name to values
-
-	fieldMap := map[string]model.DefField{}
+	fieldNameToValuesMap := map[string][]string{}
+	fieldNameToFieldMap := map[string]model.DefField{}
 
 	// 1. generate values for sub fields
 	for _, child := range field.Fields {
@@ -52,7 +51,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 		child.FileDir = field.FileDir
 		childValues := GenerateForFieldRecursive(&child, withFix, total)
 		fieldNameToValuesMap[child.Field] = childValues
-		fieldMap[child.Field] = child
+		fieldNameToFieldMap[child.Field] = child
 	}
 
 	// 2. deal with expression
@@ -61,7 +60,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 		childValues := fieldNameToValuesMap[child.Field]
 
 		if child.Value != "" {
-			childValues = helper.GenExpressionValues(child, fieldNameToValuesMap, fieldMap)
+			childValues = helper.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
 		}
 		arrOfArr = append(arrOfArr, childValues)
 	}

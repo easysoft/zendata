@@ -23,14 +23,19 @@ type FieldService struct {
 }
 
 func (s *FieldService) Generate(field *model.DefField, parentIsUnion bool) {
-	union := field.Union || parentIsUnion
+	field.Union = field.Union || parentIsUnion
 
 	s.RangeService.DealwithFixRange(field)
 
 	// iterate children
 	if len(field.Fields) > 0 {
 		for i, _ := range field.Fields {
-			s.Generate(&field.Fields[i], union)
+			if field.Fields[i].From == "" {
+				field.Fields[i].From = field.From
+			}
+			field.Fields[i].FileDir = field.FileDir
+
+			s.Generate(&field.Fields[i], field.Union)
 		}
 		return
 	}
