@@ -4,7 +4,7 @@ version: 1.0
 
 fields:
   - field: f1
-    range: 0-9
+    range: 0-9:R
     loop:  1-3
     prefix: a-c
     postfix: "\t"
@@ -13,7 +13,7 @@ fields:
     postfix: "\t"
 
   - field: union_false
-#    mode: r
+    mode: r
     postfix: "\t"
     fields:
       - field: child1
@@ -26,7 +26,7 @@ fields:
         prefix: part2_
 
   - field: union_true
-#    mode: r
+    mode: p
     union: true
     fields:
       - field: child1

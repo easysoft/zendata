@@ -18,6 +18,7 @@ import (
 )
 
 type RangeService struct {
+	PlaceholderService *PlaceholderService `inject:""`
 }
 
 func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
@@ -86,11 +87,11 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 		key := helper.GetRandFieldSection(pth)
 
 		items = append(items, gen.Placeholder(key))
-		mp := gen.PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
+		mp := s.PlaceholderService.PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
 			field.Format, repeat, repeatTag)
 
-		vari.RandFieldSectionShortKeysToPathMap[key] = pth
-		vari.RandFieldSectionPathToValuesMap[key] = mp
+		vari.GlobalVars.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.GlobalVars.RandFieldSectionPathToValuesMap[key] = mp
 		return
 	}
 
@@ -144,7 +145,7 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 		pth := field.Path + "->" + desc
 		key := helper.GetRandFieldSection(pth)
 
-		val := gen.Placeholder(key)
+		val := s.PlaceholderService.PlaceholderStr(key)
 		strItems := make([]string, 0)
 
 		//for i := 0; i < repeat*count; i++ { // chang to add only one placeholder item
@@ -152,11 +153,11 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 		strItems = append(strItems, val)
 		//}
 
-		mp := gen.PlaceholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
+		mp := s.PlaceholderService.PlaceholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
 			strconv.Itoa(precision), field.Format, repeat, repeatTag)
 
-		vari.RandFieldSectionShortKeysToPathMap[key] = pth
-		vari.RandFieldSectionPathToValuesMap[key] = mp
+		vari.GlobalVars.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.GlobalVars.RandFieldSectionPathToValuesMap[key] = mp
 
 		return
 	}

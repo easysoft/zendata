@@ -8,9 +8,10 @@ import (
 )
 
 type CombineService struct {
-	ExpressionService *ExpressionService `inject:""`
-	LoopService       *LoopService       `inject:""`
-	OutputService     *OutputService     `inject:""`
+	ExpressionService  *ExpressionService  `inject:""`
+	LoopService        *LoopService        `inject:""`
+	OutputService      *OutputService      `inject:""`
+	PlaceholderService *PlaceholderService `inject:""`
 }
 
 func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {

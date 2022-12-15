@@ -235,8 +235,8 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 		mp := PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
 			field.Format, repeat, repeatTag)
 
-		vari.RandFieldSectionShortKeysToPathMap[key] = pth
-		vari.RandFieldSectionPathToValuesMap[key] = mp
+		vari.GlobalVars.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.GlobalVars.RandFieldSectionPathToValuesMap[key] = mp
 		return
 	}
 
@@ -301,8 +301,8 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		mp := PlaceholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
 			strconv.Itoa(precision), field.Format, repeat, repeatTag)
 
-		vari.RandFieldSectionShortKeysToPathMap[key] = pth
-		vari.RandFieldSectionPathToValuesMap[key] = mp
+		vari.GlobalVars.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.GlobalVars.RandFieldSectionPathToValuesMap[key] = mp
 
 		return
 	}

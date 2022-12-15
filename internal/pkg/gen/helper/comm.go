@@ -7,7 +7,7 @@ import (
 func GetRandFieldSection(pth string) (key int) {
 	max := 0
 
-	for k, v := range vari.RandFieldSectionShortKeysToPathMap {
+	for k, v := range vari.GlobalVars.RandFieldSectionShortKeysToPathMap {
 		if pth == v {
 			key = k
 			return

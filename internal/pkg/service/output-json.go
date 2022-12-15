@@ -8,7 +8,8 @@ import (
 )
 
 type OutputService struct {
-	CombineService *CombineService `inject:""`
+	CombineService     *CombineService     `inject:""`
+	PlaceholderService *PlaceholderService `inject:""`
 }
 
 func (s *OutputService) GenJson(def *model.DefData) {
@@ -36,10 +37,13 @@ func (s *OutputService) GenJson(def *model.DefData) {
 }
 
 func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interface{}, i int) {
-	if field.Union || len(field.Fields) == 0 {
-		(*mp)[field.Field] = field.Values[i%len(field.Values)]
+	if field.Union || len(field.Fields) == 0 { // set values
+		val := field.Values[i%len(field.Values)]
+		val = s.PlaceholderService.ReplacePlaceholder(val.(string))
 
-	} else {
+		(*mp)[field.Field] = val
+
+	} else { // set child object
 		childMap := map[string]interface{}{}
 
 		for _, child := range field.Fields {

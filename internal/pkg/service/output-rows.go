@@ -14,7 +14,9 @@ func (s *OutputService) GenRows(def *model.DefData) {
 	s.CombineService.CombineChildrenIfNeeded(&simulatedFieldFromDef)
 
 	for _, item := range simulatedFieldFromDef.Values {
-		logUtils.PrintLine(item.(string) + "\n")
+		line := s.PlaceholderService.ReplacePlaceholder(item.(string))
+
+		logUtils.PrintLine(line + "\n")
 	}
 
 	return

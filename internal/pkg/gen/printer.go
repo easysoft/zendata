@@ -238,7 +238,7 @@ func replacePlaceholder(col string) string {
 
 func getValForPlaceholder(placeholderStr string, count int) []string {
 	placeholderInt, _ := strconv.Atoi(placeholderStr)
-	mp := vari.RandFieldSectionPathToValuesMap[placeholderInt]
+	mp := vari.GlobalVars.RandFieldSectionPathToValuesMap[placeholderInt]
 
 	tp := mp["type"].(string)
 	repeatObj := mp["repeat"]

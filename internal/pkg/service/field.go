@@ -18,6 +18,7 @@ type FieldService struct {
 
 	FixService    *FixService    `inject:""`
 	LoopService   *LoopService   `inject:""`
+	ListService   *ListService   `inject:""`
 	RangeService  *RangeService  `inject:""`
 	RandomService *RandomService `inject:""`
 }
@@ -123,7 +124,7 @@ func (s *FieldService) CreateField(field *model.DefField) {
 	}
 
 	if field.Type == consts.FieldTypeList {
-		s.CreateListFieldValues(field)
+		s.ListService.CreateListFieldValues(field)
 	} else if field.Type == consts.FieldTypeArticle {
 		s.ArticleService.CreateArticleField(field)
 
@@ -134,14 +135,6 @@ func (s *FieldService) CreateField(field *model.DefField) {
 	}
 
 	return
-}
-
-func (s *FieldService) CreateListFieldValues(field *model.DefField) {
-	if strings.Index(field.Range, ".txt") > -1 {
-		s.TextService.CreateFieldValuesFromText(field)
-	} else {
-		s.RangeService.CreateFieldValuesFromRange(field)
-	}
 }
 
 func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []interface{}) {

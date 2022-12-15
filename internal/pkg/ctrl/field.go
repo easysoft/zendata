@@ -2,20 +2,19 @@ package ctrl
 
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
 )
 
 type FieldCtrl struct {
-	Field        *model.DefField
-	FieldService *service.FieldService
-	ValueService *service.ValueService
+	Field          *model.DefField
+	FieldService   *service.FieldService
+	ValueService   *service.ValueService
+	ListService    *service.ListService    `inject:""`
+	ArticleService *service.ArticleService `inject:""`
 }
 
 func (c *FieldCtrl) CreateField() {
-	fieldWithValue := model.FieldWithValues{}
-
 	if c.Field.Type == "" { // set default
 		c.Field.Type = constant.FieldTypeList
 	}
@@ -27,9 +26,9 @@ func (c *FieldCtrl) CreateField() {
 	}
 
 	if c.Field.Type == constant.FieldTypeList {
-		gen.CreateListField(c.Field, &fieldWithValue)
+		c.ListService.CreateListField(c.Field)
 	} else if c.Field.Type == constant.FieldTypeArticle {
-		gen.CreateArticleField(c.Field, &fieldWithValue)
+		c.ArticleService.CreateArticleField(c.Field)
 	} else if c.Field.Type == constant.FieldTypeTimestamp {
 		c.ValueService.CreateTimestampField(c.Field)
 	} else if c.Field.Type == constant.FieldTypeUlid {

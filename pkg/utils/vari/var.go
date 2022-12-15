@@ -20,16 +20,22 @@ type GenVarType struct {
 	DefData model.DefData
 	ResData map[string]map[string][]interface{}
 
-	CacheResFileToMap map[string]map[string][]interface{}
-	StartTime         time.Time
-	EndTime           time.Time
+	CacheResFileToMap                  map[string]map[string][]interface{}
+	RandFieldSectionPathToValuesMap    map[int]map[string]interface{}
+	RandFieldSectionShortKeysToPathMap map[int]string
+
+	StartTime time.Time
+	EndTime   time.Time
 }
 
 var (
 	GlobalVars = GenVarType{
-		DefData:           model.DefData{},
-		CacheResFileToMap: map[string]map[string][]interface{}{},
-		OutputFormat:      consts.FormatText,
+		DefData:      model.DefData{},
+		OutputFormat: consts.FormatText,
+
+		CacheResFileToMap:                  map[string]map[string][]interface{}{},
+		RandFieldSectionPathToValuesMap:    map[int]map[string]interface{}{},
+		RandFieldSectionShortKeysToPathMap: map[int]string{},
 	}
 )
 
@@ -70,11 +76,9 @@ var (
 	Ip       string
 	Port     int
 
-	ResLoading                         = false
-	Res                                = map[string]map[string][]string{}
-	RandFieldSectionPathToValuesMap    = map[int]map[string]interface{}{}
-	RandFieldSectionShortKeysToPathMap = map[int]string{}
-	TopFieldMap                        = map[string]model.DefField{}
+	ResLoading  = false
+	Res         = map[string]map[string][]string{}
+	TopFieldMap = map[string]model.DefField{}
 
 	CacheResFileToMap  = map[string]map[string][]string{}
 	CacheResFileToName = map[string]string{}
