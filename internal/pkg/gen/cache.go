@@ -57,7 +57,7 @@ func RetrieveCache(cacheKey string, fieldsToExport *[]string) (rows [][]string, 
 	var records []iris.Map
 	sql := "SELECT " + selectedCols +
 		" FROM " + getTableName(cacheKey) +
-		" LIMIT " + strconv.Itoa(vari.GenVars.Total) + " ;"
+		" LIMIT " + strconv.Itoa(vari.GlobalVars.Total) + " ;"
 	err = vari.DB.Raw(sql).
 		Scan(&records).
 		Error
@@ -100,7 +100,7 @@ func RetrieveCacheBatch(cacheKey string, fieldsToExport *[]string, batch int) (
 	var records []iris.Map
 	sql := "SELECT " + selectedCols +
 		" FROM " + getTableName(cacheKey) +
-		" LIMIT " + strconv.Itoa(vari.GenVars.Total) + " ;"
+		" LIMIT " + strconv.Itoa(vari.GlobalVars.Total) + " ;"
 	err = vari.DB.Raw(sql).
 		Scan(&records).
 		Error

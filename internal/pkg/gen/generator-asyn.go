@@ -19,12 +19,12 @@ func SyncGenCacheAndReturnFirstPart(fileContents [][]byte, fieldsToExport *[]str
 	FixTotalNum()
 	genResData(fieldsToExport)
 
-	threadCount := getTheadCount(vari.GenVars.Total, constant.MaxNumbForAsync)
+	threadCount := getTheadCount(vari.GlobalVars.Total, constant.MaxNumbForAsync)
 
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(threadCount)
 
-	vari.GenVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
+	vari.GlobalVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
 
 	if err = CheckParams(); err != nil {
 		return
@@ -34,7 +34,7 @@ func SyncGenCacheAndReturnFirstPart(fileContents [][]byte, fieldsToExport *[]str
 		index := i
 		c.Inc("count")
 
-		recordNumb := getTheadRecordNum(vari.GenVars.Total, constant.MaxNumbForAsync, threadCount, index)
+		recordNumb := getTheadRecordNum(vari.GlobalVars.Total, constant.MaxNumbForAsync, threadCount, index)
 
 		go func() {
 			defer func() {

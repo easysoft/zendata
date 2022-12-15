@@ -10,7 +10,7 @@ type DefCtrl struct {
 	DefService *service.DefService `inject:""`
 }
 
-func (c *DefCtrl) Generate(files []string, fieldsToExportStr, format, table string) {
+func (c *DefCtrl) Generate(files []string) {
 	if len(files) == 0 {
 		return
 	}
@@ -18,7 +18,7 @@ func (c *DefCtrl) Generate(files []string, fieldsToExportStr, format, table stri
 	files = fileUtils.HandleFiles(files)
 
 	if !action.IsFromProtobuf(files[0]) { // default gen from yaml
-		c.DefService.GenerateFromContent(files, fieldsToExportStr, format, table)
+		c.DefService.GenerateFromContent(files)
 
 	} else { // gen from protobuf
 		c.DefService.GenerateFromProtobuf(files)

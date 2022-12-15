@@ -165,7 +165,7 @@ func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // 
 	}
 
 	if resFile == "" {
-		resPath := vari.GenVars.ConfigFileDir + from
+		resPath := vari.GlobalVars.ConfigFileDir + from
 		if !FileExist(resPath) { // in same folder with passed config file, like dir/name.yaml
 			resPath = vari.ZdPath + from
 			if !FileExist(resPath) { // in res file
@@ -308,7 +308,7 @@ func ComputerReferFilePath(file string, field *model.DefField) (resPath string) 
 		return
 	}
 
-	resPath = vari.GenVars.ConfigFileDir + file
+	resPath = vari.GlobalVars.ConfigFileDir + file
 	if FileExist(resPath) {
 		return
 	}

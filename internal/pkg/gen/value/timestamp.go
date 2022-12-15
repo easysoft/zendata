@@ -44,7 +44,7 @@ func CreateUlidField(field *model.DefField, fieldWithValue *model.FieldWithValue
 		fieldWithValue.Values = append(fieldWithValue.Values, val)
 
 		count++
-		if count >= constant.MaxNumb || count > vari.GenVars.Total {
+		if count >= constant.MaxNumb || count > vari.GlobalVars.Total {
 			break
 		}
 	}

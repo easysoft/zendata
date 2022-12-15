@@ -60,7 +60,7 @@ func (s *FieldService) Generate(field *model.DefField, parentIsUnion bool) {
 	}
 
 	if field.Use != "" && field.From == "" {
-		field.From = vari.GenVars.DefData.From
+		field.From = vari.GlobalVars.DefData.From
 	}
 }
 
@@ -81,7 +81,7 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 			!(*field).ReferToAnotherYaml &&
 			(*field).IsRand && (*field).LoopIndex > (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
-		if count >= vari.GenVars.Total || count >= uniqueTotal || isRandomAndLoopEnd {
+		if count >= vari.GlobalVars.Total || count >= uniqueTotal || isRandomAndLoopEnd {
 			for _, v := range field.Values {
 				str := fmt.Sprintf("%v", v)
 				str = s.FixService.AddFix(str, field, count, true)
@@ -96,7 +96,7 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 
 		count++
 
-		if count >= vari.GenVars.Total || count >= uniqueTotal {
+		if count >= vari.GlobalVars.Total || count >= uniqueTotal {
 			break
 		}
 
@@ -145,7 +145,7 @@ func (s *FieldService) CreateListFieldValues(field *model.DefField) {
 }
 
 func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []interface{}) {
-	groupValues := vari.GenVars.ResData[field.Config]
+	groupValues := vari.GlobalVars.ResData[field.Config]
 
 	field.Values = groupValues["all"]
 
@@ -156,7 +156,7 @@ func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []inter
 
 func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
 	if field.Use != "" { // refer to ranges or instance
-		groupValues := vari.GenVars.ResData[s.ResService.getFromKey(field)]
+		groupValues := vari.GlobalVars.ResData[s.ResService.getFromKey(field)]
 
 		uses := strings.TrimSpace(field.Use) // like group{limit:repeat}
 		use, numLimit, repeat := s.getNum(uses)
@@ -169,11 +169,11 @@ func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
 			field.Values = append(field.Values, valuesForAdd...)
 		}
 	} else if field.Select != "" { // refer to excel
-		groupValues := vari.GenVars.ResData[s.ResService.getFromKey(field)]
+		groupValues := vari.GlobalVars.ResData[s.ResService.getFromKey(field)]
 		resKey := field.Select
 
 		// deal with the key
-		if vari.GenVars.DefData.Type == consts.DefTypeArticle {
+		if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 			resKey = resKey + "_" + field.Field
 		}
 
@@ -201,8 +201,8 @@ func (s *FieldService) GenValuesForMultiRes(field *model.DefField, withFix bool)
 	}
 
 	count := len(unionValues)
-	if count > vari.GenVars.Total {
-		count = vari.GenVars.Total
+	if count > vari.GlobalVars.Total {
+		count = vari.GlobalVars.Total
 	}
 
 	field.Values = unionValues
@@ -249,20 +249,20 @@ exit:
 			break exit
 		}
 		if v.numLimit != 0 { // privateB{n}
-			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.GenVars.Total; i++ {
+			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.GlobalVars.Total; i++ {
 				index := i / v.repeat
 				ret = append(ret, arr[index])
 				count++
 			}
 		} else { // privateA
-			for i := 0; i < len(arr) && i < vari.GenVars.Total; i++ {
+			for i := 0; i < len(arr) && i < vari.GlobalVars.Total; i++ {
 				index := i / v.repeat % len(arr)
 				ret = append(ret, arr[index])
 				count++
 			}
 		}
 
-		if count >= vari.GenVars.Total {
+		if count >= vari.GlobalVars.Total {
 			break exit
 		}
 

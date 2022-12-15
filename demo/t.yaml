@@ -14,14 +14,15 @@ fields:
 
   - field: union_false
 #    mode: r
+    postfix: "\t"
     fields:
       - field: child1
         range: A-C
-        prefix: part1_
+        prefix: PART1_
         postfix: ' | '
 
       - field: child2
-        range: 1-3
+        range: a-c
         prefix: part2_
 
   - field: union_true
@@ -29,11 +30,11 @@ fields:
     union: true
     fields:
       - field: child1
-        range: a-c
-        prefix: part1_
+        range: A-C
+        prefix: PART1_
         postfix: ' | '
       - field: child2
-        range: 1-3
+        range: a-c
         prefix: part2_
 
 #  - field: f1

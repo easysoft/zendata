@@ -90,8 +90,8 @@ func GenValuesForMultiRes(field *model.DefField, withFix bool, total int) (value
 	}
 
 	count := len(unionValues)
-	if count > vari.GenVars.Total {
-		count = vari.GenVars.Total
+	if count > vari.GlobalVars.Total {
+		count = vari.GlobalVars.Total
 	}
 	values = loopFieldValues(field, unionValues, count, true)
 
@@ -117,7 +117,7 @@ func GenValuesForSingleRes(field *model.DefField, total int) (values []string) {
 		resKey := field.Select
 
 		// deal with the key
-		if vari.GenVars.DefData.Type == constant.DefTypeArticle {
+		if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
 			resKey = resKey + "_" + field.Field
 		}
 
@@ -264,7 +264,7 @@ func addFix(str string, field *model.DefField, count int, withFix bool) (ret str
 	if withFix && !vari.Trim {
 		str = prefix + str + postfix
 	}
-	if vari.Format == constant.FormatText && !vari.Trim {
+	if vari.GlobalVars.OutputFormat == constant.FormatText && !vari.Trim {
 		str += divider
 	}
 
@@ -461,8 +461,8 @@ func getRecordCountForParallel(arrOfArr [][]string) int {
 		}
 	}
 
-	if count > vari.GenVars.Total {
-		count = vari.GenVars.Total
+	if count > vari.GlobalVars.Total {
+		count = vari.GlobalVars.Total
 	}
 
 	return count
@@ -574,20 +574,20 @@ exit:
 			break exit
 		}
 		if v.numLimit != 0 { // privateB{n}
-			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.GenVars.Total; i++ {
+			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < len(arr) && i < vari.GlobalVars.Total; i++ {
 				index := i / v.repeat
 				ret = append(ret, arr[index])
 				count++
 			}
 		} else { // privateA
-			for i := 0; i < len(arr) && i < vari.GenVars.Total; i++ {
+			for i := 0; i < len(arr) && i < vari.GlobalVars.Total; i++ {
 				index := i / v.repeat % len(arr)
 				ret = append(ret, arr[index])
 				count++
 			}
 		}
 
-		if count >= vari.GenVars.Total {
+		if count >= vari.GlobalVars.Total {
 			break exit
 		}
 

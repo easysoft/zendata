@@ -260,7 +260,7 @@ func (s *ExcelService) ReadDataFromSQLite(field model.DefField, dbName string, t
 	}
 
 	where := strings.TrimSpace(field.Where)
-	if vari.GenVars.DefData.Type == constant.DefTypeArticle {
+	if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
 		if where == "" {
 			where = "y"
 		}
@@ -300,7 +300,7 @@ func (s *ExcelService) ReadDataFromSQLite(field model.DefField, dbName string, t
 	}
 
 	colStr := fieldSelect
-	if vari.GenVars.DefData.Type == constant.DefTypeArticle {
+	if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
 		colStr = "`词语` AS `" + fieldSelect + "`"
 	}
 

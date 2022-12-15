@@ -16,14 +16,14 @@ import (
 func LoadResDef(fieldsToExport []string) (res map[string]map[string][]string) {
 	res = map[string]map[string][]string{}
 
-	for index, field := range vari.GenVars.DefData.Fields {
+	for index, field := range vari.GlobalVars.DefData.Fields {
 		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
 			continue
 		}
 
 		if (field.Use != "" || field.Select != "") && field.From == "" {
-			field.From = vari.GenVars.DefData.From
-			vari.GenVars.DefData.Fields[index].From = vari.GenVars.DefData.From
+			field.From = vari.GlobalVars.DefData.From
+			vari.GlobalVars.DefData.Fields[index].From = vari.GlobalVars.DefData.From
 		}
 		loadResForFieldRecursive(&field, &res)
 	}
@@ -61,7 +61,7 @@ func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string]
 		for key, val := range valueMap {
 			resKey := key
 			// avoid article key to be duplicate
-			if vari.GenVars.DefData.Type == constant.DefTypeArticle {
+			if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
 				resKey = resKey + "_" + field.Field
 			}
 			(*res)[getFromKey(field)][resKey] = val
@@ -88,7 +88,7 @@ func getResValue(resFile, resType, sheet string, field *model.DefField) (map[str
 }
 
 func getResFromExcel(resFile, sheet string, field *model.DefField) map[string][]string { // , string) {
-	valueMap := generateFieldValuesFromExcel(resFile, sheet, field, vari.GenVars.Total)
+	valueMap := generateFieldValuesFromExcel(resFile, sheet, field, vari.GlobalVars.Total)
 
 	return valueMap
 }
@@ -149,7 +149,7 @@ func getResFromInstances(insts model.ResInstances) (groupedValue map[string][]st
 		// gen values
 		fieldFromInst := convertInstantToField(insts, inst)
 		group := inst.Instance
-		groupedValue[group] = GenerateForFieldRecursive(&fieldFromInst, false, vari.GenVars.Total)
+		groupedValue[group] = GenerateForFieldRecursive(&fieldFromInst, false, vari.GlobalVars.Total)
 	}
 
 	return groupedValue
@@ -160,7 +160,7 @@ func getResFromRanges(ranges model.ResRanges) map[string][]string {
 
 	for group, expression := range ranges.Ranges {
 		field := convertRangesToField(ranges, expression)
-		groupedValue[group] = GenerateForFieldRecursive(&field, false, vari.GenVars.Total)
+		groupedValue[group] = GenerateForFieldRecursive(&field, false, vari.GlobalVars.Total)
 	}
 
 	return groupedValue
@@ -196,7 +196,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 
 					// gen values
 					group := referencedInst.Instance
-					groupedValueReferenced[group] = GenerateForFieldRecursive(&field, false, vari.GenVars.Total)
+					groupedValueReferenced[group] = GenerateForFieldRecursive(&field, false, vari.GlobalVars.Total)
 				}
 			}
 
@@ -268,7 +268,7 @@ func getResForConfig(configRes model.DefField) map[string][]string {
 	groupedValue := map[string][]string{}
 
 	// config field is a standard field
-	groupedValue["all"] = GenerateForFieldRecursive(&configRes, false, vari.GenVars.Total)
+	groupedValue["all"] = GenerateForFieldRecursive(&configRes, false, vari.GlobalVars.Total)
 
 	return groupedValue
 }

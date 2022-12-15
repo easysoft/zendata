@@ -76,10 +76,10 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 			valuesForSql = append(valuesForSql, colVal)
 		} // for cols
 
-		if format == constant.FormatText && vari.GenVars.DefData.Type == constant.DefTypeArticle { // article need to write to more than one files
+		if format == constant.FormatText && vari.GlobalVars.DefData.Type == constant.DefTypeArticle { // article need to write to more than one files
 			lines = append(lines, lineForText)
 
-		} else if format == constant.FormatText && vari.GenVars.DefData.Type != constant.DefTypeArticle {
+		} else if format == constant.FormatText && vari.GlobalVars.DefData.Type != constant.DefTypeArticle {
 			logUtils.PrintLine(lineForText)
 
 		} else if format == constant.FormatSql {

@@ -23,9 +23,9 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 	files = fileUtils.HandleFiles(files)
 	if !IsFromProtobuf(files[0]) { // default gen from yaml
 		if files[0] != "" {
-			vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+			vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 		} else {
-			vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[1])
+			vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[1])
 		}
 		contents := gen.LoadFilesContents(files)
 		lines = GenerateByContent(contents, fieldsToExportStr, format, table)
@@ -73,16 +73,16 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	//		rows, colIsNumArr, err = gen.RetrieveCacheBatch(cacheKey, &fieldsToExport, batch)
 	//	}
 	//
-	//	vari.GenVars.DefDataType = constant.DefTypeText
+	//	vari.GlobalVars.DefDataType = constant.DefTypeText
 	//
 	//} else if cacheKey != "" {
-	//	if vari.GenVars.Total > constant.MaxNumbForAsync { // gen batch data and cache
+	//	if vari.GlobalVars.Total > constant.MaxNumbForAsync { // gen batch data and cache
 	//		rows, colIsNumArr, err = gen.SyncGenCacheAndReturnFirstPart(contents, &fieldsToExport)
 	//	} else {
 	//		rows, colIsNumArr, err = gen.GenerateFromContent(contents, &fieldsToExport)
 	//		gen.CreateCache(cacheKey, fieldsToExport, rows, colIsNumArr)
 	//	}
-	//} else if cacheKey == "" && vari.GenVars.Total > constant.MaxNumbForAsync {
+	//} else if cacheKey == "" && vari.GlobalVars.Total > constant.MaxNumbForAsync {
 	//	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("miss_cache_param", constant.MaxNumbForAsync))
 	//	return
 	//} else {
@@ -129,5 +129,5 @@ func IsFromExcel(format string) bool {
 }
 
 func IsGenArticle(format string) bool {
-	return format == constant.FormatText && vari.GenVars.DefData.Type == constant.DefTypeArticle
+	return format == constant.FormatText && vari.GlobalVars.DefData.Type == constant.DefTypeArticle
 }

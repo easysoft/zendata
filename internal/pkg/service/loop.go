@@ -31,8 +31,8 @@ func (s *LoopService) LoopFieldValues(field *model.DefField, withFix bool) {
 
 		count++
 		isRandomAndLoopEnd := (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
-		isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(values)
-		if count >= vari.GenVars.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
+		isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(field.Values)
+		if count >= vari.GlobalVars.Total || isRandomAndLoopEnd || isNotRandomAndValOver {
 			break
 		}
 
@@ -41,6 +41,8 @@ func (s *LoopService) LoopFieldValues(field *model.DefField, withFix bool) {
 			(*field).LoopIndex = (*field).LoopStart
 		}
 	}
+
+	field.Values = values
 
 	return
 }

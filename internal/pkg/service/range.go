@@ -25,7 +25,7 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 
 	// gen empty values
 	if rang == "" {
-		for i := 0; i < vari.GenVars.Total; i++ {
+		for i := 0; i < vari.GlobalVars.Total; i++ {
 			field.Values = append(field.Values, "")
 			if strings.Index(field.Format, "uuid") == -1 {
 				break
@@ -195,9 +195,9 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 
 func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
-	rootDef := vari.GenVars.DefData
-	configDir := vari.GenVars.ConfigFileDir
-	res := vari.GenVars.ResData
+	rootDef := vari.GlobalVars.DefData
+	configDir := vari.GlobalVars.ConfigFileDir
+	res := vari.GlobalVars.ResData
 
 	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
@@ -216,9 +216,9 @@ func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, ste
 	}
 
 	// rollback root def when finish to deal with refer yaml file
-	vari.GenVars.DefData = rootDef
-	vari.GenVars.ConfigFileDir = configDir
-	vari.GenVars.ResData = res
+	vari.GlobalVars.DefData = rootDef
+	vari.GlobalVars.ConfigFileDir = configDir
+	vari.GlobalVars.ResData = res
 
 	return
 }
@@ -252,7 +252,7 @@ func (s *RangeService) CreateFieldFixValuesFromList(strRang string, field *model
 
 	index := 0
 	for _, rangeSection := range rangeSections {
-		if index >= vari.GenVars.Total {
+		if index >= vari.GlobalVars.Total {
 			break
 		}
 

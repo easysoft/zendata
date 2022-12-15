@@ -14,30 +14,25 @@ import (
 
 const ()
 
-func Decode(files []string, fieldsToExportStr, input string) {
-	if vari.Out != "" {
-		fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
-		fileUtils.RemoveExist(vari.Out)
-		logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
-		defer logUtils.FileWriter.Close()
+func Decode(files []string, input string) {
+	if vari.GlobalVars.OutputFile != "" {
+		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.OutputFile))
+		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)
+		logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.OutputFile, os.O_RDWR|os.O_CREATE, 0777)
+		defer logUtils.OutputFileWriter.Close()
 	}
 
-	vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
-	vari.GenVars.Total = 10
+	vari.GlobalVars.Total = 10
 
-	fieldsToExport := make([]string, 0)
-	if fieldsToExportStr != "" {
-		fieldsToExport = strings.Split(fieldsToExportStr, ",")
-	}
-
-	vari.GenVars.DefData = LoadDataDef(files, &fieldsToExport)
-	vari.Res = LoadResDef(fieldsToExport)
+	vari.GlobalVars.DefData = LoadDataDef(files, &vari.GlobalVars.ExportFields)
+	vari.Res = LoadResDef(vari.GlobalVars.ExportFields)
 
 	data := fileUtils.ReadFile(input)
 
 	var ret []map[string]interface{}
-	linesToMap(data, fieldsToExport, &ret)
+	linesToMap(data, vari.GlobalVars.ExportFields, &ret)
 	jsonObj, _ := json.Marshal(ret)
 	vari.JsonResp = string(jsonObj)
 
@@ -57,7 +52,7 @@ func linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface
 		}
 
 		rowMap := map[string]interface{}{}
-		decodeOneLevel(line, vari.GenVars.DefData.Fields, &rowMap)
+		decodeOneLevel(line, vari.GlobalVars.DefData.Fields, &rowMap)
 		*ret = append(*ret, rowMap)
 	}
 	return

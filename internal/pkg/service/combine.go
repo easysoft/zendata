@@ -10,6 +10,7 @@ import (
 type CombineService struct {
 	ExpressionService *ExpressionService `inject:""`
 	LoopService       *LoopService       `inject:""`
+	OutputService     *OutputService     `inject:""`
 }
 
 func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
@@ -27,7 +28,7 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
 	}
 
 	// 2. deal with expression
-	arrOfArr := make([][]interface{}, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+	arrByField := make([][]interface{}, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 	for i, child := range field.Fields {
 		childValues := fieldNameToValuesMap[child.Field]
 
@@ -35,7 +36,7 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
 			childValues = s.ExpressionService.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
 		}
 
-		arrOfArr = append(arrOfArr, childValues)
+		arrByField = append(arrByField, childValues)
 
 		// clear child values after combined
 		field.Fields[i].Values = nil
@@ -47,27 +48,24 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
 		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
 
-	field.Values = s.combineChildrenValues(arrOfArr, isRecursive)
+	field.Values = s.combineChildrenValues(arrByField, isRecursive)
 	s.LoopService.LoopFieldValues(field, true)
 }
 
-func (s *CombineService) combineChildrenValues(arrOfArr [][]interface{}, isRecursive bool) (ret []interface{}) {
-	valueArr := s.populateRowsFromTwoDimArr(arrOfArr, isRecursive, false)
+func (s *CombineService) combineChildrenValues(arrByField [][]interface{}, isRecursive bool) (ret []interface{}) {
+	arrByRow := s.populateRowsFromTwoDimArr(arrByField, isRecursive, false)
 
-	for _, arr := range valueArr {
-		line := ""
-		for _, item := range arr {
-			line += item.(string)
-		}
-
+	for _, arr := range arrByRow {
+		line := s.OutputService.ConnectValues(arr)
 		ret = append(ret, line)
 	}
+
 	return
 }
 
 func (s *CombineService) populateRowsFromTwoDimArr(arrOfArr [][]interface{}, isRecursive, isOnTopLevel bool) (
 	values [][]interface{}) {
-	count := vari.GenVars.Total
+	count := vari.GlobalVars.Total
 
 	if !isOnTopLevel {
 		if isRecursive {
@@ -114,8 +112,8 @@ func (s *CombineService) getRecordCountForParallel(arrOfArr [][]interface{}) int
 		}
 	}
 
-	if count > vari.GenVars.Total {
-		count = vari.GenVars.Total
+	if count > vari.GlobalVars.Total {
+		count = vari.GlobalVars.Total
 	}
 
 	return count

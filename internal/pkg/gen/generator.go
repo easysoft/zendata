@@ -16,7 +16,7 @@ import (
 func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.GenVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
+	vari.GlobalVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
 
 	if err = CheckParams(); err != nil {
 		return
@@ -25,9 +25,9 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	FixTotalNum()
 	genResData(fieldsToExport)
 
-	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.GenVars.Total)
-	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, vari.GenVars.Total)
-	rows = populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true, vari.GenVars.Total)
+	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.GlobalVars.Total)
+	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, vari.GlobalVars.Total)
+	rows = populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true, vari.GlobalVars.Total)
 
 	return
 }
@@ -35,7 +35,7 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.GenVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
 	contents := LoadFilesContents(files)
 	rows, colIsNumArr, err = GenerateFromContent(contents, fieldsToExport)
@@ -122,9 +122,9 @@ func GenerateValuesForField(field *model.DefField, total int) []string {
 }
 
 func CheckParams() (err error) {
-	if len(vari.GenVars.DefData.Fields) == 0 {
+	if len(vari.GlobalVars.DefData.Fields) == 0 {
 		err = errors.New("")
-	} else if vari.GenVars.DefData.Type == constant.DefTypeArticle && vari.Out == "" { // gen article
+	} else if vari.GlobalVars.DefData.Type == constant.DefTypeArticle && vari.GlobalVars.OutputFile == "" { // gen article
 		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
 		logUtils.PrintErrMsg(errMsg)
 		err = errors.New(errMsg)
@@ -134,11 +134,11 @@ func CheckParams() (err error) {
 }
 
 func FixTotalNum() {
-	if vari.GenVars.Total < 0 {
-		if vari.GenVars.DefData.Type == constant.DefTypeArticle {
-			vari.GenVars.Total = 1
+	if vari.GlobalVars.Total < 0 {
+		if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
+			vari.GlobalVars.Total = 1
 		} else {
-			vari.GenVars.Total = constant.DefaultNumber
+			vari.GlobalVars.Total = constant.DefaultNumber
 		}
 	}
 }
@@ -153,21 +153,21 @@ func genResData(fieldsToExport *[]string) {
 func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool, total int) (topLevelFieldNameToValuesMap map[string][]string) {
 	topLevelFieldNameToValuesMap = map[string][]string{}
 
-	for index, field := range vari.GenVars.DefData.Fields {
+	for index, field := range vari.GlobalVars.DefData.Fields {
 		if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
 			continue
 		}
 
 		if field.Use != "" && field.From == "" {
-			field.From = vari.GenVars.DefData.From
+			field.From = vari.GlobalVars.DefData.From
 		}
 		values := GenerateForFieldRecursive(&field, true, total)
 
-		if index > len(vari.GenVars.DefData.Fields)-1 {
+		if index > len(vari.GlobalVars.DefData.Fields)-1 {
 			logUtils.PrintLine("")
 		}
 
-		vari.GenVars.DefData.Fields[index].Precision = field.Precision
+		vari.GlobalVars.DefData.Fields[index].Precision = field.Precision
 
 		topLevelFieldNameToValuesMap[field.Field] = values
 		*colIsNumArr = append(*colIsNumArr, field.IsNumb)
@@ -179,7 +179,7 @@ func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool, total int) (to
 func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsToExport *[]string, total int) (
 	arrOfArr [][]string) { // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 
-	for _, child := range vari.GenVars.DefData.Fields {
+	for _, child := range vari.GlobalVars.DefData.Fields {
 		if !stringUtils.StrInArr(child.Field, *fieldsToExport) {
 			continue
 		}

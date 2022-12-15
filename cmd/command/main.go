@@ -1,22 +1,17 @@
 package main
 
 import (
-	"errors"
 	"flag"
-	"fmt"
+	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	"github.com/easysoft/zendata/internal/pkg/action"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/ctrl"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/facebookgo/inject"
 	"github.com/fatih/color"
 	"io/ioutil"
 	"os"
@@ -24,18 +19,16 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
-	"time"
 )
 
 var (
-	configs     []string
-	defaultFile string
-	configFile  string
+	configs      []string
+	defaultFile  string
+	configFile   string
+	exportFields string
 
 	defaultDefContent []byte
 	configDefContent  []byte
-
-	fields string
 
 	root   string
 	input  string
@@ -73,14 +66,17 @@ func main() {
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
 
-	flagSet.IntVar(&vari.GenVars.Total, "n", -1, "")
-	flagSet.IntVar(&vari.GenVars.Total, "lines", -1, "")
+	flagSet.IntVar(&vari.GlobalVars.Total, "n", -1, "")
+	flagSet.IntVar(&vari.GlobalVars.Total, "lines", -1, "")
 
-	flagSet.StringVar(&fields, "F", "", "")
-	flagSet.StringVar(&fields, "field", "", "")
+	flagSet.StringVar(&exportFields, "F", "", "")
+	flagSet.StringVar(&exportFields, "field", "", "")
 
-	flagSet.StringVar(&vari.Out, "o", "", "")
-	flagSet.StringVar(&vari.Out, "output", "", "")
+	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "f", "", "")
+	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "format", "", "")
+
+	flagSet.StringVar(&vari.GlobalVars.OutputFile, "o", "", "")
+	flagSet.StringVar(&vari.GlobalVars.OutputFile, "output", "", "")
 
 	flagSet.BoolVar(&listData, "l", false, "")
 	flagSet.BoolVar(&listData, "list", false, "")
@@ -143,166 +139,80 @@ func main() {
 	vari.DB, _ = commandConfig.NewGormDB()
 	//defer vari.DB.Close()
 
-	switch os.Args[1] {
-	default:
-		flagSet.SetOutput(ioutil.Discard)
-		if err := flagSet.Parse(os.Args[1:]); err == nil {
-			if example {
-				logUtils.PrintExample()
-				return
-			} else if help {
-				logUtils.PrintUsage()
-				return
-			} else if set {
-				helper.Set()
-				return
-			} else if listData {
-				helper.ListData()
-				return
-			} else if listRes {
-				helper.ListRes()
-				return
-			} else if view != "" {
-				helper.View(view)
-				return
-			} else if md5 != "" {
-				helper.AddMd5(md5)
-				return
-			} else if decode {
-				gen.Decode(files, fields, input)
-				return
-			}
-
-			if input != "" {
-				vari.RunMode = constant.RunModeParse
-			}
-
-			toGen(files)
-		} else {
-			logUtils.PrintUsage()
-		}
+	flagSet.SetOutput(ioutil.Discard)
+	if err := flagSet.Parse(os.Args[1:]); err == nil {
+		opts(files)
+	} else {
+		logUtils.PrintUsage()
 	}
 }
 
-func toGen(files []string) {
-	tmStart := time.Now()
-	if vari.Verbose {
-		logUtils.PrintTo(fmt.Sprintf("Start at %s.", tmStart.Format("2006-01-02 15:04:05")))
+func opts(files []string) {
+	if exportFields != "" {
+		vari.GlobalVars.ExportFields = strings.Split(exportFields, ",")
 	}
 
+	if example {
+		logUtils.PrintExample()
+		return
+	} else if help {
+		logUtils.PrintUsage()
+		return
+	} else if set {
+		helper.Set()
+		return
+	} else if listData {
+		helper.ListData()
+		return
+	} else if listRes {
+		helper.ListRes()
+		return
+	} else if view != "" {
+		helper.View(view)
+		return
+	} else if md5 != "" {
+		helper.AddMd5(md5)
+		return
+	} else if decode {
+		gen.Decode(files, input)
+		return
+	}
+
+	if input != "" {
+		vari.RunMode = constant.RunModeParse
+	}
+
+	generate(files)
+}
+
+func generate(files []string) {
+	command.PrintStartInfo()
+
 	if vari.RunMode == constant.RunModeGen {
-		if clearCache() {
+		if command.ClearCache() {
 			return
 		}
 
-		err := getFormat()
-		defer logUtils.FileWriter.Close()
+		err := command.SetOutFormat()
+		defer logUtils.OutputFileWriter.Close()
 		if err != nil {
 			return
 		}
 
-		InitGenCtrl()
-		defCtrl.Generate(files, fields, vari.Format, vari.Table)
+		defCtrl, _ := command.InitCtrl()
+		defCtrl.Generate(files)
 		//action.Generate(files, fields, vari.Format, vari.Table)
 
 	} else if vari.RunMode == constant.RunModeParse {
 		ext := filepath.Ext(input)
 		if ext == ".sql" {
-			action.ParseSql(input, vari.Out)
+			action.ParseSql(input, vari.GlobalVars.OutputFile)
 		} else if ext == ".txt" {
-			action.ParseArticle(input, vari.Out)
+			action.ParseArticle(input, vari.GlobalVars.OutputFile)
 		}
 	}
 
-	tmEnd := time.Now()
-	if vari.Verbose {
-		logUtils.PrintTo(fmt.Sprintf("End at %s.", tmEnd.Format("2006-01-02 15:04:05")))
-		dur := tmEnd.Unix() - tmStart.Unix()
-		logUtils.PrintTo(fmt.Sprintf("Duriation %d sec.", dur))
-	}
-}
-
-func clearCache() (ret bool) {
-	cacheKey, cacheOpt, _, hasCache, isBatch := gen.ParseCache()
-	if cacheOpt == "clear" {
-		if isBatch {
-			gen.ClearBatchCache(cacheKey)
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_cache", cacheKey))
-
-		} else if cacheKey == "all" {
-			gen.ClearAllCache()
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_all_cache"))
-
-		} else {
-			if hasCache {
-				gen.ClearCache(cacheKey)
-			}
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_cache", cacheKey))
-
-		}
-
-		ret = true
-	}
-
-	return
-}
-
-func getFormat() (err error) {
-	if vari.Human {
-		vari.WithHead = true
-	}
-
-	if vari.Out != "" {
-		fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
-		fileUtils.RemoveExist(vari.Out)
-
-		ext := strings.ToLower(filepath.Ext(vari.Out))
-		if len(ext) > 1 {
-			ext = strings.TrimLeft(ext, ".")
-		}
-		if stringUtils.InArray(ext, constant.Formats) {
-			vari.Format = ext
-		}
-
-		if vari.Format == constant.FormatExcel {
-			logUtils.FilePath = vari.Out
-		} else {
-			logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
-		}
-	}
-
-	if vari.DBDsn != "" {
-		vari.Format = constant.FormatSql
-	}
-
-	if vari.Format == constant.FormatSql && vari.Table == "" {
-		msg := i118Utils.I118Prt.Sprintf("miss_table_name")
-		logUtils.PrintErrMsg(msg)
-		err = errors.New(msg)
-	}
-
-	return
-}
-
-var defCtrl *ctrl.DefCtrl
-
-func InitGenCtrl() (err error) {
-	var g inject.Graph
-
-	defCtrl = &ctrl.DefCtrl{}
-
-	if err := g.Provide(
-		&inject.Object{Value: vari.DB},
-		&inject.Object{Value: defCtrl},
-	); err != nil {
-		logUtils.PrintErrMsg(fmt.Sprintf("provide usecase objects to the Graph: %v", err))
-	}
-	err = g.Populate()
-	if err != nil {
-		logUtils.PrintErrMsg(fmt.Sprintf("populate the incomplete Objects: %v", err))
-	}
-
-	return
+	command.PrintEndInfo()
 }
 
 func init() {

@@ -17,9 +17,9 @@ var (
 	exampleFile = fmt.Sprintf("res%sen%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
 	usageFile   = fmt.Sprintf("res%sen%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
 
-	FileWriter *os.File
-	HttpWriter http.ResponseWriter
-	FilePath   string // for excel output
+	OutputFileWriter *os.File
+	OutputHttpWriter http.ResponseWriter
+	OutputFilePath   string // for excel output
 )
 
 func PrintExample() {
@@ -82,12 +82,22 @@ func PrintErrMsg(msg string) {
 	PrintToWithColor(msg, color.FgCyan)
 }
 
+func PrintBlock(str string) {
+	if OutputFileWriter != nil {
+		PrintToFile(str)
+	} else if vari.RunMode == constant.RunModeServerRequest {
+		PrintToHttp(str)
+	} else {
+		PrintToScreen(fmt.Sprintf("\n%s\n\n", str))
+	}
+}
+
 func PrintLine(line string) {
 	if vari.DefType == constant.DefTypeText {
 		line += "\n"
 	}
 
-	if FileWriter != nil {
+	if OutputFileWriter != nil {
 		PrintToFile(line)
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		PrintToHttp(line)
@@ -98,10 +108,10 @@ func PrintLine(line string) {
 	return
 }
 func PrintToFile(line string) {
-	fmt.Fprint(FileWriter, line)
+	fmt.Fprint(OutputFileWriter, line)
 }
 func PrintToHttp(line string) {
-	fmt.Fprint(HttpWriter, line)
+	fmt.Fprint(OutputHttpWriter, line)
 }
 func PrintToScreen(line string) {
 	fmt.Print(line)

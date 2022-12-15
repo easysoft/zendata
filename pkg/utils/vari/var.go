@@ -1,25 +1,35 @@
 package vari
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
+	"time"
 )
 
 type GenVarType struct {
-	Total         int
+	Total int
+
+	OutputFile   string
+	OutputFormat string
+	ExportFields []string
+	Table        string
+
 	ConfigFileDir string
 
 	DefData model.DefData
 	ResData map[string]map[string][]interface{}
 
 	CacheResFileToMap map[string]map[string][]interface{}
+	StartTime         time.Time
+	EndTime           time.Time
 }
 
 var (
-	GenVars = GenVarType{
+	GlobalVars = GenVarType{
 		DefData:           model.DefData{},
 		CacheResFileToMap: map[string]map[string][]interface{}{},
+		OutputFormat:      consts.FormatText,
 	}
 )
 
@@ -27,7 +37,7 @@ var (
 	Config = model.Config{Version: 1, Language: "en"}
 	DB     *gorm.DB
 
-	RunMode constant.RunMode
+	RunMode consts.RunMode
 
 	WorkDir      string
 	ZdPath       string
@@ -47,9 +57,7 @@ var (
 	Trim       bool
 	Recursive  bool
 	CacheParam string
-	Format     = constant.FormatText
 
-	Out          string
 	Table        string
 	DefType      string
 	Server       string // database type

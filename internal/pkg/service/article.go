@@ -24,7 +24,7 @@ func (s *ArticleService) CreateArticleField(field *model.DefField) {
 	resFile, resType, sheet := fileUtils.GetResProp(field.From, "")
 	dataMap := s.getDataMap(numMap, nameMap, field, resFile, resType, sheet)
 
-	for i := 0; i < vari.GenVars.Total; i++ {
+	for i := 0; i < vari.GlobalVars.Total; i++ {
 		content := s.genArticle(contentWithoutComments, dataMap, indexMap) + "\n"
 		values = append(values, content)
 	}
@@ -107,8 +107,8 @@ func (s *ArticleService) getDataMap(numMap map[string]int, nameMap map[string]st
 
 	field.Rand = false
 	for key, _ := range numMap {
-		originTotal := vari.GenVars.Total
-		vari.GenVars.Total = constant.MaxNumb // load all words
+		originTotal := vari.GlobalVars.Total
+		vari.GlobalVars.Total = constant.MaxNumb // load all words
 
 		slct, ok := nameMap[key]
 		if ok {
@@ -120,7 +120,7 @@ func (s *ArticleService) getDataMap(numMap map[string]int, nameMap map[string]st
 		valueMap, _ := s.ResService.getResValue(resFile, resType, sheet, field)
 		ret[key] = valueMap[field.Select]
 
-		vari.GenVars.Total = originTotal // rollback
+		vari.GlobalVars.Total = originTotal // rollback
 	}
 
 	return
@@ -188,8 +188,8 @@ func (s *ArticleService) getNumMap(content string) (numMap map[string]int, nameM
 }
 
 func (s *ArticleService) GenArticle(lines []interface{}) {
-	var filePath = logUtils.FileWriter.Name()
-	defer logUtils.FileWriter.Close()
+	var filePath = logUtils.OutputFileWriter.Name()
+	defer logUtils.OutputFileWriter.Close()
 	fileUtils.RmFile(filePath)
 
 	for index, line := range lines {

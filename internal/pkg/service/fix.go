@@ -24,7 +24,7 @@ func (s *FixService) AddFix(str string, field *model.DefField, count int, withFi
 	if withFix && !vari.Trim {
 		str = prefix + str + postfix
 	}
-	if vari.Format == consts.FormatText && !vari.Trim {
+	if vari.GlobalVars.OutputFormat == consts.FormatText && !vari.Trim {
 		str += divider
 	}
 

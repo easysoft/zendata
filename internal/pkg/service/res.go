@@ -23,14 +23,14 @@ type ResService struct {
 func (s *ResService) LoadResDef(fieldsToExport []string) (res map[string]map[string][]interface{}) {
 	res = map[string]map[string][]interface{}{}
 
-	for index, field := range vari.GenVars.DefData.Fields {
+	for index, field := range vari.GlobalVars.DefData.Fields {
 		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
 			continue
 		}
 
 		if (field.Use != "" || field.Select != "") && field.From == "" {
-			field.From = vari.GenVars.DefData.From
-			vari.GenVars.DefData.Fields[index].From = vari.GenVars.DefData.From
+			field.From = vari.GlobalVars.DefData.From
+			vari.GlobalVars.DefData.Fields[index].From = vari.GlobalVars.DefData.From
 		}
 		s.loadResForFieldRecursive(&field, &res)
 	}
@@ -68,7 +68,7 @@ func (s *ResService) loadResForFieldRecursive(field *model.DefField, res *map[st
 		for key, val := range valueMap {
 			resKey := key
 			// avoid article key to be duplicate
-			if vari.GenVars.DefData.Type == constant.DefTypeArticle {
+			if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
 				resKey = resKey + "_" + field.Field
 			}
 			(*res)[s.getFromKey(field)][resKey] = val
@@ -95,14 +95,14 @@ func (s *ResService) getResValue(resFile, resType, sheet string, field *model.De
 }
 
 func (s *ResService) getResFromExcel(resFile, sheet string, field *model.DefField) map[string][]interface{} { // , string) {
-	valueMap := s.ExcelService.generateFieldValuesFromExcel(resFile, sheet, field, vari.GenVars.Total)
+	valueMap := s.ExcelService.generateFieldValuesFromExcel(resFile, sheet, field, vari.GlobalVars.Total)
 
 	return valueMap
 }
 
 func (s *ResService) getResFromYaml(resFile string) (valueMap map[string][]interface{}) { // , resName string) {
-	if vari.GenVars.CacheResFileToMap[resFile] != nil { // already cached
-		valueMap = vari.GenVars.CacheResFileToMap[resFile]
+	if vari.GlobalVars.CacheResFileToMap[resFile] != nil { // already cached
+		valueMap = vari.GlobalVars.CacheResFileToMap[resFile]
 		return
 	}
 
@@ -136,7 +136,7 @@ func (s *ResService) getResFromYaml(resFile string) (valueMap map[string][]inter
 		}
 	}
 
-	vari.GenVars.CacheResFileToMap[resFile] = valueMap
+	vari.GlobalVars.CacheResFileToMap[resFile] = valueMap
 
 	return
 }
@@ -152,7 +152,7 @@ func (s *ResService) getResFromInstances(insts model.ResInstances) (groupedValue
 	//	// gen values
 	//	fieldFromInst := s.convertInstantToField(insts, inst)
 	//	group := inst.Instance
-	//	groupedValue[group] = s.GenerateForFieldRecursive(&fieldFromInst, false, vari.GenVars.Total)
+	//	groupedValue[group] = s.GenerateForFieldRecursive(&fieldFromInst, false, vari.GlobalVars.Total)
 	//}
 
 	return groupedValue
@@ -163,7 +163,7 @@ func (s *ResService) getResFromRanges(ranges model.ResRanges) map[string][]inter
 
 	//for group, expression := range ranges.Ranges {
 	//	field := s.convertRangesToField(ranges, expression)
-	//	groupedValue[group] = s.GenerateForFieldRecursive(&field, false, vari.GenVars.Total)
+	//	groupedValue[group] = s.GenerateForFieldRecursive(&field, false, vari.GlobalVars.Total)
 	//}
 
 	return groupedValue
@@ -199,7 +199,7 @@ func (s *ResService) prepareNestedInstanceRes(insts model.ResInstances, inst mod
 	//
 	//				// gen values
 	//				group := referencedInst.Instance
-	//				groupedValueReferenced[group] = s.GenerateForFieldRecursive(&field, false, vari.GenVars.Total)
+	//				groupedValueReferenced[group] = s.GenerateForFieldRecursive(&field, false, vari.GlobalVars.Total)
 	//			}
 	//		}
 	//

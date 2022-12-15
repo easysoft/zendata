@@ -40,7 +40,7 @@ func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithVal
 func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
 	rang := field.Range
 	if rang == "" {
-		for i := 0; i < vari.GenVars.Total; i++ {
+		for i := 0; i < vari.GlobalVars.Total; i++ {
 			fieldValue.Values = append(fieldValue.Values, "")
 
 			if strings.Index(field.Format, "uuid") == -1 {
@@ -341,8 +341,8 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 
 func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
-	rootDef := vari.GenVars.DefData
-	configDir := vari.GenVars.ConfigFileDir
+	rootDef := vari.GlobalVars.DefData
+	configDir := vari.GlobalVars.ConfigFileDir
 	res := vari.Res
 
 	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
@@ -362,8 +362,8 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 	}
 
 	// rollback root def when finish to deal with refer yaml file
-	vari.GenVars.DefData = rootDef
-	vari.GenVars.ConfigFileDir = configDir
+	vari.GlobalVars.DefData = rootDef
+	vari.GlobalVars.ConfigFileDir = configDir
 	vari.Res = res
 
 	return

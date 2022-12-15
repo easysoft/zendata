@@ -24,10 +24,10 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 	index := f.NewSheet(sheetName)
 	f.SetActiveSheet(index)
 
-	if vari.Format == constant.FormatExcel {
+	if vari.GlobalVars.OutputFormat == constant.FormatExcel {
 		printExcelHeader(fields, f)
-	} else if vari.Format == constant.FormatCsv {
-		csvWriter = csv.NewWriter(logUtils.FileWriter)
+	} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
+		csvWriter = csv.NewWriter(logUtils.OutputFileWriter)
 	}
 
 	csvData := make([][]string, 0)
@@ -41,11 +41,11 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 				//col = stringUtils.AddPad(col, field)
 			}
 
-			if vari.Format == constant.FormatExcel {
+			if vari.GlobalVars.OutputFormat == constant.FormatExcel {
 				colName, _ := excelize.CoordinatesToCellName(j+1, i+2)
 				f.SetCellValue(sheetName, colName, col)
 
-			} else if vari.Format == constant.FormatCsv {
+			} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
 				csvRow = append(csvRow, col)
 			}
 		}
@@ -53,9 +53,9 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 	}
 
 	var err error
-	if vari.Format == constant.FormatExcel {
-		err = f.SaveAs(logUtils.FilePath)
-	} else if vari.Format == constant.FormatCsv {
+	if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+		err = f.SaveAs(logUtils.OutputFilePath)
+	} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
 		err = csvWriter.WriteAll(csvData)
 		csvWriter.Flush()
 	}

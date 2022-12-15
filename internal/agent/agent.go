@@ -26,19 +26,19 @@ var (
 )
 
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
-	logUtils.HttpWriter = writer
+	logUtils.OutputHttpWriter = writer
 
 	if req.Method == http.MethodGet {
-		defaultFile, configFile, fields, vari.GenVars.Total,
-			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
+		defaultFile, configFile, fields, vari.GlobalVars.Total,
+			vari.GlobalVars.OutputFormat, vari.Trim, vari.Table, decode, input, vari.GenVars.OutputFile = serverUtils.ParseGenParams(req)
 	} else if req.Method == http.MethodPost {
-		defaultDefContent, configDefContent, fields, vari.GenVars.Total,
-			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParamsToByte(req)
+		defaultDefContent, configDefContent, fields, vari.GlobalVars.Total,
+			vari.GlobalVars.OutputFormat, vari.Trim, vari.Table, decode, input, vari.GenVars.OutputFile = serverUtils.ParseGenParamsToByte(req)
 	}
 
 	if decode {
 		files := []string{defaultFile, configFile}
-		gen.Decode(files, fields, input)
+		gen.Decode(files, input)
 		return
 	}
 
@@ -71,13 +71,13 @@ func genData() {
 		logUtils.PrintTo(fmt.Sprintf("Start at %s.", tmStart.Format("2006-01-02 15:04:05")))
 	}
 
-	vari.Format = constant.FormatJson
+	vari.GlobalVars.OutputFormat = constant.FormatJson
 	if defaultFile != "" || configFile != "" {
 		files := []string{defaultFile, configFile}
-		action.Generate(files, fields, vari.Format, vari.Table)
+		action.Generate(files, fields, vari.GlobalVars.OutputFormat, vari.Table)
 	} else {
 		contents := [][]byte{defaultDefContent, configDefContent}
-		action.GenerateByContent(contents, fields, vari.Format, vari.Table)
+		action.GenerateByContent(contents, fields, vari.GlobalVars.OutputFormat, vari.Table)
 	}
 
 	tmEnd := time.Now()
