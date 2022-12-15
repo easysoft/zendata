@@ -65,8 +65,8 @@ type ZdField struct {
 	UseID    uint   `gorm:"column:useID" json:"useID"`
 	ConfigID uint   `gorm:"column:configID" json:"configID"`
 
-	Ord   int  `gorm:"column:ord;default:1" json:"ord"`
-	Union bool `gorm:"union" json:"union"`
+	Ord  int  `gorm:"column:ord;default:1" json:"ord"`
+	Join bool `gorm:"join" json:"join"`
 
 	Fields []*ZdField `gorm:"-" json:"fields"`
 	Froms  []*ZdField `gorm:"-" json:"froms"`

@@ -5,6 +5,7 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"strings"
 )
 
 type CombineService struct {
@@ -15,7 +16,7 @@ type CombineService struct {
 }
 
 func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
-	if len(field.Fields) == 0 || !field.Union {
+	if len(field.Fields) == 0 || !field.Join {
 		return
 	}
 
@@ -44,7 +45,7 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
 	}
 
 	// 3. get combined values for parent field
-	isRecursive := vari.Recursive
+	isRecursive := vari.GlobalVars.Recursive
 	if stringUtils.InArray(field.Mode, constant.Modes) { // set on field level
 		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
@@ -57,7 +58,7 @@ func (s *CombineService) combineChildrenValues(arrByField [][]interface{}, isRec
 	arrByRow := s.populateRowsFromTwoDimArr(arrByField, isRecursive, false)
 
 	for _, arr := range arrByRow {
-		line := s.OutputService.ConnectValues(arr)
+		line := s.ConnectValues(arr)
 		ret = append(ret, line)
 	}
 
@@ -145,4 +146,21 @@ func (s *CombineService) getModArr(arrOfArr [][]interface{}) []int {
 	}
 
 	return indexArr
+}
+
+func (s *CombineService) ConnectValues(values []interface{}) (ret string) {
+	for i, item := range values {
+		col := item.(string)
+
+		if i > 0 && vari.GlobalVars.Human { // use a tab
+			ret = strings.TrimRight(ret, "\t")
+			col = strings.TrimLeft(col, "\t")
+
+			ret += "\t" + col
+		} else {
+			ret += col
+		}
+	}
+
+	return
 }

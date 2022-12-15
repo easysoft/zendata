@@ -20,7 +20,7 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 	var sqlHeader string
 
 	if format == constant.FormatText {
-		printTextHeader(fields)
+		PrintTextHeader(fields)
 
 	} else if format == constant.FormatSql {
 		sqlHeader = getInsertSqlHeader(fields, table)
@@ -49,7 +49,7 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 			//col = stringUtils.AddPad(col, field)
 			//}
 
-			if j > 0 && vari.Human { // use a tab
+			if j > 0 && vari.GlobalVars.Human { // use a tab
 				lineForText = strings.TrimRight(lineForText, "\t")
 				col = strings.TrimLeft(col, "\t")
 
@@ -103,8 +103,8 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 	return
 }
 
-func printTextHeader(fields []string) {
-	if !vari.WithHead {
+func PrintTextHeader(fields []string) {
+	if !vari.GlobalVars.Human {
 		return
 	}
 	headerLine := ""
@@ -115,7 +115,7 @@ func printTextHeader(fields []string) {
 		}
 	}
 
-	logUtils.PrintLine(headerLine)
+	logUtils.PrintLine(headerLine + "\n")
 }
 
 // return "Table> (<column1, column2,...)"

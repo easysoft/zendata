@@ -38,9 +38,9 @@ func (s *DefService) GenerateFromContent(files []string) {
 	}
 	gen.FixTotalNum()
 
-	union := false
+	join := false
 	if vari.GlobalVars.OutputFormat != consts.FormatJson {
-		union = true
+		join = true
 	}
 
 	// gen for each field
@@ -48,7 +48,7 @@ func (s *DefService) GenerateFromContent(files []string) {
 		if !stringUtils.StrInArr(field.Field, vari.GlobalVars.ExportFields) {
 			continue
 		}
-		s.FieldService.Generate(&vari.GlobalVars.DefData.Fields[i], union)
+		s.FieldService.Generate(&vari.GlobalVars.DefData.Fields[i], join)
 	}
 
 	// combine children fields
@@ -60,10 +60,10 @@ func (s *DefService) GenerateFromContent(files []string) {
 	}
 
 	// get output
-	if vari.GlobalVars.OutputFormat == consts.FormatJson {
-		s.OutputService.GenJson(&vari.GlobalVars.DefData)
-	} else {
+	if vari.GlobalVars.OutputFormat == consts.FormatText { // text
 		s.OutputService.GenRows(&vari.GlobalVars.DefData)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatJson {
+		s.OutputService.GenJson(&vari.GlobalVars.DefData) // json
 	}
 
 	// print end msg

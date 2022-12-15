@@ -46,7 +46,7 @@ func SyncGenCacheAndReturnFirstPart(fileContents [][]byte, fieldsToExport *[]str
 
 			topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, recordNumb)
 			twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, recordNumb)
-			rowsPart := populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true, recordNumb)
+			rowsPart := populateRowsFromTwoDimArr(twoDimArr, vari.GlobalVars.Recursive, true, recordNumb)
 
 			fmt.Printf("Thread %d actual create %d records.\n", index, len(rowsPart))
 

@@ -27,7 +27,7 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 
 	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.GlobalVars.Total)
 	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, vari.GlobalVars.Total)
-	rows = populateRowsFromTwoDimArr(twoDimArr, vari.Recursive, true, vari.GlobalVars.Total)
+	rows = populateRowsFromTwoDimArr(twoDimArr, vari.GlobalVars.Recursive, true, vari.GlobalVars.Total)
 
 	return
 }

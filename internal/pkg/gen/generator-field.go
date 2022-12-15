@@ -66,7 +66,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 	}
 
 	// 3. get combined values for parent field
-	isRecursive := vari.Recursive
+	isRecursive := vari.GlobalVars.Recursive
 	if stringUtils.InArray(field.Mode, constant.Modes) { // set on field level
 		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
@@ -79,6 +79,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 
 func GenValuesForMultiRes(field *model.DefField, withFix bool, total int) (values []string) {
 	unionValues := make([]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+
 	for _, child := range field.Froms {
 		if child.From == "" {
 			child.From = field.From
@@ -261,10 +262,10 @@ func addFix(str string, field *model.DefField, count int, withFix bool) (ret str
 	if field.Length > runewidth.StringWidth(str) {
 		str = stringUtils.AddPad(str, *field)
 	}
-	if withFix && !vari.Trim {
+	if withFix && !vari.GlobalVars.Trim {
 		str = prefix + str + postfix
 	}
-	if vari.GlobalVars.OutputFormat == constant.FormatText && !vari.Trim {
+	if vari.GlobalVars.OutputFormat == constant.FormatText && !vari.GlobalVars.Trim {
 		str += divider
 	}
 

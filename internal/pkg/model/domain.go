@@ -55,7 +55,7 @@ type DefField struct {
 	RightPad  string     `yaml:"rightpad,omitempty"`
 	Path      string     `yaml:"path,omitempty"`
 	FileDir   string     `yaml:"fileDir,omitempty"`
-	Union     bool       `yaml:"union,omitempty"`
+	Join      bool       `yaml:"join,omitempty"`
 
 	Froms []DefField `yaml:"froms,flow,omitempty"`
 

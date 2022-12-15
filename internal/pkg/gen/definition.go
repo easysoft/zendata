@@ -105,7 +105,7 @@ func MergeDef(defaultDef model.DefData, configDef model.DefData, fieldsToExport 
 	orderFields(&defaultDef, *fieldsToExport)
 
 	for index, _ := range defaultDef.Fields {
-		if vari.Trim {
+		if vari.GlobalVars.Trim {
 			defaultDef.Fields[index].Prefix = ""
 			defaultDef.Fields[index].Postfix = ""
 		}

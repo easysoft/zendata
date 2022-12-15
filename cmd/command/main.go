@@ -6,7 +6,7 @@ import (
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	"github.com/easysoft/zendata/internal/pkg/action"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -72,8 +72,8 @@ func main() {
 	flagSet.StringVar(&exportFields, "F", "", "")
 	flagSet.StringVar(&exportFields, "field", "", "")
 
-	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "f", "", "")
-	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "format", "", "")
+	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "f", consts.FormatText, "")
+	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "format", consts.FormatText, "")
 
 	flagSet.StringVar(&vari.GlobalVars.OutputFile, "o", "", "")
 	flagSet.StringVar(&vari.GlobalVars.OutputFile, "output", "", "")
@@ -87,23 +87,23 @@ func main() {
 
 	flagSet.StringVar(&md5, "md5", "", "")
 
-	flagSet.BoolVar(&vari.Human, "H", false, "")
-	flagSet.BoolVar(&vari.Human, "human", false, "")
-
 	flagSet.BoolVar(&decode, "D", false, "")
 	flagSet.BoolVar(&decode, "decode", false, "")
 
 	flagSet.StringVar(&root, "R", "", "")
 	flagSet.StringVar(&root, "root", "", "")
 
-	flagSet.BoolVar(&vari.Trim, "T", false, "")
-	flagSet.BoolVar(&vari.Trim, "trim", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Human, "H", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Human, "human", false, "")
 
-	flagSet.BoolVar(&vari.Recursive, "r", false, "")
-	flagSet.BoolVar(&vari.Recursive, "recursive", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Trim, "T", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Trim, "trim", false, "")
 
-	flagSet.StringVar(&vari.CacheParam, "C", "", "")
-	flagSet.StringVar(&vari.CacheParam, "cache", "", "")
+	flagSet.BoolVar(&vari.GlobalVars.Recursive, "r", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Recursive, "recursive", false, "")
+
+	//flagSet.StringVar(&vari.CacheParam, "C", "", "")
+	//flagSet.StringVar(&vari.CacheParam, "cache", "", "")
 
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")
@@ -179,7 +179,7 @@ func opts(files []string) {
 	}
 
 	if input != "" {
-		vari.RunMode = constant.RunModeParse
+		vari.RunMode = consts.RunModeParse
 	}
 
 	generate(files)
@@ -188,7 +188,7 @@ func opts(files []string) {
 func generate(files []string) {
 	command.PrintStartInfo()
 
-	if vari.RunMode == constant.RunModeGen {
+	if vari.RunMode == consts.RunModeGen {
 		if command.ClearCache() {
 			return
 		}
@@ -203,7 +203,7 @@ func generate(files []string) {
 		defCtrl.Generate(files)
 		//action.Generate(files, fields, vari.Format, vari.Table)
 
-	} else if vari.RunMode == constant.RunModeParse {
+	} else if vari.RunMode == consts.RunModeParse {
 		ext := filepath.Ext(input)
 		if ext == ".sql" {
 			action.ParseSql(input, vari.GlobalVars.OutputFile)

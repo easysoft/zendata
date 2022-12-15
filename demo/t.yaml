@@ -7,12 +7,13 @@ fields:
     range: 0-9:R
     loop:  1-3
     prefix: a-c
-    postfix: "\t"
+    postfix: ","
+
   - field: field_use_config
     config: number.yaml
     postfix: "\t"
 
-  - field: union_false
+  - field: join_false
     mode: r
     postfix: "\t"
     fields:
@@ -25,9 +26,9 @@ fields:
         range: a-c
         prefix: part2_
 
-  - field: union_true
+  - field: join_true
     mode: p
-    union: true
+    join: true
     fields:
       - field: child1
         range: A-C

@@ -15,6 +15,10 @@ type GenVarType struct {
 	ExportFields []string
 	Table        string
 
+	Human     bool
+	Trim      bool
+	Recursive bool
+
 	ConfigFileDir string
 
 	DefData model.DefData
@@ -58,10 +62,6 @@ var (
 	Verbose     bool
 	Interpreter string
 
-	WithHead   bool
-	Human      bool
-	Trim       bool
-	Recursive  bool
 	CacheParam string
 
 	Table        string

@@ -37,7 +37,7 @@ func (s *OutputService) GenJson(def *model.DefData) {
 }
 
 func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interface{}, i int) {
-	if field.Union || len(field.Fields) == 0 { // set values
+	if field.Join || len(field.Fields) == 0 { // set values
 		val := field.Values[i%len(field.Values)]
 		val = s.PlaceholderService.ReplacePlaceholder(val.(string))
 
@@ -51,14 +51,6 @@ func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interf
 		}
 
 		(*mp)[field.Field] = childMap
-	}
-
-	return
-}
-
-func (s *OutputService) ConnectValues(values []interface{}) (ret string) {
-	for _, item := range values {
-		ret += item.(string)
 	}
 
 	return

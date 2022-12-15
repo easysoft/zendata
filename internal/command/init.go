@@ -62,10 +62,6 @@ func ClearCache() (ret bool) {
 }
 
 func SetOutFormat() (err error) {
-	if vari.Human {
-		vari.WithHead = true
-	}
-
 	if vari.GlobalVars.OutputFile != "" {
 		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.OutputFile))
 		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)

@@ -42,7 +42,7 @@ func Decode(files []string, input string) {
 
 func linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface{}) {
 	start := 0
-	if vari.WithHead {
+	if vari.GlobalVars.Human {
 		start = 1
 	}
 
@@ -90,7 +90,7 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 			}
 		}
 
-		if vari.Trim {
+		if vari.GlobalVars.Trim {
 			col = strings.TrimLeft(col, field.Prefix)
 			col = strings.TrimRight(col, field.Postfix)
 		}

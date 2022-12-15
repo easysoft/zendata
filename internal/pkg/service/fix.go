@@ -21,10 +21,10 @@ func (s *FixService) AddFix(str string, field *model.DefField, count int, withFi
 	if field.Length > runewidth.StringWidth(str) {
 		str = stringUtils.AddPad(str, *field)
 	}
-	if withFix && !vari.Trim {
+	if withFix && !vari.GlobalVars.Trim {
 		str = prefix + str + postfix
 	}
-	if vari.GlobalVars.OutputFormat == consts.FormatText && !vari.Trim {
+	if vari.GlobalVars.OutputFormat == consts.FormatText && !vari.GlobalVars.Trim {
 		str += divider
 	}
 

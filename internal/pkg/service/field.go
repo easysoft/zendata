@@ -23,8 +23,8 @@ type FieldService struct {
 	RandomService *RandomService `inject:""`
 }
 
-func (s *FieldService) Generate(field *model.DefField, parentIsUnion bool) {
-	field.Union = field.Union || parentIsUnion
+func (s *FieldService) Generate(field *model.DefField, parentIsJoin bool) {
+	field.Join = field.Join || parentIsJoin
 
 	s.RangeService.DealwithFixRange(field)
 
@@ -36,7 +36,7 @@ func (s *FieldService) Generate(field *model.DefField, parentIsUnion bool) {
 			}
 			field.Fields[i].FileDir = field.FileDir
 
-			s.Generate(&field.Fields[i], field.Union)
+			s.Generate(&field.Fields[i], field.Join)
 		}
 		return
 	}
