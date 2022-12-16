@@ -101,7 +101,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	}
 
 	// exec insert sql
-	if vari.DBDsn != "" {
+	if vari.GlobalVars.DBDsn != "" {
 		helper.ExecSqlInUserDB(lines)
 	}
 

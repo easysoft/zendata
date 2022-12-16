@@ -7,7 +7,7 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
-func (s *OutputService) GenRows(def *model.DefData) {
+func (s *OutputService) GenText(def *model.DefData) {
 	simulatedFieldFromDef := model.DefField{
 		Fields: def.Fields,
 		Join:   true,
@@ -15,7 +15,7 @@ func (s *OutputService) GenRows(def *model.DefData) {
 
 	s.CombineService.CombineChildrenIfNeeded(&simulatedFieldFromDef)
 
-	gen.PrintTextHeader(vari.GlobalVars.ExportFields)
+	gen.PrintHumanHeaderIfNeeded(vari.GlobalVars.ExportFields)
 
 	for _, item := range simulatedFieldFromDef.Values {
 		line := s.PlaceholderService.ReplacePlaceholder(item.(string))

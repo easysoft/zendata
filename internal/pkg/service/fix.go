@@ -8,6 +8,7 @@ import (
 	"github.com/mattn/go-runewidth"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type FixService struct {
@@ -28,7 +29,8 @@ func (s *FixService) AddFix(str string, field *model.DefField, count int, withFi
 		str += divider
 	}
 
-	ret = str
+	ret = s.RemoveSpaceIfOutputNoTextFile(str)
+
 	return
 }
 
@@ -87,4 +89,14 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 	}
 
 	return str
+}
+
+func (s *FixService) RemoveSpaceIfOutputNoTextFile(str string) (ret string) {
+	ret = str
+
+	if vari.GlobalVars.OutputFormat != "" && vari.GlobalVars.OutputFormat != consts.FormatText {
+		ret = strings.TrimSpace(ret)
+	}
+
+	return
 }

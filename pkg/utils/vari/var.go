@@ -13,7 +13,13 @@ type GenVarType struct {
 	OutputFile   string
 	OutputFormat string
 	ExportFields []string
+	ColIsNumArr  []bool
+
 	Table        string
+	DBType       string // database type
+	DBDsn        string
+	DBDsnParsing DBDsnData
+	DBClear      bool
 
 	Human     bool
 	Trim      bool
@@ -64,13 +70,9 @@ var (
 
 	CacheParam string
 
-	Table        string
-	DefType      string
-	Server       string // database type
-	DBDsn        string
-	DBDsnParsing DBDsnData
-	DBClear      bool
-	ProtoCls     string
+	DefType string
+
+	ProtoCls string
 
 	JsonResp string = "[]"
 	Ip       string

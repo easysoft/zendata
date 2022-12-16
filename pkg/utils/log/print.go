@@ -82,13 +82,13 @@ func PrintErrMsg(msg string) {
 	PrintToWithColor(msg, color.FgCyan)
 }
 
-func PrintBlock(str string) {
+func PrintRecord(str string) {
 	if OutputFileWriter != nil {
 		PrintToFile(str)
 	} else if vari.RunMode == constant.RunModeServerRequest {
 		PrintToHttp(str)
 	} else {
-		PrintToScreen(fmt.Sprintf("\n%s\n\n", str))
+		PrintToScreen(fmt.Sprintf("%s", str))
 	}
 }
 

@@ -10,6 +10,7 @@ import (
 )
 
 type PlaceholderService struct {
+	FixService *FixService `inject:""`
 }
 
 func (s *PlaceholderService) ReplacePlaceholder(val string) (ret string) {
@@ -29,6 +30,8 @@ func (s *PlaceholderService) ReplacePlaceholder(val string) (ret string) {
 			ret = strings.Replace(ret, temp, str, 1)
 		}
 	}
+
+	ret = s.FixService.RemoveSpaceIfOutputNoTextFile(ret)
 
 	return
 }

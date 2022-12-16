@@ -111,12 +111,12 @@ func main() {
 	flagSet.BoolVar(&set, "S", false, "")
 	flagSet.BoolVar(&set, "set", false, "")
 
-	flagSet.StringVar(&vari.Table, "t", "", "")
-	flagSet.StringVar(&vari.Table, "table", "", "")
-	flagSet.StringVar(&vari.Server, "s", "mysql", "")
-	flagSet.StringVar(&vari.Server, "server", "mysql", "")
-	flagSet.StringVar(&vari.DBDsn, "dsn", "", "")
-	flagSet.BoolVar(&vari.DBClear, "clear", false, "")
+	flagSet.StringVar(&vari.GlobalVars.Table, "t", "", "")
+	flagSet.StringVar(&vari.GlobalVars.Table, "table", "", "")
+	flagSet.StringVar(&vari.GlobalVars.DBType, "s", "mysql", "")
+	flagSet.StringVar(&vari.GlobalVars.DBType, "server", "mysql", "")
+	flagSet.StringVar(&vari.GlobalVars.DBDsn, "dsn", "", "")
+	flagSet.BoolVar(&vari.GlobalVars.DBClear, "clear", false, "")
 
 	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
 

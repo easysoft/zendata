@@ -4,54 +4,42 @@ import (
 	"encoding/json"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	"github.com/easysoft/zendata/pkg/utils/vari"
+	"regexp"
 )
 
-type OutputService struct {
-	CombineService     *CombineService     `inject:""`
-	PlaceholderService *PlaceholderService `inject:""`
-}
-
 func (s *OutputService) GenJson(def *model.DefData) {
-	records := make([]map[string]interface{}, 0)
+	records := s.GenObjs(def)
 
-	for i := 0; i < vari.GlobalVars.Total; i++ {
-		record := map[string]interface{}{}
+	s.PrintJsonHeader()
 
-		for _, field := range def.Fields {
-			s.GenFieldMap(&field, &record, i)
+	for i, record := range records {
+		bytes, err := json.MarshalIndent(record, "", "\t")
+		if err != nil {
+			logUtils.PrintTo("json marshal failed")
+			break
 		}
 
-		records = append(records, record)
+		jsonStr := string(bytes)
+
+		regx := regexp.MustCompile(`(\n+)`)
+		jsonStr = "\t" + regx.ReplaceAllString(jsonStr, "${1}\t")
+
+		postStr := "\n"
+		if i < len(records)-1 {
+			postStr = "," + postStr
+		}
+
+		logUtils.PrintRecord(jsonStr + postStr)
 	}
 
-	bytes, err := json.MarshalIndent(records, "", "\t")
-	if err != nil {
-		logUtils.PrintTo("json marshal failed")
-	}
-
-	jsonStr := string(bytes)
-	logUtils.PrintBlock(jsonStr)
+	s.PrintJsonFooter()
 
 	return
 }
 
-func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interface{}, i int) {
-	if field.Join || len(field.Fields) == 0 { // set values
-		val := field.Values[i%len(field.Values)]
-		val = s.PlaceholderService.ReplacePlaceholder(val.(string))
-
-		(*mp)[field.Field] = val
-
-	} else { // set child object
-		childMap := map[string]interface{}{}
-
-		for _, child := range field.Fields {
-			s.GenFieldMap(&child, &childMap, i)
-		}
-
-		(*mp)[field.Field] = childMap
-	}
-
-	return
+func (s *OutputService) PrintJsonHeader() {
+	logUtils.PrintRecord("[\n")
+}
+func (s *OutputService) PrintJsonFooter() {
+	logUtils.PrintRecord("]\n")
 }

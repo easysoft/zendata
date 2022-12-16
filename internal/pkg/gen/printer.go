@@ -20,11 +20,11 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 	var sqlHeader string
 
 	if format == constant.FormatText {
-		PrintTextHeader(fields)
+		PrintHumanHeaderIfNeeded(fields)
 
 	} else if format == constant.FormatSql {
 		sqlHeader = getInsertSqlHeader(fields, table)
-		if vari.DBDsn != "" {
+		if vari.GlobalVars.DBDsn != "" {
 			lines = append(lines, sqlHeader)
 		}
 
@@ -63,7 +63,7 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 
 			colVal := col
 			if !colIsNumArr[j] {
-				switch vari.Server {
+				switch vari.GlobalVars.DBType {
 				case constant.DBTypeSqlServer:
 					colVal = "'" + stringUtils.EscapeValueOfSqlServer(colVal) + "'"
 				case constant.DBTypeOracle:
@@ -83,12 +83,12 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 			logUtils.PrintLine(lineForText)
 
 		} else if format == constant.FormatSql {
-			if vari.DBDsn != "" { // add to return array for exec sql
+			if vari.GlobalVars.DBDsn != "" { // add to return array for exec sql
 				sql := strings.Join(valuesForSql, ", ")
 				lines = append(lines, sql)
 			} else {
 
-				sql := genSqlLine(sqlHeader, valuesForSql, vari.Server)
+				sql := genSqlLine(sqlHeader, valuesForSql, vari.GlobalVars.DBType)
 				logUtils.PrintLine(sql)
 			}
 		} else if format == constant.FormatJson {
@@ -103,7 +103,7 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 	return
 }
 
-func PrintTextHeader(fields []string) {
+func PrintHumanHeaderIfNeeded(fields []string) {
 	if !vari.GlobalVars.Human {
 		return
 	}
@@ -118,31 +118,31 @@ func PrintTextHeader(fields []string) {
 	logUtils.PrintLine(headerLine + "\n")
 }
 
-// return "Table> (<column1, column2,...)"
+// return Table (column1, column2, ...)
 func getInsertSqlHeader(fields []string, table string) string {
 	fieldNames := make([]string, 0)
+
 	for _, f := range fields {
-		if vari.Server == constant.DBTypeSqlServer {
-			f = "[" + stringUtils.EscapeColumnOfSqlServer(f) + "]"
-		} else if vari.Server == constant.DBTypeOracle {
-			f = `"` + f + `"`
-		} else {
+		if vari.GlobalVars.DBType == constant.DBTypeMysql {
 			f = "`" + stringUtils.EscapeColumnOfMysql(f) + "`"
-			//vari.Server == constant.DBTypeMysql {
+		} else if vari.GlobalVars.DBType == constant.DBTypeOracle {
+			f = `"` + f + `"`
+		} else if vari.GlobalVars.DBType == constant.DBTypeSqlServer {
+			f = "[" + stringUtils.EscapeColumnOfSqlServer(f) + "]"
 		}
 
 		fieldNames = append(fieldNames, f)
 	}
 
 	var ret string
-	switch vari.Server {
-	case constant.DBTypeSqlServer:
-		ret = fmt.Sprintf("[%s] (%s)", table, strings.Join(fieldNames, ", "))
+	switch vari.GlobalVars.DBType {
+	case constant.DBTypeMysql:
+		ret = fmt.Sprintf("`%s` (%s)", table, strings.Join(fieldNames, ", "))
 	case constant.DBTypeOracle:
 		ret = fmt.Sprintf(`"%s" (%s)`, table, strings.Join(fieldNames, ", "))
-	// case constant.DBTypeMysql:
+	case constant.DBTypeSqlServer:
+		ret = fmt.Sprintf("[%s] (%s)", table, strings.Join(fieldNames, ", "))
 	default:
-		ret = fmt.Sprintf("`%s` (%s)", table, strings.Join(fieldNames, ", "))
 	}
 
 	return ret

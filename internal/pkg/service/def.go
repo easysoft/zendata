@@ -48,7 +48,10 @@ func (s *DefService) GenerateFromContent(files []string) {
 		if !stringUtils.StrInArr(field.Field, vari.GlobalVars.ExportFields) {
 			continue
 		}
+
 		s.FieldService.Generate(&vari.GlobalVars.DefData.Fields[i], join)
+
+		vari.GlobalVars.ColIsNumArr = append(vari.GlobalVars.ColIsNumArr, field.IsNumb)
 	}
 
 	// combine children fields
@@ -61,9 +64,15 @@ func (s *DefService) GenerateFromContent(files []string) {
 
 	// get output
 	if vari.GlobalVars.OutputFormat == consts.FormatText { // text
-		s.OutputService.GenRows(&vari.GlobalVars.DefData)
-	} else if vari.GlobalVars.OutputFormat == consts.FormatJson {
-		s.OutputService.GenJson(&vari.GlobalVars.DefData) // json
+		s.OutputService.GenText(&vari.GlobalVars.DefData)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatJson { // json
+		s.OutputService.GenJson(&vari.GlobalVars.DefData)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatXml { // xml
+		s.OutputService.GenXml(&vari.GlobalVars.DefData)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatExcel { // excel
+		s.OutputService.GenExcel(&vari.GlobalVars.DefData)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatSql { // excel
+		s.OutputService.GenSql(&vari.GlobalVars.DefData)
 	}
 
 	// print end msg

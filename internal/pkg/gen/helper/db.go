@@ -25,17 +25,17 @@ var (
 func ExecSqlInUserDB(lines []interface{}) (count int) {
 
 	//typ, user, password, host, port, db, code := parserDsn(vari.DBDsn)
-	db, _ := parserDsnAndConnByGorm(vari.DBDsn)
+	db, _ := parserDsnAndConnByGorm(vari.GlobalVars.DBDsn)
 
-	if vari.DBClear && vari.Table != "" {
+	if vari.GlobalVars.DBClear && vari.GlobalVars.Table != "" {
 		var deleteSql string
-		switch vari.DBDsnParsing.Driver {
+		switch vari.GlobalVars.DBDsnParsing.Driver {
 		case "mysql":
-			deleteSql = fmt.Sprintf("delete from `%s` where 1=1", vari.Table)
+			deleteSql = fmt.Sprintf("delete from `%s` where 1=1", vari.GlobalVars.Table)
 		case "sqlserver":
-			deleteSql = fmt.Sprintf("delete from [%s] where 1=1", vari.Table)
+			deleteSql = fmt.Sprintf("delete from [%s] where 1=1", vari.GlobalVars.Table)
 		case "oracle":
-			deleteSql = fmt.Sprintf(`delete from "%s" where 1=1`, vari.Table)
+			deleteSql = fmt.Sprintf(`delete from "%s" where 1=1`, vari.GlobalVars.Table)
 		}
 
 		err := db.Exec(deleteSql).Error
@@ -45,7 +45,7 @@ func ExecSqlInUserDB(lines []interface{}) (count int) {
 	}
 
 	var insertSql = ""
-	switch vari.DBDsnParsing.Driver {
+	switch vari.GlobalVars.DBDsnParsing.Driver {
 	case "mysql", "sqlserver":
 		insertSql = "INSERT INTO " + lines[0].(string) + " VALUES (" + lines[1].(string) + ")"
 
@@ -158,47 +158,47 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 }
 
 func parserDsnAndConnByGorm(dsn string) (db *gorm.DB, err error) {
-	if vari.DBDsnParsing.Driver == "mysql" {
+	if vari.GlobalVars.DBDsnParsing.Driver == "mysql" {
 		dsn := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
-			vari.DBDsnParsing.User,
-			vari.DBDsnParsing.Password,
-			vari.DBDsnParsing.Host,
-			vari.DBDsnParsing.Port,
-			vari.DBDsnParsing.DbName,
-			vari.DBDsnParsing.Code)
+			vari.GlobalVars.DBDsnParsing.User,
+			vari.GlobalVars.DBDsnParsing.Password,
+			vari.GlobalVars.DBDsnParsing.Host,
+			vari.GlobalVars.DBDsnParsing.Port,
+			vari.GlobalVars.DBDsnParsing.DbName,
+			vari.GlobalVars.DBDsnParsing.Code)
 		db, err = gorm.Open(mysql.Open(dsn))
 		if err != nil { // make sure database is accessible
 			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
+				fmt.Sprintf("Error on opening db %s, error is %s", vari.GlobalVars.DBDsnParsing.DbName, err.Error()))
 		}
-	} else if vari.DBDsnParsing.Driver == "sqlserver" {
+	} else if vari.GlobalVars.DBDsnParsing.Driver == "sqlserver" {
 		//str := "sqlserver://sa:12345678Abc@192.168.198.128:1433?database=TestDB"
 		// sqlserver 忽略 code （字符编码），该编码暂无发现通过dsn设置，而且由数据库端设置
 		dsn := fmt.Sprintf("%s://%s:%s@%s:%s?database=%s",
-			vari.DBDsnParsing.Driver,
-			vari.DBDsnParsing.User,
-			vari.DBDsnParsing.Password,
-			vari.DBDsnParsing.Host,
-			vari.DBDsnParsing.Port,
-			vari.DBDsnParsing.DbName)
+			vari.GlobalVars.DBDsnParsing.Driver,
+			vari.GlobalVars.DBDsnParsing.User,
+			vari.GlobalVars.DBDsnParsing.Password,
+			vari.GlobalVars.DBDsnParsing.Host,
+			vari.GlobalVars.DBDsnParsing.Port,
+			vari.GlobalVars.DBDsnParsing.DbName)
 		db, err = gorm.Open(sqlserver.Open(dsn))
 		if err != nil { // make sure database is accessible
 			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
+				fmt.Sprintf("Error on opening db %s, error is %s", vari.GlobalVars.DBDsnParsing.DbName, err.Error()))
 		}
-	} else if vari.DBDsnParsing.Driver == "oracle" {
+	} else if vari.GlobalVars.DBDsnParsing.Driver == "oracle" {
 		// orcale 目前使用的gorm orcale适配驱动库不能应用于生产环境，
 		// 但作为简单的数据导入需求足以
 		dsn := fmt.Sprintf("%s/%s@%s:%s/%s",
-			vari.DBDsnParsing.User,
-			vari.DBDsnParsing.Password,
-			vari.DBDsnParsing.Host,
-			vari.DBDsnParsing.Port,
-			vari.DBDsnParsing.DbName)
+			vari.GlobalVars.DBDsnParsing.User,
+			vari.GlobalVars.DBDsnParsing.Password,
+			vari.GlobalVars.DBDsnParsing.Host,
+			vari.GlobalVars.DBDsnParsing.Port,
+			vari.GlobalVars.DBDsnParsing.DbName)
 		db, err = gorm.Open(oracle.Open(dsn), &gorm.Config{})
 		if err != nil { // make sure database is accessible
 			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", vari.DBDsnParsing.DbName, err.Error()))
+				fmt.Sprintf("Error on opening db %s, error is %s", vari.GlobalVars.DBDsnParsing.DbName, err.Error()))
 		}
 	}
 

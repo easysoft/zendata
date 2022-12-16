@@ -37,7 +37,7 @@ var (
 	MaxNumb         = 100000
 	MaxNumbForAsync = 100
 
-	FormatText  = "text"
+	FormatText  = "txt"
 	FormatJson  = "json"
 	FormatXml   = "xml"
 	FormatSql   = "sql"

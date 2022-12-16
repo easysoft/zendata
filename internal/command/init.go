@@ -67,14 +67,13 @@ func SetOutFormat() (err error) {
 		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)
 
 		ext := strings.ToLower(filepath.Ext(vari.GlobalVars.OutputFile))
-		if len(ext) > 1 {
-			ext = strings.TrimLeft(ext, ".")
-		}
+		ext = strings.TrimLeft(ext, ".")
 
 		if stringUtils.InArray(ext, constant.Formats) {
 			vari.GlobalVars.OutputFormat = ext
 		}
 
+		// create file writer
 		if vari.GlobalVars.OutputFormat == constant.FormatExcel {
 			logUtils.OutputFilePath = vari.GlobalVars.OutputFile
 		} else {
@@ -82,11 +81,11 @@ func SetOutFormat() (err error) {
 		}
 	}
 
-	if vari.DBDsn != "" {
+	if vari.GlobalVars.DBDsn != "" {
 		vari.GlobalVars.OutputFormat = constant.FormatSql
 	}
 
-	if vari.GlobalVars.OutputFormat == constant.FormatSql && vari.Table == "" {
+	if vari.GlobalVars.OutputFormat == constant.FormatSql && vari.GlobalVars.Table == "" {
 		msg := i118Utils.I118Prt.Sprintf("miss_table_name")
 		logUtils.PrintErrMsg(msg)
 		err = errors.New(msg)

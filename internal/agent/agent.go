@@ -30,10 +30,10 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 
 	if req.Method == http.MethodGet {
 		defaultFile, configFile, fields, vari.GlobalVars.Total,
-			vari.GlobalVars.OutputFormat, vari.GlobalVars.Trim, vari.Table, decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParams(req)
+			vari.GlobalVars.OutputFormat, vari.GlobalVars.Trim, vari.GlobalVars.Table, decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParams(req)
 	} else if req.Method == http.MethodPost {
 		defaultDefContent, configDefContent, fields, vari.GlobalVars.Total,
-			vari.GlobalVars.OutputFormat, vari.GlobalVars.Trim, vari.Table, decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParamsToByte(req)
+			vari.GlobalVars.OutputFormat, vari.GlobalVars.Trim, vari.GlobalVars.Table, decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParamsToByte(req)
 	}
 
 	if decode {
@@ -74,10 +74,10 @@ func genData() {
 	vari.GlobalVars.OutputFormat = constant.FormatJson
 	if defaultFile != "" || configFile != "" {
 		files := []string{defaultFile, configFile}
-		action.Generate(files, fields, vari.GlobalVars.OutputFormat, vari.Table)
+		action.Generate(files, fields, vari.GlobalVars.OutputFormat, vari.GlobalVars.Table)
 	} else {
 		contents := [][]byte{defaultDefContent, configDefContent}
-		action.GenerateByContent(contents, fields, vari.GlobalVars.OutputFormat, vari.Table)
+		action.GenerateByContent(contents, fields, vari.GlobalVars.OutputFormat, vari.GlobalVars.Table)
 	}
 
 	tmEnd := time.Now()
