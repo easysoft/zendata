@@ -21,7 +21,6 @@ func GenerateFromProtobuf(protoFile string) (content, pth string) {
 	outputDir := generateCls(protoFile)
 
 	convertFile := generateConverter(outputDir)
-
 	content, pth = generateBinData(convertFile)
 
 	return
