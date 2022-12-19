@@ -1,16 +1,14 @@
 package service
 
 import (
-	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
-	"io/ioutil"
-	"time"
+	"gopkg.in/yaml.v2"
+	"strings"
 )
 
 type DefService struct {
@@ -19,112 +17,210 @@ type DefService struct {
 	CombineService  *CombineService  `inject:""`
 	OutputService   *OutputService   `inject:""`
 	ProtobufService *ProtobufService `inject:""`
+	FileService     *FileService     `inject:""`
 }
 
-func (s *DefService) GenerateFromContents(files []string) {
-	startTime := time.Now().Unix()
-
-	count := s.GenerateData(files)
-
-	// get output
-	if vari.GlobalVars.OutputFormat == consts.FormatText { // text
-		s.OutputService.GenText(false)
-	} else if vari.GlobalVars.OutputFormat == consts.FormatJson { // json
-		s.OutputService.GenJson()
-	} else if vari.GlobalVars.OutputFormat == consts.FormatXml { // xml
-		s.OutputService.GenXml()
-	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatExcel { // excel
-		s.OutputService.GenExcel()
-	} else if vari.GlobalVars.OutputFormat == consts.FormatSql { // excel
-		s.OutputService.GenSql()
+func (s *DefService) LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret model.DefData) {
+	ret = model.DefData{}
+	for _, f := range filesContents {
+		right := s.LoadContentDef(f)
+		ret = s.MergeDef(ret, right, fieldsToExport)
 	}
 
-	// print end msg
-	entTime := time.Now().Unix()
-	if vari.RunMode == consts.RunModeServerRequest {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
-	}
+	return
 }
 
-func (s *DefService) GenerateData(files []string) (count int) {
-	if files[0] != "" {
-		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
-	} else {
-		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[1])
-	}
-
-	// get def and res data
-	contents := gen.LoadFilesContents(files)
-	vari.GlobalVars.DefData = gen.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
-	vari.GlobalVars.ResData = s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
-
-	if err := gen.CheckParams(); err != nil {
+func (s *DefService) LoadContentDef(content []byte) (ret model.DefData) {
+	content = stringUtils.ReplaceSpecialChars(content)
+	err := yaml.Unmarshal(content, &ret)
+	if err != nil {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
 		return
 	}
-	gen.FixTotalNum()
-
-	join := false
-	if vari.GlobalVars.OutputFormat != consts.FormatJson {
-		join = true
-	}
-
-	// gen for each field
-	for i, field := range vari.GlobalVars.DefData.Fields {
-		if !stringUtils.StrInArr(field.Field, vari.GlobalVars.ExportFields) {
-			continue
-		}
-
-		s.FieldService.Generate(&vari.GlobalVars.DefData.Fields[i], join)
-
-		vari.GlobalVars.ColIsNumArr = append(vari.GlobalVars.ColIsNumArr, field.IsNumb)
-	}
-
-	// combine children fields
-	for i, field := range vari.GlobalVars.DefData.Fields {
-		if !stringUtils.StrInArr(field.Field, vari.GlobalVars.ExportFields) {
-			continue
-		}
-		s.CombineService.CombineChildrenIfNeeded(&vari.GlobalVars.DefData.Fields[i])
-	}
 
 	return
 }
 
-func (s *DefService) GenerateFromProtobuf(files []string) {
-	startTime := time.Now().Unix()
-	count := 0
-
-	buf, pth := s.ProtobufService.GenerateProtobuf(files[0])
-
-	if vari.Verbose {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
+func (s *DefService) MergeDef(defaultDef model.DefData, configDef model.DefData, fieldsToExport *[]string) model.DefData {
+	if configDef.Type == "article" && configDef.Content != "" {
+		s.convertArticleContent(&configDef)
 	}
-	logUtils.PrintLine(buf)
 
-	count = 1
-	entTime := time.Now().Unix()
-	if vari.RunMode == consts.RunModeServerRequest {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
+	s.mergerDefine(&defaultDef, &configDef, fieldsToExport)
+	s.orderFields(&defaultDef, *fieldsToExport)
+
+	for index, _ := range defaultDef.Fields {
+		if vari.GlobalVars.Trim {
+			defaultDef.Fields[index].Prefix = ""
+			defaultDef.Fields[index].Postfix = ""
+		}
+	}
+
+	return defaultDef
+}
+
+func (s *DefService) convertArticleContent(config *model.DefData) {
+	field := model.DefField{}
+	field.Type = config.Type
+	field.From = config.From
+	field.Range = "`" + config.Content + "`"
+
+	config.Fields = append(config.Fields, field)
+}
+
+func (s *DefService) mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string) {
+	isSetFieldsToExport := false
+	if len(*fieldsToExport) > 0 {
+		isSetFieldsToExport = true
+	}
+
+	defaultFieldMap := map[string]*model.DefField{}
+	configFieldMap := map[string]*model.DefField{}
+	sortedKeys := make([]string, 0)
+
+	//if configDef.Type != "" {
+	//	vari.GlobalVars.DefDataType = configDef.Type
+	//} else if defaultDef.Type != "" {
+	//	vari.GlobalVars.DefDataType = defaultDef.Type
+	//} else {
+	//	vari.GlobalVars.DefDataType = constant.DefTypeText
+	//}
+
+	if configDef.Content != "" && defaultDef.Content == "" {
+		defaultDef.Content = configDef.Content
+	}
+	if configDef.From != "" && defaultDef.From == "" {
+		defaultDef.From = configDef.From
+	}
+	if configDef.Type != "" && defaultDef.Type == "" {
+		defaultDef.Type = configDef.Type
+	}
+
+	for i, field := range defaultDef.Fields {
+		if !isSetFieldsToExport {
+			*fieldsToExport = append(*fieldsToExport, field.Field)
+		}
+
+		defaultDef.Fields[i].FileDir = vari.GlobalVars.ConfigFileDir
+		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
+	}
+	for i, field := range configDef.Fields {
+		vari.TopFieldMap[field.Field] = field
+		if !isSetFieldsToExport {
+			if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
+				*fieldsToExport = append(*fieldsToExport, field.Field)
+			}
+		}
+
+		configDef.Fields[i].FileDir = vari.GlobalVars.ConfigFileDir
+		CreatePathToFieldMap(&configDef.Fields[i], configFieldMap, &sortedKeys)
+	}
+
+	// overwrite
+	for path, field := range configFieldMap {
+		parent, exist := defaultFieldMap[path]
+		if exist {
+			CopyField(*field, parent)
+			defaultFieldMap[path] = parent
+		}
+	}
+
+	// append
+	for _, key := range sortedKeys {
+		field := configFieldMap[key]
+		if field == nil || strings.Index(field.Path, "~~") > -1 {
+			continue
+		} // ignore no-top fields
+
+		_, exist := defaultFieldMap[field.Path]
+		if !exist {
+			defaultDef.Fields = append(defaultDef.Fields, *field)
+		}
+	}
+
+	for _, field := range defaultDef.Fields {
+		vari.TopFieldMap[field.Field] = field
 	}
 }
 
-func (s *DefService) LoadFilesContents(files []string) (contents [][]byte) {
-	contents = make([][]byte, 0)
-	for _, f := range files {
-		if f == "" {
-			continue
-		}
-		pathDefaultFile := fileUtils.GetAbsolutePath(f)
-		if !fileUtils.FileExist(pathDefaultFile) {
-			return
-		}
-		content, err := ioutil.ReadFile(pathDefaultFile)
-		if err != nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
-			return
-		}
-		contents = append(contents, content)
+func (s *DefService) orderFields(defaultDef *model.DefData, fieldsToExport []string) {
+	mp := map[string]model.DefField{}
+	for _, field := range defaultDef.Fields {
+		mp[field.Field] = field
 	}
 
-	return
+	fields := make([]model.DefField, 0)
+	for _, fieldName := range fieldsToExport {
+		fields = append(fields, mp[fieldName])
+	}
+
+	defaultDef.Fields = fields
+}
+
+func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, keys *[]string) {
+	if field.Path == "" { // root
+		field.Path = field.Field
+	}
+
+	path := field.Path
+	//logUtils.Screen(path + " -> " + field.ZdField)
+	mp[path] = field
+
+	if keys != nil {
+		*keys = append(*keys, path)
+	}
+
+	if len(field.Fields) > 0 {
+		for i := range field.Fields {
+			field.Fields[i].Path = field.Path + "~~" + field.Fields[i].Field
+
+			CreatePathToFieldMap(&field.Fields[i], mp, keys)
+		}
+	}
+}
+
+func CopyField(child model.DefField, parent *model.DefField) {
+	if child.Note != "" {
+		(*parent).Note = child.Note
+	}
+	if child.Range != "" {
+		(*parent).Range = child.Range
+	}
+
+	(*parent).Prefix = child.Prefix
+	(*parent).Postfix = child.Postfix
+	(*parent).Divider = child.Divider
+
+	if child.Loop != "" {
+		(*parent).Loop = child.Loop
+	}
+	(*parent).Loopfix = child.Loopfix
+	(*parent).Format = child.Format
+
+	if child.From != "" {
+		(*parent).From = child.From
+	}
+	if child.Select != "" {
+		(*parent).Select = child.Select
+	}
+	if child.Where != "" {
+		(*parent).Where = child.Where
+	}
+	if child.Use != "" {
+		(*parent).Use = child.Use
+	}
+	if child.From != "" {
+		(*parent).From = child.From
+	}
+
+	if child.Type != "" {
+		(*parent).Type = child.Type
+	}
+
+	if child.Precision != 0 {
+		(*parent).Precision = child.Precision
+	}
+	if child.Length != 0 {
+		(*parent).Length = child.Length
+	}
 }

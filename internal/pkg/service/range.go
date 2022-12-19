@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -11,6 +10,7 @@ import (
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -26,6 +26,10 @@ type RangeService struct {
 	PrintService   *PrintService   `inject:""`
 	CombineService *CombineService `inject:""`
 	OutputService  *OutputService  `inject:""`
+	FileService    *FileService    `inject:""`
+
+	RangeService *RangeService `inject:""`
+	MainService  *MainService  `inject:""`
 }
 
 func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
@@ -144,7 +148,7 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 		endStr = elemArr[1]
 	}
 
-	dataType, step, precision, rand, _ := gen.CheckRangeType(startStr, endStr, stepStr)
+	dataType, step, precision, rand, _ := s.CheckRangeType(startStr, endStr, stepStr)
 	field.Precision = precision
 
 	// 1. random replacement
@@ -210,10 +214,10 @@ func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, ste
 
 	vari.GlobalVars.ExportFields = make([]string, 0) // set to empty to use all fields
 
-	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
+	configFile := s.FileService.ComputerReferFilePath(yamlFile, field)
 
 	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(configFile)
-	s.DefService.GenerateData([]string{configFile})
+	s.MainService.GenerateData([]string{configFile})
 
 	// get the data
 	items = s.OutputService.GenText(true)
@@ -565,6 +569,145 @@ func (s *RangeService) ParseRepeat(rang string) (repeat int, repeatTag, rangeWit
 	}
 	repeatTag = tag
 	rangeWithoutRepeat = regx.ReplaceAllString(rang, "")
+
+	return
+}
+
+func (s *RangeService) CheckRangeType(startStr string, endStr string, stepStr string) (dataType string, step interface{}, precision int,
+	rand bool, count int) {
+
+	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
+
+	if start, end, stepi, ok := s.checkRangeTypeIsInt(startStr, endStr, stepStr); ok { // is int
+		step = 1
+		if stepStr == "r" {
+			rand = true
+		}
+
+		count = (int)(start-end) / int(stepi)
+		if count < 0 {
+			count = count * -1
+		}
+
+		dataType = "int"
+		step = int(stepi)
+		return
+	} else if start, end, stepf, ok := s.checkRangeTypeIsFloat(startStr, endStr, stepStr); ok { // is float
+		step = stepf
+
+		if stepStr == "r" {
+			rand = true
+		}
+
+		precision1, step1 := valueGen.GetPrecision(start, step)
+		precision2, step2 := valueGen.GetPrecision(end, step)
+		if precision1 < precision2 {
+			precision = precision2
+			step = step2
+		} else {
+			precision = precision1
+			step = step1
+		}
+
+		if (start > end && stepf > 0) || (start < end && stepf < 0) {
+			step = -1 * stepf
+		}
+
+		dataType = "float"
+		count = int(math.Floor(math.Abs(start-end)/stepf + 0.5))
+		return
+
+	} else if len(startStr) == 1 && len(endStr) == 1 { // is char
+		step = 1
+
+		if stepStr != "r" {
+			stepChar, errChar3 := strconv.Atoi(stepStr)
+			if errChar3 == nil {
+				step = stepChar
+			}
+		} else if stepStr == "r" {
+			rand = true
+		}
+
+		if (strings.Compare(startStr, endStr) > 0 && step.(int) > 0) ||
+			(strings.Compare(startStr, endStr) < 0 && step.(int) < 0) {
+			step = -1 * step.(int)
+		}
+
+		dataType = "char"
+
+		startChar := startStr[0]
+		endChar := endStr[0]
+
+		gap := 0
+		if endChar > startChar { // 负数转uint单独处理
+			gap = int(endChar - startChar)
+		} else {
+			gap = int(startChar - endChar)
+		}
+		count = gap / step.(int)
+		if count < 0 {
+			count = count * -1
+		}
+		return
+	}
+
+	// else is string
+	dataType = "string"
+	step = 1
+	return
+}
+
+func (s *RangeService) checkRangeTypeIsInt(startStr string, endStr string, stepStr string) (
+	start int64, end int64, step int64, ok bool) {
+	step = 1
+
+	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
+
+	start, errInt1 := strconv.ParseInt(startStr, 0, 64)
+	end, errInt2 := strconv.ParseInt(endStr, 0, 64)
+	var errInt3 error
+
+	if stepStr != "" && stepStr != "r" {
+		step, errInt3 = strconv.ParseInt(stepStr, 0, 64)
+	}
+
+	if errInt1 == nil && errInt2 == nil && errInt3 == nil { // is int
+		if (start > end && step > 0) || (start < end && step < 0) {
+			step = -1 * step
+		}
+
+		ok = true
+		return
+
+	}
+
+	return
+}
+
+func (s *RangeService) checkRangeTypeIsFloat(startStr string, endStr string, stepStr string) (
+	start float64, end float64, step float64, ok bool) {
+
+	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
+
+	start, errFloat1 := strconv.ParseFloat(startStr, 64)
+	end, errFloat2 := strconv.ParseFloat(endStr, 64)
+	var errFloat3 error
+
+	if stepStr != "" && stepStr != "r" {
+		step, errFloat3 = strconv.ParseFloat(stepStr, 64)
+	} else {
+		step = 0
+	}
+
+	if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float
+		if (start > end && step > 0) || (start < end && step < 0) {
+			step = -1 * step
+		}
+
+		ok = true
+		return
+	}
 
 	return
 }

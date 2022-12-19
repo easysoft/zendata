@@ -9,7 +9,7 @@ func (s *RandomService) RandomValues(values []interface{}) (ret []interface{}) {
 	length := len(values)
 
 	for i := 0; i < length; i++ {
-		num := commonUtils.RandNum(length * 10000)
+		num := commonUtils.RandNum(10000)
 		ret = append(ret, values[num%len(values)])
 	}
 

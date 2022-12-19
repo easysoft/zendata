@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/easysoft/zendata/internal/pkg/model"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
@@ -46,4 +47,21 @@ func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interf
 	}
 
 	return
+}
+
+func (s *OutputService) PrintHumanHeaderIfNeeded() {
+	if !vari.GlobalVars.Human {
+		return
+	}
+
+	headerLine := ""
+
+	for idx, field := range vari.GlobalVars.ExportFields {
+		headerLine += field
+		if idx < len(vari.GlobalVars.ExportFields)-1 {
+			headerLine += "\t"
+		}
+	}
+
+	logUtils.PrintLine(headerLine + "\n")
 }

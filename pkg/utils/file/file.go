@@ -2,7 +2,6 @@ package fileUtils
 
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -291,39 +290,6 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 			ret = realPth
 			return
 		}
-	}
-
-	return
-}
-
-func ComputerReferFilePath(file string, field *model.DefField) (resPath string) {
-	resPath = file
-	if IsAbsPath(resPath) && FileExist(resPath) {
-		return
-	}
-
-	resPath = field.FileDir + file
-	if FileExist(resPath) {
-		return
-	}
-
-	resPath = vari.GlobalVars.ConfigFileDir + file
-	if FileExist(resPath) {
-		return
-	}
-
-	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
-	if FileExist(resPath) {
-		return
-	}
-	resPath = vari.ZdPath + constant.ResDirYaml + constant.PthSep + file
-	if FileExist(resPath) {
-		return
-	}
-
-	resPath = vari.ZdPath + file
-	if FileExist(resPath) {
-		return
 	}
 
 	return

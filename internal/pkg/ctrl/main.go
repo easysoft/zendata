@@ -7,7 +7,7 @@ import (
 )
 
 type DefCtrl struct {
-	DefService *service.DefService `inject:""`
+	MainService *service.MainService `inject:""`
 }
 
 func (c *DefCtrl) Generate(files []string) {
@@ -18,10 +18,10 @@ func (c *DefCtrl) Generate(files []string) {
 	files = fileUtils.HandleFiles(files)
 
 	if !action.IsFromProtobuf(files[0]) { // default gen from yaml
-		c.DefService.GenerateFromContents(files)
+		c.MainService.GenerateFromContents(files)
 
 	} else { // gen from protobuf
-		c.DefService.GenerateFromProtobuf(files)
+		c.MainService.GenerateFromProtobuf(files)
 
 	}
 }

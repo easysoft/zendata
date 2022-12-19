@@ -11,7 +11,6 @@ import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
@@ -345,7 +344,7 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 	configDir := vari.GlobalVars.ConfigFileDir
 	res := vari.Res
 
-	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
+	configFile := helper.ComputerReferFilePath(yamlFile, field)
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
 	rows, colIsNumArr, _ := GenerateFromYaml([]string{configFile}, &fieldsToExport)
 	if field.Rand {

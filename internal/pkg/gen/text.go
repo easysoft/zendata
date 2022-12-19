@@ -3,9 +3,9 @@ package gen
 import (
 	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -32,7 +32,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 
 		// read from file
 		list := make([]string, 0)
-		realPath := fileUtils.ComputerReferFilePath(file, field)
+		realPath := helper.ComputerReferFilePath(file, field)
 		content, err := ioutil.ReadFile(realPath)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file+" - "+realPath))

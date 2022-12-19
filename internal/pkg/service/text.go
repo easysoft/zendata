@@ -5,11 +5,10 @@ import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
-	"io/ioutil"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,14 +16,15 @@ import (
 
 type TextService struct {
 	RangeService *RangeService `inject:""`
+	FileService  *FileService  `inject:""`
 }
 
-func (c *TextService) CreateFieldValuesFromText(field *model.DefField) {
+func (s *TextService) CreateFieldValuesFromText(field *model.DefField) {
 	ranges := strings.Split(strings.TrimSpace(field.Range), ",")
 
 	for _, rang := range ranges {
 		rang = strings.TrimSpace(rang)
-		repeat, repeatTag, rangWithoutRepeat := c.RangeService.ParseRepeat(rang)
+		repeat, repeatTag, rangWithoutRepeat := s.RangeService.ParseRepeat(rang)
 
 		// get file and step string
 		sectionArr := strings.Split(rangWithoutRepeat, ":")
@@ -36,8 +36,8 @@ func (c *TextService) CreateFieldValuesFromText(field *model.DefField) {
 
 		// read from file
 		list := make([]string, 0)
-		realPath := fileUtils.ComputerReferFilePath(file, field)
-		content, err := ioutil.ReadFile(realPath)
+		realPath := s.FileService.ComputerReferFilePath(file, field)
+		content, err := os.ReadFile(realPath)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file+" - "+realPath))
 			field.Values = append(field.Values, fmt.Sprintf("FILE_NOT_FOUND"))
