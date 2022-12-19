@@ -60,7 +60,6 @@ func GetExcelTable(filePath, sheetName string) (records []map[string]interface{}
 }
 
 func GetExcelFirstSheet(filePath string) (sheetName string, rows [][]string) {
-
 	excel, err := excelize.OpenFile(filePath)
 	if err != nil {
 		fmt.Printf("fail to read file %s, error: %s", filePath, err.Error())

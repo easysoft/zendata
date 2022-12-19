@@ -694,3 +694,27 @@ type Joke struct {
 func (Joke) TableName() string {
 	return "biz_data_joke"
 }
+
+type AreaCodeCity struct {
+	DataComm
+	State string `json:"state"`
+	City  string `json:"city"`
+	Code  string `json:"code"`
+}
+
+func (AreaCodeCity) TableName() string {
+	return "biz_data_areacode_city"
+}
+
+type AreaCodeCountry struct {
+	DataComm
+
+	EnglishName string `json:"english_name"`
+	ChineseName string `json:"chinese_name"`
+	CountryCode string `json:"country_code"`
+	Code        string `json:"phone_code"`
+}
+
+func (AreaCodeCountry) TableName() string {
+	return "biz_data_areacode_country"
+}

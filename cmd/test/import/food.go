@@ -26,9 +26,7 @@ func main() {
 		col1 := arr[0]
 
 		po := model.DataFood{
-			DataComm: model.DataComm{
-				Name: col1,
-			},
+			Name: col1,
 		}
 
 		db.Save(&po)

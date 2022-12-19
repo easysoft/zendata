@@ -11,8 +11,14 @@ func GetStructFields(interf interface{}) (fieldNames []string) {
 	for i := 0; i < retH.NumField(); i++ {
 		f := retH.Field(i)
 
-		if f.Name != "CreatedAt" && f.Name != "UpdatedAt" && f.Name != "Deleted" && f.Name != "Disabled" {
-			fieldNames = append(fieldNames, f.Name)
+		name := f.Name
+
+		if name == "DataComm" {
+			name = "Id"
+		}
+
+		if name != "CreatedAt" && name != "UpdatedAt" && name != "Deleted" && name != "Disabled" {
+			fieldNames = append(fieldNames, name)
 		}
 	}
 

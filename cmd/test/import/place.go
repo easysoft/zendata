@@ -9,10 +9,10 @@ import (
 )
 
 func main() {
-	tableName := "food"
 	filePath := "/Users/aaron/work/zentao/product/zd/行业数据/场所.txt"
 
-	tableName = model.Place{}.TableName()
+	tableName := model.Place{}.TableName()
+
 	db := comm.GetDB()
 	err := db.Exec(fmt.Sprintf(comm.TruncateTable, tableName)).Error
 	if err != nil {
