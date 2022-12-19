@@ -2,12 +2,11 @@ package service
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 )
 
-func (s *OutputService) GenXml(def *model.DefData) {
-	records := s.GenObjs(def)
+func (s *OutputService) GenXml() {
+	records := s.GenObjs()
 
 	s.PrintXmlHeader()
 

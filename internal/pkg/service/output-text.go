@@ -7,9 +7,9 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
-func (s *OutputService) GenText(def *model.DefData) {
+func (s *OutputService) GenText(needReturn bool) (lines []interface{}) {
 	simulatedFieldFromDef := model.DefField{
-		Fields: def.Fields,
+		Fields: vari.GlobalVars.DefData.Fields,
 		Join:   true,
 	}
 
@@ -20,7 +20,11 @@ func (s *OutputService) GenText(def *model.DefData) {
 	for _, item := range simulatedFieldFromDef.Values {
 		line := s.PlaceholderService.ReplacePlaceholder(item.(string))
 
-		logUtils.PrintLine(line + "\n")
+		if needReturn {
+			lines = append(lines, line)
+		} else {
+			logUtils.PrintLine(line + "\n")
+		}
 	}
 
 	return

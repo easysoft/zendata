@@ -3,15 +3,14 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
 )
 
-func (s *OutputService) GenSql(def *model.DefData) {
-	records := s.GenObjs(def)
+func (s *OutputService) GenSql() {
+	records := s.GenObjs()
 
 	lines := make([]interface{}, 0)
 

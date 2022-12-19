@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -17,6 +16,7 @@ import (
 )
 
 type TextService struct {
+	RangeService *RangeService `inject:""`
 }
 
 func (c *TextService) CreateFieldValuesFromText(field *model.DefField) {
@@ -24,7 +24,7 @@ func (c *TextService) CreateFieldValuesFromText(field *model.DefField) {
 
 	for _, rang := range ranges {
 		rang = strings.TrimSpace(rang)
-		repeat, repeatTag, rangWithoutRepeat := gen.ParseRepeat(rang)
+		repeat, repeatTag, rangWithoutRepeat := c.RangeService.ParseRepeat(rang)
 
 		// get file and step string
 		sectionArr := strings.Split(rangWithoutRepeat, ":")

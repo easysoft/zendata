@@ -19,6 +19,13 @@ import (
 
 type RangeService struct {
 	PlaceholderService *PlaceholderService `inject:""`
+	ListService        *ListService        `inject:""`
+	RandomService      *RandomService      `inject:""`
+
+	DefService     *DefService     `inject:""`
+	PrintService   *PrintService   `inject:""`
+	CombineService *CombineService `inject:""`
+	OutputService  *OutputService  `inject:""`
 }
 
 func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
@@ -37,7 +44,7 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 	}
 
 	// gen from field's range
-	rangeSections := gen.ParseRangeProperty(rang) // parse 1
+	rangeSections := s.ParseRangeProperty(rang) // parse 1
 
 	index := 0
 	for _, rangeSection := range rangeSections {
@@ -48,12 +55,12 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 			continue
 		}
 
-		descStr, stepStr, count, countTag := gen.ParseRangeSection(rangeSection) // parse 2
+		descStr, stepStr, count, countTag := s.ParseRangeSection(rangeSection) // parse 2
 		if strings.ToLower(stepStr) == "r" {
 			(*field).IsRand = true
 		}
 
-		typ, desc := gen.ParseRangeSectionDesc(descStr) // parse 3
+		typ, desc := s.ParseRangeSectionDesc(descStr) // parse 3
 
 		items := make([]interface{}, 0)
 		if typ == "literal" {
@@ -75,7 +82,7 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 }
 
 func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
-	elemArr := gen.ParseDesc(desc)
+	elemArr := s.ParseDesc(desc)
 	step, _ := strconv.Atoi(stepStr)
 	if step == 0 {
 		step = 1
@@ -86,7 +93,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 		pth := field.Path
 		key := helper.GetRandFieldSection(pth)
 
-		items = append(items, gen.Placeholder(key))
+		items = append(items, s.PlaceholderService.PlaceholderStr(key))
 		mp := s.PlaceholderService.PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
 			field.Format, repeat, repeatTag)
 
@@ -103,7 +110,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 			}
 
 			val := elemArr[idx]
-			total = gen.AppendValues(&items, val, repeat, total)
+			total = s.ListService.AppendValues(&items, val, repeat, total)
 
 			if total >= consts.MaxNumb {
 				break
@@ -113,7 +120,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 	} else if repeatTag == "!" {
 		isRand := field.Path == "" && stepStr == "r"
 		for i := 0; i < repeat; {
-			total = gen.AppendArrItems(&items, elemArr, total, isRand)
+			total = s.ListService.AppendArrItems(&items, elemArr, total, isRand)
 
 			if total >= consts.MaxNumb {
 				break
@@ -123,7 +130,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 	}
 
 	if field.Path == "" && stepStr == "r" { // for ranges and instances, random
-		items = gen.RandomInterfaces(items)
+		items = s.RandomService.RandomInterfaces(items)
 	}
 
 	return
@@ -188,7 +195,7 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 	}
 
 	if field.Path == "" && stepStr == "r" { // for ranges and instances, random again
-		items = gen.RandomInterfaces(items)
+		items = s.RandomService.RandomInterfaces(items)
 	}
 
 	return
@@ -198,16 +205,22 @@ func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, ste
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
 	rootDef := vari.GlobalVars.DefData
 	configDir := vari.GlobalVars.ConfigFileDir
+	exportFields := vari.GlobalVars.ExportFields
 	res := vari.GlobalVars.ResData
 
-	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
-	fieldsToExport := make([]string, 0) // set to empty to use all fields
-	rows, colIsNumArr, _ := gen.GenerateFromYaml([]string{configFile}, &fieldsToExport)
-	if field.Rand {
-		rows = gen.RandomValuesArr(rows)
-	}
+	vari.GlobalVars.ExportFields = make([]string, 0) // set to empty to use all fields
 
-	items = gen.PrintLines(rows, consts.FormatData, "", colIsNumArr, fieldsToExport)
+	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
+
+	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(configFile)
+	s.DefService.GenerateData([]string{configFile})
+
+	// get the data
+	items = s.OutputService.GenText(true)
+
+	if field.Rand {
+		items = s.RandomService.RandomValues(items)
+	}
 
 	if repeat > 0 {
 		if repeat > len(items) {
@@ -219,6 +232,7 @@ func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, ste
 	// rollback root def when finish to deal with refer yaml file
 	vari.GlobalVars.DefData = rootDef
 	vari.GlobalVars.ConfigFileDir = configDir
+	vari.GlobalVars.ExportFields = exportFields
 	vari.GlobalVars.ResData = res
 
 	return
@@ -338,7 +352,7 @@ func (s *RangeService) ParseRangeProperty(rang string) []string {
 }
 
 // for Literal only
-func ParseDesc(desc string) (items []string) {
+func (s *RangeService) ParseDesc(desc string) (items []string) {
 	desc = strings.TrimSpace(desc)
 	desc = strings.Trim(desc, ",")
 

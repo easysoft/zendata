@@ -211,7 +211,7 @@ func (s *ExcelService) ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir s
 
 	colMap := map[string]bool{}
 	for _, file := range files {
-		s.importExcel(file, tableName, &seq, &ddlFields, &insertSqls, &colMap)
+		s.genImportExcelSqls(file, tableName, &seq, &ddlFields, &insertSqls, &colMap)
 	}
 
 	dropSql := `DROP TABLE IF EXISTS ` + tableName + `;`
@@ -456,7 +456,7 @@ func (s *ExcelService) getFileModTime(path string) time.Time {
 	return fileChangeTime
 }
 
-func (s *ExcelService) importExcel(filePath, tableName string, seq *int, ddlFields, insertSqls *[]string, colMap *map[string]bool) {
+func (s *ExcelService) genImportExcelSqls(filePath, tableName string, seq *int, ddlFields, insertSqls *[]string, colMap *map[string]bool) {
 	excel, err := excelize.OpenFile(filePath)
 	if err != nil {
 		log.Println("fail to read file " + filePath + ", error: " + err.Error())
@@ -569,6 +569,7 @@ func (s *ExcelService) importExcel(filePath, tableName string, seq *int, ddlFiel
 			}
 
 			insertSql := fmt.Sprintf(insertTemplate, strings.Join(cols, ","), strings.Join(vals, ","))
+
 			*insertSqls = append(*insertSqls, insertSql)
 		}
 	}

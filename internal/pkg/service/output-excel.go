@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
@@ -17,8 +16,8 @@ var (
 	csvWriter *csv.Writer
 )
 
-func (s *OutputService) GenExcel(def *model.DefData) {
-	records := s.GenObjs(def)
+func (s *OutputService) GenExcel() {
+	records := s.GenObjs()
 
 	var f *excelize.File
 	csvData := make([][]string, 0)

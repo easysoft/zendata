@@ -18,7 +18,7 @@ func (c *DefCtrl) Generate(files []string) {
 	files = fileUtils.HandleFiles(files)
 
 	if !action.IsFromProtobuf(files[0]) { // default gen from yaml
-		c.DefService.GenerateFromContent(files)
+		c.DefService.GenerateFromContents(files)
 
 	} else { // gen from protobuf
 		c.DefService.GenerateFromProtobuf(files)

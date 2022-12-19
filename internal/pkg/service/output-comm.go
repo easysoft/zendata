@@ -12,13 +12,13 @@ type OutputService struct {
 	PrintService *PrintService `inject:""`
 }
 
-func (s *OutputService) GenObjs(def *model.DefData) (records []map[string]interface{}) {
+func (s *OutputService) GenObjs() (records []map[string]interface{}) {
 	records = make([]map[string]interface{}, 0)
 
 	for i := 0; i < vari.GlobalVars.Total; i++ {
 		record := map[string]interface{}{}
 
-		for _, field := range def.Fields {
+		for _, field := range vari.GlobalVars.DefData.Fields {
 			s.GenFieldMap(&field, &record, i)
 		}
 

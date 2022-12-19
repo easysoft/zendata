@@ -1,7 +1,6 @@
 package fileUtils
 
 import (
-	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
@@ -436,15 +435,6 @@ func namedFileExistInDir(file, dir string) (pth string) {
 			return
 		}
 	}
-
-	return
-}
-
-func GenArticleFiles(pth string, index int) (ret string) {
-	pfix := fmt.Sprintf("%03d", index+1)
-
-	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
-	ret += "-" + pfix + filepath.Ext(pth)
 
 	return
 }

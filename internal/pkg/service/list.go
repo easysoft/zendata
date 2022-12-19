@@ -1,7 +1,9 @@
 package service
 
 import (
+	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"strings"
 )
 
@@ -26,4 +28,35 @@ func (s *ListService) CreateListFieldValues(field *model.DefField) {
 	} else {
 		s.RangeService.CreateFieldValuesFromRange(field)
 	}
+}
+
+func (s *ListService) AppendValues(items *[]interface{}, val string, repeat int, total int) int {
+	for round := 0; round < repeat; round++ {
+		*items = append(*items, val)
+
+		total++
+		if total > constant.MaxNumb {
+			break
+		}
+	}
+
+	return total
+}
+
+func (s *ListService) AppendArrItems(items *[]interface{}, arr []string, total int, isRand bool) int {
+	for i := 0; i < len(arr); i++ {
+		idx := i
+		if isRand {
+			idx = commonUtils.RandNum(len(arr)) // should set random here too
+		}
+
+		*items = append(*items, arr[idx])
+
+		total++
+		if total > constant.MaxNumb {
+			break
+		}
+	}
+
+	return total
 }

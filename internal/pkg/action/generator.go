@@ -79,7 +79,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	//	if vari.GlobalVars.Total > constant.MaxNumbForAsync { // gen batch data and cache
 	//		rows, colIsNumArr, err = gen.SyncGenCacheAndReturnFirstPart(contents, &fieldsToExport)
 	//	} else {
-	//		rows, colIsNumArr, err = gen.GenerateFromContent(contents, &fieldsToExport)
+	//		rows, colIsNumArr, err = gen.GenerateFromContents(contents, &fieldsToExport)
 	//		gen.CreateCache(cacheKey, fieldsToExport, rows, colIsNumArr)
 	//	}
 	//} else if cacheKey == "" && vari.GlobalVars.Total > constant.MaxNumbForAsync {

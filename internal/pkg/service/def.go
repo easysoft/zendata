@@ -8,20 +8,45 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"github.com/fatih/color"
+	"io/ioutil"
 	"time"
 )
 
 type DefService struct {
-	ResService     *ResService     `inject:""`
-	FieldService   *FieldService   `inject:""`
-	CombineService *CombineService `inject:""`
-	OutputService  *OutputService  `inject:""`
+	ResService      *ResService      `inject:""`
+	FieldService    *FieldService    `inject:""`
+	CombineService  *CombineService  `inject:""`
+	OutputService   *OutputService   `inject:""`
+	ProtobufService *ProtobufService `inject:""`
 }
 
-func (s *DefService) GenerateFromContent(files []string) {
+func (s *DefService) GenerateFromContents(files []string) {
 	startTime := time.Now().Unix()
-	count := 0
 
+	count := s.GenerateData(files)
+
+	// get output
+	if vari.GlobalVars.OutputFormat == consts.FormatText { // text
+		s.OutputService.GenText(false)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatJson { // json
+		s.OutputService.GenJson()
+	} else if vari.GlobalVars.OutputFormat == consts.FormatXml { // xml
+		s.OutputService.GenXml()
+	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatExcel { // excel
+		s.OutputService.GenExcel()
+	} else if vari.GlobalVars.OutputFormat == consts.FormatSql { // excel
+		s.OutputService.GenSql()
+	}
+
+	// print end msg
+	entTime := time.Now().Unix()
+	if vari.RunMode == consts.RunModeServerRequest {
+		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
+	}
+}
+
+func (s *DefService) GenerateData(files []string) (count int) {
 	if files[0] != "" {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 	} else {
@@ -62,31 +87,14 @@ func (s *DefService) GenerateFromContent(files []string) {
 		s.CombineService.CombineChildrenIfNeeded(&vari.GlobalVars.DefData.Fields[i])
 	}
 
-	// get output
-	if vari.GlobalVars.OutputFormat == consts.FormatText { // text
-		s.OutputService.GenText(&vari.GlobalVars.DefData)
-	} else if vari.GlobalVars.OutputFormat == consts.FormatJson { // json
-		s.OutputService.GenJson(&vari.GlobalVars.DefData)
-	} else if vari.GlobalVars.OutputFormat == consts.FormatXml { // xml
-		s.OutputService.GenXml(&vari.GlobalVars.DefData)
-	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatExcel { // excel
-		s.OutputService.GenExcel(&vari.GlobalVars.DefData)
-	} else if vari.GlobalVars.OutputFormat == consts.FormatSql { // excel
-		s.OutputService.GenSql(&vari.GlobalVars.DefData)
-	}
-
-	// print end msg
-	entTime := time.Now().Unix()
-	if vari.RunMode == consts.RunModeServerRequest {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
-	}
+	return
 }
 
 func (s *DefService) GenerateFromProtobuf(files []string) {
 	startTime := time.Now().Unix()
 	count := 0
 
-	buf, pth := gen.GenerateFromProtobuf(files[0])
+	buf, pth := s.ProtobufService.GenerateProtobuf(files[0])
 
 	if vari.Verbose {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("protobuf_path", pth))
@@ -98,4 +106,25 @@ func (s *DefService) GenerateFromProtobuf(files []string) {
 	if vari.RunMode == consts.RunModeServerRequest {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 	}
+}
+
+func (s *DefService) LoadFilesContents(files []string) (contents [][]byte) {
+	contents = make([][]byte, 0)
+	for _, f := range files {
+		if f == "" {
+			continue
+		}
+		pathDefaultFile := fileUtils.GetAbsolutePath(f)
+		if !fileUtils.FileExist(pathDefaultFile) {
+			return
+		}
+		content, err := ioutil.ReadFile(pathDefaultFile)
+		if err != nil {
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
+			return
+		}
+		contents = append(contents, content)
+	}
+
+	return
 }

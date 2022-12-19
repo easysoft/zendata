@@ -9,6 +9,7 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -47,6 +48,7 @@ func (s *ArticleService) genArticle(content string, dataMap map[string][]interfa
 	arr := regx.FindAllStringSubmatch(content, -1)
 
 	for _, child := range arr {
+
 		slotStr := child[0]
 		slotName := child[1]
 
@@ -93,6 +95,10 @@ func (s *ArticleService) genArticle(content string, dataMap map[string][]interfa
 			if ok && len(dt) > 0 {
 				value = dt[commonUtils.RandNum(mode)]
 			}
+		}
+
+		if value == nil {
+			value = ""
 		}
 
 		ret = strings.Replace(ret, slotStr, value.(string), 1)
@@ -193,9 +199,18 @@ func (s *ArticleService) GenArticle(lines []interface{}) {
 	fileUtils.RmFile(filePath)
 
 	for index, line := range lines {
-		articlePath := fileUtils.GenArticleFiles(filePath, index)
+		articlePath := s.genArticleFiles(filePath, index)
 		fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
 		fmt.Fprint(fileWriter, line)
 		fileWriter.Close()
 	}
+}
+
+func (s *ArticleService) genArticleFiles(pth string, index int) (ret string) {
+	pfix := fmt.Sprintf("%03d", index+1)
+
+	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
+	ret += "-" + pfix + filepath.Ext(pth)
+
+	return
 }

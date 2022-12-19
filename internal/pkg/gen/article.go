@@ -9,6 +9,7 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -186,9 +187,18 @@ func GenArticle(lines []interface{}) {
 	fileUtils.RmFile(filePath)
 
 	for index, line := range lines {
-		articlePath := fileUtils.GenArticleFiles(filePath, index)
+		articlePath := genArticleFiles(filePath, index)
 		fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
 		fmt.Fprint(fileWriter, line)
 		fileWriter.Close()
 	}
+}
+
+func genArticleFiles(pth string, index int) (ret string) {
+	pfix := fmt.Sprintf("%03d", index+1)
+
+	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
+	ret += "-" + pfix + filepath.Ext(pth)
+
+	return
 }

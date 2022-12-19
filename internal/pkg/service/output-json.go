@@ -2,13 +2,12 @@ package service
 
 import (
 	"encoding/json"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"regexp"
 )
 
-func (s *OutputService) GenJson(def *model.DefData) {
-	records := s.GenObjs(def)
+func (s *OutputService) GenJson() {
+	records := s.GenObjs()
 
 	s.PrintJsonHeader()
 
