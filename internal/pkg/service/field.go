@@ -149,7 +149,8 @@ func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []inter
 
 func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
 	if field.Use != "" { // refer to ranges or instance
-		groupValues := vari.GlobalVars.ResData[s.ResService.getFromKey(field)]
+		key := s.ResService.getFromKey(field)
+		groupValues := vari.GlobalVars.ResData[key]
 
 		uses := strings.TrimSpace(field.Use) // like group{limit:repeat}
 		use, numLimit, repeat := s.getNum(uses)

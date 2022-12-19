@@ -1,13 +1,17 @@
-title: 行星
+title: 电话号码
 desc:
 author: wwccss
 version: 2.0
 
 field: field1
 instances:
-  - instance: planet
-    note:
+  - instance: telephone_china
+    note: 固话
     fields:
-     - field: content
-       from: planet.v1.planet
-       select: content
+      - field: areacode_city
+        from: areacode.v1.city
+        select: code
+        where: id > 0
+      - field: part1
+        from: name.cn.family.v1
+        select: pinyin
