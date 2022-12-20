@@ -34,19 +34,39 @@ fields:
 #    from: name.cnreal.v1.yaml
 #    use: two
 
-  - field: field_use_instance1
+#  - field: telephone_china
+#    from: phone.v1.yaml
+#    use: telephone_china
+#    postfix: "\t"
+#
+#  - field: telephone_china_with_city_code
+#    from: phone.v1.yaml
+#    use: telephone_china_with_city_code
+#    postfix: "\t"
+#
+#  - field: telephone_china_with_country_code
+#    from: phone.v1.yaml
+#    use: telephone_china_with_country_code
+#    postfix: "\t"
+#
+#  - field: telephone_400
+#    from: phone.v1.yaml
+#    use: telephone_400
+#    postfix: "\t"
+#
+#  - field: telephone_service
+#    from: phone.v1.yaml
+#    use: telephone_service
+#    postfix: "\t"
+
+  - field: cellphone
     from: phone.v1.yaml
-    use: telephone_china1
+    use: cellphone
     postfix: "\t"
 
-  - field: field_use_instance2
+  - field: qq
     from: phone.v1.yaml
-    use: telephone_china2
-    postfix: "\t"
-
-  - field: field_use_instance3
-    from: phone.v1.yaml
-    use: telephone_china3
+    use: qq
     postfix: "\t"
 
 #  - field: first
