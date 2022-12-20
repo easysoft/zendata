@@ -25,7 +25,7 @@ func GenerateItems[TV ValType, TS StepType](start, end TV, step TS,
 
 	if repeatTag == "" { // repeat one by one
 		for i := int64(0); i < limit; i++ {
-			val := GetValue(start, end, step, precision, i, limit, isRand)
+			val := GetValue(start, step, precision, i, limit, isRand)
 
 			if IsFinish(val, end, step) {
 				break
@@ -40,7 +40,7 @@ func GenerateItems[TV ValType, TS StepType](start, end TV, step TS,
 	} else if repeatTag == "!" { // repeat the list
 		for round := 0; round < repeat; round++ {
 			for i := int64(0); i < limit; i++ {
-				val := GetValue(start, end, step, precision, i, limit, isRand)
+				val := GetValue(start, step, precision, i, limit, isRand)
 
 				if IsFinish(val, end, step) {
 					break
@@ -64,7 +64,7 @@ type StepType interface {
 	int64 | float64
 }
 
-func GetValue[TV ValType, TS StepType](start, end TV, step TS, precision int, it, limit int64, isRand bool) (ret TV) {
+func GetValue[TV ValType, TS StepType](start TV, step TS, precision int, it, limit int64, isRand bool) (ret TV) {
 	typ := GetType(start)
 
 	var val interface{}
@@ -73,7 +73,7 @@ func GetValue[TV ValType, TS StepType](start, end TV, step TS, precision int, it
 		if !isRand {
 			val = int64(start) + it*int64(step)
 		} else {
-			rand := commonUtils.RandNum64(int64(end) - int64(start))
+			rand := commonUtils.RandNum64(limit)
 			if step < 0 {
 				rand = rand * -1
 			}
@@ -85,7 +85,7 @@ func GetValue[TV ValType, TS StepType](start, end TV, step TS, precision int, it
 		if !isRand {
 			val = byte(start) + byte(int(it)*int(step))
 		} else {
-			rand := commonUtils.RandNum(int(end) - int(start))
+			rand := commonUtils.RandNum(int(limit))
 			if step < 0 {
 				rand = rand * -1
 			}
@@ -97,7 +97,7 @@ func GetValue[TV ValType, TS StepType](start, end TV, step TS, precision int, it
 			valFloat := float64(start) + float64(it)*float64(step)
 			val = ChangePrecision(valFloat, precision)
 		} else {
-			rand := commonUtils.RandNum64(int64(end) - int64(start))
+			rand := commonUtils.RandNum64(limit)
 			if step < 0 {
 				rand = rand * -1
 			}
@@ -138,14 +138,15 @@ func getLimit[TV ValType, TS StepType](start TV, end TV, step TS, typ string, is
 	if isRand {
 		if typ == "int" || typ == "char" {
 			limit = (int64(end) - int64(start)) / int64(step)
+
 		} else if typ == "float" {
 			limitFloat := (float64(end) - float64(start)) / float64(step)
 			limit = int64(math.Floor(limitFloat))
 		}
 
-		if limit > int64(constant.MaxNumb) {
-			limit = int64(constant.MaxNumb)
-		}
+		//if limit > int64(constant.MaxNumb) {
+		//	limit = int64(constant.MaxNumb)
+		//}
 	}
 
 	return
