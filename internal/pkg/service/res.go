@@ -9,19 +9,20 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/jinzhu/copier"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"os"
 )
 
 type ResService struct {
-	FieldService *FieldService `inject:""`
-	ExcelService *ExcelService `inject:""`
+	FieldService        *FieldService        `inject:""`
+	ResYamlService      *ResYamlService      `inject:""`
+	ResExcelService     *ResExcelService     `inject:""`
+	ResRangesService    *ResRangesService    `inject:""`
+	ResInstancesService *ResInstancesService `inject:""`
 }
 
 func (s *ResService) LoadResDef(fieldsToExport []string) (res map[string]map[string][]interface{}) {
-	res = map[string]map[string][]interface{}{}
+	vari.GlobalVars.ResData = map[string]map[string][]interface{}{}
 
 	for index, field := range vari.GlobalVars.DefData.Fields {
 		if !stringUtils.StrInArr(field.Field, fieldsToExport) {
@@ -32,12 +33,12 @@ func (s *ResService) LoadResDef(fieldsToExport []string) (res map[string]map[str
 			field.From = vari.GlobalVars.DefData.From
 			vari.GlobalVars.DefData.Fields[index].From = vari.GlobalVars.DefData.From
 		}
-		s.loadResForFieldRecursive(&field, &res)
+		s.loadResForFieldRecursive(&field)
 	}
 	return
 }
 
-func (s *ResService) loadResForFieldRecursive(field *model.DefField, res *map[string]map[string][]interface{}) {
+func (s *ResService) loadResForFieldRecursive(field *model.DefField) {
 	if len(field.Fields) > 0 { // child fields
 		for _, child := range field.Fields {
 			if child.Use != "" && child.From == "" {
@@ -45,8 +46,9 @@ func (s *ResService) loadResForFieldRecursive(field *model.DefField, res *map[st
 			}
 
 			child.FileDir = field.FileDir
-			s.loadResForFieldRecursive(&child, res)
+			s.loadResForFieldRecursive(&child)
 		}
+
 	} else if len(field.Froms) > 0 { // multiple from
 		for _, child := range field.Froms {
 			if child.Use != "" && child.From == "" {
@@ -54,173 +56,48 @@ func (s *ResService) loadResForFieldRecursive(field *model.DefField, res *map[st
 			}
 
 			child.FileDir = field.FileDir
-			s.loadResForFieldRecursive(&child, res)
+			s.loadResForFieldRecursive(&child)
 		}
 
 	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // from a res
 		var valueMap map[string][]interface{}
 		resFile, resType, sheet := fileUtils.GetResProp(field.From, field.FileDir) // relate to current file
-		valueMap, _ = s.getResValueFromExcelOrYaml(resFile, resType, sheet, field)
+		valueMap, _ = s.GetResValueFromExcelOrYaml(resFile, resType, sheet, field)
 
-		if (*res)[s.getFromKey(field)] == nil {
-			(*res)[s.getFromKey(field)] = map[string][]interface{}{}
+		if vari.GlobalVars.ResData[s.GetFromKey(field)] == nil {
+			vari.GlobalVars.ResData[s.GetFromKey(field)] = map[string][]interface{}{}
 		}
+
 		for key, val := range valueMap {
 			resKey := key
 			// avoid article key to be duplicate
 			if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
 				resKey = resKey + "_" + field.Field
 			}
-			(*res)[s.getFromKey(field)][resKey] = val
+			vari.GlobalVars.ResData[s.GetFromKey(field)][resKey] = val
 		}
 
 	} else if field.Config != "" { // from a config
 		resFile, resType, _ := fileUtils.GetResProp(field.Config, field.FileDir)
-		values, _ := s.getResValueFromExcelOrYaml(resFile, resType, "", field)
-		(*res)[field.Config] = values
+		values, _ := s.GetResValueFromExcelOrYaml(resFile, resType, "", field)
+		vari.GlobalVars.ResData[field.Config] = values
 	}
 }
 
-func (s *ResService) getResValueFromExcelOrYaml(resFile, resType, sheet string, field *model.DefField) (map[string][]interface{}, string) {
+func (s *ResService) GetResValueFromExcelOrYaml(resFile, resType, sheet string, field *model.DefField) (map[string][]interface{}, string) {
 	resName := ""
 	groupedValues := map[string][]interface{}{}
 
 	if resType == "yaml" {
-		groupedValues = s.getResFromYaml(resFile)
+		groupedValues = s.ResYamlService.GetResFromYaml(resFile)
 	} else if resType == "excel" {
-		groupedValues = s.getResFromExcel(resFile, sheet, field)
+		groupedValues = s.ResExcelService.GetResFromExcel(resFile, sheet, field)
 	}
 
 	return groupedValues, resName
 }
 
-func (s *ResService) getResFromExcel(resFile, sheet string, field *model.DefField) map[string][]interface{} { // , string) {
-	valueMap := s.ExcelService.generateFieldValuesFromExcel(resFile, sheet, field, vari.GlobalVars.Total)
-
-	return valueMap
-}
-
-func (s *ResService) getResFromYaml(resFile string) (valueMap map[string][]interface{}) { // , resName string) {
-	if vari.GlobalVars.CacheResFileToMap[resFile] != nil { // already cached
-		valueMap = vari.GlobalVars.CacheResFileToMap[resFile]
-		return
-	}
-
-	yamlContent, err := os.ReadFile(resFile)
-	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
-
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
-		return
-	}
-
-	insts := model.ResInstances{}
-	err = yaml.Unmarshal(yamlContent, &insts)
-	if err == nil && insts.Instances != nil && len(insts.Instances) > 0 { // instances
-		insts.FileDir = fileUtils.GetAbsDir(resFile)
-		valueMap = s.getResFromInstances(insts)
-
-	} else {
-		ranges := model.ResRanges{}
-		err = yaml.Unmarshal(yamlContent, &ranges)
-		if err == nil && ranges.Ranges != nil && len(ranges.Ranges) > 0 { // ranges
-			valueMap = s.getResFromRanges(ranges)
-
-		} else {
-			configRes := model.DefField{}
-			err = yaml.Unmarshal(yamlContent, &configRes)
-			if err == nil { // config
-				valueMap = s.getResForConfig(configRes)
-
-			}
-		}
-	}
-
-	vari.GlobalVars.CacheResFileToMap[resFile] = valueMap
-
-	return
-}
-
-func (s *ResService) getResFromRanges(ranges model.ResRanges) map[string][]interface{} {
-	groupedValue := map[string][]interface{}{}
-
-	for group, expression := range ranges.Ranges {
-		field := s.convertRangesToField(ranges, expression)
-
-		s.FieldService.Generate(&field, true)
-
-		groupedValue[group] = field.Values
-	}
-
-	return groupedValue
-}
-
-func (s *ResService) getResFromInstances(insts model.ResInstances) (groupedValue map[string][]interface{}) {
-	groupedValue = map[string][]interface{}{}
-
-	//for _, inst := range insts.Instances {
-	//	for _, instField := range inst.Fields {
-	//		s.prepareNestedInstanceRes(insts, inst, instField)
-	//	}
-	//
-	//	// gen values
-	//	fieldFromInst := s.convertInstantToField(insts, inst)
-	//	group := inst.Instance
-	//	groupedValue[group] = s.GenerateForFieldRecursive(&fieldFromInst, false, vari.GlobalVars.Total)
-	//}
-
-	return groupedValue
-}
-
-func (s *ResService) prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesItem, instField model.DefField) {
-	// set "from" val from parent if needed
-	if instField.From == "" {
-		if insts.From != "" {
-			instField.From = insts.From
-		}
-		if inst.From != "" {
-			instField.From = inst.From
-		}
-	}
-
-	instField.FileDir = insts.FileDir
-
-	if instField.Use != "" { // refer to another instances or ranges
-		if vari.Res[s.getFromKey(&instField)] == nil {
-			referencedRanges, referencedInstants := s.getReferencedRangeOrInstant(instField)
-			groupedValueReferenced := map[string][]interface{}{}
-
-			if len(referencedRanges.Ranges) > 0 { // refer to ranges
-				groupedValueReferenced = s.getResFromRanges(referencedRanges)
-
-			} else if len(referencedInstants.Instances) > 0 { // refer to instances
-				for _, referencedInst := range referencedInstants.Instances { // iterate items
-					for _, referencedInstField := range referencedInst.Fields { // if item had children, iterate children
-						s.prepareNestedInstanceRes(referencedInstants, referencedInst, referencedInstField)
-					}
-
-					field := s.convertInstantToField(referencedInstants, referencedInst)
-
-					// gen values
-					group := referencedInst.Instance
-
-					s.FieldService.Generate(&field, true)
-					groupedValueReferenced[group] = field.Values
-				}
-			}
-
-			vari.GlobalVars.ResData[s.getFromKey(&instField)] = groupedValueReferenced
-		}
-
-	} else if instField.Select != "" { // refer to excel
-		resFile, resType, sheet := fileUtils.GetResProp(instField.From, instField.FileDir)
-
-		values, _ := s.getResValueFromExcelOrYaml(resFile, resType, sheet, &instField)
-		vari.GlobalVars.ResData[s.getFromKey(&instField)] = values
-	}
-}
-
-func (s *ResService) getReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
+func (s *ResService) GetReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
 	resFile, _, _ := fileUtils.GetResProp(inst.From, inst.FileDir)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
@@ -246,46 +123,6 @@ func (s *ResService) getReferencedRangeOrInstant(inst model.DefField) (reference
 	return
 }
 
-func (s *ResService) convertInstantToField(insts model.ResInstances, inst model.ResInstancesItem) (field model.DefField) {
-	//field.Field = insts.Field
-	field.From = insts.From
-
-	child := model.DefField{}
-	child.Field = inst.Instance
-
-	// some props are from parent instances
-	if child.From == "" && inst.From != "" {
-		child.From = inst.From
-	} else if child.From == "" && insts.From != "" {
-		child.From = insts.From
-	}
-
-	copier.Copy(&child, inst)
-
-	field.Fields = append(field.Fields, child)
-	field.FileDir = insts.FileDir
-
-	return field
-}
-
-func (s *ResService) convertRangesToField(ranges model.ResRanges, expression string) (field model.DefField) {
-	copier.Copy(&field, ranges)
-	field.Range = expression
-
-	return field
-}
-
-func (s *ResService) getResForConfig(configRes model.DefField) (groupedValue map[string][]interface{}) {
-	groupedValue = map[string][]interface{}{}
-
-	// config field is a standard field
-	s.FieldService.GenerateValuesForNoReferField(&configRes)
-
-	groupedValue["all"] = configRes.Values
-
-	return groupedValue
-}
-
-func (s *ResService) getFromKey(field *model.DefField) string {
+func (s *ResService) GetFromKey(field *model.DefField) string {
 	return fmt.Sprintf("%s-%s-%s", field.From, field.Use, field.Select)
 }

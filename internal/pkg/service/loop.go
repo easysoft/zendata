@@ -17,7 +17,7 @@ type LoopService struct {
 	FormatService *FormatService `inject:""`
 }
 
-func (s *LoopService) LoopFieldValues(field *model.DefField, withFix bool) {
+func (s *LoopService) LoopAndFixFieldValues(field *model.DefField, withFix bool) {
 	s.ComputerLoopTimes(field)
 
 	values := make([]interface{}, 0)

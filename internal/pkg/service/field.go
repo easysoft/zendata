@@ -16,11 +16,12 @@ type FieldService struct {
 	ValueService   *ValueService   `inject:""`
 	ArticleService *ArticleService `inject:""`
 
-	FixService    *FixService    `inject:""`
-	LoopService   *LoopService   `inject:""`
-	ListService   *ListService   `inject:""`
-	RangeService  *RangeService  `inject:""`
-	RandomService *RandomService `inject:""`
+	FixService     *FixService     `inject:""`
+	LoopService    *LoopService    `inject:""`
+	ListService    *ListService    `inject:""`
+	RangeService   *RangeService   `inject:""`
+	RandomService  *RandomService  `inject:""`
+	CombineService *CombineService `inject:""`
 }
 
 func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
@@ -38,6 +39,9 @@ func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
 
 			s.Generate(&field.Fields[i], field.Join)
 		}
+
+		s.CombineService.CombineChildrenIfNeeded(field, parentJoin)
+
 		return
 	}
 
@@ -142,18 +146,19 @@ func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []inter
 
 	field.Values = groupValues["all"]
 
-	s.LoopService.LoopFieldValues(field, true)
+	s.LoopService.LoopAndFixFieldValues(field, true)
 
 	return
 }
 
 func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
 	if field.Use != "" { // refer to ranges or instance
-		key := s.ResService.getFromKey(field)
+		key := s.ResService.GetFromKey(field)
 		groupValues := vari.GlobalVars.ResData[key]
 
 		uses := strings.TrimSpace(field.Use) // like group{limit:repeat}
 		use, numLimit, repeat := s.getNum(uses)
+
 		if strings.Index(use, "all") == 0 {
 			valuesForAdd := s.getRepeatValuesFromAll(groupValues, numLimit, repeat)
 			field.Values = append(field.Values, valuesForAdd...)
@@ -162,8 +167,9 @@ func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
 			valuesForAdd := s.getRepeatValuesFromGroups(groupValues, infos)
 			field.Values = append(field.Values, valuesForAdd...)
 		}
+
 	} else if field.Select != "" { // refer to excel
-		groupValues := vari.GlobalVars.ResData[s.ResService.getFromKey(field)]
+		groupValues := vari.GlobalVars.ResData[s.ResService.GetFromKey(field)]
 		resKey := field.Select
 
 		// deal with the key
@@ -174,7 +180,7 @@ func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
 		field.Values = append(field.Values, groupValues[resKey]...)
 	}
 
-	s.LoopService.LoopFieldValues(field, true)
+	s.LoopService.LoopAndFixFieldValues(field, true)
 
 	return
 }
@@ -201,7 +207,7 @@ func (s *FieldService) GenValuesForMultiRes(field *model.DefField, withFix bool)
 
 	field.Values = unionValues
 
-	s.LoopService.LoopFieldValues(field, true)
+	s.LoopService.LoopAndFixFieldValues(field, true)
 
 	return
 }

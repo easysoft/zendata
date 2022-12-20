@@ -53,10 +53,12 @@ func (s *MainService) GenerateData(files []string) (count int) {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[1])
 	}
 
+	s.ParamService.FixTotalNum()
+
 	// get def and res data
 	contents := s.FileService.LoadFilesContents(files)
 	vari.GlobalVars.DefData = s.DefService.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
-	vari.GlobalVars.ResData = s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
+	s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
 
 	if err := s.ParamService.CheckParams(); err != nil {
 		return
@@ -66,8 +68,6 @@ func (s *MainService) GenerateData(files []string) (count int) {
 	if vari.GlobalVars.OutputFormat != consts.FormatJson {
 		join = true
 	}
-
-	s.ParamService.FixTotalNum()
 
 	// gen for each field
 	for i, field := range vari.GlobalVars.DefData.Fields {
@@ -86,6 +86,7 @@ func (s *MainService) GenerateData(files []string) (count int) {
 			continue
 		}
 
+		// combine child
 		s.CombineService.CombineChildrenIfNeeded(&vari.GlobalVars.DefData.Fields[i], false)
 	}
 

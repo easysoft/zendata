@@ -24,13 +24,15 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopL
 	fieldNameToFieldMap := map[string]model.DefField{}
 
 	// 1. get values for child fields
-	for index, child := range field.Fields {
-		if len(child.Fields) > 0 && len(child.Values) == 0 { // no need to do if already generated
-			s.CombineChildrenIfNeeded(&(field.Fields[index]), false)
-		}
+	if len(field.Values) == 0 {
+		for index, child := range field.Fields {
+			if len(child.Fields) > 0 && len(child.Values) == 0 { // no need to do if already generated
+				s.CombineChildrenIfNeeded(&(field.Fields[index]), false)
+			}
 
-		fieldNameToValuesMap[field.Fields[index].Field] = field.Fields[index].Values
-		fieldNameToFieldMap[field.Fields[index].Field] = field.Fields[index]
+			fieldNameToValuesMap[field.Fields[index].Field] = field.Fields[index].Values
+			fieldNameToFieldMap[field.Fields[index].Field] = field.Fields[index]
+		}
 	}
 
 	// 2. deal with expression
@@ -55,7 +57,7 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopL
 	}
 
 	field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
-	s.LoopService.LoopFieldValues(field, true)
+	s.LoopService.LoopAndFixFieldValues(field, true)
 }
 
 func (s *CombineService) combineChildrenValues(arrByField [][]interface{}, isRecursive, isOnTopLevel bool) (ret []interface{}) {

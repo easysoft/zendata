@@ -76,7 +76,10 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 			field.ReferToAnotherYaml = true
 		}
 
-		field.Values = append(field.Values, items...)
+		for _, item := range items {
+			field.Values = append(field.Values, item)
+		}
+
 		index = index + len(items)
 	}
 
