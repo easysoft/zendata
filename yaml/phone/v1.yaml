@@ -5,13 +5,38 @@ version: 2.0
 
 field: field1
 instances:
-  - instance: telephone_china
+  - instance: telephone_china1
     note: 固话
+    fields:
+    - field: num
+      range: 60000000-99999999:R
+
+  - instance: telephone_china2
+    note: 固话带区号
     fields:
       - field: areacode_city
         from: areacode.v1.city
         select: code
         where: id > 0
-      - field: part1
-        from: name.cn.family.v1
-        select: pinyin
+        postfix: "-"
+
+      - field: num
+        range: 60000000-99999999:R
+
+  - instance: telephone_china3
+    note: 固话带国家区号
+    fields:
+      - field: areacode_country
+        from: areacode.v1.country
+        select: code
+        where: id > 0
+        postfix: "-"
+
+      - field: areacode_city
+        from: areacode.v1.city
+        select: code
+        where: id > 0
+        postfix: "-"
+
+      - field: num
+        range: 60000000-99999999:R

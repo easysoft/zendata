@@ -9,32 +9,32 @@ instances:
     note: 英文账号
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
       - field: part2
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
   - instance: common_underline
     note: 划线分隔英文账号
     prefix:
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         postfix: "_"
       - field: part2
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
   - instance: common_dot
     note: 点分隔英文账号
     prefix:
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         postfix: "."
       - field: part2
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
 
   - instance: reverse
@@ -42,9 +42,9 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
         postfix: ""
       - field: part2
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
