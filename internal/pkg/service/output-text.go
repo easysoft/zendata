@@ -12,7 +12,7 @@ func (s *OutputService) GenText(returnedForYamlRefer bool) (lines []interface{})
 		Join:   true,
 	}
 
-	s.CombineService.CombineChildrenIfNeeded(&simulatedFieldFromDef)
+	s.CombineService.CombineChildrenIfNeeded(&simulatedFieldFromDef, true)
 
 	if !returnedForYamlRefer {
 		s.PrintHumanHeaderIfNeeded()

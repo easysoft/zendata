@@ -123,7 +123,7 @@ func (s *ArticleService) getDataMap(numMap map[string]int, nameMap map[string]st
 			field.Select = key
 		}
 
-		valueMap, _ := s.ResService.getResValue(resFile, resType, sheet, field)
+		valueMap, _ := s.ResService.getResValueFromExcelOrYaml(resFile, resType, sheet, field)
 		ret[key] = valueMap[field.Select]
 
 		vari.GlobalVars.Total = originTotal // rollback

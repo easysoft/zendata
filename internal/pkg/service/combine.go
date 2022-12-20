@@ -15,7 +15,7 @@ type CombineService struct {
 	PlaceholderService *PlaceholderService `inject:""`
 }
 
-func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
+func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopLevel bool) {
 	if len(field.Fields) == 0 || !field.Join {
 		return
 	}
@@ -24,9 +24,13 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
 	fieldNameToFieldMap := map[string]model.DefField{}
 
 	// 1. get values for child fields
-	for _, child := range field.Fields {
-		fieldNameToValuesMap[child.Field] = child.Values
-		fieldNameToFieldMap[child.Field] = child
+	for index, child := range field.Fields {
+		if len(child.Fields) > 0 && len(child.Values) == 0 { // no need to do if already generated
+			s.CombineChildrenIfNeeded(&(field.Fields[index]), false)
+		}
+
+		fieldNameToValuesMap[field.Fields[index].Field] = field.Fields[index].Values
+		fieldNameToFieldMap[field.Fields[index].Field] = field.Fields[index]
 	}
 
 	// 2. deal with expression
@@ -50,12 +54,12 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField) {
 		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
 
-	field.Values = s.combineChildrenValues(arrByField, isRecursive)
+	field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
 	s.LoopService.LoopFieldValues(field, true)
 }
 
-func (s *CombineService) combineChildrenValues(arrByField [][]interface{}, isRecursive bool) (ret []interface{}) {
-	arrByRow := s.populateRowsFromTwoDimArr(arrByField, isRecursive, false)
+func (s *CombineService) combineChildrenValues(arrByField [][]interface{}, isRecursive, isOnTopLevel bool) (ret []interface{}) {
+	arrByRow := s.populateRowsFromTwoDimArr(arrByField, isRecursive, isOnTopLevel)
 
 	for _, arr := range arrByRow {
 		line := s.ConnectValues(arr)

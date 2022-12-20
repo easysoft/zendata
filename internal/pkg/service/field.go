@@ -23,8 +23,8 @@ type FieldService struct {
 	RandomService *RandomService `inject:""`
 }
 
-func (s *FieldService) Generate(field *model.DefField, parentIsJoin bool) {
-	field.Join = field.Join || parentIsJoin
+func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
+	field.Join = field.Join || parentJoin
 
 	s.RangeService.DealwithFixRange(field)
 

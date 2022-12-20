@@ -2,7 +2,6 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -62,12 +61,13 @@ func (s *MainService) GenerateData(files []string) (count int) {
 	if err := s.ParamService.CheckParams(); err != nil {
 		return
 	}
-	gen.FixTotalNum()
 
 	join := false
 	if vari.GlobalVars.OutputFormat != consts.FormatJson {
 		join = true
 	}
+
+	s.ParamService.FixTotalNum()
 
 	// gen for each field
 	for i, field := range vari.GlobalVars.DefData.Fields {
@@ -85,7 +85,8 @@ func (s *MainService) GenerateData(files []string) (count int) {
 		if !stringUtils.StrInArr(field.Field, vari.GlobalVars.ExportFields) {
 			continue
 		}
-		s.CombineService.CombineChildrenIfNeeded(&vari.GlobalVars.DefData.Fields[i])
+
+		s.CombineService.CombineChildrenIfNeeded(&vari.GlobalVars.DefData.Fields[i], false)
 	}
 
 	return

@@ -22,3 +22,13 @@ func (s *ParamService) CheckParams() (err error) {
 
 	return
 }
+
+func (s *ParamService) FixTotalNum() {
+	if vari.GlobalVars.Total < 0 {
+		if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
+			vari.GlobalVars.Total = 1
+		} else {
+			vari.GlobalVars.Total = constant.DefaultNumber
+		}
+	}
+}
