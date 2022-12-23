@@ -1,10 +1,10 @@
-package helper
+package genHelper
 
 import (
 	"fmt"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"strconv"
 	"strings"
 )
@@ -166,7 +166,7 @@ func getFormatStr(val interface{}, precision int, format string) (ret string) {
 		}
 
 	} else {
-		formatVal, success := stringUtils.FormatStr(format, val, 0)
+		formatVal, success := helper.FormatStr(format, val, 0)
 		if success {
 			ret = formatVal
 		} else {

@@ -4,13 +4,16 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/action"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	"github.com/easysoft/zendata/pkg/utils/vari"
+	"path/filepath"
 )
 
-type DefCtrl struct {
-	MainService *service.MainService `inject:""`
+type MainCtrl struct {
+	MainService       *service.MainService       `inject:""`
+	TableParseService *service.TableParseService `inject:""`
 }
 
-func (c *DefCtrl) Generate(files []string) {
+func (c *MainCtrl) Generate(files []string) {
 	if len(files) == 0 {
 		return
 	}
@@ -23,5 +26,19 @@ func (c *DefCtrl) Generate(files []string) {
 	} else { // gen from protobuf
 		c.MainService.GenerateFromProtobuf(files)
 
+	}
+}
+
+func (c *MainCtrl) Parse(input string) {
+	if vari.GlobalVars.DBDsn != "" { // from db table
+		c.TableParseService.GenYamlFromTable()
+		return
+	}
+
+	ext := filepath.Ext(input)
+	if ext == ".sql" { // from sql
+		action.GenYamlFromSql(input)
+	} else if ext == ".txt" { // from article
+		action.GenYamlFromArticle(input)
 	}
 }

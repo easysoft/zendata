@@ -1,4 +1,4 @@
-package helper
+package genHelper
 
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"

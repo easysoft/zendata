@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"log"
 	"os"
@@ -11,7 +12,6 @@ import (
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -29,7 +29,7 @@ func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, fiel
 	values = map[string][]interface{}{}
 
 	// sql has variable expr
-	if filePath == "" || helper.SelectExcelWithExpr(*field) {
+	if filePath == "" || genHelper.SelectExcelWithExpr(*field) {
 		return
 	}
 

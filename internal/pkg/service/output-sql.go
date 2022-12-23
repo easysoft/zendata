@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
 )
@@ -30,11 +30,11 @@ func (s *OutputService) GenSql() {
 			if !vari.GlobalVars.ColIsNumArr[j] {
 				switch vari.GlobalVars.DBType {
 				case consts.DBTypeMysql:
-					colVal = "'" + stringUtils.EscapeValueOfMysql(colVal) + "'"
+					colVal = "'" + helper.EscapeValueOfMysql(colVal) + "'"
 				case consts.DBTypeOracle:
-					colVal = "'" + stringUtils.EscapeValueOfOracle(colVal) + "'"
+					colVal = "'" + helper.EscapeValueOfOracle(colVal) + "'"
 				case consts.DBTypeSqlServer:
-					colVal = "'" + stringUtils.EscapeValueOfSqlServer(colVal) + "'"
+					colVal = "'" + helper.EscapeValueOfSqlServer(colVal) + "'"
 				default:
 				}
 			}
@@ -74,11 +74,11 @@ func (s *OutputService) getInsertSqlHeader() string {
 
 	for _, f := range vari.GlobalVars.ExportFields {
 		if vari.GlobalVars.DBType == consts.DBTypeMysql {
-			f = "`" + stringUtils.EscapeColumnOfMysql(f) + "`"
+			f = "`" + helper.EscapeColumnOfMysql(f) + "`"
 		} else if vari.GlobalVars.DBType == consts.DBTypeOracle {
 			f = `"` + f + `"`
 		} else if vari.GlobalVars.DBType == consts.DBTypeSqlServer {
-			f = "[" + stringUtils.EscapeColumnOfSqlServer(f) + "]"
+			f = "[" + helper.EscapeColumnOfSqlServer(f) + "]"
 		}
 
 		fieldNames = append(fieldNames, f)

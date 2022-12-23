@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
-	"github.com/easysoft/zendata/internal/pkg/action"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
@@ -16,7 +15,6 @@ import (
 	"io/ioutil"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"strings"
 	"syscall"
 )
@@ -30,10 +28,11 @@ var (
 	defaultDefContent []byte
 	configDefContent  []byte
 
-	root   string
-	input  string
-	decode bool
+	root  string
+	input string
 
+	parse    bool
+	decode   bool
 	listData bool
 	listRes  bool
 	view     string
@@ -78,6 +77,8 @@ func main() {
 	flagSet.StringVar(&vari.GlobalVars.OutputFile, "o", "", "")
 	flagSet.StringVar(&vari.GlobalVars.OutputFile, "output", "", "")
 
+	flagSet.BoolVar(&parse, "parse", false, "")
+
 	flagSet.BoolVar(&listData, "l", false, "")
 	flagSet.BoolVar(&listData, "list", false, "")
 	flagSet.BoolVar(&listRes, "L", false, "")
@@ -113,9 +114,9 @@ func main() {
 
 	flagSet.StringVar(&vari.GlobalVars.Table, "t", "", "")
 	flagSet.StringVar(&vari.GlobalVars.Table, "table", "", "")
+	flagSet.StringVar(&vari.GlobalVars.DBDsn, "dsn", "", "")
 	flagSet.StringVar(&vari.GlobalVars.DBType, "s", "mysql", "")
 	flagSet.StringVar(&vari.GlobalVars.DBType, "server", "mysql", "")
-	flagSet.StringVar(&vari.GlobalVars.DBDsn, "dsn", "", "")
 	flagSet.BoolVar(&vari.GlobalVars.DBClear, "clear", false, "")
 
 	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
@@ -176,41 +177,34 @@ func opts(files []string) {
 	} else if decode {
 		gen.Decode(files, input)
 		return
+	} else if parse {
+		genYaml(input)
+		return
 	}
 
-	if input != "" {
-		vari.RunMode = consts.RunModeParse
-	}
-
-	generate(files)
+	genData(files)
 }
 
-func generate(files []string) {
+func genYaml(input string) {
+	mainCtrl, _ := command.InitCtrl()
+	mainCtrl.Parse(input)
+}
+
+func genData(files []string) {
 	command.PrintStartInfo()
 
-	if vari.RunMode == consts.RunModeGen {
-		if command.ClearCache() {
-			return
-		}
-
-		err := command.SetOutFormat()
-		defer logUtils.OutputFileWriter.Close()
-		if err != nil {
-			return
-		}
-
-		defCtrl, _ := command.InitCtrl()
-		defCtrl.Generate(files)
-		//action.Generate(files, fields, vari.Format, vari.Table)
-
-	} else if vari.RunMode == consts.RunModeParse {
-		ext := filepath.Ext(input)
-		if ext == ".sql" {
-			action.ParseSql(input, vari.GlobalVars.OutputFile)
-		} else if ext == ".txt" {
-			action.ParseArticle(input, vari.GlobalVars.OutputFile)
-		}
+	if command.ClearCache() {
+		return
 	}
+
+	err := command.SetOutFormat()
+	defer logUtils.OutputFileWriter.Close()
+	if err != nil {
+		return
+	}
+
+	mainCtrl, _ := command.InitCtrl()
+	mainCtrl.Generate(files)
 
 	command.PrintEndInfo()
 }

@@ -1,4 +1,4 @@
-package valueGen
+package genValue
 
 import (
 	"fmt"

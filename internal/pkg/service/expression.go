@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 	"github.com/Knetic/govaluate"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"regexp"
@@ -92,7 +92,7 @@ func (s *ExpressionService) GenExpressionValues(field model.DefField, valuesMap 
 
 			str := fmt.Sprintf(mask, result)
 			if field.Length > runewidth.StringWidth(str) {
-				str = stringUtils.AddPad(str, field)
+				str = helper.AddPad(str, field)
 			}
 			str = field.Prefix + str + field.Postfix
 			ret = append(ret, str)

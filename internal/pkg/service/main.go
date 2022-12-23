@@ -53,11 +53,12 @@ func (s *MainService) GenerateData(files []string) (count int) {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[1])
 	}
 
-	s.ParamService.FixTotalNum()
-
 	// get def and res data
 	contents := s.FileService.LoadFilesContents(files)
 	vari.GlobalVars.DefData = s.DefService.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
+
+	s.ParamService.FixTotalNum()
+
 	s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
 
 	if err := s.ParamService.CheckParams(); err != nil {

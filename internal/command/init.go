@@ -17,8 +17,8 @@ import (
 	"strings"
 )
 
-func InitCtrl() (defCtrl *ctrl.DefCtrl, err error) {
-	defCtrl = &ctrl.DefCtrl{}
+func InitCtrl() (defCtrl *ctrl.MainCtrl, err error) {
+	defCtrl = &ctrl.MainCtrl{}
 
 	var g inject.Graph
 

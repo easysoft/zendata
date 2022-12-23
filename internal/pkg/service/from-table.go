@@ -1,4 +1,4 @@
-package action
+package service
 
 import (
 	"fmt"
@@ -7,110 +7,45 @@ import (
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"gopkg.in/yaml.v2"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func GenYamlFromSql(file string) {
+type TableParseService struct {
+}
+
+func (s *TableParseService) GenYamlFromTable() {
 	startTime := time.Now().Unix()
 
-	sql := fileUtils.ReadFile(file)
-	statementMap, pkMap, fkMap := getCreateStatement(sql)
-
-	// gen key yaml files
-	inst := model.ZdInstances{Title: "keys", Desc: "automated export"}
-
-	for tableName, keyCol := range pkMap {
-		item := model.ZdInstancesItem{}
-
-		item.Instance = fmt.Sprintf("%s_%s", tableName, keyCol)
-		item.Range = "1-100000"
-
-		inst.Instances = append(inst.Instances, item)
+	db, err := gorm.Open(mysql.Open(vari.GlobalVars.DBDsn))
+	if err != nil {
+		logUtils.PrintTo(
+			fmt.Sprintf("Error on opening db %s, error is %s", vari.GlobalVars.DBDsnParsing.DbName, err.Error()))
 	}
 
-	bytes, _ := yaml.Marshal(&inst)
-	content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
+	var mp map[string]interface{}
+	db.Raw("SHOW CREATE TABLE " + vari.GlobalVars.Table).Scan(&mp)
+	sql := mp["Create Table"].(string) + ";"
 
-	if vari.GlobalVars.OutputFile != "" {
-		vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
-		outFile := vari.GlobalVars.OutputFile + "keys.yaml"
-		fileUtils.WriteFile(outFile, content)
-	} else {
-		logUtils.PrintTo(content)
-	}
+	statementMap, pkMap, fkMap := s.getCreateStatement(sql)
 
-	// gen table yaml files
-	for tableName, statement := range statementMap {
-		createStr := statement
+	s.genKeysYaml(pkMap)
 
-		columns, types := getColumnsFromCreateStatement(createStr)
-
-		def := model.DefSimple{}
-		def.Init(tableName, "automated export", "", "1.0")
-
-		for _, col := range columns {
-			field := model.FieldSimple{Field: col}
-
-			// pk
-			isPk := col == pkMap[tableName]
-			fkInfo, isFk := fkMap[col]
-
-			if isPk {
-				field.From = "keys.yaml"
-				field.Use = fmt.Sprintf("%s_%s", tableName, col)
-			} else if isFk {
-				field.From = "keys.yaml"
-				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
-			} else {
-
-				if types[col].(FieldTypeInfo).fieldType == "DATE" || types[col].(FieldTypeInfo).fieldType == "TIME" || types[col].(FieldTypeInfo).fieldType == "YEAR" || types[col].(FieldTypeInfo).fieldType == "DATETIME" || types[col].(FieldTypeInfo).fieldType == "TIMESTAMP" {
-					field.Range = strconv.Quote("20210821 000000:60")
-					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
-					field.Type = "timestamp"
-				} else if types[col].(FieldTypeInfo).fieldType == "CHAR" || types[col].(FieldTypeInfo).fieldType == "VARCHAR" || types[col].(FieldTypeInfo).fieldType == "TINYTEXT" || types[col].(FieldTypeInfo).fieldType == "TEXT" || types[col].(FieldTypeInfo).fieldType == "MEDIUMTEXT" || types[col].(FieldTypeInfo).fieldType == "LONGTEXT" {
-					field.Range = types[col].(FieldTypeInfo).rang
-					field.Loop = "'3'" // default value of loop
-					field.Loopfix = "_"
-				} else {
-					field.Range = types[col].(FieldTypeInfo).rang
-				}
-				field.Note = types[col].(FieldTypeInfo).note
-
-			}
-
-			def.Fields = append(def.Fields, field)
-		}
-
-		bytes, _ := yaml.Marshal(&def)
-		content := strings.ReplaceAll(string(bytes), "'", "")
-		if vari.GlobalVars.OutputFile != "" {
-			vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
-			outFile := vari.GlobalVars.OutputFile + tableName + ".yaml"
-			fileUtils.WriteFile(outFile, content)
-		} else {
-			logUtils.PrintTo(content)
-		}
-	}
+	s.genTablesYaml(statementMap, pkMap, fkMap)
 
 	entTime := time.Now().Unix()
 	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), vari.GlobalVars.OutputFile, entTime-startTime))
 }
 
-func getCreateStatement(file string) (statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
+func (s *TableParseService) getCreateStatement(content string) (statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
 	statementMap = map[string]string{}
 	pkMap = map[string]string{}
 	fkMap = map[string][2]string{}
-
-	content, err := ioutil.ReadFile(file)
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file))
-		return
-	}
 
 	re := regexp.MustCompile("(?siU)(CREATE TABLE.*;)")
 	arr := re.FindAllString(string(content), -1)
@@ -150,7 +85,7 @@ func getCreateStatement(file string) (statementMap map[string]string, pkMap map[
 	return
 }
 
-func getColumnsFromCreateStatement(sent string) (fieldLines []string, fieldInfo map[string]interface{}) {
+func (s *TableParseService) getColumnsFromCreateStatement(sent string) (fieldLines []string, fieldInfo map[string]interface{}) {
 	fieldLines = make([]string, 0)
 	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
 	arr := re.FindAllStringSubmatch(string(sent), -1)
@@ -163,16 +98,16 @@ func getColumnsFromCreateStatement(sent string) (fieldLines []string, fieldInfo 
 			colName := item[1]
 
 			field := strings.ReplaceAll(colName, "`", "")
-
+			fieldInfo[field] = s.parseFieldInfo(strings.ToUpper(colName), item[0])
 			fieldLines = append(fieldLines, field)
-			fieldInfo[field] = parseFieldInfo(strings.ToUpper(colName), item[0])
 		}
 	}
 
 	return fieldLines, fieldInfo
 }
 
-func parseFieldInfo(fieldTmp, fieldTypeInfo string) (FieldTypeInfoIns FieldTypeInfo) {
+func (s *TableParseService) parseFieldInfo(fieldTmp, fieldTypeInfo string) (FieldTypeInfoIns FieldTypeInfo) {
+
 	var ret []string
 	isUnsigned := false
 	fieldTypeInfo = strings.ToUpper(fieldTypeInfo)
@@ -182,12 +117,11 @@ func parseFieldInfo(fieldTmp, fieldTypeInfo string) (FieldTypeInfoIns FieldTypeI
 
 	myExp := regexp.MustCompile(fieldTmp + `\s([A-Z]+)\(([^,]*),?([^,]*)\)`)
 	ret = myExp.FindStringSubmatch(fieldTypeInfo)
-
 	if ret != nil {
-		FieldTypeInfoIns = judgeFieldType(ret[1], ret[2], isUnsigned)
+		FieldTypeInfoIns = s.judgeFieldType(ret[1], ret[2], isUnsigned)
 	} else {
 		fieldType := strings.Split(strings.Fields(fieldTypeInfo)[1], "(")[0]
-		FieldTypeInfoIns = judgeFieldType(fieldType, "", isUnsigned)
+		FieldTypeInfoIns = s.judgeFieldType(fieldType, "", isUnsigned)
 	}
 
 	return FieldTypeInfoIns
@@ -199,7 +133,7 @@ type FieldTypeInfo struct {
 	rang      string
 }
 
-func judgeFieldType(fieldType, num string, isUnsigned bool) (FieldTypeInfoIns FieldTypeInfo) {
+func (s *TableParseService) judgeFieldType(fieldType, num string, isUnsigned bool) (FieldTypeInfoIns FieldTypeInfo) {
 	ran := ""
 	note := ""
 	switch fieldType {
@@ -300,4 +234,93 @@ func judgeFieldType(fieldType, num string, isUnsigned bool) (FieldTypeInfoIns Fi
 	FieldTypeInfoIns.fieldType = fieldType
 
 	return FieldTypeInfoIns
+}
+
+func (s *TableParseService) genKeysYaml(pkMap map[string]string) {
+	// gen key yaml files
+	inst := model.ZdInstances{Title: "keys", Desc: "automated export"}
+
+	for tableName, keyCol := range pkMap {
+		item := model.ZdInstancesItem{}
+
+		item.Instance = fmt.Sprintf("%s_%s", tableName, keyCol)
+		item.Range = "1-100000"
+
+		inst.Instances = append(inst.Instances, item)
+	}
+
+	bytes, _ := yaml.Marshal(&inst)
+	content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
+
+	if vari.GlobalVars.OutputFile != "" {
+		vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
+		outFile := vari.GlobalVars.OutputFile + "keys.yaml"
+		fileUtils.WriteFile(outFile, content)
+
+	} else {
+		logUtils.PrintTo(content)
+	}
+}
+
+func (s *TableParseService) genTablesYaml(statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
+	for tableName, statement := range statementMap {
+		createStr := statement
+
+		columns, types := s.getColumnsFromCreateStatement(createStr)
+
+		def := model.DefSimple{}
+		def.Init(tableName, "automated export", "", "1.0")
+
+		for _, col := range columns {
+			field := model.FieldSimple{Field: col}
+
+			// pk
+			isPk := col == pkMap[tableName]
+			fkInfo, isFk := fkMap[col]
+
+			if isPk {
+				field.From = "keys.yaml"
+				field.Use = fmt.Sprintf("%s_%s", tableName, col)
+			} else if isFk {
+				field.From = "keys.yaml"
+				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
+			} else {
+
+				if types[col].(FieldTypeInfo).fieldType == "DATE" || types[col].(FieldTypeInfo).fieldType == "TIME" || types[col].(FieldTypeInfo).fieldType == "YEAR" || types[col].(FieldTypeInfo).fieldType == "DATETIME" || types[col].(FieldTypeInfo).fieldType == "TIMESTAMP" {
+					field.Range = strconv.Quote("20210821 000000:60")
+					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
+					field.Type = "timestamp"
+				} else if types[col].(FieldTypeInfo).fieldType == "CHAR" || types[col].(FieldTypeInfo).fieldType == "VARCHAR" || types[col].(FieldTypeInfo).fieldType == "TINYTEXT" || types[col].(FieldTypeInfo).fieldType == "TEXT" || types[col].(FieldTypeInfo).fieldType == "MEDIUMTEXT" || types[col].(FieldTypeInfo).fieldType == "LONGTEXT" {
+					field.Range = types[col].(FieldTypeInfo).rang
+					field.Loop = "'3'" // default value of loop
+					field.Loopfix = "_"
+				} else {
+					field.Range = types[col].(FieldTypeInfo).rang
+				}
+				field.Note = types[col].(FieldTypeInfo).note
+
+			}
+
+			def.Fields = append(def.Fields, field)
+		}
+
+		bytes, _ := yaml.Marshal(&def)
+		content := strings.ReplaceAll(string(bytes), "'", "")
+		if vari.GlobalVars.OutputFile != "" {
+			vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
+			outFile := vari.GlobalVars.OutputFile + tableName + ".yaml"
+			fileUtils.WriteFile(outFile, content)
+		} else {
+			logUtils.PrintTo(content)
+		}
+	}
+}
+
+type TableInfo struct {
+	Field   string
+	Type    string
+	Null    string
+	Key     string
+	Default string
+	Extra   string
 }

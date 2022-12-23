@@ -3,13 +3,13 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"strconv"
 	"strings"
 
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
@@ -124,11 +124,11 @@ func (s *PrintService) getInsertSqlHeader() string {
 	fieldNames := make([]string, 0)
 	for _, f := range vari.GlobalVars.ExportFields {
 		if vari.GlobalVars.DBType == constant.DBTypeSqlServer {
-			f = "[" + stringUtils.EscapeColumnOfSqlServer(f) + "]"
+			f = "[" + helper.EscapeColumnOfSqlServer(f) + "]"
 		} else if vari.GlobalVars.DBType == constant.DBTypeOracle {
 			f = `"` + f + `"`
 		} else {
-			f = "`" + stringUtils.EscapeColumnOfMysql(f) + "`"
+			f = "`" + helper.EscapeColumnOfMysql(f) + "`"
 			//vari.GenVars.DBType == constant.DBTypeMysql {
 		}
 
@@ -228,7 +228,7 @@ func (s *PrintService) getValForPlaceholder(placeholderStr string, count int) []
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("int", start, end, "1",
+		strArr = genHelper.GetRandFromRange("int", start, end, "1",
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "float" {
@@ -239,7 +239,7 @@ func (s *PrintService) getValForPlaceholder(placeholderStr string, count int) []
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("float", start, end, stepStr,
+		strArr = genHelper.GetRandFromRange("float", start, end, stepStr,
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "char" {
@@ -248,12 +248,12 @@ func (s *PrintService) getValForPlaceholder(placeholderStr string, count int) []
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("char", start, end, "1",
+		strArr = genHelper.GetRandFromRange("char", start, end, "1",
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "list" {
 		list := mp["list"].([]string)
-		strArr = helper.GetRandFromList(list, repeat, count)
+		strArr = genHelper.GetRandFromList(list, repeat, count)
 
 	}
 

@@ -3,13 +3,14 @@ package gen
 import (
 	"errors"
 	"fmt"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -60,7 +61,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 		childValues := fieldNameToValuesMap[child.Field]
 
 		if child.Value != "" {
-			childValues = helper.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
+			childValues = genHelper.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
 		}
 		arrOfArr = append(arrOfArr, childValues)
 	}
@@ -159,7 +160,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	switch val.(type) {
 	case int64:
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(int64), 0)
+			str, success = helper.FormatStr(format, val.(int64), 0)
 		}
 		if !success {
 			str = strconv.FormatInt(val.(int64), 10)
@@ -170,7 +171,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 			precision = field.Precision
 		}
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(float64), precision)
+			str, success = helper.FormatStr(format, val.(float64), precision)
 		}
 		if !success {
 			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
@@ -178,7 +179,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	case byte:
 		str = string(val.(byte))
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 		if !success {
 			str = string(val.(byte))
@@ -190,10 +191,10 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 		if match {
 			valInt, err := strconv.Atoi(str)
 			if err == nil {
-				str, success = stringUtils.FormatStr(format, valInt, 0)
+				str, success = helper.FormatStr(format, valInt, 0)
 			}
 		} else {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
 	}
@@ -260,7 +261,7 @@ func addFix(str string, field *model.DefField, count int, withFix bool) (ret str
 	divider := field.Divider
 
 	if field.Length > runewidth.StringWidth(str) {
-		str = stringUtils.AddPad(str, *field)
+		str = helper.AddPad(str, *field)
 	}
 	if withFix && !vari.GlobalVars.Trim {
 		str = prefix + str + postfix
@@ -290,7 +291,7 @@ func convPrefixVal2Str(val interface{}, format string) string {
 	switch val.(type) {
 	case int64:
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(int64), 0)
+			str, success = helper.FormatStr(format, val.(int64), 0)
 		}
 		if !success {
 			str = strconv.FormatInt(val.(int64), 10)
@@ -298,7 +299,7 @@ func convPrefixVal2Str(val interface{}, format string) string {
 	case float64:
 		precision := 0
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(float64), precision)
+			str, success = helper.FormatStr(format, val.(float64), precision)
 		}
 		if !success {
 			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
@@ -306,7 +307,7 @@ func convPrefixVal2Str(val interface{}, format string) string {
 	case byte:
 		str = string(val.(byte))
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 		if !success {
 			str = string(val.(byte))
@@ -318,10 +319,10 @@ func convPrefixVal2Str(val interface{}, format string) string {
 		if match {
 			valInt, err := strconv.Atoi(str)
 			if err == nil {
-				str, success = stringUtils.FormatStr(format, valInt, 0)
+				str, success = helper.FormatStr(format, valInt, 0)
 			}
 		} else {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
 	}
@@ -332,7 +333,7 @@ func convPrefixVal2Str(val interface{}, format string) string {
 func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {
 	// 叶节点
 	if len(fieldValue.Values) == 0 {
-		if helper.SelectExcelWithExpr(field) {
+		if genHelper.SelectExcelWithExpr(field) {
 			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
 			err = errors.New("")
 		}

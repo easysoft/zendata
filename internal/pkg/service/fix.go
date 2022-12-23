@@ -2,8 +2,8 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"regexp"
@@ -20,7 +20,7 @@ func (s *FixService) AddFix(str string, field *model.DefField, count int, withFi
 	divider := field.Divider
 
 	if field.Length > runewidth.StringWidth(str) {
-		str = stringUtils.AddPad(str, *field)
+		str = helper.AddPad(str, *field)
 	}
 	if withFix && !vari.GlobalVars.Trim {
 		str = prefix + str + postfix
@@ -52,7 +52,7 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 	switch val.(type) {
 	case int64:
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(int64), 0)
+			str, success = helper.FormatStr(format, val.(int64), 0)
 		}
 		if !success {
 			str = strconv.FormatInt(val.(int64), 10)
@@ -60,7 +60,7 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 	case float64:
 		precision := 0
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(float64), precision)
+			str, success = helper.FormatStr(format, val.(float64), precision)
 		}
 		if !success {
 			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
@@ -68,7 +68,7 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 	case byte:
 		str = string(val.(byte))
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 		if !success {
 			str = string(val.(byte))
@@ -80,10 +80,10 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 		if match {
 			valInt, err := strconv.Atoi(str)
 			if err == nil {
-				str, success = stringUtils.FormatStr(format, valInt, 0)
+				str, success = helper.FormatStr(format, valInt, 0)
 			}
 		} else {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
 	}

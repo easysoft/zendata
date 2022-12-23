@@ -1,11 +1,11 @@
 package service
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
 	"os"
@@ -24,7 +24,7 @@ func (s *ResYamlService) GetResFromYaml(resFile string) (valueMap map[string][]i
 	}
 
 	yamlContent, err := os.ReadFile(resFile)
-	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
+	yamlContent = helper.ReplaceSpecialChars(yamlContent)
 
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))

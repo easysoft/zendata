@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -188,13 +188,13 @@ func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsTo
 
 		// is value expression
 		if child.Value != "" {
-			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.TopFieldMap)
+			childValues = genHelper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.TopFieldMap)
 		}
 
 		// select from excel with expr
-		if helper.SelectExcelWithExpr(child) {
-			selects := helper.ReplaceVariableValues(child.Select, topLevelFieldNameToValuesMap)
-			wheres := helper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
+		if genHelper.SelectExcelWithExpr(child) {
+			selects := genHelper.ReplaceVariableValues(child.Select, topLevelFieldNameToValuesMap)
+			wheres := genHelper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
 
 			childValues = make([]string, 0)
 			childMapValues := make([][]string, 0)

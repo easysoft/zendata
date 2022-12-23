@@ -59,14 +59,22 @@ fields:
 #    use: telephone_service
 #    postfix: "\t"
 
-  - field: cellphone
-    from: phone.v1.yaml
-    use: cellphone
+#  - field: cellphone
+#    from: phone.v1.yaml
+#    use: cellphone
+#    postfix: "\t"
+#
+#  - field: qq
+#    from: phone.v1.yaml
+#    use: qq
+#    postfix: "\t"
+
+  - field: field_creditcard
+    format: "credit_card('amex')"
     postfix: "\t"
 
-  - field: qq
-    from: phone.v1.yaml
-    use: qq
+  - field: field_idcard
+    format: "id_card()"
     postfix: "\t"
 
 #  - field: first

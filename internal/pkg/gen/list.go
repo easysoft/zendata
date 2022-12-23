@@ -2,7 +2,7 @@ package gen
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"math"
 	"strconv"
@@ -228,7 +228,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 
 	if field.Path != "" && stepStr == "r" {
 		pth := field.Path
-		key := helper.GetRandFieldSection(pth)
+		key := genHelper.GetRandFieldSection(pth)
 
 		items = append(items, Placeholder(key))
 		mp := PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
@@ -287,7 +287,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	// 1. random replacement
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
 		pth := field.Path + "->" + desc
-		key := helper.GetRandFieldSection(pth)
+		key := genHelper.GetRandFieldSection(pth)
 
 		val := Placeholder(key)
 		strItems := make([]string, 0)
@@ -344,7 +344,7 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 	configDir := vari.GlobalVars.ConfigFileDir
 	res := vari.Res
 
-	configFile := helper.ComputerReferFilePath(yamlFile, field)
+	configFile := genHelper.ComputerReferFilePath(yamlFile, field)
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
 	rows, colIsNumArr, _ := GenerateFromYaml([]string{configFile}, &fieldsToExport)
 	if field.Rand {

@@ -3,7 +3,7 @@ package action
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -102,7 +102,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 
 	// exec insert sql
 	if vari.GlobalVars.DBDsn != "" {
-		helper.ExecSqlInUserDB(lines)
+		genHelper.ExecSqlInUserDB(lines)
 	}
 
 	// article need to write to more than one files

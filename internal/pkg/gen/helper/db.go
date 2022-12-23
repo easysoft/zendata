@@ -1,4 +1,4 @@
-package helper
+package genHelper
 
 import (
 	"database/sql"
@@ -23,7 +23,6 @@ var (
 )
 
 func ExecSqlInUserDB(lines []interface{}) (count int) {
-
 	//typ, user, password, host, port, db, code := parserDsn(vari.DBDsn)
 	db, _ := parserDsnAndConnByGorm(vari.GlobalVars.DBDsn)
 

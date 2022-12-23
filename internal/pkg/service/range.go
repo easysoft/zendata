@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
@@ -98,7 +98,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 
 	if field.Path != "" && stepStr == "r" {
 		pth := field.Path
-		key := helper.GetRandFieldSection(pth)
+		key := genHelper.GetRandFieldSection(pth)
 
 		items = append(items, s.PlaceholderService.PlaceholderStr(key))
 		mp := s.PlaceholderService.PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
@@ -157,7 +157,7 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 	// 1. random replacement
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
 		pth := field.Path + "->" + desc
-		key := helper.GetRandFieldSection(pth)
+		key := genHelper.GetRandFieldSection(pth)
 
 		val := s.PlaceholderService.PlaceholderStr(key)
 		strItems := make([]string, 0)

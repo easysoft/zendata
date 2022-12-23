@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -31,7 +32,7 @@ func (s *DefService) LoadDataContentDef(filesContents [][]byte, fieldsToExport *
 }
 
 func (s *DefService) LoadContentDef(content []byte) (ret model.DefData) {
-	content = stringUtils.ReplaceSpecialChars(content)
+	content = helper.ReplaceSpecialChars(content)
 	err := yaml.Unmarshal(content, &ret)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)

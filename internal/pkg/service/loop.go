@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -91,7 +91,7 @@ func (s *LoopService) ComputerLoopTimes(field *model.DefField) {
 func (s *LoopService) getFieldValByIndex(field model.DefField, index *int) (val string, err error) {
 	// 叶节点
 	if len(field.Values) == 0 {
-		if helper.SelectExcelWithExpr(field) {
+		if genHelper.SelectExcelWithExpr(field) {
 			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
 			err = errors.New("")
 		}

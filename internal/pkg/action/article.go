@@ -1,11 +1,12 @@
 package action
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
 	"path/filepath"
 	"time"
@@ -15,11 +16,11 @@ var (
 	MaxLen = 10
 )
 
-func ParseArticle(file string, out string) {
+func GenYamlFromArticle(file string) {
 	startTime := time.Now().Unix()
 
 	content := fileUtils.ReadFile(file)
-	words := helper.LoadAllWords()
+	words := genHelper.LoadAllWords()
 
 	templ := replaceWords(content, words)
 	yamlObj := model.DefArticle{Type: "article", Content: templ, Author: "zendata",
@@ -28,10 +29,11 @@ func ParseArticle(file string, out string) {
 	yamlStr := string(bytes)
 
 	outFile := ""
-	if out != "" {
-		out = fileUtils.AddSepIfNeeded(out)
-		outFile = filepath.Join(out, fileUtils.ChangeFileExt(filepath.Base(file), ".yaml"))
-		WriteToFile(outFile, yamlStr)
+	if vari.GlobalVars.OutputFile != "" {
+		vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
+		outFile = filepath.Join(vari.GlobalVars.OutputFile, fileUtils.ChangeFileExt(filepath.Base(file), ".yaml"))
+		fileUtils.WriteFile(outFile, yamlStr)
+
 	} else {
 		logUtils.PrintTo(yamlStr)
 	}

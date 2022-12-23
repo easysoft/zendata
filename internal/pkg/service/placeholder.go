@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"regexp"
 	"strconv"
@@ -56,7 +56,7 @@ func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count i
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("int", start, end, "1",
+		strArr = genHelper.GetRandFromRange("int", start, end, "1",
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "float" {
@@ -67,7 +67,7 @@ func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count i
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("float", start, end, stepStr,
+		strArr = genHelper.GetRandFromRange("float", start, end, stepStr,
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "char" {
@@ -76,12 +76,12 @@ func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count i
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("char", start, end, "1",
+		strArr = genHelper.GetRandFromRange("char", start, end, "1",
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "list" {
 		list := mp["list"].([]string)
-		strArr = helper.GetRandFromList(list, repeat, count)
+		strArr = genHelper.GetRandFromList(list, repeat, count)
 
 	}
 

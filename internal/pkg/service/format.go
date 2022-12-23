@@ -2,8 +2,8 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"regexp"
 	"strconv"
 	"strings"
@@ -27,7 +27,7 @@ func (s *FormatService) GetFieldValStr(field model.DefField, val interface{}) st
 	switch val.(type) {
 	case int64:
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(int64), 0)
+			str, success = helper.FormatStr(format, val.(int64), 0)
 		}
 		if !success {
 			str = strconv.FormatInt(val.(int64), 10)
@@ -38,7 +38,7 @@ func (s *FormatService) GetFieldValStr(field model.DefField, val interface{}) st
 			precision = field.Precision
 		}
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(float64), precision)
+			str, success = helper.FormatStr(format, val.(float64), precision)
 		}
 		if !success {
 			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
@@ -46,7 +46,7 @@ func (s *FormatService) GetFieldValStr(field model.DefField, val interface{}) st
 	case byte:
 		str = string(val.(byte))
 		if format != "" {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 		if !success {
 			str = string(val.(byte))
@@ -58,10 +58,10 @@ func (s *FormatService) GetFieldValStr(field model.DefField, val interface{}) st
 		if match {
 			valInt, err := strconv.Atoi(str)
 			if err == nil {
-				str, success = stringUtils.FormatStr(format, valInt, 0)
+				str, success = helper.FormatStr(format, valInt, 0)
 			}
 		} else {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
 	}

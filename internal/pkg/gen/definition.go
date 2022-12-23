@@ -1,6 +1,7 @@
 package gen
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -24,7 +25,7 @@ func LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret m
 }
 
 func LoadContentDef(content []byte) (ret model.DefData) {
-	content = stringUtils.ReplaceSpecialChars(content)
+	content = helper.ReplaceSpecialChars(content)
 	err := yaml.Unmarshal(content, &ret)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
@@ -82,7 +83,7 @@ func LoadDef(file string) (ret model.DefData) {
 	}
 
 	defaultContent, err := ioutil.ReadFile(pathDefaultFile)
-	defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
+	defaultContent = helper.ReplaceSpecialChars(defaultContent)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
 		return

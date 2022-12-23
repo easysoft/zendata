@@ -37,8 +37,8 @@ func WriteFile(filePath string, content string) {
 	MkDirIfNeeded(dir)
 
 	var d1 = []byte(content)
-	err2 := ioutil.WriteFile(filePath, d1, 0666) //写入文件(字节数组)
-	check(err2)
+	err := os.WriteFile(filePath, d1, 0666) //写入文件(字节数组)
+	check(err)
 }
 
 func RemoveExist(path string) {

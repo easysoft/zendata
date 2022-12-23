@@ -1,4 +1,4 @@
-package helper
+package genHelper
 
 import (
 	"github.com/easysoft/zendata/pkg/utils/vari"

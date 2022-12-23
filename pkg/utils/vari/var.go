@@ -8,7 +8,8 @@ import (
 )
 
 type GenVarType struct {
-	Total int
+	RunMode consts.RunMode
+	Total   int
 
 	OutputFile   string
 	OutputFormat string
@@ -46,6 +47,8 @@ var (
 		CacheResFileToMap:                  map[string]map[string][]interface{}{},
 		RandFieldSectionPathToValuesMap:    map[int]map[string]interface{}{},
 		RandFieldSectionShortKeysToPathMap: map[int]string{},
+
+		RunMode: consts.RunModeGen,
 	}
 )
 

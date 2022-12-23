@@ -3,14 +3,14 @@ package gen
 import (
 	"encoding/json"
 	"fmt"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"regexp"
 	"strconv"
 	"strings"
 
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
@@ -65,12 +65,12 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 			if !colIsNumArr[j] {
 				switch vari.GlobalVars.DBType {
 				case constant.DBTypeSqlServer:
-					colVal = "'" + stringUtils.EscapeValueOfSqlServer(colVal) + "'"
+					colVal = "'" + helper.EscapeValueOfSqlServer(colVal) + "'"
 				case constant.DBTypeOracle:
-					colVal = "'" + stringUtils.EscapeValueOfOracle(colVal) + "'"
+					colVal = "'" + helper.EscapeValueOfOracle(colVal) + "'"
 				// case constant.DBTypeMysql:
 				default:
-					colVal = "'" + stringUtils.EscapeValueOfMysql(colVal) + "'"
+					colVal = "'" + helper.EscapeValueOfMysql(colVal) + "'"
 				}
 			}
 			valuesForSql = append(valuesForSql, colVal)
@@ -124,11 +124,11 @@ func getInsertSqlHeader(fields []string, table string) string {
 
 	for _, f := range fields {
 		if vari.GlobalVars.DBType == constant.DBTypeMysql {
-			f = "`" + stringUtils.EscapeColumnOfMysql(f) + "`"
+			f = "`" + helper.EscapeColumnOfMysql(f) + "`"
 		} else if vari.GlobalVars.DBType == constant.DBTypeOracle {
 			f = `"` + f + `"`
 		} else if vari.GlobalVars.DBType == constant.DBTypeSqlServer {
-			f = "[" + stringUtils.EscapeColumnOfSqlServer(f) + "]"
+			f = "[" + helper.EscapeColumnOfSqlServer(f) + "]"
 		}
 
 		fieldNames = append(fieldNames, f)
@@ -256,7 +256,7 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("int", start, end, "1",
+		strArr = genHelper.GetRandFromRange("int", start, end, "1",
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "float" {
@@ -267,7 +267,7 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("float", start, end, stepStr,
+		strArr = genHelper.GetRandFromRange("float", start, end, stepStr,
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "char" {
@@ -276,12 +276,12 @@ func getValForPlaceholder(placeholderStr string, count int) []string {
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = helper.GetRandFromRange("char", start, end, "1",
+		strArr = genHelper.GetRandFromRange("char", start, end, "1",
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "list" {
 		list := mp["list"].([]string)
-		strArr = helper.GetRandFromList(list, repeat, count)
+		strArr = genHelper.GetRandFromList(list, repeat, count)
 
 	}
 

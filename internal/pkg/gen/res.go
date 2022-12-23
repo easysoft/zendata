@@ -2,6 +2,7 @@ package gen
 
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -100,7 +101,7 @@ func getResFromYaml(resFile string) (valueMap map[string][]string) { // , resNam
 	}
 
 	yamlContent, err := ioutil.ReadFile(resFile)
-	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
+	yamlContent = helper.ReplaceSpecialChars(yamlContent)
 
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
@@ -213,7 +214,7 @@ func getReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.Re
 	resFile, _, _ := fileUtils.GetResProp(inst.From, inst.FileDir)
 
 	yamlContent, err := ioutil.ReadFile(resFile)
-	yamlContent = stringUtils.ReplaceSpecialChars(yamlContent)
+	yamlContent = helper.ReplaceSpecialChars(yamlContent)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return

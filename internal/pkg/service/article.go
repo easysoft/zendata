@@ -200,7 +200,9 @@ func (s *ArticleService) GenArticle(lines []interface{}) {
 
 	for index, line := range lines {
 		articlePath := s.genArticleFiles(filePath, index)
+
 		fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
+
 		fmt.Fprint(fileWriter, line)
 		fileWriter.Close()
 	}
