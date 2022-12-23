@@ -3,6 +3,7 @@ package web
 import (
 	stdContext "context"
 	"fmt"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	"github.com/easysoft/zendata/internal/server/core/module"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -33,7 +34,7 @@ type WebServer struct {
 }
 
 // Init 初始化web服务
-func Init(port int) *WebServer {
+func Init() *WebServer {
 	app := iris.New()
 
 	level := "info"
@@ -51,14 +52,9 @@ func Init(port int) *WebServer {
 		close(idleConnClosed)
 	})
 
-	// init grpc
 	mvc.New(app)
 
-	// init http
-	addr := ":8085"
-	if port != 0 {
-		addr = fmt.Sprintf(":%d", port)
-	}
+	addr := fmt.Sprintf(":%d", consts.DefaultAdminServicePort)
 
 	webServer := &WebServer{
 		app:               app,
@@ -153,9 +149,6 @@ func (webServer *WebServer) Run() {
 		panic(err)
 	}
 
-	//logUtils.Info(i118Utils.Sprintf("start_server", "localhost",
-	//	strings.Replace(webServer.addr, ":", "", -1)))
-
 	webServer.app.Listen(
 		webServer.addr,
 		iris.WithoutInterruptHandler,
@@ -163,5 +156,6 @@ func (webServer *WebServer) Run() {
 		iris.WithOptimizations,
 		iris.WithTimeFormat(webServer.timeFormat),
 	)
+
 	<-webServer.idleConnsClosed
 }

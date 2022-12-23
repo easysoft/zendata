@@ -1,8 +1,8 @@
 package serverService
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -14,7 +14,6 @@ import (
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
 	"gorm.io/gorm"
@@ -122,7 +121,7 @@ func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
 		instances.Instances = append(instances.Instances, *item)
 	}
 	bytes, _ := yaml.Marshal(instances)
-	instances.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
+	instances.Yaml = helper.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }
@@ -149,8 +148,8 @@ func (s *InstancesService) Sync(files []model.ResFile) {
 }
 
 func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
-	content, _ := ioutil.ReadFile(fi.Path)
-	yamlContent := stringUtils.ReplaceSpecialChars(content)
+	content, _ := os.ReadFile(fi.Path)
+	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdInstances{}
 	err = yaml.Unmarshal(yamlContent, &po)
 

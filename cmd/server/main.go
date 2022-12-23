@@ -6,7 +6,7 @@ import (
 	zd "github.com/easysoft/zendata"
 	"github.com/easysoft/zendata/internal/agent"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
 	"github.com/easysoft/zendata/internal/server/core/web"
@@ -44,18 +44,25 @@ func main() {
 
 	flagSet.StringVar(&vari.Ip, "i", "", "")
 	flagSet.StringVar(&vari.Ip, "ip", "", "")
-	flagSet.IntVar(&vari.Port, "p", 0, "")
-	flagSet.IntVar(&vari.Port, "port", 0, "")
+	flagSet.IntVar(&vari.DataServicePort, "p", 0, "")
+	flagSet.IntVar(&vari.DataServicePort, "port", 0, "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
 	configUtils.InitConfig("")
 	vari.DB, _ = serverConfig.NewGormDB()
 
-	vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + constant.PthSep
+	vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + consts.PthSep
 	err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)
 		os.Exit(1)
+	}
+
+	if vari.Ip == "" {
+		vari.Ip = commonUtils.GetIp()
+	}
+	if vari.DataServicePort == 0 {
+		vari.DataServicePort = consts.DefaultDataServicePort
 	}
 
 	go func() {
@@ -65,28 +72,11 @@ func main() {
 	startAdminServer()
 }
 
-func startAdminServer() {
-	webServer := web.Init(vari.Port)
-	if webServer == nil {
-		return
-	}
-
-	webServer.Run()
-}
-
 func startDataServer() {
-	if vari.Ip == "" {
-		vari.Ip = commonUtils.GetIp()
-	}
-	if vari.Port == 0 {
-		vari.Port = constant.DefaultPort
-	}
-
-	port := strconv.Itoa(vari.Port)
+	port := strconv.Itoa(vari.DataServicePort)
 	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server",
 		vari.Ip, port, vari.Ip, port, vari.Ip, port), color.FgCyan)
 
-	// start admin server
 	config := serverConfig.NewConfig()
 	server, err := server.InitServer(config)
 	if err != nil {
@@ -99,6 +89,15 @@ func startDataServer() {
 	}
 
 	httpServer.ListenAndServe()
+}
+
+func startAdminServer() {
+	webServer := web.Init()
+	if webServer == nil {
+		return
+	}
+
+	webServer.Run()
 }
 
 func dataHandler(server *server.Server) http.Handler {

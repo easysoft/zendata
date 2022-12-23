@@ -12,6 +12,6 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		ServerIP:   vari.Ip,
-		ServerPort: vari.Port,
+		ServerPort: vari.DataServicePort,
 	}
 }

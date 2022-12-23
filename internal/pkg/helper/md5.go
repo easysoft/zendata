@@ -3,18 +3,20 @@ package helper
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
 	md5Col = "CW"
 )
 
-func AddMd5(path string) {
+func AddMd5(path, salt string) {
 	excel, err := excelize.OpenFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -50,7 +52,7 @@ func AddMd5(path string) {
 				val := strings.TrimSpace(col)
 				str = str + val
 			}
-			md5Str := md5V(str)
+			md5Str := md5V(str, salt)
 			excel.SetCellValue(sheet, md5Col+strconv.Itoa(index+1), md5Str)
 		}
 	}
@@ -60,8 +62,19 @@ func AddMd5(path string) {
 	}
 }
 
-func md5V(str string) string {
+func md5V(str, salt string) (ret string) {
+	if salt == "" {
+		salt = fmt.Sprintf("%d", time.Now().Unix())
+	}
+
 	h := md5.New()
+
 	h.Write([]byte(str))
-	return hex.EncodeToString(h.Sum(nil))
+	h.Write([]byte(salt))
+
+	st := h.Sum(nil)
+
+	ret = hex.EncodeToString(st)
+
+	return
 }

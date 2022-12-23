@@ -1,7 +1,7 @@
 package serverService
 
 import (
-	"io/ioutil"
+	"os"
 	"regexp"
 	"strings"
 
@@ -12,7 +12,6 @@ import (
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
 	"gorm.io/gorm"
@@ -104,7 +103,7 @@ func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
 	s.ConfigRepo.GenConfigRes(*config, &yamlObj)
 
 	bytes, _ := yaml.Marshal(yamlObj)
-	config.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
+	config.Yaml = helper.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }
@@ -133,8 +132,8 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 	return
 }
 func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
-	content, _ := ioutil.ReadFile(fi.Path)
-	yamlContent := stringUtils.ReplaceSpecialChars(content)
+	content, _ := os.ReadFile(fi.Path)
+	yamlContent := helper.ReplaceSpecialChars(content)
 
 	po := model.ZdConfig{}
 	err = yaml.Unmarshal(yamlContent, &po)

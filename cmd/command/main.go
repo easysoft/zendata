@@ -37,6 +37,7 @@ var (
 	listRes  bool
 	view     string
 	md5      string
+	salt     string
 
 	example bool
 	help    bool
@@ -87,6 +88,7 @@ func main() {
 	flagSet.StringVar(&view, "view", "", "")
 
 	flagSet.StringVar(&md5, "md5", "", "")
+	flagSet.StringVar(&salt, "salt", "", "")
 
 	flagSet.BoolVar(&decode, "D", false, "")
 	flagSet.BoolVar(&decode, "decode", false, "")
@@ -172,7 +174,7 @@ func opts(files []string) {
 		helper.View(view)
 		return
 	} else if md5 != "" {
-		helper.AddMd5(md5)
+		helper.AddMd5(md5, salt)
 		return
 	} else if decode {
 		gen.Decode(files, input)
