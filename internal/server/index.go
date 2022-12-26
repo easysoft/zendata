@@ -10,6 +10,7 @@ import (
 type IndexModule struct {
 	CommModule *index.CommModule `inject:""`
 	DefModule  *index.DefModule  `inject:""`
+	DataModule *index.DataModule `inject:""`
 }
 
 func NewIndexModule() *IndexModule {
@@ -22,6 +23,7 @@ func (m *IndexModule) Party() module.WebModule {
 	modules := []module.WebModule{
 		m.DefModule.Party(),
 		m.CommModule.Party(),
+		m.DataModule.Party(),
 	}
 	return module.NewModule(constant.ApiPath, handler, modules...)
 }

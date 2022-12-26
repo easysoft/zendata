@@ -24,29 +24,18 @@ type MainService struct {
 func (s *MainService) GenerateFromContents(files []string) {
 	startTime := time.Now().Unix()
 
-	count := s.GenerateData(files)
+	count := s.GenerateDataByFile(files)
 
-	// get output
-	if vari.GlobalVars.OutputFormat == consts.FormatText { // text
-		s.OutputService.GenText(false)
-	} else if vari.GlobalVars.OutputFormat == consts.FormatJson { // json
-		s.OutputService.GenJson()
-	} else if vari.GlobalVars.OutputFormat == consts.FormatXml { // xml
-		s.OutputService.GenXml()
-	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatExcel { // excel
-		s.OutputService.GenExcel()
-	} else if vari.GlobalVars.OutputFormat == consts.FormatSql { // excel
-		s.OutputService.GenSql()
-	}
+	s.PrintOutput()
 
 	// print end msg
 	entTime := time.Now().Unix()
-	if vari.RunMode == consts.RunModeServerRequest {
+	if vari.GlobalVars.RunMode == consts.RunModeServerRequest {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 	}
 }
 
-func (s *MainService) GenerateData(files []string) (count int) {
+func (s *MainService) GenerateDataByFile(files []string) (count int) {
 	if files[0] != "" {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 	} else {
@@ -55,6 +44,12 @@ func (s *MainService) GenerateData(files []string) (count int) {
 
 	// get def and res data
 	contents := s.FileService.LoadFilesContents(files)
+	count = s.GenerateDataByContents(contents)
+
+	return
+}
+
+func (s *MainService) GenerateDataByContents(contents [][]byte) (count int) {
 	vari.GlobalVars.DefData = s.DefService.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
 
 	s.ParamService.FixTotalNum()
@@ -94,6 +89,22 @@ func (s *MainService) GenerateData(files []string) (count int) {
 	return
 }
 
+func (s *MainService) PrintOutput() {
+	// get output
+	if vari.GlobalVars.OutputFormat == consts.FormatText { // text
+		s.OutputService.GenText(false)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatJson { // json
+		s.OutputService.GenJson()
+	} else if vari.GlobalVars.OutputFormat == consts.FormatXml { // xml
+		s.OutputService.GenXml()
+	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatExcel { // excel
+		s.OutputService.GenExcel()
+	} else if vari.GlobalVars.OutputFormat == consts.FormatSql { // excel
+		s.OutputService.GenSql()
+	}
+
+}
+
 func (s *MainService) GenerateFromProtobuf(files []string) {
 	startTime := time.Now().Unix()
 	count := 0
@@ -107,7 +118,7 @@ func (s *MainService) GenerateFromProtobuf(files []string) {
 
 	count = 1
 	entTime := time.Now().Unix()
-	if vari.RunMode == consts.RunModeServerRequest {
+	if vari.GlobalVars.RunMode == consts.RunModeServerRequest {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 	}
 }

@@ -65,11 +65,11 @@ func main() {
 		vari.DataServicePort = consts.DefaultDataServicePort
 	}
 
-	go func() {
-		startDataServer()
-	}()
+	//go func() {
+	//	startDataServer()
+	//}()
 
-	startAdminServer()
+	startServer()
 }
 
 func startDataServer() {
@@ -91,7 +91,7 @@ func startDataServer() {
 	httpServer.ListenAndServe()
 }
 
-func startAdminServer() {
+func startServer() {
 	webServer := web.Init()
 	if webServer == nil {
 		return
@@ -109,7 +109,6 @@ func dataHandler(server *server.Server) http.Handler {
 	}
 	mux.Handle("/", http.FileServer(http.FS(uiFs)))
 
-	//mux.HandleFunc("/admin", server.AdminHandler)
 	mux.HandleFunc("/data", agent.DataHandler)
 
 	return mux

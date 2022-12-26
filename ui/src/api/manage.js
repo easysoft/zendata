@@ -1,28 +1,22 @@
 import request from '../utils/request'
 
-const api = {
-  admin: '/admin',
-}
-
-export default api
-
 export function getWorkDir () {
   return request({
-    url: `${api.admin}/comm/getWorkDir`,
+    url: `/comm/getWorkDir`,
     method: 'get',
   })
 }
 
 export function syncData () {
   return request({
-    url: `${api.admin}/comm/syncData`,
+    url: `/comm/syncData`,
     method: 'post',
   })
 }
 
 export function listDef (keywords, page) {
   return request({
-    url: `${api.admin}/defs`,
+    url: `/defs`,
     method: 'get',
     params: {keywords: keywords, page: page}
   })
@@ -120,7 +114,7 @@ export function previewDefData (defId) {
   const params = {defId: defId}
 
   return request({
-    url: `${api.admin}/defs/previewData`,
+    url: `/defs/previewData`,
     method: 'get',
     params
   })

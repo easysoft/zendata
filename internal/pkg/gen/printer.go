@@ -44,7 +44,7 @@ func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool
 		for j, col := range cols {
 			// 3. random replacement
 			col = replacePlaceholder(col)
-			field := vari.TopFieldMap[fields[j]]
+			field := vari.GlobalVars.TopFieldMap[fields[j]]
 			//if field.Length > runewidth.StringWidth(col) {
 			//col = stringUtils.AddPad(col, field)
 			//}

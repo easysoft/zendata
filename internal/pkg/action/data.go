@@ -40,7 +40,7 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 
 		count = 1
 		entTime := time.Now().Unix()
-		if vari.RunMode == constant.RunModeServerRequest {
+		if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 		}
 	}
@@ -113,7 +113,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	count = len(rows)
 
 	entTime := time.Now().Unix()
-	if vari.RunMode == constant.RunModeServerRequest {
+	if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 	}
 

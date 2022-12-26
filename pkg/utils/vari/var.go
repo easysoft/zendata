@@ -13,6 +13,7 @@ type GenVarType struct {
 
 	OutputFile   string
 	OutputFormat string
+	TopFieldMap  map[string]model.DefField
 	ExportFields []string
 	ColIsNumArr  []bool
 
@@ -43,6 +44,7 @@ var (
 	GlobalVars = GenVarType{
 		DefData:      model.DefData{},
 		OutputFormat: consts.FormatText,
+		TopFieldMap:  map[string]model.DefField{},
 
 		CacheResFileToMap:                  map[string]map[string][]interface{}{},
 		RandFieldSectionPathToValuesMap:    map[int]map[string]interface{}{},
@@ -55,8 +57,6 @@ var (
 var (
 	Config = model.Config{Version: 1, Language: "en"}
 	DB     *gorm.DB
-
-	RunMode consts.RunMode
 
 	WorkDir      string
 	ZdPath       string
@@ -81,9 +81,8 @@ var (
 	Ip              string
 	DataServicePort int
 
-	ResLoading  = false
-	Res         = map[string]map[string][]string{}
-	TopFieldMap = map[string]model.DefField{}
+	ResLoading = false
+	Res        = map[string]map[string][]string{}
 
 	CacheResFileToMap  = map[string]map[string][]string{}
 	CacheResFileToName = map[string]string{}

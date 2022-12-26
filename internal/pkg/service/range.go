@@ -220,7 +220,7 @@ func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, ste
 	configFile := s.FileService.ComputerReferFilePath(yamlFile, field)
 
 	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(configFile)
-	s.MainService.GenerateData([]string{configFile})
+	s.MainService.GenerateDataByFile([]string{configFile})
 
 	// get the data
 	items = s.OutputService.GenText(true)

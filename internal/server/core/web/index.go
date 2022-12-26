@@ -3,13 +3,14 @@ package web
 import (
 	stdContext "context"
 	"fmt"
+	zd "github.com/easysoft/zendata"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	"github.com/easysoft/zendata/internal/server/core/module"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/facebookgo/inject"
-	"path/filepath"
+	"net/http"
 	"sync"
 	"time"
 
@@ -17,7 +18,6 @@ import (
 
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
-	"github.com/snowlyg/helper/dir"
 )
 
 type WebServer struct {
@@ -28,9 +28,6 @@ type WebServer struct {
 	timeFormat        string
 	globalMiddlewares []context.Handler
 	wg                sync.WaitGroup
-	staticPrefix      string
-	staticPath        string
-	webPath           string
 }
 
 // Init 初始化web服务
@@ -60,9 +57,6 @@ func Init() *WebServer {
 		app:               app,
 		addr:              addr,
 		timeFormat:        "2006-01-02 15:04:05",
-		staticPrefix:      "/upload",
-		staticPath:        "/static/upload",
-		webPath:           "./static/dist",
 		idleConnsClosed:   idleConnClosed,
 		globalMiddlewares: []context.Handler{},
 	}
@@ -94,16 +88,6 @@ func injectModule(ws *WebServer) {
 	logUtils.PrintTo("start server")
 }
 
-// GetStaticPath 获取静态路径
-func (webServer *WebServer) GetStaticPath() string {
-	return webServer.staticPath
-}
-
-// GetWebPath 获取前端路径
-func (webServer *WebServer) GetWebPath() string {
-	return webServer.webPath
-}
-
 // GetAddr 获取web服务地址
 func (webServer *WebServer) GetAddr() string {
 	return webServer.addr
@@ -114,25 +98,18 @@ func (webServer *WebServer) AddModule(module ...module.WebModule) {
 	webServer.modules = append(webServer.modules, module...)
 }
 
-// AddStatic 添加静态文件
-func (webServer *WebServer) AddStatic(requestPath string, fsOrDir interface{}, opts ...iris.DirOptions) {
-	webServer.app.HandleDir(requestPath, fsOrDir, opts...)
-}
+// AddUIStatic 添加前端访问地址
+func (webServer *WebServer) AddUIStatic() {
+	uiFs, err := zd.GetUiFileSys()
+	if err != nil {
+		return
+	}
 
-// AddWebStatic 添加前端访问地址
-func (webServer *WebServer) AddWebStatic(requestPath string) {
-	fsOrDir := iris.Dir(filepath.Join(dir.GetCurrentAbPath(), webServer.webPath))
-
-	webServer.AddStatic(requestPath, fsOrDir, iris.DirOptions{
+	webServer.app.HandleDir("/ui", http.FS(uiFs), iris.DirOptions{
 		IndexName: "index.html",
+		ShowList:  false,
 		SPA:       true,
 	})
-}
-
-// AddUploadStatic 添加上传文件访问地址
-func (webServer *WebServer) AddUploadStatic() {
-	fsOrDir := iris.Dir(filepath.Join(dir.GetCurrentAbPath(), webServer.staticPath))
-	webServer.AddStatic(webServer.staticPrefix, fsOrDir)
 }
 
 // GetModules 获取模块

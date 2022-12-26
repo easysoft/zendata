@@ -106,7 +106,7 @@ func (s *DefService) mergerDefine(defaultDef, configDef *model.DefData, fieldsTo
 		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 	for i, field := range configDef.Fields {
-		vari.TopFieldMap[field.Field] = field
+		vari.GlobalVars.TopFieldMap[field.Field] = field
 		if !isSetFieldsToExport {
 			if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
 				*fieldsToExport = append(*fieldsToExport, field.Field)
@@ -140,7 +140,7 @@ func (s *DefService) mergerDefine(defaultDef, configDef *model.DefData, fieldsTo
 	}
 
 	for _, field := range defaultDef.Fields {
-		vari.TopFieldMap[field.Field] = field
+		vari.GlobalVars.TopFieldMap[field.Field] = field
 	}
 }
 

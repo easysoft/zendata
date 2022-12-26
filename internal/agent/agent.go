@@ -30,10 +30,14 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 
 	if req.Method == http.MethodGet {
 		defaultFile, configFile, fields, vari.GlobalVars.Total,
-			vari.GlobalVars.OutputFormat, vari.GlobalVars.Trim, vari.GlobalVars.Table, decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParams(req)
+			vari.GlobalVars.OutputFormat,
+			vari.GlobalVars.Trim, vari.GlobalVars.Table,
+			decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParams(req)
 	} else if req.Method == http.MethodPost {
 		defaultDefContent, configDefContent, fields, vari.GlobalVars.Total,
-			vari.GlobalVars.OutputFormat, vari.GlobalVars.Trim, vari.GlobalVars.Table, decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParamsToByte(req)
+			vari.GlobalVars.OutputFormat,
+			vari.GlobalVars.Trim, vari.GlobalVars.Table,
+			decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParamsToByte(req)
 	}
 
 	if decode {
@@ -43,7 +47,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	if defaultDefContent != nil || configDefContent != nil {
-		vari.RunMode = constant.RunModeServerRequest
+		vari.GlobalVars.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
 		genData()
@@ -52,7 +56,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		configDefContent = nil
 
 	} else if defaultFile != "" || configFile != "" {
-		vari.RunMode = constant.RunModeServerRequest
+		vari.GlobalVars.RunMode = constant.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
 		genData()

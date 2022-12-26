@@ -9,6 +9,7 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
 	"io/ioutil"
+	"strings"
 )
 
 type FileService struct {
@@ -66,4 +67,49 @@ func (s *FileService) LoadFilesContents(files []string) (contents [][]byte) {
 	}
 
 	return
+}
+
+func (s *FileService) GetFilesFromParams(args []string) (files []string, count int) {
+	for _, arg := range args {
+		if strings.Index(arg, "-") != 0 {
+			files = append(files, arg)
+			count++
+		} else {
+			break
+		}
+	}
+
+	return
+}
+
+func (s *FileService) HandleFiles(files []string) []string {
+	if len(files) != 2 {
+		return files
+	}
+
+	if files[0] == "" && files[1] != "" { // no defaultFile
+		files[0] = files[1]
+		files[1] = ""
+	} else if files[1] == "" && files[0] != "" { // no configFile
+		files[1] = files[0]
+		files[0] = ""
+	}
+
+	return files
+}
+
+func (s *FileService) HandleFileBuffers(files [][]byte) [][]byte {
+	if len(files) != 2 {
+		return files
+	}
+
+	if len(files[0]) == 0 && len(files[1]) != 0 { // no defaultFile
+		files[0] = files[1]
+		files[1] = nil
+	} else if len(files[1]) == 0 && len(files[0]) != 0 { // no configFile
+		files[1] = files[0]
+		files[0] = nil
+	}
+
+	return files
 }

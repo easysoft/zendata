@@ -85,7 +85,7 @@ func PrintErrMsg(msg string) {
 func PrintRecord(str string) {
 	if OutputFileWriter != nil {
 		PrintToFile(str)
-	} else if vari.RunMode == constant.RunModeServerRequest {
+	} else if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
 		PrintToHttp(str)
 	} else {
 		PrintToScreen(fmt.Sprintf("%s", str))
@@ -99,7 +99,7 @@ func PrintLine(line string) {
 
 	if OutputFileWriter != nil {
 		PrintToFile(line)
-	} else if vari.RunMode == constant.RunModeServerRequest {
+	} else if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
 		PrintToHttp(line)
 	} else {
 		PrintToScreen(line)

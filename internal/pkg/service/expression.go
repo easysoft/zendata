@@ -122,7 +122,7 @@ func (s *ExpressionService) ReplaceVariableValues(exp string, valuesMap map[stri
 			fieldSlot := items[0]
 			fieldName := items[1]
 			referValues := valuesMap[fieldName]
-			referField := vari.TopFieldMap[fieldName]
+			referField := vari.GlobalVars.TopFieldMap[fieldName]
 
 			valStr := "N/A"
 			if len(referValues) > 0 {

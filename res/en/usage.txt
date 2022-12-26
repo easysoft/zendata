@@ -67,6 +67,6 @@ $zd.exe -p 80 -R d:\zd\config           # Listen port 80. Use d:\zd\config as th
 
 Client Call:
 
-$curl http://localhost:8848/data?d=demo/default.yaml&c=demo/config.yaml&n=100&T=true   # Specify the server config file via GET.
-$curl http://localhost:8848/data?default=demo/default.yaml&output=test.sql&table=user  # Parameter names can be full.
-$curl -i -X POST http://localhost:8848/data?lines=3 -F default=@demo/default.yaml      # The config can be uploaded via POST.
+$curl http://localhost:8848/data?d=demo/default.yaml&c=demo/config.yaml&n=100&T=true                # Specify the server config file via GET.
+$curl http://localhost:8848/data?default=demo/default.yaml&output=test.sql&table=user               # Parameter names can be full.
+$curl -i -X POST "http://localhost:8848/data?lines=3&trim=true" -F default=@demo/default.yaml       # The config can be uploaded via POST.

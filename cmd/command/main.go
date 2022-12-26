@@ -61,7 +61,7 @@ func main() {
 	flagSet.StringVar(&defaultFile, "default", "", "")
 
 	flagSet.StringVar(&configFile, "c", "", "")
-	flagSet.StringVar(&configFile, "Config", "", "")
+	flagSet.StringVar(&configFile, "config", "", "")
 
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")

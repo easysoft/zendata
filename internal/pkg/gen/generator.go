@@ -188,7 +188,7 @@ func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsTo
 
 		// is value expression
 		if child.Value != "" {
-			childValues = genHelper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.TopFieldMap)
+			childValues = genHelper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.GlobalVars.TopFieldMap)
 		}
 
 		// select from excel with expr

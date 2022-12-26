@@ -19,3 +19,7 @@ rsrc -manifest xdoc/main.exe.manifest -ico xdoc/fav.ico -o zd.syso
         调用：toGen -> Generate | CreateValuesFromYaml -> GenerateOnTopLevel
              -> GenerateFieldValuesForDef -> CreateField -> CreateListField
              -> CreateListFieldValues -> CreateFieldValuesFromList -> CreateValuesFromInterval
+
+curl -i -X POST -F default=@demo/t.yaml \
+    http://localhost:8085/api/v1/data/generate?trim=true\&format=txt\&lines=3
+
