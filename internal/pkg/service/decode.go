@@ -18,19 +18,19 @@ type DecodeService struct {
 	ResService  *ResService  `inject:""`
 }
 
-func (s *DecodeService) Decode(files []string, input string) {
+func (s *DecodeService) Decode(contents [][]byte, input string) {
 	if vari.GlobalVars.OutputFile != "" {
 		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.OutputFile))
 		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)
 		logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.OutputFile, os.O_RDWR|os.O_CREATE, 0777)
+
 		defer logUtils.OutputFileWriter.Close()
 	}
 
-	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	//vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
 	vari.GlobalVars.Total = 10
 
-	contents := s.FileService.LoadFilesContents(files)
 	vari.GlobalVars.DefData = s.DefService.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
 	s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
 

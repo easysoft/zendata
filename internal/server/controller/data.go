@@ -20,26 +20,10 @@ type DataCtrl struct {
 }
 
 func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
-	vari.GlobalVars.RunMode = constant.RunModeServerRequest
-	logUtils.OutputHttpWriter = ctx.ResponseWriter()
-
-	vari.GlobalVars.Total, _ = ctx.URLParamInt("lines")
-	vari.GlobalVars.Trim, _ = ctx.URLParamBool("trim")
-	vari.GlobalVars.Table = ctx.URLParam("table")
-	vari.GlobalVars.OutputFile = ctx.URLParam("outputFile")
-	vari.GlobalVars.OutputFormat = ctx.URLParam("format")
+	c.DealwithParams(ctx)
 
 	defaultFile := ctx.URLParam("default")
 	configFile := ctx.URLParam("config")
-	fields := strings.TrimSpace(ctx.URLParam("field"))
-
-	if fields != "" {
-		vari.GlobalVars.ExportFields = strings.Split(fields, ",")
-	}
-
-	if vari.GlobalVars.OutputFormat == "" {
-		vari.GlobalVars.OutputFormat = constant.FormatJson
-	}
 
 	defaultContent := c.GetDistFileContent(defaultFile)
 	configContent := c.GetDistFileContent(configFile)
@@ -52,23 +36,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 }
 
 func (c *DataCtrl) GenerateByContent(ctx iris.Context) {
-	vari.GlobalVars.RunMode = constant.RunModeServerRequest
-	logUtils.OutputHttpWriter = ctx.ResponseWriter()
-
-	vari.GlobalVars.Total, _ = ctx.URLParamInt("lines")
-	vari.GlobalVars.Trim, _ = ctx.URLParamBool("trim")
-	vari.GlobalVars.Table = ctx.URLParam("table")
-	vari.GlobalVars.OutputFile = ctx.URLParam("outputFile")
-	vari.GlobalVars.OutputFormat = ctx.URLParam("format")
-	fields := strings.TrimSpace(ctx.URLParam("field"))
-
-	if fields != "" {
-		vari.GlobalVars.ExportFields = strings.Split(fields, ",")
-	}
-
-	if vari.GlobalVars.OutputFormat == "" {
-		vari.GlobalVars.OutputFormat = constant.FormatJson
-	}
+	c.DealwithParams(ctx)
 
 	defaultContent := c.GetFormFileContent(ctx, "default")
 	configContent := c.GetFormFileContent(ctx, "config")
@@ -80,18 +48,60 @@ func (c *DataCtrl) GenerateByContent(ctx iris.Context) {
 	c.MainService.PrintOutput()
 }
 
-func (c *DataCtrl) Decode(ctx iris.Context) {
+//func (c *DataCtrl) DecodeByFile(ctx iris.Context) {
+//	c.DealwithParams(ctx)
+//
+//	defaultFile := ctx.URLParam("defaultFile")
+//	configFile := ctx.URLParam("configFile")
+//	input := ctx.URLParam("input")
+//
+//	defaultContent := c.GetDistFileContent(defaultFile)
+//	configContent := c.GetDistFileContent(configFile)
+//
+//	contents := [][]byte{defaultContent, configContent}
+//	contents = c.FileService.HandleFileBuffers(contents)
+//
+//	c.DecodeService.Decode(contents, input)
+//}
+//
+//func (c *DataCtrl) DecodeByContent(ctx iris.Context) {
+//	c.DealwithParams(ctx)
+//
+//	defaultContent := c.GetFormFileContent(ctx, "default")
+//	configContent := c.GetFormFileContent(ctx, "config")
+//
+//	input := ctx.URLParam("input")
+//
+//	contents := [][]byte{defaultContent, configContent}
+//	contents = c.FileService.HandleFileBuffers(contents)
+//
+//	c.DecodeService.Decode(contents, input)
+//}
+
+func (c *DataCtrl) DealwithParams(ctx iris.Context) {
+	vari.GlobalVars.RunMode = constant.RunModeServerRequest
 	logUtils.OutputHttpWriter = ctx.ResponseWriter()
 
+	vari.GlobalVars.Total, _ = ctx.URLParamInt("lines")
+	vari.GlobalVars.Trim, _ = ctx.URLParamBool("trim")
+	vari.GlobalVars.Table = ctx.URLParam("table")
 	vari.GlobalVars.OutputFile = ctx.URLParam("outputFile")
-	defaultFile := ctx.URLParam("defaultFile")
-	configFile := ctx.URLParam("configFile")
-	fields := ctx.URLParam("fields")
-	input := ctx.URLParam("input")
+	vari.GlobalVars.OutputFormat = ctx.URLParam("format")
 
-	vari.GlobalVars.ExportFields = strings.Split(fields, ",")
+	fields := strings.TrimSpace(ctx.URLParam("field"))
 
-	c.DecodeService.Decode([]string{defaultFile, configFile}, input)
+	if fields != "" {
+		vari.GlobalVars.ExportFields = strings.Split(fields, ",")
+	}
+
+	if vari.GlobalVars.OutputFormat == "" {
+		vari.GlobalVars.OutputFormat = constant.FormatJson
+	}
+
+	// for decode
+	vari.GlobalVars.OutputFile = ctx.URLParam("outputFile")
+
+	return
 }
 
 func (c *DataCtrl) GetDistFileContent(file string) (ret []byte) {
