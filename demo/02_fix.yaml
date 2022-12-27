@@ -1,6 +1,37 @@
+# 字段前后缀可以使用简单的区间功能，如 A-Z, 1-9,支持多片段，也支持随机或步长。
+# 对于引用文件的复杂方式不支持，这种情况建议使用多字段组合实现。
+
 title: 增加后缀
 fields:
   - field: fix         # 字段名
     range: 1-5, 30     # 1,2,3,4,5,30,1,2,3,4,5
     prefix: "int_"     # 前缀
     postfix: " | "     # 后缀，特殊字符加引号，否则无法解析。
+
+  - field: nesting # 这种简单的两个字段组合，也支持用前缀的方式实现。
+    fields:
+    - field: child1
+      range: 1-3
+    - field: child
+      range: A-E
+      postfix: ___
+
+  - field: range_n_m # 前后缀支持区间
+    prefix: 1-3
+    range: A-E
+    postfix: ___
+
+  - field: range_mul # 区间多片段
+    prefix: 1-2, a-d
+    range: A-E
+    postfix: ___
+
+  - field: step # 区间步长
+    prefix: 1-6:2
+    range: A-E
+    postfix: ___
+
+  - field: random     # 区间随机
+    prefix: 1-3:R
+    range: A-E   # 此处使用反引号，生成字符串"1-9"和"a-z"。注意：需要用[]符号扩起，否则不是合法的YAML文件格式。
+    postfix: ___

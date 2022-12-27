@@ -56,7 +56,10 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopL
 		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
 
-	field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
+	if len(field.Values) == 0 {
+		field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
+	}
+
 	s.LoopService.LoopAndFixFieldValues(field, true)
 }
 

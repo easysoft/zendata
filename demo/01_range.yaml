@@ -9,7 +9,7 @@ fields:
     range: [`1-2`,`a-z`]   # 此处使用反引号，生成字符串"1-9"和"a-z"。注意：需要用[]符号扩起，否则不是合法的YAML文件格式。
     postfix: "\t"
   - field: f3    # 区间， 浮点型
-    range: 1.1-2.1:0.6
+    range: 1.1-9.01:0.6
     postfix: "\t"
 
   - field: f4
