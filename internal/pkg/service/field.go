@@ -121,7 +121,7 @@ func (s *FieldService) CreateField(field *model.DefField) {
 		field.Type = consts.FieldTypeList
 	}
 	if field.Length > 0 {
-		field.Length = field.Length - len(field.Prefix) - len(field.Postfix)
+		// field.Length = field.Length - len(field.Prefix) - len(field.Postfix)
 		if field.Length < 0 {
 			field.Length = 0
 		}
