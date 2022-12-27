@@ -11,7 +11,7 @@ import (
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"os"
 )
 
 type ResService struct {
@@ -101,7 +101,7 @@ func (s *ResService) GetResValueFromExcelOrYaml(resFile, resType, sheet string, 
 func (s *ResService) GetReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
 	resFile, _, _ := fileUtils.GetResProp(inst.From, inst.FileDir)
 
-	yamlContent, err := ioutil.ReadFile(resFile)
+	yamlContent, err := os.ReadFile(resFile)
 	yamlContent = helper.ReplaceSpecialChars(yamlContent)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
