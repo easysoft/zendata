@@ -22,6 +22,7 @@ import (
 )
 
 type ExcelService struct {
+	ExpressionService *ExpressionService `inject:""`
 }
 
 func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField, total int) (
@@ -359,6 +360,35 @@ func (s *ExcelService) ReadDataFromSQLite(field model.DefField, dbName string, t
 	}
 
 	return list, fieldSelect
+}
+
+func (s *ExcelService) genExcelValuesWithExpr(field *model.DefField, fieldNameToValuesMap map[string][]interface{}) (
+	values []interface{}) {
+	selects := s.ExpressionService.ReplaceVariableValues(field.Select, fieldNameToValuesMap)
+	wheres := s.ExpressionService.ReplaceVariableValues(field.Where, fieldNameToValuesMap)
+
+	childMapValues := make([][]interface{}, 0)
+	for index, slct := range selects {
+		temp := *field
+		temp.Select = slct
+		temp.Where = wheres[index%len(wheres)]
+
+		resFile, _, sheet := fileUtils.GetResProp(temp.From, temp.FileDir)
+
+		selectCount := vari.GlobalVars.Total/len(selects) + 1
+		mp := s.generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
+		for _, items := range mp {
+			childMapValues = append(childMapValues, items)
+		}
+	}
+	for index := 0; len(values) < vari.GlobalVars.Total; {
+		for i, _ := range selects {
+			values = append(values, childMapValues[i][index%len(childMapValues[i])])
+		}
+		index++
+	}
+
+	return
 }
 
 type ExcelChangedResult struct {

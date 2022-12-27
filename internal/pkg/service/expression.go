@@ -102,7 +102,7 @@ func (s *ExpressionService) GenExpressionValues(field model.DefField, valuesMap 
 	return
 }
 
-func (s *ExpressionService) ReplaceVariableValues(exp string, valuesMap map[string][]string) (ret []string) {
+func (s *ExpressionService) ReplaceVariableValues(exp string, valuesMap map[string][]interface{}) (ret []string) {
 	reg := regexp.MustCompile(`\$\{([_,a-z,A-Z,0-9]+)\}`)
 	arr := reg.FindAllStringSubmatch(exp, -1)
 
@@ -126,7 +126,7 @@ func (s *ExpressionService) ReplaceVariableValues(exp string, valuesMap map[stri
 
 			valStr := "N/A"
 			if len(referValues) > 0 {
-				valStr = referValues[i%len(referValues)]
+				valStr = referValues[i%len(referValues)].(string)
 				valStr = strings.TrimLeft(valStr, referField.Prefix)
 				valStr = strings.TrimRight(valStr, referField.Postfix)
 			}

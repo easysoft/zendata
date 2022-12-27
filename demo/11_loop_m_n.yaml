@@ -4,6 +4,3 @@ fields:
     loop:  1-10             # 循环1次，2次……
     loopfix: _              # 每次循环的连接符。
     postfix: "\t"
-
-
-

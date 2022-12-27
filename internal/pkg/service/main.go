@@ -24,7 +24,10 @@ type MainService struct {
 func (s *MainService) GenerateFromContents(files []string) {
 	startTime := time.Now().Unix()
 
-	count := s.GenerateDataByFile(files)
+	count, err := s.GenerateDataByFile(files)
+	if err != nil {
+		return
+	}
 
 	s.PrintOutput()
 
@@ -35,7 +38,7 @@ func (s *MainService) GenerateFromContents(files []string) {
 	}
 }
 
-func (s *MainService) GenerateDataByFile(files []string) (count int) {
+func (s *MainService) GenerateDataByFile(files []string) (count int, err error) {
 	if files[0] != "" {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 	} else {
@@ -44,19 +47,20 @@ func (s *MainService) GenerateDataByFile(files []string) (count int) {
 
 	// get def and res data
 	contents := s.FileService.LoadFilesContents(files)
-	count = s.GenerateDataByContents(contents)
+	count, err = s.GenerateDataByContents(contents)
 
 	return
 }
 
-func (s *MainService) GenerateDataByContents(contents [][]byte) (count int) {
+func (s *MainService) GenerateDataByContents(contents [][]byte) (count int, err error) {
 	vari.GlobalVars.DefData = s.DefService.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
 
 	s.ParamService.FixTotalNum()
 
 	s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
 
-	if err := s.ParamService.CheckParams(); err != nil {
+	err = s.ParamService.CheckParams()
+	if err != nil {
 		return
 	}
 

@@ -3,8 +3,8 @@ fields:
     prefix: '  '
     froms:
       - from: ip.v1.yaml
-        use: privateB{10}
+        use: privateB{3}
       - from: ip.v1.yaml
-        use: ipA{10} 
+        use: publicA{6}
 
 

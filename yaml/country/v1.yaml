@@ -5,212 +5,212 @@ version: 1.0
 
 field: country
 instances:
-  - instance: cnfull
+  - instance: chinese_full
     note: 国家中文全名
     fields:
       - field: field1
         from: country.v1
-        select: cnfull
+        select: chinese_full
         postfix: "\t"
 
-  - instance: cnshort
+  - instance: chinese_short
     note: 国家中文名
     fields:
       - field: field1
         from: country.v1
-        select: cnshort
+        select: chinese_short
         postfix: "\t"
 
-  - instance: enfull
+  - instance: english_full
     note: 国家英文全名
     fields:
       - field: field1
         from: country.v1
-        select: enfull
+        select: english_full
         postfix: "\t"
 
-  - instance: enshort
+  - instance: english_short
     note: 国家英文全名
     fields:
       - field: field1
         from: country.v1
-        select: enshort
+        select: english_short
         postfix: "\t"
 
-  - instance: areacode
+  - instance: area_code
     note: 国家编码
     fields:
       - field: field1
         from: country.v1
-        select: areacode
+        select: area_code
         postfix: "\t"
 
   # 亚洲国家
-  - instance: asia_cnfull
+  - instance: asia_chinese_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnfull
+        select: chinese_full
         where: continent = 'asia'
         postfix: "\t"
-  - instance: asia_cnshort
+  - instance: asia_chinese_short
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnshort
+        select: chinese_short
         where: continent = 'asia'
         postfix: "\t"
-  - instance: asia_enfull
+  - instance: asia_english_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: enfull
+        select: english_full
         where: continent = 'asia'
         postfix: "\t"
-  - instance: asia_areacode
+  - instance: asia_area_code
     note:
     fields:
       - field: field1
         from: country.v1
-        select: areacode
+        select: area_code
         where: continent = 'asia'
         postfix: "\t"
 
   # 欧洲国家
-  - instance: europe_cnfull
+  - instance: europe_chinese_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnfull
+        select: chinese_full
         where: continent = 'europe'
         postfix: "\t"
-  - instance: europe_cnshort
+  - instance: europe_chinese_short
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnshort
+        select: chinese_short
         where: continent = 'europe'
         postfix: "\t"
-  - instance: europe_enfull
+  - instance: europe_english_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: enfull
+        select: english_full
         where: continent = 'europe'
         postfix: "\t"
-  - instance: europe_areacode
+  - instance: europe_area_code
     note:
     fields:
       - field: field1
         from: country.v1
-        select: areacode
+        select: area_code
         where: continent = 'europe'
         postfix: "\t"
 
   # 北美国家
-  - instance: north_america_cnfull
+  - instance: north_america_chinese_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnfull
+        select: chinese_full
         where: continent = 'north america'
         postfix: "\t"
-  - instance: north_america_cnshort
+  - instance: north_america_chinese_short
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnshort
+        select: chinese_short
         where: continent = 'north america'
         postfix: "\t"
-  - instance: north_america_enfull
+  - instance: north_america_english_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: enfull
+        select: english_full
         where: continent = 'north america'
         postfix: "\t"
-  - instance: north_america_areacode
+  - instance: north_america_area_code
     note:
     fields:
       - field: field1
         from: country.v1
-        select: areacode
+        select: area_code
         where: continent = 'north america'
         postfix: "\t"
 
   # 南美国家
-  - instance: south_america_cnfull
+  - instance: south_america_chinese_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnfull
+        select: chinese_full
         where: continent = 'south america'
         postfix: "\t"
-  - instance: south_america_cnshort
+  - instance: south_america_chinese_short
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnshort
+        select: chinese_short
         where: continent = 'south america'
         postfix: "\t"
-  - instance: south_america_enfull
+  - instance: south_america_english_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: enfull
+        select: english_full
         where: continent = 'south america'
         postfix: "\t"
-  - instance: south_america_areacode
+  - instance: south_america_area_code
     note:
     fields:
       - field: field1
         from: country.v1
-        select: areacode
+        select: area_code
         where: continent = 'south america'
         postfix: "\t"
 
   # 大洋洲国家
-  - instance: oceania_cnfull
+  - instance: oceania_chinese_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnfull
+        select: chinese_full
         where: continent = 'oceania'
         postfix: "\t"
-  - instance: oceania_cnshort
+  - instance: oceania_chinese_short
     note:
     fields:
       - field: field1
         from: country.v1
-        select: cnshort
+        select: chinese_short
         where: continent = 'oceania'
         postfix: "\t"
-  - instance: oceania_enfull
+  - instance: oceania_english_full
     note:
     fields:
       - field: field1
         from: country.v1
-        select: enfull
+        select: english_full
         where: continent = 'oceania'
         postfix: "\t"
-  - instance: oceania_areacode
+  - instance: oceania_area_code
     note:
     fields:
       - field: field1
         from: country.v1
-        select: areacode
+        select: area_code
         where: continent = 'oceania'
         postfix: "\t"

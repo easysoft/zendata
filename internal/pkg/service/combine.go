@@ -2,6 +2,7 @@ package service
 
 import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -9,6 +10,7 @@ import (
 )
 
 type CombineService struct {
+	ExcelService       *ExcelService       `inject:""`
 	ExpressionService  *ExpressionService  `inject:""`
 	LoopService        *LoopService        `inject:""`
 	OutputService      *OutputService      `inject:""`
@@ -44,6 +46,11 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopL
 			childValues = s.ExpressionService.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
 		}
 
+		// select from excel with expr
+		if genHelper.SelectExcelWithExpr(child) {
+			childValues = s.ExcelService.genExcelValuesWithExpr(&child, fieldNameToValuesMap)
+		}
+
 		arrByField = append(arrByField, childValues)
 
 		// clear child values after combined
@@ -56,7 +63,7 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopL
 		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
 	}
 
-	if len(field.Values) == 0 {
+	if len(field.Values) == 0 && field.Fields != nil {
 		field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
 	}
 

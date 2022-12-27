@@ -44,7 +44,11 @@ func (c *DataCtrl) GenerateByContent(ctx iris.Context) {
 	contents := [][]byte{defaultContent, configContent}
 	contents = c.FileService.HandleFileBuffers(contents)
 
-	c.MainService.GenerateDataByContents(contents)
+	_, err := c.MainService.GenerateDataByContents(contents)
+	if err != nil {
+		return
+	}
+
 	c.MainService.PrintOutput()
 }
 

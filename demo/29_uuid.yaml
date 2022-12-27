@@ -1,7 +1,7 @@
 fields:
   - field: f1
     from: uuid.v1.yaml
-    use: by_format
+    use: length32_random
     postfix: "\t"
 
   - field: f2
