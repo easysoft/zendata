@@ -1,7 +1,7 @@
 package action
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -40,7 +40,7 @@ func Generate(files []string, fieldsToExportStr, format, table string) (lines []
 
 		count = 1
 		entTime := time.Now().Unix()
-		if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
+		if vari.GlobalVars.RunMode == consts.RunModeServerRequest {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 		}
 	}
@@ -73,17 +73,17 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	//		rows, colIsNumArr, err = gen.RetrieveCacheBatch(cacheKey, &fieldsToExport, batch)
 	//	}
 	//
-	//	vari.GlobalVars.DefDataType = constant.DefTypeText
+	//	vari.GlobalVars.DefDataType = consts.DefTypeText
 	//
 	//} else if cacheKey != "" {
-	//	if vari.GlobalVars.Total > constant.MaxNumbForAsync { // gen batch data and cache
+	//	if vari.GlobalVars.Total > consts.MaxNumbForAsync { // gen batch data and cache
 	//		rows, colIsNumArr, err = gen.SyncGenCacheAndReturnFirstPart(contents, &fieldsToExport)
 	//	} else {
 	//		rows, colIsNumArr, err = gen.GenerateFromContents(contents, &fieldsToExport)
 	//		gen.CreateCache(cacheKey, fieldsToExport, rows, colIsNumArr)
 	//	}
-	//} else if cacheKey == "" && vari.GlobalVars.Total > constant.MaxNumbForAsync {
-	//	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("miss_cache_param", constant.MaxNumbForAsync))
+	//} else if cacheKey == "" && vari.GlobalVars.Total > consts.MaxNumbForAsync {
+	//	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("miss_cache_param", consts.MaxNumbForAsync))
 	//	return
 	//} else {
 
@@ -113,7 +113,7 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 	count = len(rows)
 
 	entTime := time.Now().Unix()
-	if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
+	if vari.GlobalVars.RunMode == consts.RunModeServerRequest {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("server_response", count, entTime-startTime))
 	}
 
@@ -121,13 +121,13 @@ func GenerateByContent(contents [][]byte, fieldsToExportStr, format, table strin
 }
 
 func IsFromProtobuf(file string) bool {
-	return strings.ToLower(filepath.Ext(file)) == "."+constant.FormatProto
+	return strings.ToLower(filepath.Ext(file)) == "."+consts.FormatProto
 }
 
 func IsFromExcel(format string) bool {
-	return format == constant.FormatExcel || format == constant.FormatCsv
+	return format == consts.FormatExcel || format == consts.FormatCsv
 }
 
 func IsGenArticle(format string) bool {
-	return format == constant.FormatText && vari.GlobalVars.DefData.Type == constant.DefTypeArticle
+	return format == consts.FormatText && vari.GlobalVars.DefData.Type == consts.DefTypeArticle
 }

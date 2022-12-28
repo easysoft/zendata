@@ -3,7 +3,7 @@ package service
 import (
 	"encoding/csv"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
@@ -22,13 +22,13 @@ func (s *OutputService) GenExcel() {
 	var f *excelize.File
 	csvData := make([][]string, 0)
 
-	if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+	if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 		f = excelize.NewFile()
 		index := f.NewSheet(sheetName)
 		f.SetActiveSheet(index)
 
 		s.printExcelHeader(f)
-	} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
+	} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 		s.printCsvHeader(&csvData)
 		csvWriter = csv.NewWriter(logUtils.OutputFileWriter)
 	}
@@ -40,11 +40,11 @@ func (s *OutputService) GenExcel() {
 		for _, field := range vari.GlobalVars.ExportFields {
 			val := record[field]
 
-			if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+			if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 				colName, _ := excelize.CoordinatesToCellName(j+1, i+2)
 				f.SetCellValue(sheetName, colName, val)
 
-			} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
+			} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 				csvRow = append(csvRow, val.(string))
 			}
 
@@ -55,9 +55,9 @@ func (s *OutputService) GenExcel() {
 	}
 
 	var err error
-	if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+	if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 		err = f.SaveAs(logUtils.OutputFilePath)
-	} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
+	} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 		err = csvWriter.WriteAll(csvData)
 		csvWriter.Flush()
 	}

@@ -2,7 +2,7 @@ package genValue
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"math"
 	"reflect"
@@ -18,7 +18,7 @@ func GenerateItems[TV ValType, TS StepType](start, end TV, step TS,
 
 	limit := getLimit(start, end, step, typ, isRand)
 
-	total := constant.MaxNumb
+	total := consts.MaxNumb
 	if count > 0 && count < total {
 		total = count
 	}
@@ -133,7 +133,7 @@ func IsFinish[TV ValType, TS StepType](a interface{}, b TV, step TS) bool {
 }
 
 func getLimit[TV ValType, TS StepType](start TV, end TV, step TS, typ string, isRand bool) (limit int64) {
-	limit = int64(constant.MaxNumb)
+	limit = int64(consts.MaxNumb)
 
 	if isRand {
 		if typ == "int" || typ == "char" {
@@ -144,8 +144,8 @@ func getLimit[TV ValType, TS StepType](start TV, end TV, step TS, typ string, is
 			limit = int64(math.Floor(limitFloat))
 		}
 
-		//if limit > int64(constant.MaxNumb) {
-		//	limit = int64(constant.MaxNumb)
+		//if limit > int64(consts.MaxNumb) {
+		//	limit = int64(consts.MaxNumb)
 		//}
 	}
 
@@ -156,7 +156,7 @@ func RepeatSameVal[TV ValType](val TV, repeat int, arr *[]interface{}) {
 	for round := 0; round < repeat; round++ {
 		*arr = append(*arr, val)
 
-		if len(*arr) > constant.MaxNumb {
+		if len(*arr) > consts.MaxNumb {
 			break
 		}
 	}

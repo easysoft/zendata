@@ -2,7 +2,7 @@ package gen
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -77,13 +77,13 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 					fieldValue.Values = append(fieldValue.Values, item)
 
 					count++
-					if count >= constant.MaxNumb {
+					if count >= consts.MaxNumb {
 						break
 					}
 				}
 
 				count++
-				if count >= constant.MaxNumb {
+				if count >= consts.MaxNumb {
 					break
 				}
 			}
@@ -98,13 +98,13 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 					fieldValue.Values = append(fieldValue.Values, item)
 
 					count++
-					if count >= constant.MaxNumb {
+					if count >= consts.MaxNumb {
 						break
 					}
 				}
 
 				count++
-				if count >= constant.MaxNumb {
+				if count >= consts.MaxNumb {
 					break
 				}
 			}

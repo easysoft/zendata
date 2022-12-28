@@ -3,7 +3,7 @@ package serverService
 import (
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -27,7 +27,7 @@ func (s *TextService) List(keywords string, page int) (list []*model.ZdText, tot
 func (s *TextService) Get(id int) (text model.ZdText, dirs []model.Dir) {
 	text, _ = s.TextRepo.Get(uint(id))
 
-	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
+	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
 
 	return
 }
@@ -35,7 +35,7 @@ func (s *TextService) Get(id int) (text model.ZdText, dirs []model.Dir) {
 func (s *TextService) Save(text *model.ZdText) (err error) {
 	text.Folder = serverUtils.DealWithPathSepRight(text.Folder)
 	text.Path = vari.ZdPath + text.Folder + serverUtils.AddExt(text.FileName, ".txt")
-	text.ReferName = helper.PathToName(text.Path, constant.ResDirYaml, constant.ResTypeText)
+	text.ReferName = helper.PathToName(text.Path, consts.ResDirYaml, consts.ResTypeText)
 
 	if text.ID == 0 {
 		err = s.Create(text)
@@ -109,10 +109,10 @@ func (s *TextService) SyncToDB(file model.ResFile) (err error) {
 		Folder:   serverUtils.GetRelativePath(file.Path),
 		FileName: fileUtils.GetFileName(file.Path),
 	}
-	if strings.Index(text.Path, constant.ResDirYaml) > -1 {
-		text.ReferName = helper.PathToName(text.Path, constant.ResDirYaml, constant.ResTypeText)
+	if strings.Index(text.Path, consts.ResDirYaml) > -1 {
+		text.ReferName = helper.PathToName(text.Path, consts.ResDirYaml, consts.ResTypeText)
 	} else {
-		text.ReferName = helper.PathToName(text.Path, constant.ResDirUsers, constant.ResTypeText)
+		text.ReferName = helper.PathToName(text.Path, consts.ResDirUsers, consts.ResTypeText)
 	}
 	text.Content = fileUtils.ReadFile(file.Path)
 

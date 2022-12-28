@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -68,8 +68,8 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 
 	// 3. get combined values for parent field
 	isRecursive := vari.GlobalVars.Recursive
-	if stringUtils.InArray(field.Mode, constant.Modes) { // set on field level
-		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
+	if stringUtils.InArray(field.Mode, consts.Modes) { // set on field level
+		isRecursive = field.Mode == consts.ModeRecursive || field.Mode == consts.ModeRecursiveShort
 	}
 
 	values = combineChildrenValues(arrOfArr, isRecursive, total)
@@ -119,7 +119,7 @@ func GenValuesForSingleRes(field *model.DefField, total int) (values []string) {
 		resKey := field.Select
 
 		// deal with the key
-		if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
+		if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 			resKey = resKey + "_" + field.Field
 		}
 
@@ -152,7 +152,7 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 
 	format := strings.TrimSpace(field.Format)
 
-	if field.Type == constant.FieldTypeTimestamp && field.Format != "" {
+	if field.Type == consts.FieldTypeTimestamp && field.Format != "" {
 		str = time.Unix(val.(int64), 0).Format(field.Format)
 		return str
 	}
@@ -266,7 +266,7 @@ func addFix(str string, field *model.DefField, count int, withFix bool) (ret str
 	if withFix && !vari.GlobalVars.Trim {
 		str = prefix + str + postfix
 	}
-	if vari.GlobalVars.OutputFormat == constant.FormatText && !vari.GlobalVars.Trim {
+	if vari.GlobalVars.OutputFormat == consts.FormatText && !vari.GlobalVars.Trim {
 		str += divider
 	}
 

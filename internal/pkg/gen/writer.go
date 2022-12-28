@@ -3,7 +3,7 @@ package gen
 import (
 	"encoding/csv"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
@@ -24,9 +24,9 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 	index := f.NewSheet(sheetName)
 	f.SetActiveSheet(index)
 
-	if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+	if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 		printExcelHeader(fields, f)
-	} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
+	} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 		csvWriter = csv.NewWriter(logUtils.OutputFileWriter)
 	}
 
@@ -41,11 +41,11 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 				//col = stringUtils.AddPad(col, field)
 			}
 
-			if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+			if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 				colName, _ := excelize.CoordinatesToCellName(j+1, i+2)
 				f.SetCellValue(sheetName, colName, col)
 
-			} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
+			} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 				csvRow = append(csvRow, col)
 			}
 		}
@@ -53,9 +53,9 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 	}
 
 	var err error
-	if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+	if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 		err = f.SaveAs(logUtils.OutputFilePath)
-	} else if vari.GlobalVars.OutputFormat == constant.FormatCsv {
+	} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 		err = csvWriter.WriteAll(csvData)
 		csvWriter.Flush()
 	}

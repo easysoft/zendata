@@ -1,7 +1,7 @@
 package service
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -31,11 +31,11 @@ func (s *FileService) ComputerReferFilePath(file string, field *model.DefField) 
 		return
 	}
 
-	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
+	resPath = vari.ZdPath + consts.ResDirUsers + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}
-	resPath = vari.ZdPath + constant.ResDirYaml + constant.PthSep + file
+	resPath = vari.ZdPath + consts.ResDirYaml + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}

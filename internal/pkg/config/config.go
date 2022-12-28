@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -56,15 +56,15 @@ func InitConfig(root string) {
 	i118Utils.InitI118(vari.Config.Language)
 
 	//logUtils.PrintToWithColor("workdir = "+vari.ZdPath, color.FgCyan)
-	constant.SqliteFile = strings.Replace(constant.SqliteFile, "file:", "file:"+vari.ZdPath, 1)
-	//logUtils.PrintToWithColor("dbfile = "+constant.SqliteFile, color.FgCyan)
+	consts.SqliteFile = strings.Replace(consts.SqliteFile, "file:", "file:"+vari.ZdPath, 1)
+	//logUtils.PrintToWithColor("dbfile = "+consts.SqliteFile, color.FgCyan)
 }
 
 func SaveConfig(conf model.Config) error {
 	fileUtils.MkDirIfNeeded(filepath.Dir(vari.CfgFile))
 
 	if conf.Version == 0 {
-		conf.Version = constant.ConfigVer
+		conf.Version = consts.ConfigVer
 	}
 
 	cfg := ini.Empty()
@@ -116,7 +116,7 @@ func getInst() model.Config {
 
 	ini.MapTo(&vari.Config, vari.CfgFile)
 
-	if vari.Config.Version != constant.ConfigVer { // old config file, re-init
+	if vari.Config.Version != consts.ConfigVer { // old config file, re-init
 		if vari.Config.Language != "en" && vari.Config.Language != "zh" {
 			vari.Config.Language = "en"
 		}
@@ -140,7 +140,7 @@ func CheckConfigPermission() {
 func CheckConfigReady() {
 	if !fileUtils.FileExist(vari.CfgFile) {
 		logUtils.PrintTo(vari.CfgFile + "no exist")
-		if vari.GlobalVars.RunMode == constant.RunModeServer {
+		if vari.GlobalVars.RunMode == consts.RunModeServer {
 			conf := model.Config{Language: "zh", Version: 1}
 			SaveConfig(conf)
 		} else {
@@ -224,7 +224,7 @@ func addZdToPathEnvVarWin(home string) {
 }
 
 func addZdToPathEnvVarForLinux(home string) {
-	path := fmt.Sprintf("%s%s%s", home, constant.PthSep, ".bash_profile")
+	path := fmt.Sprintf("%s%s%s", home, consts.PthSep, ".bash_profile")
 
 	content := fileUtils.ReadFile(path)
 	if strings.Contains(content, vari.ZdPath) {

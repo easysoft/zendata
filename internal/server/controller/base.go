@@ -1,7 +1,7 @@
 package controller
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 )
 
@@ -13,12 +13,12 @@ func NewBaseCtrl() *BaseCtrl {
 }
 
 func (c *BaseCtrl) SuccessResp(data interface{}) (ret domain.Response) {
-	ret = domain.Response{Code: constant.Success.Code, Data: data}
+	ret = domain.Response{Code: consts.Success.Code, Data: data}
 
 	return
 }
 
-func (c *BaseCtrl) ErrResp(respCode constant.ResponseCode, msg string) (ret domain.Response) {
+func (c *BaseCtrl) ErrResp(respCode consts.ResponseCode, msg string) (ret domain.Response) {
 	ret = domain.Response{Code: respCode.Code, Msg: c.ErrMsg(respCode, msg)}
 
 	return
@@ -30,7 +30,7 @@ func (c *BaseCtrl) BizErrResp(err *domain.BizError, msg string) (ret domain.Resp
 	return
 }
 
-func (c *BaseCtrl) ErrMsg(err constant.ResponseCode, msg string) (ret string) {
+func (c *BaseCtrl) ErrMsg(err consts.ResponseCode, msg string) (ret string) {
 	ret += msg
 
 	return

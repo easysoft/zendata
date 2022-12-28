@@ -3,7 +3,7 @@ package helper
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -36,14 +36,14 @@ func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWid
 	}
 
 	if resSrc == "work" {
-		GetFilesAndDirs(vari.WorkDir, constant.ResDirUsers, &res)
+		GetFilesAndDirs(vari.WorkDir, consts.ResDirUsers, &res)
 	} else {
-		for _, key := range constant.ResKeys {
+		for _, key := range consts.ResKeys {
 			GetFilesAndDirs(key, key, &res)
 		}
 	}
 
-	for _, key := range constant.ResKeys {
+	for _, key := range consts.ResKeys {
 		arr := make([]model.ResFile, 0)
 
 		for _, item := range res[key] {
@@ -53,9 +53,9 @@ func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWid
 			isArticleFiles := false
 			var title, desc, tp string
 
-			if key == constant.ResDirData { // data dir contains excel
+			if key == consts.ResDirData { // data dir contains excel
 				title, desc, tp = ReadExcelInfo(pth)
-			} else if key == constant.ResDirYaml || key == constant.ResDirUsers {
+			} else if key == consts.ResDirYaml || key == consts.ResDirUsers {
 				isArticleFiles, _ = regexp.MatchString("yaml.article", pth)
 
 				if fileExt == ".txt" { // ignore packaged article text file
@@ -75,7 +75,7 @@ func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWid
 				nameWidth = lent
 			}
 
-			if key == constant.ResDirData {
+			if key == consts.ResDirData {
 				sheets := strings.Split(title, "|")
 				for _, sheet := range sheets {
 					lent2 := runewidth.StringWidth(sheet)
@@ -106,7 +106,7 @@ func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 	yamlMsg := ""
 	usersMsg := ""
 	idx := 0
-	for _, key := range constant.ResKeys {
+	for _, key := range consts.ResKeys {
 		arr := res[key]
 
 		for _, item := range arr {
@@ -125,11 +125,11 @@ func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 				title = title + strings.Repeat(" ", titleWidth-runewidth.StringWidth(title))
 				msg := fmt.Sprintf("%s  %s  %s\n", name, title, desc)
 
-				if key == constant.ResDirData {
+				if key == consts.ResDirData {
 					dataMsg = dataMsg + msg
-				} else if key == constant.ResDirYaml {
+				} else if key == consts.ResDirYaml {
 					yamlMsg = yamlMsg + msg
-				} else if key == constant.ResDirUsers {
+				} else if key == consts.ResDirUsers {
 					usersMsg = usersMsg + msg
 				}
 
@@ -208,14 +208,14 @@ func ReadExcelInfo(path string) (title, desc, resType string) {
 	}
 
 	desc = i118Utils.I118Prt.Sprintf("excel_data")
-	resType = constant.ResTypeExcel
+	resType = consts.ResTypeExcel
 	return
 }
 
 func ReadTextInfo(path, key string) (title, desc, resType string) {
-	title = PathToName(path, key, constant.ResTypeText)
+	title = PathToName(path, key, consts.ResTypeText)
 	desc = i118Utils.I118Prt.Sprintf("text_data")
-	resType = constant.ResTypeText
+	resType = consts.ResTypeText
 	return
 }
 
@@ -225,10 +225,10 @@ func PathToName(path, key, tp string) string {
 		path = strings.Replace(path, vari.WorkDir, "", 1)
 	}
 
-	nameSep := constant.PthSep
-	if tp != constant.ResTypeText && tp != constant.ResTypeYaml && tp != constant.ResTypeConfig {
+	nameSep := consts.PthSep
+	if tp != consts.ResTypeText && tp != consts.ResTypeYaml && tp != consts.ResTypeConfig {
 		nameSep = "."
-		path = strings.ReplaceAll(path, constant.PthSep, nameSep)
+		path = strings.ReplaceAll(path, consts.PthSep, nameSep)
 		path = path[strings.Index(path, nameSep)+len(nameSep):]
 	}
 	if isWorkData {
@@ -237,7 +237,7 @@ func PathToName(path, key, tp string) string {
 
 	sep := nameSep + key + nameSep
 	name := path[strings.Index(path, sep)+len(sep):]
-	if key == constant.ResDirData { // remove .xlsx postfix for excel data
+	if key == consts.ResDirData { // remove .xlsx postfix for excel data
 		name = name[:strings.LastIndex(name, nameSep)]
 	}
 
@@ -261,13 +261,13 @@ func SortByName(arr []model.ResFile) []model.ResFile {
 
 func GetYamlResType(def model.DefInfo) string {
 	if def.Ranges != nil {
-		return constant.ResTypeRanges
+		return consts.ResTypeRanges
 	} else if def.Instances != nil {
-		return constant.ResTypeInstances
+		return consts.ResTypeInstances
 	} else if def.Fields != nil {
-		return constant.ResTypeYaml
+		return consts.ResTypeYaml
 	} else {
-		return constant.ResTypeConfig
+		return consts.ResTypeConfig
 	}
 
 	return ""

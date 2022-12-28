@@ -1,7 +1,7 @@
 package service
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -43,7 +43,7 @@ func (s *ValueService) CreateUlidField(field *model.DefField) {
 		field.Values = append(field.Values, val)
 
 		count++
-		if count >= constant.MaxNumb || count > vari.GlobalVars.Total {
+		if count >= consts.MaxNumb || count > vari.GlobalVars.Total {
 			break
 		}
 	}

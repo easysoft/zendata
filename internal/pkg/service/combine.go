@@ -1,7 +1,7 @@
 package service
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -59,8 +59,8 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopL
 
 	// 3. get combined values for parent field
 	isRecursive := vari.GlobalVars.Recursive
-	if stringUtils.InArray(field.Mode, constant.Modes) { // set on field level
-		isRecursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
+	if stringUtils.InArray(field.Mode, consts.Modes) { // set on field level
+		isRecursive = field.Mode == consts.ModeRecursive || field.Mode == consts.ModeRecursiveShort
 	}
 
 	if len(field.Values) == 0 && field.Fields != nil {

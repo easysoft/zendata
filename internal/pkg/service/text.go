@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -81,13 +81,13 @@ func (s *TextService) CreateFieldValuesFromText(field *model.DefField) {
 					field.Values = append(field.Values, item)
 
 					count++
-					if count >= constant.MaxNumb {
+					if count >= consts.MaxNumb {
 						break
 					}
 				}
 
 				count++
-				if count >= constant.MaxNumb {
+				if count >= consts.MaxNumb {
 					break
 				}
 			}
@@ -102,13 +102,13 @@ func (s *TextService) CreateFieldValuesFromText(field *model.DefField) {
 					field.Values = append(field.Values, item)
 
 					count++
-					if count >= constant.MaxNumb {
+					if count >= consts.MaxNumb {
 						break
 					}
 				}
 
 				count++
-				if count >= constant.MaxNumb {
+				if count >= consts.MaxNumb {
 					break
 				}
 			}

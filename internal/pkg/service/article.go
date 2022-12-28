@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -114,7 +114,7 @@ func (s *ArticleService) getDataMap(numMap map[string]int, nameMap map[string]st
 	field.Rand = false
 	for key, _ := range numMap {
 		originTotal := vari.GlobalVars.Total
-		vari.GlobalVars.Total = constant.MaxNumb // load all words
+		vari.GlobalVars.Total = consts.MaxNumb // load all words
 
 		slct, ok := nameMap[key]
 		if ok {

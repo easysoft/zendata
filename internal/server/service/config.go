@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -33,7 +33,7 @@ func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []model.Dir) {
 		config, _ = s.ConfigRepo.Get(uint(id))
 	}
 
-	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
+	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
 
 	return
 }
@@ -41,7 +41,7 @@ func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []model.Dir) {
 func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
 	config.Folder = serverUtils.DealWithPathSepRight(config.Folder)
 	config.Path = vari.ZdPath + config.Folder + serverUtils.AddExt(config.FileName, ".yaml")
-	config.ReferName = helper.PathToName(config.Path, constant.ResDirYaml, constant.ResTypeConfig)
+	config.ReferName = helper.PathToName(config.Path, consts.ResDirYaml, consts.ResTypeConfig)
 
 	if config.ID == 0 {
 		err = s.Create(config)
@@ -142,10 +142,10 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, vari.ZdPath+constant.ResDirYaml) > -1 {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeConfig)
+	if strings.Index(po.Path, vari.ZdPath+consts.ResDirYaml) > -1 {
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirYaml, consts.ResTypeConfig)
 	} else {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeConfig)
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirUsers, consts.ResTypeConfig)
 	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)

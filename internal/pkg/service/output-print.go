@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
@@ -20,19 +20,19 @@ type PrintService struct {
 func (s *PrintService) PrintLines() (lines []interface{}) {
 	var sqlHeader string
 
-	if vari.GlobalVars.OutputFormat == constant.FormatText {
+	if vari.GlobalVars.OutputFormat == consts.FormatText {
 		s.PrintTextHeader()
 
-	} else if vari.GlobalVars.OutputFormat == constant.FormatSql {
+	} else if vari.GlobalVars.OutputFormat == consts.FormatSql {
 		sqlHeader = s.getInsertSqlHeader()
 		if vari.GlobalVars.DBDsn != "" {
 			lines = append(lines, sqlHeader)
 		}
 
-	} else if vari.GlobalVars.OutputFormat == constant.FormatJson {
+	} else if vari.GlobalVars.OutputFormat == consts.FormatJson {
 		//s.PrintJsonHeader()
 
-	} else if vari.GlobalVars.OutputFormat == constant.FormatXml {
+	} else if vari.GlobalVars.OutputFormat == consts.FormatXml {
 		//s.PrintXmlHeader()
 	}
 
@@ -65,11 +65,11 @@ func (s *PrintService) PrintLines() (lines []interface{}) {
 	//	colVal := col
 	//	if !colIsNumArr[j] {
 	//		switch vari.GenVars.DBType {
-	//		case constant.DBTypeSqlServer:
+	//		case consts.DBTypeSqlServer:
 	//			colVal = "'" + stringUtils.EscapeValueOfSqlServer(colVal) + "'"
-	//		case constant.DBTypeOracle:
+	//		case consts.DBTypeOracle:
 	//			colVal = "'" + stringUtils.EscapeValueOfOracle(colVal) + "'"
-	//		// case constant.DBTypeMysql:
+	//		// case consts.DBTypeMysql:
 	//		default:
 	//			colVal = "'" + stringUtils.EscapeValueOfMysql(colVal) + "'"
 	//		}
@@ -77,13 +77,13 @@ func (s *PrintService) PrintLines() (lines []interface{}) {
 	//	valuesForSql = append(valuesForSql, colVal)
 	//} // for cols
 	//
-	//if format == constant.FormatText && vari.GlobalVars.DefData.Type == constant.DefTypeArticle { // article need to write to more than one files
+	//if format == consts.FormatText && vari.GlobalVars.DefData.Type == consts.DefTypeArticle { // article need to write to more than one files
 	//	lines = append(lines, lineForText)
 	//
-	//} else if format == constant.FormatText && vari.GlobalVars.DefData.Type != constant.DefTypeArticle {
+	//} else if format == consts.FormatText && vari.GlobalVars.DefData.Type != consts.DefTypeArticle {
 	//	logUtils.PrintLine(lineForText)
 	//
-	//} else if format == constant.FormatSql {
+	//} else if format == consts.FormatSql {
 	//	if vari.DBDsn != "" { // add to return array for exec sql
 	//		sql := strings.Join(valuesForSql, ", ")
 	//		lines = append(lines, sql)
@@ -92,11 +92,11 @@ func (s *PrintService) PrintLines() (lines []interface{}) {
 	//		sql := s.genSqlLine(sqlHeader, valuesForSql, vari.GenVars.DBType)
 	//		logUtils.PrintLine(sql)
 	//	}
-	//} else if format == constant.FormatJson {
+	//} else if format == consts.FormatJson {
 	//	logUtils.PrintLine(s.genJsonLine(i, row, len(rows), fields))
-	//} else if format == constant.FormatXml {
+	//} else if format == consts.FormatXml {
 	//	logUtils.PrintLine(s.getXmlLine(i, rowMap, len(rows)))
-	//} else if format == constant.FormatData {
+	//} else if format == consts.FormatData {
 	//	lines = append(lines, lineForText)
 	//}
 	//}
@@ -123,13 +123,13 @@ func (s *PrintService) PrintTextHeader() {
 func (s *PrintService) getInsertSqlHeader() string {
 	fieldNames := make([]string, 0)
 	for _, f := range vari.GlobalVars.ExportFields {
-		if vari.GlobalVars.DBType == constant.DBTypeSqlServer {
+		if vari.GlobalVars.DBType == consts.DBTypeSqlServer {
 			f = "[" + helper.EscapeColumnOfSqlServer(f) + "]"
-		} else if vari.GlobalVars.DBType == constant.DBTypeOracle {
+		} else if vari.GlobalVars.DBType == consts.DBTypeOracle {
 			f = `"` + f + `"`
 		} else {
 			f = "`" + helper.EscapeColumnOfMysql(f) + "`"
-			//vari.GenVars.DBType == constant.DBTypeMysql {
+			//vari.GenVars.DBType == consts.DBTypeMysql {
 		}
 
 		fieldNames = append(fieldNames, f)
@@ -137,11 +137,11 @@ func (s *PrintService) getInsertSqlHeader() string {
 
 	var ret string
 	switch vari.GlobalVars.DBType {
-	case constant.DBTypeSqlServer:
+	case consts.DBTypeSqlServer:
 		ret = fmt.Sprintf("[%s] (%s)", vari.GlobalVars.Table, strings.Join(fieldNames, ", "))
-	case constant.DBTypeOracle:
+	case consts.DBTypeOracle:
 		ret = fmt.Sprintf(`"%s" (%s)`, vari.GlobalVars.Table, strings.Join(fieldNames, ", "))
-	// case constant.DBTypeMysql:
+	// case consts.DBTypeMysql:
 	default:
 		ret = fmt.Sprintf("`%s` (%s)", vari.GlobalVars.Table, strings.Join(fieldNames, ", "))
 	}
@@ -167,11 +167,11 @@ func (s *PrintService) rowToJson(cols []string, fieldsToExport []string) string 
 func (s *PrintService) genSqlLine(sqlheader string, values []string, dbtype string) string {
 	var tmp string
 	switch dbtype {
-	case constant.DBTypeSqlServer:
+	case consts.DBTypeSqlServer:
 		tmp = "INSERT INTO " + sqlheader + " VALUES (" + strings.Join(values, ",") + "); GO"
 	default:
-		// constant.DBTypeMysql
-		// constant.DBTypeOracle:
+		// consts.DBTypeMysql
+		// consts.DBTypeOracle:
 		tmp = "INSERT INTO " + sqlheader + " VALUES (" + strings.Join(values, ",") + ");"
 	}
 

@@ -3,7 +3,7 @@ package command
 import (
 	"errors"
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/ctrl"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -69,12 +69,12 @@ func SetOutFormat() (err error) {
 		ext := strings.ToLower(filepath.Ext(vari.GlobalVars.OutputFile))
 		ext = strings.TrimLeft(ext, ".")
 
-		if stringUtils.InArray(ext, constant.Formats) {
+		if stringUtils.InArray(ext, consts.Formats) {
 			vari.GlobalVars.OutputFormat = ext
 		}
 
 		// create file writer
-		if vari.GlobalVars.OutputFormat == constant.FormatExcel {
+		if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 			logUtils.OutputFilePath = vari.GlobalVars.OutputFile
 		} else {
 			logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.OutputFile, os.O_RDWR|os.O_CREATE, 0777)
@@ -82,10 +82,10 @@ func SetOutFormat() (err error) {
 	}
 
 	if vari.GlobalVars.DBDsn != "" {
-		vari.GlobalVars.OutputFormat = constant.FormatSql
+		vari.GlobalVars.OutputFormat = consts.FormatSql
 	}
 
-	if vari.GlobalVars.OutputFormat == constant.FormatSql && vari.GlobalVars.Table == "" {
+	if vari.GlobalVars.OutputFormat == consts.FormatSql && vari.GlobalVars.Table == "" {
 		msg := i118Utils.I118Prt.Sprintf("miss_table_name")
 		logUtils.PrintErrMsg(msg)
 		err = errors.New(msg)

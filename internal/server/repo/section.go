@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
@@ -43,8 +43,8 @@ func (r *SectionRepo) SaveFieldSectionToDB(rangeSection string, ord int, fieldID
 	descStr, stepStr, count, countTag := gen.ParseRangeSection(rangeSection)
 	typ, desc := gen.ParseRangeSectionDesc(descStr)
 
-	if typ == "literal" && desc[:1] == string(constant.LeftBrackets) &&
-		desc[len(desc)-1:] == string(constant.RightBrackets) {
+	if typ == "literal" && desc[:1] == string(consts.LeftBrackets) &&
+		desc[len(desc)-1:] == string(consts.RightBrackets) {
 
 		desc = "[" + desc[1:len(desc)-1] + "]"
 		typ = "list"

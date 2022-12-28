@@ -2,7 +2,7 @@ package serverUtils
 
 import (
 	"encoding/json"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -89,7 +89,7 @@ func ConvertParams(data interface{}) (mp map[string]string) {
 }
 
 func GetRelativePath(pth string) string {
-	idx := strings.LastIndex(pth, constant.PthSep)
+	idx := strings.LastIndex(pth, consts.PthSep)
 	folder := pth[:idx+1]
 	folder = strings.Replace(folder, vari.ZdPath, "", 1)
 

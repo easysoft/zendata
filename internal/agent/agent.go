@@ -3,7 +3,7 @@ package agent
 import (
 	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/action"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -47,7 +47,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	if defaultDefContent != nil || configDefContent != nil {
-		vari.GlobalVars.RunMode = constant.RunModeServerRequest
+		vari.GlobalVars.RunMode = consts.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
 		genData()
@@ -56,7 +56,7 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		configDefContent = nil
 
 	} else if defaultFile != "" || configFile != "" {
-		vari.GlobalVars.RunMode = constant.RunModeServerRequest
+		vari.GlobalVars.RunMode = consts.RunModeServerRequest
 		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
 
 		genData()
@@ -75,7 +75,7 @@ func genData() {
 		logUtils.PrintTo(fmt.Sprintf("Start at %s.", tmStart.Format("2006-01-02 15:04:05")))
 	}
 
-	vari.GlobalVars.OutputFormat = constant.FormatJson
+	vari.GlobalVars.OutputFormat = consts.FormatJson
 	if defaultFile != "" || configFile != "" {
 		files := []string{defaultFile, configFile}
 		action.Generate(files, fields, vari.GlobalVars.OutputFormat, vari.GlobalVars.Table)

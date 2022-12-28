@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -49,7 +49,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 	for _, numb := range numbs {
 		item := list[numb.(int64)%(int64(len(list)))]
 
-		if index >= constant.MaxNumb {
+		if index >= consts.MaxNumb {
 			break
 		}
 
@@ -61,8 +61,8 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 }
 
 func getDbName(path string) (dbName string) {
-	dbName = strings.Replace(path, vari.ZdPath+constant.ResDirData+constant.PthSep, "", -1)
-	dbName = strings.Replace(dbName, constant.PthSep, "_", -1)
+	dbName = strings.Replace(path, vari.ZdPath+consts.ResDirData+consts.PthSep, "", -1)
+	dbName = strings.Replace(dbName, consts.PthSep, "_", -1)
 	dbName = strings.Replace(dbName, ".", "_", -1)
 
 	return
@@ -256,7 +256,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	where := strings.TrimSpace(field.Where)
-	if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
+	if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 		if where == "" {
 			where = "y"
 		}
@@ -285,8 +285,8 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	if !strings.Contains(where, "LIMIT") {
-		if total > constant.MaxNumb {
-			total = constant.MaxNumb
+		if total > consts.MaxNumb {
+			total = consts.MaxNumb
 		}
 		if field.Limit > 0 && total > field.Limit {
 			total = field.Limit
@@ -296,7 +296,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	colStr := fieldSelect
-	if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
+	if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 		colStr = "`词语` AS `" + fieldSelect + "`"
 	}
 
@@ -379,7 +379,7 @@ func isExcelChanged(path string) (changed bool, sqlBeforeCompleted string) {
 		"WHERE name = '%s' "+
 		"ORDER BY changeTime DESC "+
 		"LIMIT 1;",
-		constant.SqliteTrackTable, path)
+		consts.SqliteTrackTable, path)
 
 	record := ExcelChangedResult{}
 	err := vari.DB.Raw(sqlStr).Scan(&record).Error
@@ -406,10 +406,10 @@ func isExcelChanged(path string) (changed bool, sqlBeforeCompleted string) {
 	if changed {
 		if !found {
 			sqlBeforeCompleted = fmt.Sprintf("INSERT INTO %s(name, changeTime) VALUES('%s', %d)",
-				constant.SqliteTrackTable, path, fileChangeTime)
+				consts.SqliteTrackTable, path, fileChangeTime)
 		} else {
 			sqlBeforeCompleted = fmt.Sprintf("UPDATE %s SET changeTime = %d WHERE name = '%s'",
-				constant.SqliteTrackTable, fileChangeTime, path)
+				consts.SqliteTrackTable, fileChangeTime, path)
 		}
 	}
 

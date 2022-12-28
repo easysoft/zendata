@@ -2,7 +2,7 @@ package gen
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -228,7 +228,7 @@ func ClearAllCache() (err error) {
 		Scan(&tables)
 
 	for _, table := range tables {
-		if strings.Index(table, constant.CachePrefix) < 0 {
+		if strings.Index(table, consts.CachePrefix) < 0 {
 			continue
 		}
 		dropSql := fmt.Sprintf("DROP TABLE IF EXISTS %s;", table)
@@ -244,7 +244,7 @@ func ClearBatchCache(key string) (err error) {
 		Scan(&tables)
 
 	for _, table := range tables {
-		batchTablePrefix := fmt.Sprintf("%s%s_", constant.CachePrefix, key)
+		batchTablePrefix := fmt.Sprintf("%s%s_", consts.CachePrefix, key)
 		if strings.Index(table, batchTablePrefix) < 0 {
 			continue
 		}
@@ -310,9 +310,9 @@ func stringToBoolArr(str string) (ret []bool) {
 }
 
 func getTableName(key string) (ret string) {
-	return constant.CachePrefix + key
+	return consts.CachePrefix + key
 }
 
 func getTableNameIsNum(key string) (ret string) {
-	return constant.CachePrefix + key + constant.CachePostfix
+	return consts.CachePrefix + key + consts.CachePostfix
 }

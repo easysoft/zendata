@@ -1,6 +1,6 @@
 package serverConst
 
-import constant "github.com/easysoft/zendata/internal/pkg/const"
+import consts "github.com/easysoft/zendata/internal/pkg/const"
 
 const (
 	HeartBeatInterval    = 60
@@ -9,7 +9,7 @@ const (
 	AgentRunTime = 30 * 60
 	AgentLogDir  = "log"
 
-	QiNiuURL         = "https://dl.cnezsoft.com/" + constant.AppName + "/"
+	QiNiuURL         = "https://dl.cnezsoft.com/" + consts.AppName + "/"
 	AgentVersionURL  = QiNiuURL + "version.txt"
-	AgentDownloadURL = QiNiuURL + "%s/%s/" + constant.AppName + ".zip"
+	AgentDownloadURL = QiNiuURL + "%s/%s/" + consts.AppName + ".zip"
 )

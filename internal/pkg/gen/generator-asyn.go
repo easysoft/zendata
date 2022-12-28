@@ -2,7 +2,7 @@ package gen
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
 	"sync"
@@ -19,7 +19,7 @@ func SyncGenCacheAndReturnFirstPart(fileContents [][]byte, fieldsToExport *[]str
 	FixTotalNum()
 	genResData(fieldsToExport)
 
-	threadCount := getTheadCount(vari.GlobalVars.Total, constant.MaxNumbForAsync)
+	threadCount := getTheadCount(vari.GlobalVars.Total, consts.MaxNumbForAsync)
 
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(threadCount)
@@ -34,7 +34,7 @@ func SyncGenCacheAndReturnFirstPart(fileContents [][]byte, fieldsToExport *[]str
 		index := i
 		c.Inc("count")
 
-		recordNumb := getTheadRecordNum(vari.GlobalVars.Total, constant.MaxNumbForAsync, threadCount, index)
+		recordNumb := getTheadRecordNum(vari.GlobalVars.Total, consts.MaxNumbForAsync, threadCount, index)
 
 		go func() {
 			defer func() {

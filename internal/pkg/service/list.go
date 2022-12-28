@@ -1,7 +1,7 @@
 package service
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"strings"
@@ -35,7 +35,7 @@ func (s *ListService) AppendValues(items *[]interface{}, val string, repeat int,
 		*items = append(*items, val)
 
 		total++
-		if total > constant.MaxNumb {
+		if total > consts.MaxNumb {
 			break
 		}
 	}
@@ -53,7 +53,7 @@ func (s *ListService) AppendArrItems(items *[]interface{}, arr []string, total i
 		*items = append(*items, arr[idx])
 
 		total++
-		if total > constant.MaxNumb {
+		if total > consts.MaxNumb {
 			break
 		}
 	}

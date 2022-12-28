@@ -101,7 +101,7 @@ func (s *MainService) PrintOutput() {
 		s.OutputService.GenJson()
 	} else if vari.GlobalVars.OutputFormat == consts.FormatXml { // xml
 		s.OutputService.GenXml()
-	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatExcel { // excel
+	} else if vari.GlobalVars.OutputFormat == consts.FormatExcel || vari.GlobalVars.OutputFormat == consts.FormatCsv { // excel
 		s.OutputService.GenExcel()
 	} else if vari.GlobalVars.OutputFormat == consts.FormatSql { // excel
 		s.OutputService.GenSql()

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -35,7 +35,7 @@ func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInst
 func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []model.Dir) {
 	instances, _ = s.InstancesRepo.Get(uint(id))
 
-	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
+	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
 
 	return
 }
@@ -43,7 +43,7 @@ func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []mode
 func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
 	instances.Folder = serverUtils.DealWithPathSepRight(instances.Folder)
 	instances.Path = vari.ZdPath + instances.Folder + serverUtils.AddExt(instances.FileName, ".yaml")
-	instances.ReferName = helper.PathToName(instances.Path, constant.ResDirYaml, constant.ResTypeInstances)
+	instances.ReferName = helper.PathToName(instances.Path, consts.ResDirYaml, consts.ResTypeInstances)
 
 	if instances.ID == 0 {
 		err = s.Create(instances)
@@ -157,10 +157,10 @@ func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, constant.ResDirYaml) > -1 {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeInstances)
+	if strings.Index(po.Path, consts.ResDirYaml) > -1 {
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirYaml, consts.ResTypeInstances)
 	} else {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeInstances)
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirUsers, consts.ResTypeInstances)
 	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
@@ -197,10 +197,10 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		item.From = instances.From
 	}
 	if item.Type == "" {
-		item.Type = constant.FieldTypeList
+		item.Type = consts.FieldTypeList
 	}
 	if item.Mode == "" {
-		item.Mode = constant.ModeParallel
+		item.Mode = consts.ModeParallel
 	}
 	item.Range = strings.TrimSpace(item.Range)
 
@@ -216,7 +216,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 
 	needToCreateSections := false
 	if item.Select != "" { // refer to excel
-		refer.Type = constant.ResTypeExcel
+		refer.Type = consts.ResTypeExcel
 
 		refer.ColName = item.Select
 		refer.Condition = item.Where
@@ -241,7 +241,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		refer.File = item.From
 
 	} else if item.Config != "" { // refer to config
-		refer.Type = constant.ResTypeConfig
+		refer.Type = consts.ResTypeConfig
 
 		rangeSections := gen.ParseRangeProperty(item.Config) // dir/config.yaml
 		if len(rangeSections) > 0 {                          // only get the first one
@@ -262,7 +262,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 			desc, step, count, countTag := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
 			if filepath.Ext(desc) == ".txt" || filepath.Ext(desc) == ".yaml" {
 				if filepath.Ext(desc) == ".txt" { // dir/users.txt:2
-					refer.Type = constant.ResTypeText
+					refer.Type = consts.ResTypeText
 
 					if strings.ToLower(step) == "r" {
 						refer.Rand = true
@@ -271,7 +271,7 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 					}
 
 				} else if filepath.Ext(desc) == ".yaml" { // dir/content.yaml{3}
-					refer.Type = constant.ResTypeYaml
+					refer.Type = consts.ResTypeYaml
 
 					refer.Count = count
 					refer.CountTag = countTag

@@ -1,7 +1,7 @@
 package gen
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -51,7 +51,7 @@ func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string]
 			loadResForFieldRecursive(&child, res)
 		}
 
-	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // from a res
+	} else if field.From != "" && field.Type != consts.FieldTypeArticle { // from a res
 		var valueMap map[string][]string
 		resFile, resType, sheet := fileUtils.GetResProp(field.From, field.FileDir) // relate to current file
 		valueMap, _ = getResValue(resFile, resType, sheet, field)
@@ -62,7 +62,7 @@ func loadResForFieldRecursive(field *model.DefField, res *map[string]map[string]
 		for key, val := range valueMap {
 			resKey := key
 			// avoid article key to be duplicate
-			if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
+			if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 				resKey = resKey + "_" + field.Field
 			}
 			(*res)[getFromKey(field)][resKey] = val

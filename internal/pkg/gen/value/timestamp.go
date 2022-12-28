@@ -2,7 +2,7 @@ package genValue
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -44,7 +44,7 @@ func CreateUlidField(field *model.DefField, fieldWithValue *model.FieldWithValue
 		fieldWithValue.Values = append(fieldWithValue.Values, val)
 
 		count++
-		if count >= constant.MaxNumb || count > vari.GlobalVars.Total {
+		if count >= consts.MaxNumb || count > vari.GlobalVars.Total {
 			break
 		}
 	}
@@ -82,7 +82,7 @@ func CreateTimestampSectionValue(section string, values *[]interface{}) {
 	// generate data by index
 	index := 0
 	for _, numb := range numbs {
-		if index >= constant.MaxNumb {
+		if index >= consts.MaxNumb {
 			break
 		}
 
@@ -136,9 +136,9 @@ func splitTmDesc(desc string) (start, end string) {
 	for i := 0; i < len(runeArr); i++ {
 		c := runeArr[i]
 
-		if c == constant.RightBrackets {
+		if c == consts.RightBrackets {
 			bracketsOpen = false
-		} else if c == constant.LeftBrackets {
+		} else if c == consts.LeftBrackets {
 			bracketsOpen = true
 		}
 
@@ -161,12 +161,12 @@ func splitTmDesc(desc string) (start, end string) {
 	}
 
 	if len(start) > 0 {
-		start = strings.TrimPrefix(start, string(constant.LeftBrackets))
-		start = strings.TrimSuffix(start, string(constant.RightBrackets))
+		start = strings.TrimPrefix(start, string(consts.LeftBrackets))
+		start = strings.TrimSuffix(start, string(consts.RightBrackets))
 	}
 	if len(end) > 0 {
-		end = strings.TrimPrefix(end, string(constant.LeftBrackets))
-		end = strings.TrimSuffix(end, string(constant.RightBrackets))
+		end = strings.TrimPrefix(end, string(consts.LeftBrackets))
+		end = strings.TrimSuffix(end, string(consts.RightBrackets))
 	}
 
 	return
@@ -290,12 +290,12 @@ func GenerateTimeItems(start int64, end int64, step int, unit string, repeat int
 				arr = append(arr, val)
 
 				total++
-				if total > constant.MaxNumb {
+				if total > consts.MaxNumb {
 					break
 				}
 			}
 
-			if total >= constant.MaxNumb {
+			if total >= consts.MaxNumb {
 				break
 			}
 			i++
@@ -311,13 +311,13 @@ func GenerateTimeItems(start int64, end int64, step int, unit string, repeat int
 
 				arr = append(arr, val)
 
-				if total >= constant.MaxNumb {
+				if total >= consts.MaxNumb {
 					break
 				}
 				i++
 			}
 
-			if total >= constant.MaxNumb {
+			if total >= consts.MaxNumb {
 				break
 			}
 		}

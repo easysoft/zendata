@@ -1,7 +1,7 @@
 package serverService
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 )
 
@@ -28,13 +28,13 @@ func (s *SyncService) SyncData() {
 		fileMap[fi.ResType] = append(fileMap[fi.ResType], fi)
 	}
 
-	s.DefService.Sync(fileMap[constant.ResTypeYaml])
-	s.RangesService.Sync(fileMap[constant.ResTypeRanges])
-	s.InstancesService.Sync(fileMap[constant.ResTypeInstances])
-	s.ConfigService.Sync(fileMap[constant.ResTypeConfig])
+	s.DefService.Sync(fileMap[consts.ResTypeYaml])
+	s.RangesService.Sync(fileMap[consts.ResTypeRanges])
+	s.InstancesService.Sync(fileMap[consts.ResTypeInstances])
+	s.ConfigService.Sync(fileMap[consts.ResTypeConfig])
 
-	s.ExcelService.Sync(fileMap[constant.ResTypeExcel])
-	s.TextService.Sync(fileMap[constant.ResTypeText])
+	s.ExcelService.Sync(fileMap[consts.ResTypeExcel])
+	s.TextService.Sync(fileMap[consts.ResTypeText])
 }
 
 func NewSyncService(

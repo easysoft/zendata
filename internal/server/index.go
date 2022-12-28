@@ -1,7 +1,7 @@
 package server
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server/core/module"
 	"github.com/easysoft/zendata/internal/server/index"
 	"github.com/kataras/iris/v12"
@@ -25,5 +25,5 @@ func (m *IndexModule) Party() module.WebModule {
 		m.CommModule.Party(),
 		m.DataModule.Party(),
 	}
-	return module.NewModule(constant.ApiPath, handler, modules...)
+	return module.NewModule(consts.ApiPath, handler, modules...)
 }

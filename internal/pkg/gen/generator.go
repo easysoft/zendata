@@ -3,7 +3,7 @@ package gen
 import (
 	"errors"
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -52,7 +52,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool, total int) (
 	} else if len(field.Froms) > 0 { // refer to multi res
 		values = GenValuesForMultiRes(field, withFix, total)
 
-	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
+	} else if field.From != "" && field.Type != consts.FieldTypeArticle { // refer to res
 		values = GenValuesForSingleRes(field, total)
 
 	} else if field.Config != "" { // refer to config
@@ -62,7 +62,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool, total int) (
 		values = GenerateValuesForField(field, total)
 	}
 
-	if field.Rand && field.Type != constant.FieldTypeArticle {
+	if field.Rand && field.Type != consts.FieldTypeArticle {
 		values = RandomStrValues(values)
 	}
 
@@ -124,7 +124,7 @@ func GenerateValuesForField(field *model.DefField, total int) []string {
 func CheckParams() (err error) {
 	if len(vari.GlobalVars.DefData.Fields) == 0 {
 		err = errors.New("")
-	} else if vari.GlobalVars.DefData.Type == constant.DefTypeArticle && vari.GlobalVars.OutputFile == "" { // gen article
+	} else if vari.GlobalVars.DefData.Type == consts.DefTypeArticle && vari.GlobalVars.OutputFile == "" { // gen article
 		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
 		logUtils.PrintErrMsg(errMsg)
 		err = errors.New(errMsg)
@@ -135,10 +135,10 @@ func CheckParams() (err error) {
 
 func FixTotalNum() {
 	if vari.GlobalVars.Total < 0 {
-		if vari.GlobalVars.DefData.Type == constant.DefTypeArticle {
+		if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 			vari.GlobalVars.Total = 1
 		} else {
-			vari.GlobalVars.Total = constant.DefaultNumber
+			vari.GlobalVars.Total = consts.DefaultNumber
 		}
 	}
 }

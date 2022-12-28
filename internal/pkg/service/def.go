@@ -84,7 +84,7 @@ func (s *DefService) mergerDefine(defaultDef, configDef *model.DefData, fieldsTo
 	//} else if defaultDef.Type != "" {
 	//	vari.GlobalVars.DefDataType = defaultDef.Type
 	//} else {
-	//	vari.GlobalVars.DefDataType = constant.DefTypeText
+	//	vari.GlobalVars.DefDataType = consts.DefTypeText
 	//}
 
 	if configDef.Content != "" && defaultDef.Content == "" {

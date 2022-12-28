@@ -1,7 +1,7 @@
 package controller
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverService "github.com/easysoft/zendata/internal/server/service"
 	"github.com/kataras/iris/v12"
@@ -18,7 +18,7 @@ func (c *DefCtrl) List(ctx iris.Context) {
 
 	err := ctx.ReadQuery(&req)
 	if err != nil {
-		ctx.JSON(c.ErrResp(constant.CommErr, err.Error()))
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
 		return
 	}
 
@@ -91,7 +91,7 @@ func (c *DefCtrl) Delete(ctx iris.Context) {
 func (c *DefCtrl) PreviewData(ctx iris.Context) {
 	defId, err := ctx.URLParamInt("defId")
 	if err != nil {
-		ctx.JSON(constant.ParamErr.Code)
+		ctx.JSON(consts.ParamErr.Code)
 	}
 
 	data := c.PreviewService.PreviewDefData(uint(defId))

@@ -139,7 +139,7 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	//} else if defaultDef.Type != "" {
 	//	vari.GlobalVars.DefDataType = defaultDef.Type
 	//} else {
-	//	vari.GlobalVars.DefDataType = constant.DefTypeText
+	//	vari.GlobalVars.DefDataType = consts.DefTypeText
 	//}
 
 	if configDef.Content != "" && defaultDef.Content == "" {

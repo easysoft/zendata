@@ -2,7 +2,7 @@ package controller
 
 import (
 	"bytes"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -83,7 +83,7 @@ func (c *DataCtrl) GenerateByContent(ctx iris.Context) {
 //}
 
 func (c *DataCtrl) DealwithParams(ctx iris.Context) {
-	vari.GlobalVars.RunMode = constant.RunModeServerRequest
+	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	logUtils.OutputHttpWriter = ctx.ResponseWriter()
 
 	vari.GlobalVars.Total, _ = ctx.URLParamInt("lines")
@@ -99,7 +99,7 @@ func (c *DataCtrl) DealwithParams(ctx iris.Context) {
 	}
 
 	if vari.GlobalVars.OutputFormat == "" {
-		vari.GlobalVars.OutputFormat = constant.FormatJson
+		vari.GlobalVars.OutputFormat = consts.FormatJson
 	}
 
 	// for decode

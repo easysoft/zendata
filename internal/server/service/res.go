@@ -2,7 +2,7 @@ package serverService
 
 import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -21,9 +21,9 @@ type ResService struct {
 func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 	res, _, _ := helper.LoadRes(resType)
 
-	for _, key := range constant.ResKeys {
+	for _, key := range consts.ResKeys {
 		for _, res := range res[key] {
-			if res.ResType == constant.ResTypeExcel && strings.Index(res.Title, "|") > -1 {
+			if res.ResType == consts.ResTypeExcel && strings.Index(res.Title, "|") > -1 {
 				// more than 1 sheet
 				arr := strings.Split(res.Title, "|")
 

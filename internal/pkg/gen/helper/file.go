@@ -1,7 +1,7 @@
 package genHelper
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -23,11 +23,11 @@ func ComputerReferFilePath(file string, field *model.DefField) (resPath string) 
 		return
 	}
 
-	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
+	resPath = vari.ZdPath + consts.ResDirUsers + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}
-	resPath = vari.ZdPath + constant.ResDirYaml + constant.PthSep + file
+	resPath = vari.ZdPath + consts.ResDirYaml + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}

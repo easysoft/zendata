@@ -3,7 +3,7 @@ package serverService
 import (
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -26,7 +26,7 @@ func (s *ExcelService) List(keywords string, page int) (list []*model.ZdExcel, t
 func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []model.Dir) {
 	excel, _ = s.ExcelRepo.Get(uint(id))
 
-	serverUtils.GetDirs(constant.ResDirData, &dirs)
+	serverUtils.GetDirs(consts.ResDirData, &dirs)
 
 	return
 }
@@ -34,7 +34,7 @@ func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []model.Dir) {
 func (s *ExcelService) Save(excel *model.ZdExcel) (err error) {
 	excel.Folder = serverUtils.DealWithPathSepRight(excel.Folder)
 	excel.Path = vari.ZdPath + excel.Folder + serverUtils.AddExt(excel.FileName, ".xlsx")
-	excel.ReferName = helper.PathToName(excel.Path, constant.ResDirData, constant.ResTypeExcel)
+	excel.ReferName = helper.PathToName(excel.Path, consts.ResDirData, consts.ResTypeExcel)
 
 	if excel.ID == 0 {
 		// excel should not be create on webpage
@@ -100,7 +100,7 @@ func (s *ExcelService) SyncToDB(file model.ResFile) (err error) {
 		Sheet:     file.Title,
 		Path:      file.Path,
 		Folder:    serverUtils.GetRelativePath(file.Path),
-		ReferName: helper.PathToName(file.Path, constant.ResDirData, constant.ResTypeExcel),
+		ReferName: helper.PathToName(file.Path, consts.ResDirData, consts.ResTypeExcel),
 		FileName:  fileUtils.GetFileName(file.Path),
 	}
 	s.ExcelRepo.Create(&excel)

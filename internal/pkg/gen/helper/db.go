@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/dzwvip/oracle"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -149,7 +149,7 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 		err = conn.Ping() // make sure database is accessible
 		if err != nil {
 			logUtils.PrintErrMsg(
-				fmt.Sprintf("Error on opening db %s, error is %s", constant.SqliteFile, err.Error()))
+				fmt.Sprintf("Error on opening db %s, error is %s", consts.SqliteFile, err.Error()))
 		}
 	}
 

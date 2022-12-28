@@ -1,7 +1,7 @@
 package serverService
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/server/repo"
 )
@@ -52,7 +52,7 @@ func (s *FieldService) Create(defId, targetId uint, name string, mode string) (f
 	}
 
 	err = s.FieldRepo.Save(field)
-	s.ReferRepo.CreateDefault(field.ID, constant.ResTypeDef)
+	s.ReferRepo.CreateDefault(field.ID, consts.ResTypeDef)
 
 	s.DefService.updateYaml(field.DefID)
 

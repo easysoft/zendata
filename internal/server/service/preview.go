@@ -3,7 +3,7 @@ package serverService
 import (
 	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/action"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/server/repo"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -23,7 +23,7 @@ func (s *PreviewService) PreviewDefData(defId uint) (data string) {
 	def, _ := s.DefRepo.Get(defId)
 
 	vari.GlobalVars.Total = 10
-	lines := action.Generate([]string{def.Path}, "", constant.FormatData, "")
+	lines := action.Generate([]string{def.Path}, "", consts.FormatData, "")
 	data = s.linesToStr(lines)
 
 	return
@@ -31,9 +31,9 @@ func (s *PreviewService) PreviewDefData(defId uint) (data string) {
 func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data string) {
 	var field model.ZdField
 
-	if fieldType == constant.ResTypeDef {
+	if fieldType == consts.ResTypeDef {
 		field, _ = s.FieldRepo.Get(fieldId)
-	} else if fieldType == constant.ResTypeInstances {
+	} else if fieldType == consts.ResTypeInstances {
 		instItem, _ := s.InstancesRepo.GetItem(fieldId)
 		field.From = instItem.From
 		copier.Copy(&field, instItem)
@@ -51,10 +51,10 @@ func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data 
 	def.Fields = append(def.Fields, fld)
 	defContent, _ := yaml.Marshal(def)
 
-	configFile := vari.ZdPath + "tmp" + constant.PthSep + ".temp.yaml"
+	configFile := vari.ZdPath + "tmp" + consts.PthSep + ".temp.yaml"
 	fileUtils.WriteFile(configFile, string(defContent))
 
-	lines := action.Generate([]string{configFile}, field.Field, constant.FormatData, "")
+	lines := action.Generate([]string{configFile}, field.Field, consts.FormatData, "")
 	data = s.linesToStr(lines)
 
 	return

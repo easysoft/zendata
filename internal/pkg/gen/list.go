@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -54,7 +54,7 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 
 	index := 0
 	for _, rangeSection := range rangeSections {
-		if index >= constant.MaxNumb {
+		if index >= consts.MaxNumb {
 			break
 		}
 		if rangeSection == "" {
@@ -98,7 +98,7 @@ func CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *
 
 	index := 0
 	for _, rangeSection := range rangeSections {
-		if index >= constant.MaxNumb {
+		if index >= consts.MaxNumb {
 			break
 		}
 		if rangeSection == "" {
@@ -249,7 +249,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 			val := elemArr[idx]
 			total = AppendValues(&items, val, repeat, total)
 
-			if total >= constant.MaxNumb {
+			if total >= consts.MaxNumb {
 				break
 			}
 			i += step
@@ -259,7 +259,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 		for i := 0; i < repeat; {
 			total = AppendArrItems(&items, elemArr, total, isRand)
 
-			if total >= constant.MaxNumb {
+			if total >= consts.MaxNumb {
 				break
 			}
 			i += step
@@ -351,7 +351,7 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 		rows = RandomValuesArr(rows)
 	}
 
-	items = PrintLines(rows, constant.FormatData, "", colIsNumArr, fieldsToExport)
+	items = PrintLines(rows, consts.FormatData, "", colIsNumArr, fieldsToExport)
 
 	if repeat > 0 {
 		if repeat > len(items) {
@@ -399,7 +399,7 @@ func AppendValues(items *[]interface{}, val string, repeat int, total int) int {
 		*items = append(*items, val)
 
 		total++
-		if total > constant.MaxNumb {
+		if total > consts.MaxNumb {
 			break
 		}
 	}
@@ -417,7 +417,7 @@ func AppendArrItems(items *[]interface{}, arr []string, total int, isRand bool) 
 		*items = append(*items, arr[idx])
 
 		total++
-		if total > constant.MaxNumb {
+		if total > consts.MaxNumb {
 			break
 		}
 	}

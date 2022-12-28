@@ -1,7 +1,7 @@
 package model
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 )
 
 var (
@@ -27,7 +27,7 @@ type ZdDef struct {
 }
 
 func (*ZdDef) TableName() string {
-	return constant.TablePrefix + "def"
+	return consts.TablePrefix + "def"
 }
 
 type ZdField struct {
@@ -80,7 +80,7 @@ type ZdField struct {
 }
 
 func (*ZdField) TableName() string {
-	return constant.TablePrefix + "field"
+	return consts.TablePrefix + "field"
 }
 
 type ZdSection struct {
@@ -104,7 +104,7 @@ type ZdSection struct {
 }
 
 func (*ZdSection) TableName() string {
-	return constant.TablePrefix + "section"
+	return consts.TablePrefix + "section"
 }
 
 type ZdRefer struct {
@@ -128,7 +128,7 @@ type ZdRefer struct {
 }
 
 func (*ZdRefer) TableName() string {
-	return constant.TablePrefix + "refer"
+	return consts.TablePrefix + "refer"
 }
 
 type ZdRanges struct {
@@ -150,7 +150,7 @@ type ZdRanges struct {
 }
 
 func (*ZdRanges) TableName() string {
-	return constant.TablePrefix + "ranges"
+	return consts.TablePrefix + "ranges"
 }
 
 type ZdRangesItem struct {
@@ -168,7 +168,7 @@ type ZdRangesItem struct {
 }
 
 func (*ZdRangesItem) TableName() string {
-	return constant.TablePrefix + "ranges_item"
+	return consts.TablePrefix + "ranges_item"
 }
 
 type ZdInstances struct {
@@ -188,7 +188,7 @@ type ZdInstances struct {
 }
 
 func (*ZdInstances) TableName() string {
-	return constant.TablePrefix + "instances"
+	return consts.TablePrefix + "instances"
 }
 
 type ZdInstancesItem struct {
@@ -237,7 +237,7 @@ type ZdInstancesItem struct {
 }
 
 func (*ZdInstancesItem) TableName() string {
-	return constant.TablePrefix + "instances_item"
+	return consts.TablePrefix + "instances_item"
 }
 
 type ZdConfig struct {
@@ -264,7 +264,7 @@ type ZdConfig struct {
 }
 
 func (*ZdConfig) TableName() string {
-	return constant.TablePrefix + "config"
+	return consts.TablePrefix + "config"
 }
 
 type ZdText struct {
@@ -279,7 +279,7 @@ type ZdText struct {
 }
 
 func (*ZdText) TableName() string {
-	return constant.TablePrefix + "text"
+	return consts.TablePrefix + "text"
 }
 
 type ZdExcel struct {
@@ -295,5 +295,5 @@ type ZdExcel struct {
 }
 
 func (*ZdExcel) TableName() string {
-	return constant.TablePrefix + "excel"
+	return consts.TablePrefix + "excel"
 }
