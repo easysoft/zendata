@@ -24,12 +24,12 @@ func (s *ResYamlService) GetResFromYaml(resFile string) (valueMap map[string][]i
 	}
 
 	yamlContent, err := os.ReadFile(resFile)
-	yamlContent = helper.ReplaceSpecialChars(yamlContent)
-
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", resFile))
 		return
 	}
+
+	yamlContent = helper.ReplaceSpecialChars(yamlContent)
 
 	insts := model.ResInstances{}
 	err = yaml.Unmarshal(yamlContent, &insts)

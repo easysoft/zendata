@@ -104,12 +104,11 @@ func (s *FileService) HandleFileBuffers(files [][]byte) [][]byte {
 		return files
 	}
 
-	if len(files[0]) == 0 && len(files[1]) != 0 { // no defaultFile
-		files[0] = files[1]
-		files[1] = nil
-	} else if len(files[1]) == 0 && len(files[0]) != 0 { // no configFile
-		files[1] = files[0]
-		files[0] = nil
+	if files[0] == nil && files[1] != nil { // no defaultFile
+		return [][]byte{files[1]}
+
+	} else if files[1] == nil && files[0] != nil { // no configFile
+		return [][]byte{files[0]}
 	}
 
 	return files
