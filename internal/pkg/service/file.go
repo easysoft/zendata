@@ -8,7 +8,7 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -56,11 +56,12 @@ func (s *FileService) LoadFilesContents(files []string) (contents [][]byte) {
 		}
 		pathDefaultFile := fileUtils.GetAbsolutePath(f)
 		if !fileUtils.FileExist(pathDefaultFile) {
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
 			return
 		}
-		content, err := ioutil.ReadFile(pathDefaultFile)
+		content, err := os.ReadFile(pathDefaultFile)
 		if err != nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
+			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", pathDefaultFile), color.FgCyan)
 			return
 		}
 		contents = append(contents, content)

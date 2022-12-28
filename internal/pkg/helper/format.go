@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/Chain-Zhang/pinyin"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/mattn/go-runewidth"
 	uuid "github.com/satori/go.uuid"
@@ -227,15 +226,18 @@ func ReplaceSpecialChars(bytes []byte) []byte {
 	inRanges := false // for ranges yaml only
 	ret := ""
 	for _, line := range strings.Split(str, "\n") {
-		if strings.Index(strings.TrimSpace(line), "ranges") == 0 {
+		if strings.Index(strings.TrimSpace(line), "ranges") == 0 { // ranges in res
 			inRanges = true
 		} else if len(line) > 0 && string(line[0]) != " " { // not begin with space, ranges end
 			inRanges = false
 		}
 
 		if strings.Index(strings.TrimSpace(line), "range") == 0 || inRanges {
-			line = strings.ReplaceAll(line, "[", string(constant.LeftBrackets))
-			line = strings.ReplaceAll(line, "]", string(constant.RightBrackets))
+			regx1 := regexp.MustCompile("(?P<x>[^`])\\[")
+			line = regx1.ReplaceAllString(line, "${x}(")
+
+			regx2 := regexp.MustCompile("\\](?P<x>[^`])")
+			line = regx2.ReplaceAllString(line, ")${x}")
 		}
 
 		ret += line + "\n"

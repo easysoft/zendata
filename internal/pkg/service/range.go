@@ -511,7 +511,7 @@ func (s *RangeService) removeBoundary(str string) string {
 
 func isScopeStr(str string) bool {
 	arr := strings.Split(str, "-")
-	if len(arr) < 2 || strings.TrimSpace(str) == "-" {
+	if len(arr) < 2 || strings.TrimSpace(str) == "-" || arr[0] == "" || arr[len(arr)-1] == "" {
 		return false
 	}
 
