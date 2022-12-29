@@ -4,7 +4,6 @@ import (
 	stdContext "context"
 	"fmt"
 	zd "github.com/easysoft/zendata"
-	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	"github.com/easysoft/zendata/internal/server/core/module"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -51,7 +50,7 @@ func Init() *WebServer {
 
 	mvc.New(app)
 
-	addr := fmt.Sprintf(":%d", consts.DefaultAdminServicePort)
+	addr := fmt.Sprintf(":%d", vari.DataServicePort)
 
 	webServer := &WebServer{
 		app:               app,

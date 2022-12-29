@@ -17,12 +17,14 @@ function initRequest(remoteUrl) {
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8085/api/v1'
+    url = 'http://127.0.0.1:8848/api/v1'
     console.log('dev env, url is ' + url)
+
   } else {
     const location = unescape(window.location.href);
     url = location.split('#')[0].split('index.html')[0];
     console.log('prod env, url is ' + url)
+
   }
 
   return url

@@ -8,7 +8,11 @@ import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
+	serverConfig "github.com/easysoft/zendata/internal/server/config"
+	"github.com/easysoft/zendata/internal/server/core/web"
+	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
@@ -42,6 +46,9 @@ var (
 	example bool
 	help    bool
 	set     bool
+
+	isStartServer bool
+	uuid          = ""
 
 	flagSet *flag.FlagSet
 )
@@ -117,8 +124,8 @@ func main() {
 	flagSet.StringVar(&vari.GlobalVars.Table, "t", "", "")
 	flagSet.StringVar(&vari.GlobalVars.Table, "table", "", "")
 	flagSet.StringVar(&vari.GlobalVars.DBDsn, "dsn", "", "")
-	flagSet.StringVar(&vari.GlobalVars.DBType, "s", "mysql", "")
-	flagSet.StringVar(&vari.GlobalVars.DBType, "server", "mysql", "")
+	flagSet.StringVar(&vari.GlobalVars.DBType, "db", "db", "")
+	flagSet.StringVar(&vari.GlobalVars.DBType, "server", "mysql", "") // TODO: will remove
 	flagSet.BoolVar(&vari.GlobalVars.DBClear, "clear", false, "")
 
 	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
@@ -128,6 +135,22 @@ func main() {
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")
 
+	// for server
+	flagSet.BoolVar(&isStartServer, "s", false, "启动服务")
+	flagSet.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
+
+	flagSet.IntVar(&vari.DataServicePort, "p", 8848, "")
+	flagSet.IntVar(&vari.DataServicePort, "port", 0, "")
+
+	flagSet.Parse(os.Args[1:])
+	if isStartServer {
+		startServer()
+	} else {
+		execCommand()
+	}
+}
+
+func execCommand() {
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, "-help")
 	}
@@ -148,6 +171,29 @@ func main() {
 	} else {
 		logUtils.PrintUsage()
 	}
+}
+
+func startServer() {
+	configUtils.InitConfig("")
+	vari.DB, _ = serverConfig.NewGormDB()
+
+	vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + consts.PthSep
+	err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
+	if err != nil {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)
+		os.Exit(1)
+	}
+
+	if vari.DataServicePort == 0 {
+		vari.DataServicePort = consts.DefaultDataServicePort
+	}
+
+	webServer := web.Init()
+	if webServer == nil {
+		return
+	}
+
+	webServer.Run()
 }
 
 func opts(files []string) {

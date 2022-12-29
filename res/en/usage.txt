@@ -6,7 +6,7 @@ Parameters:
   -c  --config     The current config file for data format, and it can override the config in the default file.
   -o  --output     The file name of the data generated. You can specify the output format by the extension name.
                    For example json, xml, sql, csv and xlsx.  The text data in the original format is output by default.
-                   Note: For SQL files, you can use --server to specify a specific database type in Mysql\Oracle\SqlServer.
+                   Note: For SQL files, you can use --db to specify a specific database type in Mysql,Oracle,SqlServer.
   -n  --lines      The number of lines of data to be generated. The default is 10.
 
   -F  --field      This parameter can be used to specify the fields, separated by commas. The default is all fields.

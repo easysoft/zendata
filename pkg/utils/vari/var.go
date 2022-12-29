@@ -78,7 +78,6 @@ var (
 	ProtoCls string
 
 	JsonResp        string = "[]"
-	Ip              string
 	DataServicePort int
 
 	ResLoading = false

@@ -5,7 +5,7 @@ ZenData是一款通用的数据生成工具，您可以使用yaml文件来定义
   -d  --default    默认的数据格式配置文件。
   -c  --config     当前场景的数据格式配置文件，可以覆盖默认文件里面的设置。
   -o  --output     生成的数据的文件名。可通过扩展名指定输出json|xml|sql|csv|xlsx格式的数据。默认输出原始格式的文本数据。
-                   注意：对于 SQL 文件，您可以使用 --server 指定Mysql\Oracle\SqlServer中具体的数据库类型。
+                   注意：对于 SQL 文件，您可以使用 --db 指定Mysql、Oracle、SqlServer中具体的数据库类型。
   -n  --lines      要生成的记录条数，默认为10条。
 
   -F  --field      可通过该参数指定要输出的字段列表，用逗号分隔。 默认是所有的字段。
