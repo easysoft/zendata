@@ -22,13 +22,13 @@ func OutputErr(err error, writer http.ResponseWriter) {
 	WriteRes(errRes, writer)
 }
 
-func WriteRes(ret model.ResData, writer http.ResponseWriter) {
+func WriteRes(ret model.RespData, writer http.ResponseWriter) {
 	jsonStr, _ := json.Marshal(ret)
 	io.WriteString(writer, string(jsonStr))
 }
 
-func ErrRes(msg string) model.ResData {
-	return model.ResData{Code: 0, Msg: msg}
+func ErrRes(msg string) model.RespData {
+	return model.RespData{Code: 0, Msg: msg}
 }
 
 func ParserJsonReq(bytes []byte, obj *model.ReqData) (err error) {

@@ -18,7 +18,7 @@ type ReqData struct {
 	Page     int    `json:"page"`
 }
 
-type ResData struct {
+type RespData struct {
 	Code    int         `json:"code"`
 	Msg     string      `json:"msg"`
 	Data    interface{} `json:"data"`

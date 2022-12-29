@@ -1,5 +1,11 @@
 import request from '../utils/request'
 
+const api = {
+  admin: '/admin',
+}
+
+export default api
+
 export function getWorkDir () {
   return request({
     url: `/comm/getWorkDir`,

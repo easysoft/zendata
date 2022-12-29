@@ -18,10 +18,11 @@ func NewDefModule() *DefModule {
 func (m *DefModule) Party() module.WebModule {
 	handler := func(index iris.Party) {
 		index.Get("/", m.DefCtrl.List).Name = "列表"
-		index.Get("/{id:int}", m.DefCtrl.Get).Name = "详情"
-		index.Post("/", m.DefCtrl.Create).Name = "新建"
-		index.Put("/{id:int}", m.DefCtrl.Update).Name = "更新"
-		index.Delete("/{id:int}", m.DefCtrl.Delete).Name = "删除"
+
+		//index.Get("/{id:int}", m.DefCtrl.Get).Name = "详情"
+		//index.Post("/", m.DefCtrl.Create).Name = "新建"
+		//index.Put("/{id:int}", m.DefCtrl.Update).Name = "更新"
+		//index.Delete("/{id:int}", m.DefCtrl.Delete).Name = "删除"
 
 		index.Get("/previewData", m.DefCtrl.PreviewData).Name = "预览数据"
 		index.Post("/sync", m.DefCtrl.Create).Name = "同步"

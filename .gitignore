@@ -31,3 +31,4 @@
 /users/common/
 *.exe
 /tmp/cache/.data.db
+/ui/package-lock.json
