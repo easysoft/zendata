@@ -18,4 +18,8 @@ export const setDocumentTitle = function (title) {
   }
 }
 
+export const getPath = function () {
+  return process.env.NODE_ENV === 'production' ? 'ui/': ''
+}
+
 export const domTitle = config.title

@@ -7,7 +7,7 @@ fields:
 - field: password
   range: (P2ssw0rd, pass)
   from: email.v1.yaml
-- field: title
+- field: title2
   range: (首页, 登录)
   from: email.v1.yaml
 - field: 新字段

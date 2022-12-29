@@ -21,8 +21,8 @@ function getUrl() {
     console.log('dev env, url is ' + url)
 
   } else {
-    const location = unescape(window.location.href);
-    url = location.split('#')[0].split('index.html')[0];
+    const location = decodeURI(window.location.href);
+    url = location.split('ui')[0] + 'api/v1';
     console.log('prod env, url is ' + url)
 
   }

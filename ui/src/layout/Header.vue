@@ -1,7 +1,9 @@
 <template>
   <div class="header">
     <h2 class="left">
-      <a href="https://www.zendata.cn" target="_blank" :title="$t('site.title')"><img src="logo.png" :alt="$t('site.title')"></a>
+      <a href="https://www.zendata.cn" target="_blank" :title="$t('site.title')">
+        <img :src="logoPath" :alt="$t('site.title')">
+      </a>
     </h2>
     <div class="center">
       <Navbar />
@@ -26,6 +28,7 @@ import {getWorkDir, syncData} from "../api/manage";
 import {config} from "../utils/vari";
 import SelectLang from '../components/SelectLang'
 import Navbar from './Navbar';
+import {getPath} from "@/utils/dom";
 
 export default {
   name: 'Header',
@@ -37,9 +40,12 @@ export default {
   data () {
     return {
       workDir: '',
+      logoPath: '',
     }
   },
   created () {
+    this.logoPath = getPath() + 'logo.png'
+
     getWorkDir().then(json => {
       this.workDir = json.data
       config.workDir = this.workDir
