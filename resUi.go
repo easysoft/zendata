@@ -3,17 +3,18 @@ package zd
 import (
 	"embed"
 	"github.com/easysoft/zendata/pkg/utils/common"
+	"io/fs"
 	"os"
 )
 
-//go:embed res
-var resFileSys embed.FS
+//go:embed ui/dist
+var uiFileSys embed.FS
 
-func ReadResData(path string) (ret []byte, err error) {
+func GetUiFileSys() (ret fs.FS, err error) {
 	if commonUtils.IsRelease() {
-		ret, err = resFileSys.ReadFile(path)
+		ret, err = fs.Sub(uiFileSys, "ui/dist")
 	} else {
-		ret, err = os.ReadFile(path)
+		ret = os.DirFS("ui/dist")
 	}
 
 	return

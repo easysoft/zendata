@@ -25,8 +25,8 @@ var (
 
 	CachePrefix  = "cache_"
 	CachePostfix = "_is_num"
-	EnRes        = fmt.Sprintf("res%sen%smessages.json", PthSep, PthSep)
-	ZhRes        = fmt.Sprintf("res%szh%smessages.json", PthSep, PthSep)
+	EnRes        = fmt.Sprintf("res/en/messages.json")
+	ZhRes        = fmt.Sprintf("res/zh/messages.json")
 
 	LeftWidth = 36
 	MinWidth  = 130
