@@ -220,7 +220,7 @@
     },
     {
       "id": "root_invalid",
-      "translation": "ZenData资源路径%s错误。"
+      "translation": "%s不是有效的ZenData目录。"
     },
     {
       "id": "print_common_yaml_file",

@@ -2,7 +2,6 @@ package configUtils
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -29,7 +28,8 @@ func InitConfig(root string) {
 
 	if root != "" {
 		if !fileUtils.IsAbsPath(root) {
-			if root, err = filepath.Abs(root); err != nil {
+			root, err = filepath.Abs(root)
+			if err != nil {
 				logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
 				os.Exit(1)
 			}
@@ -38,8 +38,9 @@ func InitConfig(root string) {
 	} else {
 		vari.ZdPath = fileUtils.GetExeDir()
 	}
+
 	if !fileUtils.FileExist(filepath.Join(vari.ZdPath, "tmp", "cache")) {
-		log.Println(fmt.Sprintf("%s is not a vaild ZenData dir.", vari.ZdPath), color.FgRed)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
 		os.Exit(1)
 	}
 
@@ -58,6 +59,24 @@ func InitConfig(root string) {
 	//logUtils.PrintToWithColor("workdir = "+vari.ZdPath, color.FgCyan)
 	consts.SqliteFile = strings.Replace(consts.SqliteFile, "file:", "file:"+vari.ZdPath, 1)
 	//logUtils.PrintToWithColor("dbfile = "+consts.SqliteFile, color.FgCyan)
+}
+
+func UpdateRootDir(root string) (pass bool) {
+	if !fileUtils.FileExist(root) {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
+		return
+	}
+
+	if !fileUtils.FileExist(filepath.Join(root, "tmp", "cache")) {
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
+		return
+	}
+
+	root, _ = filepath.Abs(root)
+	vari.ZdPath = fileUtils.AddSepIfNeeded(root)
+	vari.WorkDir = vari.ZdPath
+
+	return
 }
 
 func SaveConfig(conf model.Config) error {

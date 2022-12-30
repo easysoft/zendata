@@ -229,7 +229,7 @@
     },
     {
       "id": "root_invalid",
-      "translation": "ZenData Dir %s not right."
+      "translation": "%s is not a valid ZenData dir."
     },
     {
       "id": "print_common_yaml_file",
