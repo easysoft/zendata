@@ -6,7 +6,7 @@ import (
 )
 
 func (s *OutputService) GenXml() {
-	records := s.GenObjs()
+	records := s.GenRecords()
 
 	s.PrintXmlHeader()
 

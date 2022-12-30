@@ -10,7 +10,7 @@ import (
 )
 
 func (s *OutputService) GenSql() {
-	records := s.GenObjs()
+	records := s.GenRecords()
 
 	lines := make([]interface{}, 0)
 

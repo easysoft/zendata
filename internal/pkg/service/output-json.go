@@ -11,7 +11,7 @@ import (
 func (s *OutputService) GenJson() {
 	log.Print(vari.GlobalVars.DefData.Fields)
 
-	records := s.GenObjs()
+	records := s.GenRecords()
 
 	s.PrintJsonHeader()
 

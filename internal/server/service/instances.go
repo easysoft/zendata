@@ -1,7 +1,6 @@
 package serverService
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -209,10 +208,6 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 
 	// create refer
 	refer := model.ZdRefer{OwnerType: "instances", OwnerID: item.ID}
-
-	if strings.Index(currPath, "_test-instacnes.yaml") > -1 && item.Field == "field1-1" {
-		log.Println("")
-	}
 
 	needToCreateSections := false
 	if item.Select != "" { // refer to excel

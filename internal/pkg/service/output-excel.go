@@ -17,7 +17,7 @@ var (
 )
 
 func (s *OutputService) GenExcel() {
-	records := s.GenObjs()
+	records := s.GenRecords()
 
 	var f *excelize.File
 	csvData := make([][]string, 0)

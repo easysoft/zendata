@@ -13,14 +13,14 @@ type OutputService struct {
 	PrintService *PrintService `inject:""`
 }
 
-func (s *OutputService) GenObjs() (records []map[string]interface{}) {
+func (s *OutputService) GenRecords() (records []map[string]interface{}) {
 	records = make([]map[string]interface{}, 0)
 
 	for i := 0; i < vari.GlobalVars.Total; i++ {
 		record := map[string]interface{}{}
 
 		for _, field := range vari.GlobalVars.DefData.Fields {
-			s.GenFieldMap(&field, &record, i)
+			s.GenRecordField(&field, &record, i)
 		}
 
 		records = append(records, record)
@@ -29,11 +29,7 @@ func (s *OutputService) GenObjs() (records []map[string]interface{}) {
 	return
 }
 
-func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interface{}, i int) {
-	//if len(field.Values) == 0 && (field.Join || len(field.Fields) == 0) {
-	//	logUtils.PrintToWithColor("ERROR: FIELD IS EMPTY", color.FgRed)
-	//}
-
+func (s *OutputService) GenRecordField(field *model.DefField, mp *map[string]interface{}, i int) {
 	if field.Join || len(field.Fields) == 0 { // set values
 		val := field.Values[i%len(field.Values)]
 		val = s.PlaceholderService.ReplacePlaceholder(val.(string))
@@ -44,7 +40,7 @@ func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interf
 		childMap := map[string]interface{}{}
 
 		for _, child := range field.Fields {
-			s.GenFieldMap(&child, &childMap, i)
+			s.GenRecordField(&child, &childMap, i)
 		}
 
 		(*mp)[field.Field] = childMap
