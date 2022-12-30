@@ -30,6 +30,10 @@ func (s *OutputService) GenObjs() (records []map[string]interface{}) {
 }
 
 func (s *OutputService) GenFieldMap(field *model.DefField, mp *map[string]interface{}, i int) {
+	//if len(field.Values) == 0 && (field.Join || len(field.Fields) == 0) {
+	//	logUtils.PrintToWithColor("ERROR: FIELD IS EMPTY", color.FgRed)
+	//}
+
 	if field.Join || len(field.Fields) == 0 { // set values
 		val := field.Values[i%len(field.Values)]
 		val = s.PlaceholderService.ReplacePlaceholder(val.(string))

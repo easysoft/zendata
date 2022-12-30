@@ -5,6 +5,7 @@ import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -31,6 +32,10 @@ func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
 
 	// iterate children
 	if len(field.Fields) > 0 {
+		if field.Field == "field_with_children" {
+			log.Print(1)
+		}
+
 		for i, _ := range field.Fields {
 			if field.Fields[i].From == "" {
 				field.Fields[i].From = field.From

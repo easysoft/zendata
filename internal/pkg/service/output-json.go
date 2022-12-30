@@ -3,10 +3,14 @@ package service
 import (
 	"encoding/json"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	"github.com/easysoft/zendata/pkg/utils/vari"
+	"log"
 	"regexp"
 )
 
 func (s *OutputService) GenJson() {
+	log.Print(vari.GlobalVars.DefData.Fields)
+
 	records := s.GenObjs()
 
 	s.PrintJsonHeader()

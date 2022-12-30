@@ -11,7 +11,6 @@ func (s *OutputService) GenText(returnedForYamlRefer bool) (lines []interface{})
 		Fields: vari.GlobalVars.DefData.Fields,
 		Join:   true,
 	}
-
 	s.CombineService.CombineChildrenIfNeeded(&simulatedFieldFromDef, true)
 
 	if !returnedForYamlRefer {

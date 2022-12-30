@@ -4,6 +4,7 @@ import (
 	"bytes"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -40,6 +41,8 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 		}
 	}
 
+	vari.GlobalVars.DefData = model.DefData{}
+	vari.GlobalVars.ExportFields = nil
 	if defaultFile != "" {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(defaultFile)
 	} else {
