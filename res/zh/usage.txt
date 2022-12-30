@@ -9,21 +9,21 @@ ZenData是一款通用的数据生成工具，您可以使用yaml文件来定义
   -n  --lines      要生成的记录条数，默认为10条。
 
   -F  --field      可通过该参数指定要输出的字段列表，用逗号分隔。 默认是所有的字段。
-  -t  --table      输出格式为sql时，需通过该参数指定要插入数据的表名。
-      --dsn        指定MySQL\SqlServer\Oracle 数据源，用于直接插入数据到数据库表。
-      --clear      插入数据前，删除已有数据。
   -T  --trim       输出的字段去除前后缀，通常用在生成SQL格式输出或解析测试数据时。
   -H  --human      输出可读格式，打印字段名，并使用tab键进行分割。
   -r  --recursive  递归模式。如不指定，默认为平行模式。平行模式下各个字段独立循环。
                    递归模式下每个字段的取值依赖于前一字段。可增强数据的随机性。
 
-  -p  --port       在指定端口上运行HTTP服务。可通过http://ip/接口获得JSON格式的数据。服务模式下只支持数据生成。
-  -b  --bind       监听的ip地址，默认监听所有的ip地址。
+  -t  --table      输出格式为sql时，需通过该参数指定要插入数据的表名。
+      --dsn        指定MySQL、SqlServer或Oracle数据源，用于直接插入数据到数据库表。
+      --clear      插入数据前，删除已有数据。
+
+  -s               运行数据管理和生成HTTP服务。
+  -p  --port       指定HTTP服务端口。
   -R  --root       指定数据生成命令或运行HTTP服务的根目录。客户端可调用该根目录下面的配置文件。如果不指定，取zd可执行文件所在目录。
 
-  -i  --input      指定一个数据库Schema或文章文本文件，解析生成yaml配置文件。需通过-o参数指定一个输出的目录。
-  -D  --decode     根据指定的配置文件，将通过-i参数指定的数据文件解析成json格式。
-  -a  --article    将指定的文件或目录下扩展名为.txt的文件，转换成文章yaml配置，输出到-o参数指定的目录下。
+      --parse      指定一个数据库连接、Schema或文章文本文件，解析生成yaml配置文件。需通过-o参数指定一个输出的目录。
+  -i  --input      指定parse指令的的Schema（.sql）或文章（.txt）文件，用于转换成yaml配置文件。
 
   -l  --list       列出当前目录下所有的用户数据定义。
   -L               列出ZenData安装目录下所有数据定义。
@@ -46,9 +46,10 @@ $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # 输出针
 $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user --trim      # 输出针对user表的insert语句，去掉前缀和后缀。
 $>zd.exe -c test\test-sql.yaml -t zendata.table_a --trim -dsn mysql://root:P2ssw0rd@127.0.0.1:3306/zendata#utf8 --clear # 插入数据到MySQL数据表。
 
-$>zd.exe -i demo\zentao.sql -o db                                    # 根据sql的定义生成各表的yaml文件，存储到db目录里面。
-$>zd.exe -i demo\article.txt -o demo                                 # 转换文章为yaml配置，输出到demo目录下。
-$>zd.exe -c demo\default.yaml -i test.txt --decode                   # 将-i指定的文件根据-d参数的配置进行解析。
+$>zd.exe -parse -i demo\zentao.sql -o db                             # 根据sql的定义生成各表的yaml文件，存储到db目录里面。
+$>zd.exe -parse -i demo\article.txt -o demo                          # 转换文章为yaml配置，输出到demo目录下。
+$>zd.exe -parse -dsn root:P2ssw0rd@(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local -table table1 -o db
+                                                                     # 根据指定数据库表生成yaml文件，存储到db目录里面。
 
 $>zd.exe -l                                                          # 列出所有內置数据。
 $>zd.exe -v address.cn.v1                                            # 查看內置Excel文件data/address/cn.v1.xlsx中的数据表。

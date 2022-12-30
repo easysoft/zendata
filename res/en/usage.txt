@@ -10,26 +10,23 @@ Parameters:
   -n  --lines      The number of lines of data to be generated. The default is 10.
 
   -F  --field      This parameter can be used to specify the fields, separated by commas. The default is all fields.
-  -t  --table      If the output format is sql, using it to specify the table name to insert data to.
-      --dsn        Specify MySQL\SqlServer\Oracle data source connection string, used to insert data to table directly.
-      --clear      Remove data in MySQL table before insert.
   -T  --trim       Remove the prefix and postfix of every field when outputting data or decode data to json string.
   -H  --human      Output a readable format, print the field name, and use the tab key to split.
-
   -r  --recursive  Recursive mode. The default mode is parallel, in which each field loops independently.
                    The value of a field in the recursive mode depends on that of the previous field, which enables the random data.
 
-  -p  --port       Run the HTTP on the specified port. The data in JSON format can be obtained via http:\\ip\ port.
-                   Only data generation is supported.
-  -b  --bind       Listen IP addresses. All IP addresses are listened by default.
+  -t  --table      If the output format is sql, using it to specify the table name to insert data to.
+      --dsn        Specify MySQL, SqlServer or Oracle data source connection string, used to insert data to table directly.
+      --clear      Remove data in MySQL table before insert.
+
+  -s               Run HTTP service for data administration and generation.
+  -p  --port       Specify the port of HTTP service.
   -R  --root       The root directory when generate data OR running HTTP. The client can call the config file under the root directory.
                    If not specified, take the directory where the zd executable file is located.
 
-  -i  --input      Specify a sql schema OR article text file, used to generate YAML config file for it.
+      --parse      Specify a dsn, sql schema OR article text file, used to generate YAML config file for it.
                    You need to specify an output directory by using -o.
-  -D  --decode     Referring to the specified configuration file, parse the data file specified by -i and output json.
-                   Also you can output the readable format via -H.
-  -a  --article    Convert article to yaml config file in the dir provided by -o parameter.
+  -i  --input      Specify a Schema（.sql）OR Article（.txt）file to parse.
 
   -l  --list       List user's data in current dir.
   -L               List build-in data in ZenData install dir.
@@ -51,9 +48,10 @@ $>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # Output th
 $>zd.exe -d demo\default.yaml -o test.sql -t user -s mysql --trim    # Remove the prefix and postfix of every field.
 $>zd.exe -c test\test-sql.yaml -t zendata.table_a --trim -dns mysql://root:P2ssw0rd@127.0.0.1:3306/zendata#utf8 --clear # Insert data to MySQL table.
 
-$>zd.exe -i demo\zentao.sql -o db                   # Generate YAML files for each table by parsing zentao.sql.
-$>zd.exe -i demo\article.txt  -o demo               # Convert article text to yaml config file in demo dir.
-$>zd.exe -c demo\default.yaml -i test.txt --decode  # Parse the file specified by -i according to the config of -d.
+$>zd.exe -parse -i demo\zentao.sql -o db                             # Generate YAML files for each table by parsing zentao.sql.
+$>zd.exe -parse -i demo\article.txt  -o demo                         # Convert article text to yaml config file in demo dir.
+$>zd.exe -parse -dsn root:P2ssw0rd@(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local -table table1 -o db
+                                                                     # Generate YAML files for given table in database.
 
 $>zd.exe -l                             # List all build-in data types.
 $>zd.exe -v address.cn.v1               # View data types in build-in Excel file data\address\cn.v1.xlsx.
