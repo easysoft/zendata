@@ -22,8 +22,15 @@ type DataCtrl struct {
 func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	c.DealwithParams(ctx)
 
+	//root := ctx.URLParam("root")
 	defaultFile := ctx.URLParam("default")
 	configFile := ctx.URLParam("config")
+
+	if defaultFile != "" {
+		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(defaultFile)
+	} else {
+		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(configFile)
+	}
 
 	defaultContent := c.GetDistFileContent(defaultFile)
 	configContent := c.GetDistFileContent(configFile)
@@ -35,22 +42,24 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	c.MainService.PrintOutput()
 }
 
-func (c *DataCtrl) GenerateByContent(ctx iris.Context) {
-	c.DealwithParams(ctx)
-
-	defaultContent := c.GetFormFileContent(ctx, "default")
-	configContent := c.GetFormFileContent(ctx, "config")
-
-	contents := [][]byte{defaultContent, configContent}
-	contents = c.FileService.HandleFileBuffers(contents)
-
-	_, err := c.MainService.GenerateDataByContents(contents)
-	if err != nil {
-		return
-	}
-
-	c.MainService.PrintOutput()
-}
+//func (c *DataCtrl) GenerateByContent(ctx iris.Context) {
+//	c.DealwithParams(ctx)
+//
+//	vari.GlobalVars.ConfigFileDir = vari.ZdPath + "test"
+//
+//	defaultContent := c.GetFormFileContent(ctx, "default")
+//	configContent := c.GetFormFileContent(ctx, "config")
+//
+//	contents := [][]byte{defaultContent, configContent}
+//	contents = c.FileService.HandleFileBuffers(contents)
+//
+//	_, err := c.MainService.GenerateDataByContents(contents)
+//	if err != nil {
+//		return
+//	}
+//
+//	c.MainService.PrintOutput()
+//}
 
 //func (c *DataCtrl) DecodeByFile(ctx iris.Context) {
 //	c.DealwithParams(ctx)

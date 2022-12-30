@@ -77,8 +77,8 @@ var (
 
 	ProtoCls string
 
-	JsonResp        string = "[]"
-	DataServicePort int
+	JsonResp = "[]"
+	Port     int
 
 	ResLoading = false
 	Res        = map[string]map[string][]string{}

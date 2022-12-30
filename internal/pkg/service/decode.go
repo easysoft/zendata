@@ -1,14 +1,9 @@
 package service
 
 import (
-	"encoding/json"
 	"github.com/easysoft/zendata/internal/pkg/model"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -18,32 +13,32 @@ type DecodeService struct {
 	ResService  *ResService  `inject:""`
 }
 
-func (s *DecodeService) Decode(contents [][]byte, input string) {
-	if vari.GlobalVars.OutputFile != "" {
-		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.OutputFile))
-		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)
-		logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.OutputFile, os.O_RDWR|os.O_CREATE, 0777)
-
-		defer logUtils.OutputFileWriter.Close()
-	}
-
-	//vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
-
-	vari.GlobalVars.Total = 10
-
-	vari.GlobalVars.DefData = s.DefService.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
-	s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
-
-	data := fileUtils.ReadFile(input)
-
-	var ret []map[string]interface{}
-	s.linesToMap(data, vari.GlobalVars.ExportFields, &ret)
-	jsonObj, _ := json.Marshal(ret)
-	vari.JsonResp = string(jsonObj)
-
-	//logUtils.PrintTo(i118Utils.I118Prt.Sprintf("analyse_success", output))
-	logUtils.PrintLine(vari.JsonResp)
-}
+//func (s *DecodeService) Decode(contents [][]byte, input string) {
+//	if vari.GlobalVars.OutputFile != "" {
+//		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.OutputFile))
+//		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)
+//		logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.OutputFile, os.O_RDWR|os.O_CREATE, 0777)
+//
+//		defer logUtils.OutputFileWriter.Close()
+//	}
+//
+//	//vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+//
+//	vari.GlobalVars.Total = 10
+//
+//	vari.GlobalVars.DefData = s.DefService.LoadDataContentDef(contents, &vari.GlobalVars.ExportFields)
+//	s.ResService.LoadResDef(vari.GlobalVars.ExportFields)
+//
+//	data := fileUtils.ReadFile(input)
+//
+//	var ret []map[string]interface{}
+//	s.linesToMap(data, vari.GlobalVars.ExportFields, &ret)
+//	jsonObj, _ := json.Marshal(ret)
+//	vari.JsonResp = string(jsonObj)
+//
+//	//logUtils.PrintTo(i118Utils.I118Prt.Sprintf("analyse_success", output))
+//	logUtils.PrintLine(vari.JsonResp)
+//}
 
 func (s *DecodeService) linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface{}) {
 	start := 0

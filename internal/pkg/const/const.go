@@ -28,6 +28,8 @@ var (
 	EnRes        = fmt.Sprintf("res/en/messages.json")
 	ZhRes        = fmt.Sprintf("res/zh/messages.json")
 
+	Localhost = "localhost"
+
 	LeftWidth = 36
 	MinWidth  = 130
 	MinHeight = 36

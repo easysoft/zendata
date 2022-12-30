@@ -4,12 +4,16 @@ import (
 	stdContext "context"
 	"fmt"
 	zd "github.com/easysoft/zendata"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	"github.com/easysoft/zendata/internal/server/core/module"
+	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/facebookgo/inject"
+	"github.com/fatih/color"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -50,7 +54,7 @@ func Init() *WebServer {
 
 	mvc.New(app)
 
-	addr := fmt.Sprintf(":%d", vari.DataServicePort)
+	addr := fmt.Sprintf(":%d", vari.Port)
 
 	webServer := &WebServer{
 		app:               app,
@@ -124,6 +128,10 @@ func (webServer *WebServer) Run() {
 		fmt.Printf("初始化路由错误： %v\n", err)
 		panic(err)
 	}
+
+	port := strconv.Itoa(vari.Port)
+	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server",
+		consts.Localhost, port, consts.Localhost, port, consts.Localhost, port), color.FgCyan)
 
 	webServer.app.Listen(
 		webServer.addr,

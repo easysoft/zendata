@@ -35,8 +35,8 @@ func main() {
 
 	flagSet.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
 
-	flagSet.IntVar(&vari.DataServicePort, "p", 0, "")
-	flagSet.IntVar(&vari.DataServicePort, "port", 0, "")
+	flagSet.IntVar(&vari.Port, "p", 0, "")
+	flagSet.IntVar(&vari.Port, "port", 0, "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
 	configUtils.InitConfig("")
@@ -49,8 +49,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if vari.DataServicePort == 0 {
-		vari.DataServicePort = consts.DefaultDataServicePort
+	if vari.Port == 0 {
+		vari.Port = consts.DefaultDataServicePort
 	}
 
 	webServer := web.Init()

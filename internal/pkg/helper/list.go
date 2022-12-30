@@ -19,29 +19,28 @@ import (
 )
 
 func ListData() {
-	res, nameWidth, titleWidth := LoadRes("work")
+	res := map[string][]model.ResFile{}
+	GetFilesAndDirs(vari.WorkDir, consts.ResDirUsers, &res)
+
+	res, nameWidth, titleWidth := LoadRes(res)
 	PrintRes(res, nameWidth, titleWidth)
 }
 
-func ListRes() {
-	res, nameWidth, titleWidth := LoadRes("zd")
+func ListRes() (ret map[string][]model.ResFile) {
+	res := map[string][]model.ResFile{}
+
+	for _, key := range consts.ResKeys {
+		GetFilesAndDirs(key, key, &res)
+	}
+
+	res, nameWidth, titleWidth := LoadRes(res)
 	PrintRes(res, nameWidth, titleWidth)
+
+	return
 }
 
-func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWidth int) {
-	res = map[string][]model.ResFile{}
-
-	if vari.WorkDir == vari.ZdPath {
-		resSrc = "zd"
-	}
-
-	if resSrc == "work" {
-		GetFilesAndDirs(vari.WorkDir, consts.ResDirUsers, &res)
-	} else {
-		for _, key := range consts.ResKeys {
-			GetFilesAndDirs(key, key, &res)
-		}
-	}
+func LoadRes(res map[string][]model.ResFile) (ret map[string][]model.ResFile, nameWidth, titleWidth int) {
+	ret = map[string][]model.ResFile{}
 
 	for _, key := range consts.ResKeys {
 		arr := make([]model.ResFile, 0)
@@ -95,7 +94,7 @@ func LoadRes(resSrc string) (res map[string][]model.ResFile, nameWidth, titleWid
 			}
 		}
 
-		res[key] = SortByName(arr)
+		ret[key] = SortByName(arr)
 	}
 
 	return
