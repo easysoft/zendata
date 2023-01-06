@@ -60,7 +60,7 @@
 
     <a-modal
       :visible="editModalVisible"
-      :title="editModalVisible ? editRecord ? `${$t('menu.data.edit')}: ${editRecord.title}` : $t('title.data.create') : ''"
+      :title="editModalVisible ? editRecord.id ? `${$t('menu.data.edit')}: ${editRecord.title}` : $t('title.data.create') : ''"
       :footer="false"
       :centered="true"
       :width="700"

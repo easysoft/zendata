@@ -92,6 +92,7 @@ const locale = {
   'form.folder': 'Folder',
   'form.path': 'Path',
   'form.file.name': 'File Name',
+  'form.file.content': 'File Content',
   'form.desc': 'Description',
   'form.content': 'Content',
   'form.prefix': 'Prefix',

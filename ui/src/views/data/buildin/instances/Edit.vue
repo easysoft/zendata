@@ -59,6 +59,7 @@ import {
   wrapperColFull,
   wrapperColHalf
 } from "@/utils/const";
+import {getDir} from "@/utils/utils";
 
 export default {
   name: 'RangesEdit',
@@ -93,7 +94,7 @@ export default {
         ],
       },
 
-      model: {folder: 'yaml/'},
+      model: {folder: getDir('yaml')},
       dirs: [],
       workDir: '',
     };
@@ -112,21 +113,20 @@ export default {
   methods: {
     loadData () {
       let id = this.id;
-      if (id === null) {
-        return;
-      }
-      if (id) {
-        if (typeof id === 'string') id = Number.parseInt(id);
-        getInstances(id).then(json => {
-          console.log('getInstances', json)
-          this.model = json.data
-          this.dirs = json.res
-          this.workDir = json.workDir
-        })
-      } else {
+      if (typeof id === 'string') id = Number.parseInt(id);
+      if (!id) {
         this.reset();
+        return
       }
+
+      getInstances(id).then(json => {
+        console.log('getInstances', json)
+        this.model = json.data
+        this.dirs = json.res
+        this.workDir = json.workDir
+      })
     },
+
     save() {
       console.log('save')
       this.$refs.editForm.validate(valid => {
@@ -147,8 +147,8 @@ export default {
     },
     reset() {
       console.log('reset')
-      this.model = {folder: 'yaml/'};
-      this.$refs.editForm.reset()
+      this.$refs.editForm.resetFields()
+      this.model = {folder: getDir('yaml')};
     },
   }
 }

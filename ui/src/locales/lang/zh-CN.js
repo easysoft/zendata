@@ -92,6 +92,7 @@ const locale = {
   'form.folder': '文件夹',
   'form.path': '路径',
   'form.file.name': '文件名',
+  'form.file.content': '文件内容',
   'form.desc': '描述',
   'form.content': '内容',
   'form.prefix': '前缀',

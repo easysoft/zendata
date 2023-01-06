@@ -27,9 +27,14 @@
       <div class="filter">
         <a-input-search v-model="keywords" @change="onSearch" :allowClear="true" :placeholder="$t('tips.search')" style="width: 300px" />
       </div>
+
       <div class="buttons">
-        <a-button type="primary" @click="handleCreateClick()"><a-icon type="plus" :style="{fontSize: '16px'}" /> {{$t('action.create')}}</a-button>
+        <a-button v-if="selectedKey !== 'excel'" type="primary" @click="handleCreateClick()">
+          <a-icon type="plus" :style="{fontSize: '16px'}" />
+          {{$t('action.create')}}
+        </a-button>
       </div>
+
     </div>
     <router-view />
   </div>
