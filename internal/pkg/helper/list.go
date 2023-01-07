@@ -27,19 +27,20 @@ func ListData() {
 }
 
 func ListRes() (ret map[string][]model.ResFile) {
-	res := GetRes()
-	ret, nameWidth, titleWidth := LoadRes(res)
-	PrintRes(ret, nameWidth, titleWidth)
+	res, nameWidth, titleWidth := GetRes()
+	PrintRes(res, nameWidth, titleWidth)
 
 	return
 }
 
-func GetRes() (ret map[string][]model.ResFile) {
+func GetRes() (ret map[string][]model.ResFile, nameWidth, titleWidth int) {
 	ret = map[string][]model.ResFile{}
 
 	for _, key := range consts.ResKeys {
 		GetFilesAndDirs(key, key, &ret)
 	}
+
+	ret, nameWidth, titleWidth = LoadRes(ret)
 
 	return
 }
