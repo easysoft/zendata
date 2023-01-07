@@ -8,7 +8,7 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
@@ -30,7 +30,7 @@ func InitI118(lang string) {
 		data, _ := zd.ReadResData(langRes)
 		InitResFromAsset(data)
 	} else {
-		InitRes(filepath.Join(vari.ZdPath, langRes))
+		InitRes(filepath.Join(vari.DevDir, langRes))
 	}
 
 	if lang == "zh" {
@@ -58,7 +58,7 @@ func Check(e error) {
 	}
 }
 func ReadI18nJson(file string) string {
-	b, err := ioutil.ReadFile(file)
+	b, err := os.ReadFile(file)
 	Check(err)
 	str := string(b)
 	return str

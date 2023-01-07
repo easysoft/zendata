@@ -2,7 +2,6 @@ package controller
 
 import (
 	"bytes"
-	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
@@ -28,17 +27,24 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	defaultFile := ctx.URLParam("default")
 	configFile := ctx.URLParam("config")
 
-	root := ctx.URLParam("root")
-	if root != "" {
-		configUtils.UpdateRootDir(root)
+	//root := ctx.URLParam("root")
+	//if root != "" {
+	//	configUtils.UpdateRootDir(root)
+	//
+	//	if defaultFile != "" {
+	//		defaultFile = filepath.Join(root, defaultFile)
+	//	}
+	//
+	//	if configFile != "" {
+	//		configFile = filepath.Join(root, configFile)
+	//	}
+	//}
 
-		if defaultFile != "" {
-			defaultFile = filepath.Join(root, defaultFile)
-		}
-
-		if configFile != "" {
-			configFile = filepath.Join(root, configFile)
-		}
+	if defaultFile != "" {
+		defaultFile = filepath.Join(vari.ZdDir, defaultFile)
+	}
+	if configFile != "" {
+		configFile = filepath.Join(vari.ZdDir, configFile)
 	}
 
 	vari.GlobalVars.DefData = model.DefData{}

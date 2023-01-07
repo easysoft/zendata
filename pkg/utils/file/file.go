@@ -124,7 +124,7 @@ func GetExeDir() string { // where zd.exe file in
 			dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
 		}
 	} else { // debug
-		dir = vari.WorkDir
+		dir = vari.ZdDir
 	}
 
 	dir, _ = filepath.Abs(dir)
@@ -134,7 +134,7 @@ func GetExeDir() string { // where zd.exe file in
 	return dir
 }
 
-func GetWorkDir() string { // where we run file in
+func GetDevDir() string { // where we run file in
 	dir, _ := os.Getwd()
 
 	dir, _ = filepath.Abs(dir)
@@ -165,7 +165,7 @@ func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // 
 	if resFile == "" {
 		resPath := vari.GlobalVars.ConfigFileDir + from
 		if !FileExist(resPath) { // in same folder with passed config file, like dir/name.yaml
-			resPath = vari.ZdPath + from
+			resPath = vari.ZdDir + from
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -191,7 +191,7 @@ func ConvertReferRangeToPath(file, currFile string) (path string) {
 	if path == "" {
 		resPath := GetAbsDir(currFile) + file
 		if !FileExist(resPath) { // in same folder
-			resPath = vari.ZdPath + file
+			resPath = vari.ZdDir + file
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -225,8 +225,8 @@ func ConvertResYamlPath(from, workDir string) (ret string) {
 		}
 
 		realPth0 := filepath.Join(workDir, relatPath)
-		realPth1 := vari.ZdPath + constant.ResDirYaml + constant.PthSep + relatPath
-		realPth2 := vari.ZdPath + constant.ResDirUsers + constant.PthSep + relatPath
+		realPth1 := vari.ZdDir + constant.ResDirYaml + constant.PthSep + relatPath
+		realPth2 := vari.ZdDir + constant.ResDirUsers + constant.PthSep + relatPath
 		if FileExist(realPth0) {
 			ret = realPth0
 			break
@@ -272,7 +272,7 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 				relatPath = tagFile
 			}
 
-			realPth := vari.ZdPath + constant.ResDirData + constant.PthSep + relatPath
+			realPth := vari.ZdDir + constant.ResDirData + constant.PthSep + relatPath
 			if FileExist(realPth) {
 				if index == 1 {
 					sheet = from[strings.LastIndex(from, ".")+1:]
@@ -284,7 +284,7 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	}
 
 	if ret == "" { // try excel dir
-		realPth := vari.ZdPath + constant.ResDirData + constant.PthSep +
+		realPth := vari.ZdDir + constant.ResDirData + constant.PthSep +
 			strings.Replace(from, ".", constant.PthSep, -1)
 		if IsDir(realPth) {
 			ret = realPth

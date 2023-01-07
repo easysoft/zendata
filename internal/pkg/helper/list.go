@@ -20,21 +20,26 @@ import (
 
 func ListData() {
 	res := map[string][]model.ResFile{}
-	GetFilesAndDirs(vari.WorkDir, consts.ResDirUsers, &res)
+	GetFilesAndDirs(vari.ZdDir, consts.ResDirUsers, &res)
 
 	res, nameWidth, titleWidth := LoadRes(res)
 	PrintRes(res, nameWidth, titleWidth)
 }
 
 func ListRes() (ret map[string][]model.ResFile) {
-	res := map[string][]model.ResFile{}
+	res := GetRes()
+	ret, nameWidth, titleWidth := LoadRes(res)
+	PrintRes(ret, nameWidth, titleWidth)
+
+	return
+}
+
+func GetRes() (ret map[string][]model.ResFile) {
+	ret = map[string][]model.ResFile{}
 
 	for _, key := range consts.ResKeys {
-		GetFilesAndDirs(key, key, &res)
+		GetFilesAndDirs(key, key, &ret)
 	}
-
-	res, nameWidth, titleWidth := LoadRes(res)
-	PrintRes(res, nameWidth, titleWidth)
 
 	return
 }
@@ -144,7 +149,7 @@ func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 
 func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 	if !fileUtils.IsAbsPath(pth) {
-		pth = vari.ZdPath + pth
+		pth = vari.ZdDir + pth
 	}
 
 	dir, err := ioutil.ReadDir(pth)
@@ -219,9 +224,9 @@ func ReadTextInfo(path, key string) (title, desc, resType string) {
 }
 
 func PathToName(path, key, tp string) string {
-	isWorkData := strings.Index(path, vari.WorkDir) > -1
+	isWorkData := strings.Index(path, vari.ZdDir) > -1
 	if isWorkData { // user data in workdir
-		path = strings.Replace(path, vari.WorkDir, "", 1)
+		path = strings.Replace(path, vari.ZdDir, "", 1)
 	}
 
 	nameSep := consts.PthSep

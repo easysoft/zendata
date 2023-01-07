@@ -23,16 +23,16 @@ func ComputerReferFilePath(file string, field *model.DefField) (resPath string) 
 		return
 	}
 
-	resPath = vari.ZdPath + consts.ResDirUsers + consts.PthSep + file
+	resPath = vari.ZdDir + consts.ResDirUsers + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}
-	resPath = vari.ZdPath + consts.ResDirYaml + consts.PthSep + file
+	resPath = vari.ZdDir + consts.ResDirYaml + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}
 
-	resPath = vari.ZdPath + file
+	resPath = vari.ZdDir + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}

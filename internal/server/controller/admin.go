@@ -45,7 +45,7 @@ func (c *AdminCtrl) Handle(ctx iris.Context) {
 	switch reqData.Action {
 	// common
 	//case "getWorkDir":
-	//	ret.WorkDir = vari.ZdPath
+	//	ret.ZdDir = vari.ZdDir
 
 	// def
 	//case "syncData":
@@ -55,7 +55,7 @@ func (c *AdminCtrl) Handle(ctx iris.Context) {
 
 	case "getDef":
 		ret.Data, ret.Res = c.DefService.Get(reqData.Id)
-		ret.WorkDir = vari.ZdPath
+		ret.WorkDir = vari.ZdDir
 	case "saveDef":
 		def := serverUtils.ConvertDef(reqData.Data)
 		c.DefService.Save(&def)
@@ -137,7 +137,7 @@ func (c *AdminCtrl) Handle(ctx iris.Context) {
 		ret.Data, ret.Total = c.RangesService.List(reqData.Keywords, reqData.Page)
 	case "getRanges":
 		ret.Data, ret.Res = c.RangesService.Get(reqData.Id)
-		ret.WorkDir = vari.ZdPath
+		ret.WorkDir = vari.ZdDir
 	case "saveRanges":
 		ranges := serverUtils.ConvertRanges(reqData.Data)
 		ret.Data = c.RangesService.Save(&ranges)
@@ -166,7 +166,7 @@ func (c *AdminCtrl) Handle(ctx iris.Context) {
 		ret.Data, ret.Total = c.InstancesService.List(reqData.Keywords, reqData.Page)
 	case "getInstances":
 		ret.Data, ret.Res = c.InstancesService.Get(reqData.Id)
-		ret.WorkDir = vari.ZdPath
+		ret.WorkDir = vari.ZdDir
 	case "saveInstances":
 		ranges := serverUtils.ConvertInstances(reqData.Data)
 		ret.Data = c.InstancesService.Save(&ranges)
@@ -194,7 +194,7 @@ func (c *AdminCtrl) Handle(ctx iris.Context) {
 		ret.Data, ret.Total = c.ExcelService.List(reqData.Keywords, reqData.Page)
 	case "getExcel":
 		ret.Data, ret.Res = c.ExcelService.Get(reqData.Id)
-		ret.WorkDir = vari.ZdPath
+		ret.WorkDir = vari.ZdDir
 	case "saveExcel":
 		ranges := serverUtils.ConvertExcel(reqData.Data)
 		ret.Data = c.ExcelService.Save(&ranges)
@@ -205,7 +205,7 @@ func (c *AdminCtrl) Handle(ctx iris.Context) {
 		ret.Data, ret.Total = c.TextService.List(reqData.Keywords, reqData.Page)
 	case "getText":
 		ret.Data, ret.Res = c.TextService.Get(reqData.Id)
-		ret.WorkDir = vari.ZdPath
+		ret.WorkDir = vari.ZdDir
 	case "saveText":
 		ranges := serverUtils.ConvertText(reqData.Data)
 		ret.Data = c.TextService.Save(&ranges)
@@ -216,7 +216,7 @@ func (c *AdminCtrl) Handle(ctx iris.Context) {
 		ret.Data, ret.Total = c.ConfigService.List(reqData.Keywords, reqData.Page)
 	case "getConfig":
 		ret.Data, ret.Res = c.ConfigService.Get(reqData.Id)
-		ret.WorkDir = vari.ZdPath
+		ret.WorkDir = vari.ZdDir
 	case "saveConfig":
 		ranges := serverUtils.ConvertConfig(reqData.Data)
 		ret.Data = c.ConfigService.Save(&ranges)

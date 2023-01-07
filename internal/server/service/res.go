@@ -19,7 +19,7 @@ type ResService struct {
 }
 
 func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
-	res := helper.ListRes()
+	res := helper.GetRes()
 
 	for _, key := range consts.ResKeys {
 		for _, res := range res[key] {

@@ -91,7 +91,7 @@ func ConvertParams(data interface{}) (mp map[string]string) {
 func GetRelativePath(pth string) string {
 	idx := strings.LastIndex(pth, consts.PthSep)
 	folder := pth[:idx+1]
-	folder = strings.Replace(folder, vari.ZdPath, "", 1)
+	folder = strings.Replace(folder, vari.ZdDir, "", 1)
 
 	return folder
 }

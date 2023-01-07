@@ -13,7 +13,7 @@ type CommCtrl struct {
 }
 
 func (c *CommCtrl) GetWorkDir(ctx iris.Context) {
-	ctx.JSON(c.SuccessResp(vari.ZdPath))
+	ctx.JSON(c.SuccessResp(vari.ZdDir))
 }
 
 func (c *CommCtrl) SyncData(ctx iris.Context) {
