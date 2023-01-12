@@ -7,6 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type MockService struct {
@@ -15,7 +16,7 @@ type MockService struct {
 
 func (s *MockService) Init() (err error) {
 	vari.GlobalVars.MockData = &model.MockData{}
-	vari.GlobalVars.MockData.Paths = map[string]model.Path{}
+	vari.GlobalVars.MockData.Paths = map[string]map[string]*model.EndPoint{}
 	var files []string
 
 	s.LoadDef(vari.GlobalVars.MockDir, &files, 0)
@@ -62,4 +63,29 @@ func (s *MockService) LoadDef(pth string, files *[]string, level int) (err error
 	}
 
 	return nil
+}
+
+func (s *MockService) GetResp(reqPath, reqMethod string) (ret interface{}, err error) {
+	reqPath = s.AddPrefixIfNeeded(reqPath)
+	reqMethod = strings.ToLower(reqMethod)
+
+	if vari.GlobalVars.MockData.Paths[reqPath] == nil || // no such a path
+		vari.GlobalVars.MockData.Paths[reqPath][reqMethod] == nil { // no such a method
+		return
+	}
+
+	ret, _ = s.GenData(vari.GlobalVars.MockData.Paths[reqPath][reqMethod])
+
+	return
+}
+
+func (s *MockService) GenData(endpoint *model.EndPoint) (ret interface{}, err error) {
+	ret = endpoint
+
+	return
+}
+
+func (s *MockService) AddPrefixIfNeeded(pth string) (ret string) {
+	ret = "/" + strings.TrimPrefix(pth, "/")
+	return
 }

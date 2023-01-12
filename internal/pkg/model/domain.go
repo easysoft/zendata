@@ -210,20 +210,7 @@ type MockData struct {
 	Author  string `json:"author"`
 	Version string `json:"version"`
 
-	Paths map[string]Path `json:"paths"`
-}
-
-type Path struct {
-	Get    EndPoint `json:"get"`
-	Post   EndPoint `json:"post"`
-	Put    EndPoint `json:"put"`
-	Delete EndPoint `json:"delete"`
-
-	Patch   EndPoint `json:"patch"`
-	Head    EndPoint `json:"head"`
-	Connect EndPoint `json:"connect"`
-	Options EndPoint `json:"options"`
-	Trace   EndPoint `json:"trace"`
+	Paths map[string]map[string]*EndPoint `json:"paths"`
 }
 
 type EndPoint struct {

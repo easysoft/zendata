@@ -17,7 +17,7 @@ func NewMockModule() *DataModule {
 // Party 执行
 func (m *MockModule) Party() module.WebModule {
 	handler := func(index iris.Party) {
-		index.Get("/{paths:path}", m.MockCtrl.Mock).Name = "API服务模拟"
+		index.Any("/{paths:path}", m.MockCtrl.Mock)
 	}
 
 	return module.NewModule("/", handler)
