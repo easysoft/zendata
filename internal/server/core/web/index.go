@@ -105,7 +105,7 @@ func (webServer *WebServer) AddModule(module ...module.WebModule) {
 func (webServer *WebServer) AddUIStatic() {
 	uiFs, err := zd.GetUiFileSys()
 	if err != nil {
-		return
+		panic(fmt.Sprintf("获取UI文件系统错误： %v", err))
 	}
 
 	webServer.app.HandleDir("/ui", http.FS(uiFs), iris.DirOptions{
@@ -125,8 +125,7 @@ func (webServer *WebServer) Run() {
 	webServer.app.UseGlobal(webServer.globalMiddlewares...)
 	err := webServer.InitRouter()
 	if err != nil {
-		fmt.Printf("初始化路由错误： %v\n", err)
-		panic(err)
+		panic(fmt.Sprintf("初始化路由错误： %v", err))
 	}
 
 	port := strconv.Itoa(vari.Port)
