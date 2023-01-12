@@ -10,8 +10,8 @@ import (
 type IndexModule struct {
 	CommModule  *index.CommModule  `inject:""`
 	DefModule   *index.DefModule   `inject:""`
-	DataModule  *index.DataModule  `inject:""`
 	AdminModule *index.AdminModule `inject:""`
+	DataModule  *index.DataModule  `inject:""`
 	MockModule  *index.MockModule  `inject:""`
 }
 

@@ -1,7 +1,9 @@
 package serverService
 
 import (
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/service"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v2"
@@ -11,7 +13,9 @@ import (
 )
 
 type MockService struct {
-	ResService *ResService `inject:""`
+	ResService    *ResService            `inject:""`
+	MainService   *service.MainService   `inject:""`
+	OutputService *service.OutputService `inject:""`
 }
 
 func (s *MockService) Init() (err error) {
@@ -66,7 +70,7 @@ func (s *MockService) LoadDef(pth string, files *[]string, level int) (err error
 }
 
 func (s *MockService) GetResp(reqPath, reqMethod string) (ret interface{}, err error) {
-	reqPath = s.AddPrefixIfNeeded(reqPath)
+	reqPath = s.addPrefixIfNeeded(reqPath)
 	reqMethod = strings.ToLower(reqMethod)
 
 	if vari.GlobalVars.MockData.Paths[reqPath] == nil || // no such a path
@@ -80,12 +84,35 @@ func (s *MockService) GetResp(reqPath, reqMethod string) (ret interface{}, err e
 }
 
 func (s *MockService) GenData(endpoint *model.EndPoint) (ret interface{}, err error) {
-	ret = endpoint
+	vari.GlobalVars.RunMode = consts.RunModeServerRequest
+	vari.GlobalVars.Total = endpoint.Lines
+	vari.GlobalVars.ExportFields = strings.Split(endpoint.Fields, ",")
+
+	dataType := endpoint.Type
+	if dataType == "item" {
+		vari.GlobalVars.Total = 1
+	}
+
+	configFile := filepath.Join(vari.ZdDir, endpoint.Config)
+	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(configFile)
+
+	configContent := fileUtils.ReadFileBuf(configFile)
+
+	contents := [][]byte{configContent}
+
+	s.MainService.GenerateDataByContents(contents)
+
+	records := s.OutputService.GenRecords()
+	if dataType == "item" {
+		ret = records[0]
+	} else {
+		ret = records
+	}
 
 	return
 }
 
-func (s *MockService) AddPrefixIfNeeded(pth string) (ret string) {
+func (s *MockService) addPrefixIfNeeded(pth string) (ret string) {
 	ret = "/" + strings.TrimPrefix(pth, "/")
 	return
 }

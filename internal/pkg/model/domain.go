@@ -218,7 +218,7 @@ type EndPoint struct {
 	Summary string     `json:"summary"`
 	Config  string     `json:"config"`
 	Type    string     `json:"type"`
-	Lines   string     `json:"lines"`
+	Lines   int        `json:"lines"`
 	Fields  string     `json:"fields"`
 }
 

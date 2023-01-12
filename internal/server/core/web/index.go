@@ -79,11 +79,11 @@ func injectModule(ws *WebServer) {
 		&inject.Object{Value: vari.DB},
 		&inject.Object{Value: indexModule},
 	); err != nil {
-		logUtils.PrintErrMsg(fmt.Sprintf("provide usecase objects to the Graph: %v", err))
+		panic(fmt.Sprintf("provide usecase objects to the Graph: %v", err))
 	}
 	err := g.Populate()
 	if err != nil {
-		logUtils.PrintErrMsg(fmt.Sprintf("populate the incomplete Objects: %v", err))
+		panic(fmt.Sprintf("populate the incomplete Objects: %v", err))
 	}
 
 	ws.AddModule(indexModule.Party(), indexModule.PartyData(), indexModule.PartyMock())
