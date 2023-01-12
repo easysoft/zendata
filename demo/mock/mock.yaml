@@ -1,0 +1,38 @@
+title: mock
+desc:
+author: zentao
+version: 1.0
+
+paths:
+  /products:
+    get:
+      summary: 产品列表
+      config: demo/mock/products.yaml   # 定义文件
+      type: list                        # list | item 分别输出对象列表或单个对象
+      lines: 3                          # 行数，仅对列表类型有效
+      fields: "id,name"                 # 需要输出的字段，空输出所有
+
+  /product/{id}:
+    get:
+      summary: 产品详情
+      config: demo/mock/products.yaml
+      type: item
+      fields: "id,name,desc"
+
+    post:
+      summary: 新建产品
+      config: demo/mock/products.yaml
+      type: item
+      fields: "id,name,desc"
+
+    put:
+      summary: 修改产品
+      config: demo/mock/products.yaml
+      type: item
+      fields: "id,name,desc"
+
+    delete:
+      summary: 删除产品
+      config: demo/mock/products.yaml
+      type: item
+      fields: "id,name,desc"

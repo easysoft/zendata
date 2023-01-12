@@ -129,6 +129,7 @@ func main() {
 	flagSet.BoolVar(&vari.GlobalVars.DBClear, "clear", false, "")
 
 	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
+	flagSet.StringVar(&vari.GlobalVars.MockDir, "mock", "", "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 

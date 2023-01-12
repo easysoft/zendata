@@ -1,0 +1,15 @@
+title: 产品
+desc:
+author: zentao
+version: 1.0
+
+fields:
+  - field: id
+    range: 1-10000
+
+  - field: name
+    prefix: "product-"
+    range: 1-10000
+
+  - field: name
+    range: "描述"

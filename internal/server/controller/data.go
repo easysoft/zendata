@@ -124,7 +124,7 @@ func (c *DataCtrl) DealwithParams(ctx iris.Context) {
 	vari.GlobalVars.OutputFile = ctx.URLParam("outputFile")
 	vari.GlobalVars.OutputFormat = ctx.URLParam("format")
 
-	fields := strings.TrimSpace(ctx.URLParam("field"))
+	fields := strings.TrimSpace(ctx.URLParam("fields"))
 
 	if fields != "" {
 		vari.GlobalVars.ExportFields = strings.Split(fields, ",")
@@ -133,9 +133,6 @@ func (c *DataCtrl) DealwithParams(ctx iris.Context) {
 	if vari.GlobalVars.OutputFormat == "" {
 		vari.GlobalVars.OutputFormat = consts.FormatJson
 	}
-
-	// for decode
-	vari.GlobalVars.OutputFile = ctx.URLParam("outputFile")
 
 	return
 }
