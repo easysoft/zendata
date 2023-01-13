@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -88,9 +87,9 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
 		if count >= vari.GlobalVars.Total || count >= uniqueTotal || isRandomAndLoopEnd {
 			for _, v := range field.Values {
-				str := fmt.Sprintf("%v", v)
-				str = s.FixService.AddFix(str, field, count, true)
-				values = append(values, str)
+				v = s.FixService.AddFix(v, field, count, true)
+
+				values = append(values, v)
 			}
 			break
 		}

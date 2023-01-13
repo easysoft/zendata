@@ -9,6 +9,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -35,8 +36,9 @@ func (s *MockService) Init() (err error) {
 			continue
 		}
 
-		for k, v := range data.Paths {
-			vari.GlobalVars.MockData.Paths[k] = v
+		for pth, mp := range data.Paths {
+			pattern := s.getPathPatten(pth)
+			vari.GlobalVars.MockData.Paths[pattern] = mp
 		}
 	}
 
@@ -73,12 +75,17 @@ func (s *MockService) GetResp(reqPath, reqMethod string) (ret interface{}, err e
 	reqPath = s.addPrefixIfNeeded(reqPath)
 	reqMethod = strings.ToLower(reqMethod)
 
-	if vari.GlobalVars.MockData.Paths[reqPath] == nil || // no such a path
-		vari.GlobalVars.MockData.Paths[reqPath][reqMethod] == nil { // no such a method
-		return
-	}
+	for pth, mp := range vari.GlobalVars.MockData.Paths {
+		if !regexp.MustCompile(pth).MatchString(reqPath) { // no match
+			continue
+		}
 
-	ret, _ = s.GenData(vari.GlobalVars.MockData.Paths[reqPath][reqMethod])
+		if mp[reqMethod] == nil { // no such a method
+			continue
+		}
+
+		ret, _ = s.GenData(mp[reqMethod])
+	}
 
 	return
 }
@@ -86,6 +93,7 @@ func (s *MockService) GetResp(reqPath, reqMethod string) (ret interface{}, err e
 func (s *MockService) GenData(endpoint *model.EndPoint) (ret interface{}, err error) {
 	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	vari.GlobalVars.Total = endpoint.Lines
+	vari.GlobalVars.Trim = true
 	vari.GlobalVars.ExportFields = strings.Split(endpoint.Fields, ",")
 
 	dataType := endpoint.Type
@@ -114,5 +122,14 @@ func (s *MockService) GenData(endpoint *model.EndPoint) (ret interface{}, err er
 
 func (s *MockService) addPrefixIfNeeded(pth string) (ret string) {
 	ret = "/" + strings.TrimPrefix(pth, "/")
+	return
+}
+
+func (s *MockService) getPathPatten(pth string) (ret string) {
+	regx := regexp.MustCompile(`({[^}]+?})`)
+	ret = regx.ReplaceAllString(pth, "(.+)")
+
+	ret = "^" + ret + "$"
+
 	return
 }

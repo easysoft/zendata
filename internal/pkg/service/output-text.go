@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -23,7 +24,7 @@ func (s *OutputService) GenText(returnedForYamlRefer bool) (lines []interface{})
 		if returnedForYamlRefer {
 			lines = append(lines, line)
 		} else {
-			logUtils.PrintLine(line + "\n")
+			logUtils.PrintLine(fmt.Sprintf("%v", line) + "\n")
 		}
 	}
 

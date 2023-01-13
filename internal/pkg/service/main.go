@@ -77,7 +77,7 @@ func (s *MainService) GenerateDataByContents(contents [][]byte) (count int, err 
 
 		s.FieldService.Generate(&vari.GlobalVars.DefData.Fields[i], join)
 
-		vari.GlobalVars.ColIsNumArr = append(vari.GlobalVars.ColIsNumArr, field.IsNumb)
+		vari.GlobalVars.ColIsNumArr = append(vari.GlobalVars.ColIsNumArr, vari.GlobalVars.DefData.Fields[i].IsNumb)
 	}
 
 	// combine children fields

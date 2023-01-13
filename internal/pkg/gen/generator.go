@@ -192,7 +192,7 @@ func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsTo
 		}
 
 		// select from excel with expr
-		if genHelper.SelectExcelWithExpr(child) {
+		if genHelper.IsSelectExcelWithExpr(child) {
 			selects := genHelper.ReplaceVariableValues(child.Select, topLevelFieldNameToValuesMap)
 			wheres := genHelper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
 

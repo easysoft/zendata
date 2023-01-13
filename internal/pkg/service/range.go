@@ -43,9 +43,10 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 				break
 			}
 		}
-
 		return
 	}
+
+	field.IsNumb = true
 
 	// gen from field's range
 	rangeSections := s.ParseRangeProperty(rang) // parse 1
@@ -67,10 +68,12 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 		typ, desc := s.ParseRangeSectionDesc(descStr) // parse 3
 
 		items := make([]interface{}, 0)
-		if typ == "literal" {
-			items = s.CreateValuesFromLiteral(field, desc, stepStr, count, countTag)
-		} else if typ == "interval" {
+		if typ == "interval" {
 			items = s.CreateValuesFromInterval(field, desc, stepStr, count, countTag)
+
+		} else if typ == "literal" {
+			items = s.CreateValuesFromLiteral(field, desc, stepStr, count, countTag)
+
 		} else if typ == "yaml" { // load from a yaml
 			items = s.CreateValuesFromYaml(field, desc, stepStr, count, countTag)
 			field.ReferToAnotherYaml = true
@@ -89,6 +92,8 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 }
 
 func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+	field.IsNumb = false
+
 	elemArr := s.ParseDesc(desc)
 	step, _ := strconv.Atoi(stepStr)
 	if step == 0 {
@@ -162,10 +167,9 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 		val := s.PlaceholderService.PlaceholderStr(key)
 		strItems := make([]string, 0)
 
-		//for i := 0; i < repeat*count; i++ { // chang to add only one placeholder item
+		// chang to add only one placeholder item
 		items = append(items, val)
 		strItems = append(strItems, val)
-		//}
 
 		mp := s.PlaceholderService.PlaceholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
 			strconv.Itoa(precision), field.Format, repeat, repeatTag)
@@ -182,9 +186,6 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 
 		items = valueGen.GenerateItems(startInt, endInt, int64(step.(int)), 0, rand, repeat, repeatTag, 0)
 
-	} else if dataType == "char" {
-		items = valueGen.GenerateItems(startStr[0], endStr[0], int64(step.(int)), 0, rand, repeat, repeatTag, 0)
-
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
@@ -192,7 +193,14 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 
 		items = valueGen.GenerateItems(startFloat, endFloat, step.(float64), field.Precision, rand, repeat, repeatTag, 0)
 
+	} else if dataType == "char" {
+		field.IsNumb = false
+
+		items = valueGen.GenerateItems(startStr[0], endStr[0], int64(step.(int)), 0, rand, repeat, repeatTag, 0)
+
 	} else if dataType == "string" {
+		field.IsNumb = false
+
 		if repeat == 0 {
 			repeat = 1
 		}
@@ -209,6 +217,8 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 }
 
 func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+	field.IsNumb = false
+
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
 	rootDef := vari.GlobalVars.DefData
 	configDir := vari.GlobalVars.ConfigFileDir
@@ -246,16 +256,16 @@ func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, ste
 }
 
 func (s *RangeService) DealwithFixRange(field *model.DefField) {
-	if s.isRangeFix(field.Prefix) {
-		field.PrefixRange = s.CreateFieldFixValuesFromList(field.Prefix, field)
+	if s.FixIsARange(field.Prefix) {
+		field.PrefixRange = s.CreateAffixValuesFromRange(field.Prefix, field)
 	} else {
 		var tmp interface{}
 		tmp = field.Prefix
 		field.PrefixRange = &model.Range{Values: []interface{}{tmp}}
 	}
 
-	if s.isRangeFix(field.Postfix) {
-		field.PostfixRange = s.CreateFieldFixValuesFromList(field.Postfix, field)
+	if s.FixIsARange(field.Postfix) {
+		field.PostfixRange = s.CreateAffixValuesFromRange(field.Postfix, field)
 	} else {
 		var tmp interface{}
 		tmp = field.Postfix
@@ -263,7 +273,7 @@ func (s *RangeService) DealwithFixRange(field *model.DefField) {
 	}
 }
 
-func (s *RangeService) CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *model.Range) {
+func (s *RangeService) CreateAffixValuesFromRange(strRang string, field *model.DefField) (rang *model.Range) {
 	rang = &model.Range{}
 
 	if strRang == "" {
@@ -313,7 +323,7 @@ func (s *RangeService) CreateFieldFixValuesFromList(strRang string, field *model
 	return
 }
 
-func (s *RangeService) isRangeFix(fix string) bool {
+func (s *RangeService) FixIsARange(fix string) bool {
 	index := strings.Index(fix, "-")
 
 	return index > 0 && index < len(fix)-1

@@ -12,7 +12,7 @@ paths:
       lines: 3                          # 行数，仅对列表类型有效
       fields: "id,name"                 # 需要输出的字段，空输出所有
 
-  /product/{id}:
+  /products/{id}:
     get:
       summary: 产品详情
       config: demo/mock/products.yaml

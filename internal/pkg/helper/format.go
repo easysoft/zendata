@@ -27,21 +27,25 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		ret = Md5(str)
 		pass = true
 		return
+
 	} else if strings.Index(format, "sha1") == 0 {
 		str := interfaceToStr(val, precision)
 		ret = Sha1(str)
 		pass = true
 		return
+
 	} else if strings.Index(format, "base64") == 0 {
 		str := interfaceToStr(val, precision)
 		ret = Base64(str)
 		pass = true
 		return
+
 	} else if strings.Index(format, "urlencode") == 0 {
 		str := interfaceToStr(val, precision)
 		ret = UrlEncode(str)
 		pass = true
 		return
+
 	} else if strings.Index(format, "uuid") > -1 {
 		ret = uuid.NewV4().String()
 		sep := ""

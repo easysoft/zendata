@@ -47,7 +47,7 @@ func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopL
 		}
 
 		// select from excel with expr
-		if genHelper.SelectExcelWithExpr(child) {
+		if genHelper.IsSelectExcelWithExpr(child) {
 			childValues = s.ExcelService.genExcelValuesWithExpr(&child, fieldNameToValuesMap)
 		}
 

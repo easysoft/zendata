@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -32,7 +33,12 @@ func (s *OutputService) GenRecords() (records []map[string]interface{}) {
 func (s *OutputService) GenRecordField(field *model.DefField, mp *map[string]interface{}, i int) {
 	if field.Join || len(field.Fields) == 0 { // set values
 		val := field.Values[i%len(field.Values)]
-		val = s.PlaceholderService.ReplacePlaceholder(val.(string))
+
+		switch val.(type) {
+		case string:
+			val = s.PlaceholderService.ReplacePlaceholder(fmt.Sprintf("%v", val))
+		default:
+		}
 
 		(*mp)[field.Field] = val
 

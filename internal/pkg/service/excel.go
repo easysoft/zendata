@@ -30,7 +30,7 @@ func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, fiel
 	values = map[string][]interface{}{}
 
 	// sql has variable expr
-	if filePath == "" || genHelper.SelectExcelWithExpr(*field) {
+	if filePath == "" || genHelper.IsSelectExcelWithExpr(*field) {
 		return
 	}
 
