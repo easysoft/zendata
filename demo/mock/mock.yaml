@@ -9,8 +9,8 @@ paths:
       summary: 产品列表
       config: demo/mock/products.yaml   # 定义文件
       type: list                        # list | item 分别输出对象列表或单个对象
-      lines: 3                          # 行数，仅对列表类型有效
-      fields: "id,name"                 # 需要输出的字段，空输出所有
+      lines: 10                          # 行数，仅对列表类型有效
+      fields: "id,name,desc"                 # 需要输出的字段，空输出所有
 
   /products/{id}:
     get:

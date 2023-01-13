@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -166,7 +167,7 @@ func (s *CombineService) getModArr(arrOfArr [][]interface{}) []int {
 
 func (s *CombineService) ConnectValues(values []interface{}) (ret string) {
 	for i, item := range values {
-		col := item.(string)
+		col := fmt.Sprintf("%v", item)
 
 		if i > 0 && vari.GlobalVars.Human { // use a tab
 			ret = strings.TrimRight(ret, "\t")

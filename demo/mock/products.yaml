@@ -6,12 +6,23 @@ version: 1.0
 fields:
   - field: id
     range: 1-10000
-    postfix: "\t"
 
   - field: name
     prefix: "product-"
-    range: 1-10000
+    range: 100-200
     postfix: "\t"
 
   - field: desc
-    range: "描述"
+#    mode: r
+    fields:
+      - field: child1
+        range: A-C
+
+        prefix: PART1_
+        postfix: ' | '
+
+      - field: child2
+        range: 0-9
+
+      - field: child3
+        range: 0-3,a-z

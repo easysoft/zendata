@@ -93,7 +93,7 @@ func (s *MockService) GetResp(reqPath, reqMethod string) (ret interface{}, err e
 func (s *MockService) GenData(endpoint *model.EndPoint) (ret interface{}, err error) {
 	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	vari.GlobalVars.Total = endpoint.Lines
-	vari.GlobalVars.Trim = true
+	vari.GlobalVars.OutputFormat = "json"
 	vari.GlobalVars.ExportFields = strings.Split(endpoint.Fields, ",")
 
 	dataType := endpoint.Type

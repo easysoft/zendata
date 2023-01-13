@@ -4,6 +4,7 @@ import (
 	serverService "github.com/easysoft/zendata/internal/server/service"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/context"
 )
 
 type MockCtrl struct {
@@ -21,5 +22,5 @@ func (c *MockCtrl) Mock(ctx iris.Context) {
 
 	resp, _ := c.MockService.GetResp(paths, ctx.Method())
 
-	ctx.JSON(resp)
+	ctx.JSON(resp, context.JSON{Indent: "    "})
 }
