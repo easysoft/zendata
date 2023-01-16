@@ -11,10 +11,12 @@ import (
 	"github.com/mattn/go-runewidth"
 	uuid "github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
+	"math/rand"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func FormatStr(format string, val interface{}, precision int) (ret string, pass bool) {
@@ -52,6 +54,26 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 			sep = strings.Trim(arr[1], "'")
 		}
 		ret = strings.ReplaceAll(ret, "-", sep)
+
+		pass = true
+		return
+	} else if strings.Index(format, "password") > -1 {
+		length := 8
+		regx := regexp.MustCompile(`password\(\s*(\d+)\s*\)`)
+		arr := regx.FindStringSubmatch(format)
+		if len(arr) > 1 {
+			length, _ = strconv.Atoi(arr[1])
+		}
+
+		if length == 0 {
+			length = 8
+		}
+		ret = RandPassword(length)
+
+		pass = true
+		return
+	} else if strings.Index(format, "binary") > -1 {
+		ret = GenBinary()
 
 		pass = true
 		return
@@ -269,4 +291,18 @@ func ParseBool(str string) (ret bool) {
 	ret, _ = strconv.ParseBool(str)
 
 	return
+}
+
+func RandPassword(length int) string {
+	rand.Seed(time.Now().UnixNano())
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.*_+%$#@")
+	b := make([]rune, length)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
+
+func GenBinary() string {
+	return ImgBindata
 }
