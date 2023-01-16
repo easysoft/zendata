@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -47,22 +48,32 @@ func (s *LoopService) LoopAndFixFieldValues(field *model.DefField, withFix bool)
 	return
 }
 
-func (s *LoopService) LoopFieldValueToSingleStr(field *model.DefField, indexOfRow *int, count int, withFix bool) (loopStr string) {
+func (s *LoopService) LoopFieldValueToSingleStr(field *model.DefField, indexOfRow *int, count int, withFix bool) (
+	ret interface{}) {
+
+	if (*field).LoopIndex <= 1 && field.Loopfix == "" {
+		ret, _ = s.getFieldValByIndex(*field, indexOfRow)
+		ret = s.FixService.AddFix(ret, field, count, withFix)
+
+		*indexOfRow++
+		return
+	}
+
 	for j := 0; j < (*field).LoopIndex; j++ {
-		if loopStr != "" {
-			loopStr = loopStr + field.Loopfix
+		if ret != "" {
+			ret = fmt.Sprintf("%v", ret) + field.Loopfix
 		}
 
 		str, err := s.getFieldValByIndex(*field, indexOfRow)
 		if err != nil {
 			str = "N/A"
 		}
-		loopStr += str
+		ret = fmt.Sprintf("%v", ret) + fmt.Sprintf("%v", str)
 
 		*indexOfRow++
 	}
 
-	loopStr = s.FixService.AddFix(loopStr, field, count, withFix)
+	ret = s.FixService.AddFix(ret, field, count, withFix)
 
 	return
 }
@@ -88,10 +99,10 @@ func (s *LoopService) ComputerLoopTimes(field *model.DefField) {
 	(*field).LoopIndex = (*field).LoopStart
 }
 
-func (s *LoopService) getFieldValByIndex(field model.DefField, index *int) (val string, err error) {
+func (s *LoopService) getFieldValByIndex(field model.DefField, index *int) (val interface{}, err error) {
 	// 叶节点
 	if len(field.Values) == 0 {
-		if genHelper.SelectExcelWithExpr(field) {
+		if genHelper.IsSelectExcelWithExpr(field) {
 			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
 			err = errors.New("")
 		}

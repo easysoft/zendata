@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"regexp"
 	"strconv"
@@ -13,30 +14,38 @@ type PlaceholderService struct {
 	FixService *FixService `inject:""`
 }
 
-func (s *PlaceholderService) ReplacePlaceholder(val string) (ret string) {
+func (s *PlaceholderService) ReplacePlaceholder(val string) (ret interface{}) {
 	ret = val
 
 	re := regexp.MustCompile("(?siU)\\${(.*)}")
-	matchResultArr := re.FindAllStringSubmatch(ret, -1)
+	matchResultArr := re.FindAllStringSubmatch(fmt.Sprintf("%v", ret), -1)
 	matchTimes := len(matchResultArr)
 
 	for _, childArr := range matchResultArr {
 		placeholderStr := childArr[1]
 		values := s.getValForPlaceholder(placeholderStr, matchTimes)
 
-		for _, str := range values {
+		for _, val := range values {
 			key, _ := strconv.Atoi(placeholderStr)
 			temp := s.PlaceholderStr(key)
-			ret = strings.Replace(ret, temp, str, 1)
+
+			str := fmt.Sprintf("%v", ret)
+			isNotStr := matchTimes == 1 && commonUtils.GetType(val) != "string" &&
+				strings.Index(str, "${") == 0 && str[len(str)-1] == '}'
+
+			if isNotStr {
+				ret = val
+			} else {
+				ret = strings.Replace(fmt.Sprintf("%v", ret), temp, fmt.Sprintf("%v", val), 1)
+				ret = s.FixService.TrimIfFormatIsNotText(fmt.Sprintf("%v", ret))
+			}
 		}
 	}
-
-	ret = s.FixService.RemoveSpaceIfOutputNoTextFile(ret)
 
 	return
 }
 
-func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count int) []string {
+func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count int) (ret []interface{}) {
 	placeholderNo, _ := strconv.Atoi(placeholderStr)
 	mp := vari.GlobalVars.RandFieldSectionPathToValuesMap[placeholderNo]
 
@@ -48,7 +57,6 @@ func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count i
 		repeat = repeatObj.(int)
 	}
 
-	strArr := make([]string, 0)
 	repeatTag := mp["repeatTag"].(string)
 	if tp == "int" {
 		start := mp["start"].(string)
@@ -56,8 +64,7 @@ func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count i
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = genHelper.GetRandFromRange("int", start, end, "1",
-			repeat, repeatTag, precision, format, count)
+		ret = genHelper.GetRandValuesFromRange("int", start, end, "1", repeat, repeatTag, precision, format, count)
 
 	} else if tp == "float" {
 		start := mp["start"].(string)
@@ -67,7 +74,7 @@ func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count i
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = genHelper.GetRandFromRange("float", start, end, stepStr,
+		ret = genHelper.GetRandValuesFromRange("float", start, end, stepStr,
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "char" {
@@ -76,17 +83,18 @@ func (s *PlaceholderService) getValForPlaceholder(placeholderStr string, count i
 		precision := mp["precision"].(string)
 		format := mp["format"].(string)
 
-		strArr = genHelper.GetRandFromRange("char", start, end, "1",
+		ret = genHelper.GetRandValuesFromRange("char", start, end, "1",
 			repeat, repeatTag, precision, format, count)
 
 	} else if tp == "list" {
 		list := mp["list"].([]string)
-		strArr = genHelper.GetRandFromList(list, repeat, count)
+		ret = genHelper.GetRandFromList(list, repeat, count)
 
 	}
 
-	strArr = strArr[:count]
-	return strArr
+	ret = ret[:count]
+
+	return
 }
 
 func (s *PlaceholderService) PlaceholderStr(key int) string {

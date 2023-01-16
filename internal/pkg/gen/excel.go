@@ -25,7 +25,7 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 	values = map[string][]string{}
 
 	// sql has variable expr
-	if filePath == "" || genHelper.SelectExcelWithExpr(*field) {
+	if filePath == "" || genHelper.IsSelectExcelWithExpr(*field) {
 		return
 	}
 

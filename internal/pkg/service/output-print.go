@@ -3,9 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"strconv"
 	"strings"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
@@ -206,57 +204,4 @@ func (s *PrintService) getXmlLine(i int, mp map[string]string, length int) strin
 		text = text + "\n</testdata>"
 	}
 	return text
-}
-
-func (s *PrintService) getValForPlaceholder(placeholderStr string, count int) []string {
-	placeholderInt, _ := strconv.Atoi(placeholderStr)
-	mp := vari.GlobalVars.RandFieldSectionPathToValuesMap[placeholderInt]
-
-	tp := mp["type"].(string)
-	repeatObj := mp["repeat"]
-
-	repeat := 1
-	if repeatObj != nil {
-		repeat = repeatObj.(int)
-	}
-
-	strArr := make([]string, 0)
-	repeatTag := mp["repeatTag"].(string)
-	if tp == "int" {
-		start := mp["start"].(string)
-		end := mp["end"].(string)
-		precision := mp["precision"].(string)
-		format := mp["format"].(string)
-
-		strArr = genHelper.GetRandFromRange("int", start, end, "1",
-			repeat, repeatTag, precision, format, count)
-
-	} else if tp == "float" {
-		start := mp["start"].(string)
-		end := mp["end"].(string)
-		stepStr := fmt.Sprintf("%v", mp["step"])
-
-		precision := mp["precision"].(string)
-		format := mp["format"].(string)
-
-		strArr = genHelper.GetRandFromRange("float", start, end, stepStr,
-			repeat, repeatTag, precision, format, count)
-
-	} else if tp == "char" {
-		start := mp["start"].(string)
-		end := mp["end"].(string)
-		precision := mp["precision"].(string)
-		format := mp["format"].(string)
-
-		strArr = genHelper.GetRandFromRange("char", start, end, "1",
-			repeat, repeatTag, precision, format, count)
-
-	} else if tp == "list" {
-		list := mp["list"].([]string)
-		strArr = genHelper.GetRandFromList(list, repeat, count)
-
-	}
-
-	strArr = strArr[:count]
-	return strArr
 }

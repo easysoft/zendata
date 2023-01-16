@@ -79,14 +79,14 @@ func injectModule(ws *WebServer) {
 		&inject.Object{Value: vari.DB},
 		&inject.Object{Value: indexModule},
 	); err != nil {
-		logUtils.PrintErrMsg(fmt.Sprintf("provide usecase objects to the Graph: %v", err))
+		panic(fmt.Sprintf("provide usecase objects to the Graph: %v", err))
 	}
 	err := g.Populate()
 	if err != nil {
-		logUtils.PrintErrMsg(fmt.Sprintf("populate the incomplete Objects: %v", err))
+		panic(fmt.Sprintf("populate the incomplete Objects: %v", err))
 	}
 
-	ws.AddModule(indexModule.Party())
+	ws.AddModule(indexModule.Party(), indexModule.PartyData(), indexModule.PartyMock())
 
 	logUtils.PrintTo("start server")
 }
@@ -105,7 +105,7 @@ func (webServer *WebServer) AddModule(module ...module.WebModule) {
 func (webServer *WebServer) AddUIStatic() {
 	uiFs, err := zd.GetUiFileSys()
 	if err != nil {
-		return
+		panic(fmt.Sprintf("获取UI文件系统错误： %v", err))
 	}
 
 	webServer.app.HandleDir("/ui", http.FS(uiFs), iris.DirOptions{
@@ -125,8 +125,7 @@ func (webServer *WebServer) Run() {
 	webServer.app.UseGlobal(webServer.globalMiddlewares...)
 	err := webServer.InitRouter()
 	if err != nil {
-		fmt.Printf("初始化路由错误： %v\n", err)
-		panic(err)
+		panic(fmt.Sprintf("初始化路由错误： %v", err))
 	}
 
 	port := strconv.Itoa(vari.Port)

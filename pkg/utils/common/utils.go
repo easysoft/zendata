@@ -1,6 +1,7 @@
 package commonUtils
 
 import (
+	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -12,6 +13,7 @@ import (
 	"reflect"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -211,4 +213,25 @@ func RandNum64(length int64) int64 {
 
 	seedInt := rand.Int63n(length)
 	return seedInt
+}
+
+func ChanePrecision(value float64, precision int) float64 {
+	temp := fmt.Sprintf("%."+strconv.Itoa(precision)+"f", value)
+	value, _ = strconv.ParseFloat(temp, 64)
+	return value
+}
+
+func GetType(i interface{}) string {
+	switch i.(type) {
+	case int64:
+		return "int"
+	case float64:
+		return "float"
+	case byte:
+		return "byte"
+	case string:
+		return "string"
+	}
+
+	return "string"
 }

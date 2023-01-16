@@ -23,5 +23,5 @@ func (m *DataModule) Party() module.WebModule {
 		//index.Post("/decode", m.DataCtrl.DecodeByContent).Name = "通过推送文件内容反向解析数据"
 	}
 
-	return module.NewModule("/data", handler)
+	return module.NewModule("/", handler)
 }

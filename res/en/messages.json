@@ -127,7 +127,7 @@
     },
     {
       "id": "start_server",
-      "translation": "Start ZenData HTTP service, press CTRL+C to exist.\nTo design test data pls access http://%s:%s/ui. \nTo generate data you may call  http://%s:%s/api/v1/data/generate, for example curl http://%s:%s/api/v1/data/generate?config=demo/default.yaml&lines=3."
+      "translation": "Start ZenData HTTP service, press CTRL+C to exist.\nTo design test data pls access http://%s:%s/ui. \nTo generate data you may call  http://%s:%s/data/generate, for example curl http://%s:%s/data/generate?config=demo/default.yaml&lines=3."
     },
     {
       "id": "start_server_fail",

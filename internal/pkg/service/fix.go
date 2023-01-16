@@ -1,9 +1,11 @@
 package service
 
 import (
+	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"regexp"
@@ -14,22 +16,33 @@ import (
 type FixService struct {
 }
 
-func (s *FixService) AddFix(str string, field *model.DefField, count int, withFix bool) (ret string) {
+func (s *FixService) AddFix(val interface{}, field *model.DefField, count int, withFix bool) (ret interface{}) {
 	prefix := s.getStrValueFromFixRange(field.PrefixRange, count)
 	postfix := s.getStrValueFromFixRange(field.PostfixRange, count)
 	divider := field.Divider
+	length := field.Length
 
-	if field.Length > runewidth.StringWidth(str) {
-		str = helper.AddPad(str, *field)
+	ret = val
+
+	if prefix == "" && postfix == "" && length == 0 && len(divider) == 0 {
+		return
 	}
+
+	if length > runewidth.StringWidth(fmt.Sprintf("%v", ret)) {
+		ret = helper.AddPad(fmt.Sprintf("%v", ret), *field)
+	}
+
 	if withFix && !vari.GlobalVars.Trim {
-		str = prefix + str + postfix
-	}
-	if vari.GlobalVars.OutputFormat == consts.FormatText && !vari.GlobalVars.Trim {
-		str += divider
+		ret = prefix + fmt.Sprintf("%v", ret) + postfix
 	}
 
-	ret = s.RemoveSpaceIfOutputNoTextFile(str)
+	if vari.GlobalVars.OutputFormat == consts.FormatText && !vari.GlobalVars.Trim {
+		ret = fmt.Sprintf("%v", ret) + divider
+	}
+
+	if commonUtils.GetType(ret) == "string" {
+		ret = s.TrimIfFormatIsNotText(fmt.Sprintf("%v", ret))
+	}
 
 	return
 }
@@ -91,7 +104,7 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 	return str
 }
 
-func (s *FixService) RemoveSpaceIfOutputNoTextFile(str string) (ret string) {
+func (s *FixService) TrimIfFormatIsNotText(str string) (ret string) {
 	ret = str
 
 	if vari.GlobalVars.OutputFormat != "" && vari.GlobalVars.OutputFormat != consts.FormatText {

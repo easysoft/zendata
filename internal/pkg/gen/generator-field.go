@@ -333,7 +333,7 @@ func convPrefixVal2Str(val interface{}, format string) string {
 func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {
 	// 叶节点
 	if len(fieldValue.Values) == 0 {
-		if genHelper.SelectExcelWithExpr(field) {
+		if genHelper.IsSelectExcelWithExpr(field) {
 			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
 			err = errors.New("")
 		}

@@ -203,3 +203,40 @@ type Dir struct {
 	Name string `json:"name"`
 	Path string `json:-`
 }
+
+type MockData struct {
+	Title   string `json:"title"`
+	Desc    string `json:"desc"`
+	Author  string `json:"author"`
+	Version string `json:"version"`
+
+	Paths map[string]map[string]*EndPoint `json:"paths"`
+}
+
+type EndPoint struct {
+	Method  HttpMethod `json:"method"`
+	Summary string     `json:"summary"`
+	Config  string     `json:"config"`
+	Type    string     `json:"type"`
+	Lines   int        `json:"lines"`
+	Fields  string     `json:"fields"`
+}
+
+type HttpMethod string
+
+const (
+	Get    HttpMethod = "get"
+	Post   HttpMethod = "post"
+	Put    HttpMethod = "put"
+	Delete HttpMethod = "delete"
+
+	Patch   HttpMethod = "path"
+	Head    HttpMethod = "head"
+	Connect HttpMethod = "connect"
+	Options HttpMethod = "options"
+	Trace   HttpMethod = "trace"
+)
+
+func (e HttpMethod) String() string {
+	return string(e)
+}
