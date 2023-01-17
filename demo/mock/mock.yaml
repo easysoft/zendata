@@ -7,42 +7,42 @@ paths:
   /products:
     get:
       "200":
-        summary: 产品列表
-        mediaType: application/json
-        type: list                        # list | item 分别输出对象列表或单个对象
-        config: demo/mock/products.yaml   # 定义文件
-        lines: 10                         # 行数，仅对列表类型有效
-        fields: "id,name,desc"            # 需要输出的字段，空输出所有
+        "application/json":
+          summary: 产品列表
+          type: list                        # list | item 分别输出对象列表或单个对象
+          config: demo/mock/products.yaml   # 定义文件
+          lines: 10                         # 行数，仅对列表类型有效
+          fields: "id,name,desc"            # 需要输出的字段，空输出所有
 
   /products/{id}:
     get:
       "200":
-        summary: 产品详情
-        mediaType: application/json
-        type: item
-        config: demo/mock/products.yaml
-        fields: "id,name,desc"
+        "application/json":
+          summary: 产品详情
+          type: item
+          config: demo/mock/products.yaml
+          fields: "id,name,desc"
 
     post:
       "200":
-        summary: 新建产品
-        mediaType: application/json
-        type: item
-        config: demo/mock/products.yaml
-        fields: "id,name,desc"
+        "application/json":
+          summary: 新建产品
+          type: item
+          config: demo/mock/products.yaml
+          fields: "id,name,desc"
 
     put:
       "200":
-        summary: 修改产品
-        mediaType: application/json
-        type: item
-        config: demo/mock/products.yaml
-        fields: "id,name,desc"
+        "application/json":
+          summary: 修改产品
+          type: item
+          config: demo/mock/products.yaml
+          fields: "id,name,desc"
 
     delete:
       "200":
-        summary: 删除产品
-        mediaType: application/json
-        type: item
-        config: demo/mock/products.yaml
-        fields: "id,name,desc"
+        "application/json":
+          summary: 删除产品
+          type: item
+          config: demo/mock/products.yaml
+          fields: "id,name,desc"

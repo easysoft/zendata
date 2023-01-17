@@ -28,7 +28,7 @@ func (s *MockService) GenMockDef(input string) (err error) {
 		data := model.MockData{}
 
 		for pathStr, pathItem := range doc3.Paths {
-			mp := map[string]map[string]*model.EndPoint{}
+			mp := map[string]map[string]map[string]*model.EndPoint{}
 
 			if pathItem.Connect != nil {
 
@@ -76,15 +76,25 @@ func (s *MockService) GenMockDef(input string) (err error) {
 	return
 }
 
-func (s *MockService) createEndPoint(operation *openapi3.Operation) (ret map[string]*model.EndPoint) {
+func (s *MockService) createEndPoint(operation *openapi3.Operation) (ret map[string]map[string]*model.EndPoint) {
 	for code, val := range operation.Responses {
 		// map[string]*ResponseRef
 
-		val.Value.Content
+		for mediaType, val := range val.Value.Content {
+			schema := val.Schema
+			example := val.Example
+			examples := val.Examples
+			encoding := val.Encoding
 
-		endpoint := model.EndPoint{}
+			log.Print(schema, example, examples, encoding)
 
-		ret[code] = &endpoint
+			endpoint := model.EndPoint{}
+
+			if ret[code] == nil {
+				ret[code] = map[string]*model.EndPoint{}
+			}
+			ret[code][mediaType] = &endpoint
+		}
 	}
 
 	return

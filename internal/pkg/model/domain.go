@@ -210,7 +210,7 @@ type MockData struct {
 	Author  string `json:"author"`
 	Version string `json:"version"`
 
-	Paths map[string]map[string]map[string]*EndPoint `json:"paths"`
+	Paths map[string]map[string]map[string]map[string]*EndPoint `json:"paths"`
 }
 
 type EndPoint struct {

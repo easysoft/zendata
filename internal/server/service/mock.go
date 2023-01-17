@@ -21,7 +21,7 @@ type MockService struct {
 
 func (s *MockService) Init() (err error) {
 	vari.GlobalVars.MockData = &model.MockData{}
-	vari.GlobalVars.MockData.Paths = map[string]map[string]map[string]*model.EndPoint{}
+	vari.GlobalVars.MockData.Paths = map[string]map[string]map[string]map[string]*model.EndPoint{}
 	var files []string
 
 	s.LoadDef(vari.GlobalVars.MockDir, &files, 0)
@@ -71,7 +71,7 @@ func (s *MockService) LoadDef(pth string, files *[]string, level int) (err error
 	return nil
 }
 
-func (s *MockService) GetResp(reqPath, reqMethod, respCode string) (ret interface{}, err error) {
+func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (ret interface{}, err error) {
 	reqPath = s.addPrefixIfNeeded(reqPath)
 	reqMethod = strings.ToLower(reqMethod)
 
@@ -84,7 +84,7 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode string) (ret interfac
 			continue
 		}
 
-		ret, _ = s.GenData(mp[reqMethod][respCode])
+		ret, _ = s.GenData(mp[reqMethod][respCode][mediaType])
 	}
 
 	return

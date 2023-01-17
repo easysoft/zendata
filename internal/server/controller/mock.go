@@ -14,6 +14,7 @@ type MockCtrl struct {
 
 func (c *MockCtrl) Mock(ctx iris.Context) {
 	paths := ctx.Params().Get("paths")
+	mediaType := ctx.Params().Get("paths")
 	code := ctx.URLParam("code")
 	if code == "" {
 		code = "200"
@@ -23,7 +24,7 @@ func (c *MockCtrl) Mock(ctx iris.Context) {
 		c.MockService.Init()
 	}
 
-	resp, _ := c.MockService.GetResp(paths, ctx.Method(), code)
+	resp, _ := c.MockService.GetResp(paths, ctx.Method(), code, mediaType)
 
 	ctx.JSON(resp, context.JSON{Indent: "    "})
 }
