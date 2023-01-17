@@ -62,11 +62,11 @@ func ClearCache() (ret bool) {
 }
 
 func SetOutFormat() (err error) {
-	if vari.GlobalVars.OutputFile != "" {
-		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.OutputFile))
-		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)
+	if vari.GlobalVars.Output != "" {
+		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.Output))
+		fileUtils.RemoveExist(vari.GlobalVars.Output)
 
-		ext := strings.ToLower(filepath.Ext(vari.GlobalVars.OutputFile))
+		ext := strings.ToLower(filepath.Ext(vari.GlobalVars.Output))
 		ext = strings.TrimLeft(ext, ".")
 
 		if stringUtils.InArray(ext, consts.Formats) {
@@ -75,9 +75,9 @@ func SetOutFormat() (err error) {
 
 		// create file writer
 		if vari.GlobalVars.OutputFormat == consts.FormatExcel {
-			logUtils.OutputFilePath = vari.GlobalVars.OutputFile
+			logUtils.OutputFilePath = vari.GlobalVars.Output
 		} else {
-			logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.OutputFile, os.O_RDWR|os.O_CREATE, 0777)
+			logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.Output, os.O_RDWR|os.O_CREATE, 0777)
 		}
 	}
 

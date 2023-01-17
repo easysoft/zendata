@@ -11,7 +11,7 @@ type GenVarType struct {
 	RunMode consts.RunMode
 	Total   int
 
-	OutputFile   string
+	Output       string
 	OutputFormat string
 	TopFieldMap  map[string]model.DefField
 	ExportFields []string

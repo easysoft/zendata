@@ -32,12 +32,12 @@ func DataHandler(writer http.ResponseWriter, req *http.Request) {
 		defaultFile, configFile, fields, vari.GlobalVars.Total,
 			vari.GlobalVars.OutputFormat,
 			vari.GlobalVars.Trim, vari.GlobalVars.Table,
-			decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParams(req)
+			decode, input, vari.GlobalVars.Output = serverUtils.ParseGenParams(req)
 	} else if req.Method == http.MethodPost {
 		defaultDefContent, configDefContent, fields, vari.GlobalVars.Total,
 			vari.GlobalVars.OutputFormat,
 			vari.GlobalVars.Trim, vari.GlobalVars.Table,
-			decode, input, vari.GlobalVars.OutputFile = serverUtils.ParseGenParamsToByte(req)
+			decode, input, vari.GlobalVars.Output = serverUtils.ParseGenParamsToByte(req)
 	}
 
 	if decode {

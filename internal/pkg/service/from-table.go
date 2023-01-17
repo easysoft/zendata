@@ -34,5 +34,5 @@ func (s *TableParseService) GenYamlFromTable() {
 	s.SqlParseService.genTablesYaml(statementMap, pkMap, fkMap)
 
 	entTime := time.Now().Unix()
-	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), vari.GlobalVars.OutputFile, entTime-startTime))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), vari.GlobalVars.Output, entTime-startTime))
 }

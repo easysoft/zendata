@@ -29,9 +29,9 @@ func GenYamlFromArticle(file string) {
 	yamlStr := string(bytes)
 
 	outFile := ""
-	if vari.GlobalVars.OutputFile != "" {
-		vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
-		outFile = filepath.Join(vari.GlobalVars.OutputFile, fileUtils.ChangeFileExt(filepath.Base(file), ".yaml"))
+	if vari.GlobalVars.Output != "" {
+		vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+		outFile = filepath.Join(vari.GlobalVars.Output, fileUtils.ChangeFileExt(filepath.Base(file), ".yaml"))
 		fileUtils.WriteFile(outFile, yamlStr)
 
 	} else {

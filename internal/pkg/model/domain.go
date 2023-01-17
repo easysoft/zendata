@@ -210,16 +210,17 @@ type MockData struct {
 	Author  string `json:"author"`
 	Version string `json:"version"`
 
-	Paths map[string]map[string]*EndPoint `json:"paths"`
+	Paths map[string]map[string]map[string]*EndPoint `json:"paths"`
 }
 
 type EndPoint struct {
-	Method  HttpMethod `json:"method"`
-	Summary string     `json:"summary"`
-	Config  string     `json:"config"`
-	Type    string     `json:"type"`
-	Lines   int        `json:"lines"`
-	Fields  string     `json:"fields"`
+	Method    HttpMethod `json:"method"`
+	Summary   string     `json:"summary"`
+	Config    string     `json:"config"`
+	MediaType string     `json:"mediaType"`
+	Type      string     `json:"type"`
+	Lines     int        `json:"lines"`
+	Fields    string     `json:"fields"`
 }
 
 type HttpMethod string

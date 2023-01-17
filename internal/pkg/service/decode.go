@@ -14,10 +14,10 @@ type DecodeService struct {
 }
 
 //func (s *DecodeService) Decode(contents [][]byte, input string) {
-//	if vari.GlobalVars.OutputFile != "" {
-//		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.OutputFile))
-//		fileUtils.RemoveExist(vari.GlobalVars.OutputFile)
-//		logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.OutputFile, os.O_RDWR|os.O_CREATE, 0777)
+//	if vari.GlobalVars.Output != "" {
+//		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.Output))
+//		fileUtils.RemoveExist(vari.GlobalVars.Output)
+//		logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.Output, os.O_RDWR|os.O_CREATE, 0777)
 //
 //		defer logUtils.OutputFileWriter.Close()
 //	}

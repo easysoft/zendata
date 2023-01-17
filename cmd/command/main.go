@@ -42,6 +42,7 @@ var (
 	view     string
 	md5      string
 	salt     string
+	mock     bool
 
 	example bool
 	help    bool
@@ -70,9 +71,6 @@ func main() {
 	flagSet.StringVar(&configFile, "c", "", "")
 	flagSet.StringVar(&configFile, "config", "", "")
 
-	flagSet.StringVar(&input, "i", "", "")
-	flagSet.StringVar(&input, "input", "", "")
-
 	flagSet.IntVar(&vari.GlobalVars.Total, "n", -1, "")
 	flagSet.IntVar(&vari.GlobalVars.Total, "lines", -1, "")
 
@@ -82,8 +80,11 @@ func main() {
 	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "f", consts.FormatText, "")
 	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "format", consts.FormatText, "")
 
-	flagSet.StringVar(&vari.GlobalVars.OutputFile, "o", "", "")
-	flagSet.StringVar(&vari.GlobalVars.OutputFile, "output", "", "")
+	flagSet.StringVar(&input, "i", "", "")
+	flagSet.StringVar(&input, "input", "", "")
+
+	flagSet.StringVar(&vari.GlobalVars.Output, "o", "", "")
+	flagSet.StringVar(&vari.GlobalVars.Output, "output", "", "")
 
 	flagSet.BoolVar(&parse, "parse", false, "")
 
@@ -97,8 +98,7 @@ func main() {
 	flagSet.StringVar(&md5, "md5", "", "")
 	flagSet.StringVar(&salt, "salt", "", "")
 
-	flagSet.BoolVar(&decode, "D", false, "")
-	flagSet.BoolVar(&decode, "decode", false, "")
+	flagSet.BoolVar(&mock, "m", false, "")
 
 	flagSet.StringVar(&root, "R", "", "")
 	flagSet.StringVar(&root, "root", "", "")
@@ -229,6 +229,13 @@ func opts(files []string) {
 	} else if parse {
 		genYaml(input)
 		return
+	} else if mock {
+		if input == "" {
+			return
+		}
+		genMock(input)
+
+		return
 	}
 
 	genData(files)
@@ -236,7 +243,12 @@ func opts(files []string) {
 
 func genYaml(input string) {
 	mainCtrl, _ := command.InitCtrl()
-	mainCtrl.Parse(input)
+	mainCtrl.GenYaml(input)
+}
+
+func genMock(input string) {
+	mainCtrl, _ := command.InitCtrl()
+	mainCtrl.GenMock(input)
 }
 
 func genData(files []string) {

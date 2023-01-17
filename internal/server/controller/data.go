@@ -74,7 +74,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 //	configContent := c.GetFormFileContent(ctx, "config")
 //
 //	contents := [][]byte{defaultContent, configContent}
-//	contents = c.FileService.HandleFileBuffers(contents)
+//	contents = c.MockService.HandleFileBuffers(contents)
 //
 //	_, err := c.MainService.GenerateDataByContents(contents)
 //	if err != nil {
@@ -95,7 +95,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 //	configContent := c.GetDistFileContent(configFile)
 //
 //	contents := [][]byte{defaultContent, configContent}
-//	contents = c.FileService.HandleFileBuffers(contents)
+//	contents = c.MockService.HandleFileBuffers(contents)
 //
 //	c.DecodeService.Decode(contents, input)
 //}
@@ -109,7 +109,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 //	input := ctx.URLParam("input")
 //
 //	contents := [][]byte{defaultContent, configContent}
-//	contents = c.FileService.HandleFileBuffers(contents)
+//	contents = c.MockService.HandleFileBuffers(contents)
 //
 //	c.DecodeService.Decode(contents, input)
 //}
@@ -121,7 +121,7 @@ func (c *DataCtrl) DealwithParams(ctx iris.Context) {
 	vari.GlobalVars.Total, _ = ctx.URLParamInt("lines")
 	vari.GlobalVars.Trim, _ = ctx.URLParamBool("trim")
 	vari.GlobalVars.Table = ctx.URLParam("table")
-	vari.GlobalVars.OutputFile = ctx.URLParam("outputFile")
+	vari.GlobalVars.Output = ctx.URLParam("outputFile")
 	vari.GlobalVars.OutputFormat = ctx.URLParam("format")
 
 	fields := strings.TrimSpace(ctx.URLParam("fields"))

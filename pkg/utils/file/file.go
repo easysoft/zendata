@@ -150,6 +150,19 @@ func GetAbsDir(path string) string {
 	return abs
 }
 
+func GetFileOrFolderDir(pth string) (ret string) {
+	if IsDir(pth) {
+		ret = pth
+	} else {
+		ret = filepath.Dir(pth)
+	}
+
+	ret, _ = filepath.Abs(ret)
+	ret = AddSepIfNeeded(ret)
+
+	return
+}
+
 func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // from resource
 	if strings.LastIndex(from, ".yaml") > -1 { // yaml, ip.v1.yaml
 		resFile = ConvertResYamlPath(from, currFileDir)

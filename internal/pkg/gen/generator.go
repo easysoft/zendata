@@ -124,7 +124,7 @@ func GenerateValuesForField(field *model.DefField, total int) []string {
 func CheckParams() (err error) {
 	if len(vari.GlobalVars.DefData.Fields) == 0 {
 		err = errors.New("")
-	} else if vari.GlobalVars.DefData.Type == consts.DefTypeArticle && vari.GlobalVars.OutputFile == "" { // gen article
+	} else if vari.GlobalVars.DefData.Type == consts.DefTypeArticle && vari.GlobalVars.Output == "" { // gen article
 		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
 		logUtils.PrintErrMsg(errMsg)
 		err = errors.New(errMsg)

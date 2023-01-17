@@ -38,9 +38,9 @@ func (s *SqlParseService) GenYamlFromSql(file string) {
 	bytes, _ := yaml.Marshal(&inst)
 	content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
 
-	if vari.GlobalVars.OutputFile != "" {
-		vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
-		outFile := vari.GlobalVars.OutputFile + "keys.yaml"
+	if vari.GlobalVars.Output != "" {
+		vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+		outFile := vari.GlobalVars.Output + "keys.yaml"
 		fileUtils.WriteFile(outFile, content)
 	} else {
 		logUtils.PrintTo(content)
@@ -90,9 +90,9 @@ func (s *SqlParseService) GenYamlFromSql(file string) {
 
 		bytes, _ := yaml.Marshal(&def)
 		content := strings.ReplaceAll(string(bytes), "'", "")
-		if vari.GlobalVars.OutputFile != "" {
-			vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
-			outFile := vari.GlobalVars.OutputFile + tableName + ".yaml"
+		if vari.GlobalVars.Output != "" {
+			vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+			outFile := vari.GlobalVars.Output + tableName + ".yaml"
 			fileUtils.WriteFile(outFile, content)
 		} else {
 			logUtils.PrintTo(content)
@@ -100,7 +100,7 @@ func (s *SqlParseService) GenYamlFromSql(file string) {
 	}
 
 	entTime := time.Now().Unix()
-	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), vari.GlobalVars.OutputFile, entTime-startTime))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), vari.GlobalVars.Output, entTime-startTime))
 }
 
 func (s *SqlParseService) getCreateStatement(content string) (statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
@@ -313,9 +313,9 @@ func (s *SqlParseService) genKeysYaml(pkMap map[string]string) {
 	bytes, _ := yaml.Marshal(&inst)
 	content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
 
-	if vari.GlobalVars.OutputFile != "" {
-		vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
-		outFile := vari.GlobalVars.OutputFile + "keys.yaml"
+	if vari.GlobalVars.Output != "" {
+		vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+		outFile := vari.GlobalVars.Output + "keys.yaml"
 		fileUtils.WriteFile(outFile, content)
 
 	} else {
@@ -367,9 +367,9 @@ func (s *SqlParseService) genTablesYaml(statementMap map[string]string, pkMap ma
 
 		bytes, _ := yaml.Marshal(&def)
 		content := strings.ReplaceAll(string(bytes), "'", "")
-		if vari.GlobalVars.OutputFile != "" {
-			vari.GlobalVars.OutputFile = fileUtils.AddSepIfNeeded(vari.GlobalVars.OutputFile)
-			outFile := vari.GlobalVars.OutputFile + tableName + ".yaml"
+		if vari.GlobalVars.Output != "" {
+			vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+			outFile := vari.GlobalVars.Output + tableName + ".yaml"
 			fileUtils.WriteFile(outFile, content)
 		} else {
 			logUtils.PrintTo(content)
