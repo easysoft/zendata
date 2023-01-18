@@ -26,6 +26,9 @@ func (s *MockService) GenMockDef(input string) (err error) {
 		}
 
 		data := model.MockData{}
+		if data.Paths == nil {
+			data.Paths = map[string]map[string]map[string]map[string]*model.EndPoint{}
+		}
 
 		for pathStr, pathItem := range doc3.Paths {
 			mp := map[string]map[string]map[string]*model.EndPoint{}
@@ -77,6 +80,8 @@ func (s *MockService) GenMockDef(input string) (err error) {
 }
 
 func (s *MockService) createEndPoint(operation *openapi3.Operation) (ret map[string]map[string]*model.EndPoint) {
+	ret = map[string]map[string]*model.EndPoint{}
+
 	for code, val := range operation.Responses {
 		// map[string]*ResponseRef
 

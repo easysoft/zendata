@@ -28,6 +28,46 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/200_resp"
+        '501':
+          content:
+            application/json:
+              examples:
+                foo:
+                  value:
+                    {
+                      "versions": [
+                        {
+                          "status": "CURRENT",
+                          "updated": "2011-01-21T11:33:21Z",
+                          "id": "v2.0",
+                          "links": [
+                            {
+                              "href": "http://127.0.0.1:8774/v2/",
+                              "rel": "self"
+                            }
+                          ]
+                        },
+                        {
+                          "status": "EXPERIMENTAL",
+                          "updated": "2013-07-23T11:33:21Z",
+                          "id": "v3.0",
+                          "links": [
+                            {
+                              "href": "http://127.0.0.1:8774/v3/",
+                              "rel": "self"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+        '502':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/502_resp'
+          description: |-
+            The namespaced PIDs of processes. For each process, the PIDs in their PID
+            namespaces along the PID namespace hierarchy are returned.
 
 components:
   responses:
@@ -37,6 +77,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/user'
+          examples:
+            json:
+              $ref: "#/components/examples/BadRequest"
 
   schemas:
     user:
@@ -46,3 +89,71 @@ components:
           type: string
         password:
           type: string
+
+    502_resp:
+      title: Root Type for PIDMap
+      description: |-
+        A "map" of the PIDs of processes in PID namespaces for translating a specific
+      type: array
+      items:
+        $ref: '#/components/schemas/pids'
+      example:
+        -
+          -
+            pid: 12345
+            nsid: 4026531905
+          -
+            pid: 1
+            nsid: 4026538371
+        -
+          -
+            pid: 666
+            nsid: 4026538371
+
+    pid:
+      title: Root Type for NamespacedPID
+      description: |-
+        A process identifier (PID) valid only in the accompanying PID namespace.
+      required:
+        - pid
+        - nsid
+      type: object
+      properties:
+        pid:
+          description: a process identifier
+          type: integer
+        nsid:
+          format: int64
+          description: |-
+            a PID namespace identified and referenced by its inode number (without any
+            device number).
+          type: integer
+      example:
+        pid: 1
+        nsid: 4026531905
+
+    pids:
+      description: |-
+        The list of namespaced PIDs of a process, ordered according to the PID
+      type: array
+      items:
+        $ref: '#/components/schemas/pid'
+      example:
+        - pid: 12345
+          nsid: 4026531905
+        - pid: 1
+          nsid: 4026532382
+
+  examples:
+    BadRequest:
+      summary: Wrong format
+      value:
+        error:
+          type: validation-error
+          title: Your request parameters didn't validate.
+          status: 400
+          invalid-params:
+            - name: age
+              reason: must be a positive integer
+            - name: color
+              reason: must be 'green', 'red' or 'blue'
