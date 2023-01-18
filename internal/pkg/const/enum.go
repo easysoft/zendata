@@ -70,3 +70,19 @@ var (
 	CommErr  = ResponseCode{100, "Common Error"}
 	ParamErr = ResponseCode{200, "Parameter Error"}
 )
+
+type OpenApiType string
+
+const (
+	Integer  OpenApiType = "integer"
+	Long     OpenApiType = "long"
+	Float    OpenApiType = "float"
+	Double   OpenApiType = "double"
+	String   OpenApiType = "string"
+	Byte     OpenApiType = "byte"
+	Binary   OpenApiType = "binary"
+	Boolean  OpenApiType = "boolean"
+	Date     OpenApiType = "date"
+	DateTime OpenApiType = "dateTime"
+	Password OpenApiType = "password"
+)
