@@ -52,53 +52,56 @@ func (s *MockService) GenMockDef(input string) (err error) {
 			mp := map[string]map[string]map[string]*model.EndPoint{}
 
 			if pathItem.Connect != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Delete != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Get != nil {
-				codeToEndpointMap := s.createEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get)
-				mp[model.Get.String()] = codeToEndpointMap
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Head != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Options != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Patch != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Post != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Put != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Trace != nil {
-
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			mockDef.Paths[pathStr] = mp
 		}
 
-		bytesZd, err := yaml.Marshal(zendataDef)
-		s.saveFile(bytesZd, zendataDefPath)
-
-		bytesMock, err := yaml.Marshal(mockDef)
-		s.saveFile(bytesMock, mockDefPath)
+		s.saveFile(zendataDef, zendataDefPath)
+		s.saveFile(mockDef, mockDefPath)
 	}
 
 	return
+}
+
+func (s *MockService) setEndPoint(operation *openapi3.Operation, zendataDef *model.DefData,
+	zendataDefPath string, method model.HttpMethod, mp *map[string]map[string]map[string]*model.EndPoint) {
+
+	codeToEndpointMap := s.createEndPoint(operation, zendataDef, zendataDefPath, method)
+	(*mp)[method.String()] = codeToEndpointMap
 }
 
 func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *model.DefData,
@@ -280,10 +283,14 @@ func (s *MockService) getFilePaths(name string, dir string) (zendataPath, mockPa
 	return
 }
 
-func (s *MockService) saveFile(bytes []byte, pth string) {
+func (s *MockService) saveFile(obj interface{}, pth string) {
 	fileUtils.MkDirIfNeeded(filepath.Dir(pth))
 
+	bytes, err := yaml.Marshal(obj)
 	str := string(bytes)
+	if err != nil {
+		str = err.Error()
+	}
 
 	fileUtils.WriteFile(pth, str)
 }
