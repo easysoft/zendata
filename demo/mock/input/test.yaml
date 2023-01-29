@@ -28,46 +28,46 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/200_resp"
-        '501':
-          content:
-            application/json:
-              examples:
-                foo:
-                  value:
-                    {
-                      "versions": [
-                        {
-                          "status": "CURRENT",
-                          "updated": "2011-01-21T11:33:21Z",
-                          "id": "v2.0",
-                          "links": [
-                            {
-                              "href": "http://127.0.0.1:8774/v2/",
-                              "rel": "self"
-                            }
-                          ]
-                        },
-                        {
-                          "status": "EXPERIMENTAL",
-                          "updated": "2013-07-23T11:33:21Z",
-                          "id": "v3.0",
-                          "links": [
-                            {
-                              "href": "http://127.0.0.1:8774/v3/",
-                              "rel": "self"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-        '502':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/502_resp'
-          description: |-
-            The namespaced PIDs of processes. For each process, the PIDs in their PID
-            namespaces along the PID namespace hierarchy are returned.
+#        '501':
+#          content:
+#            application/json:
+#              examples:
+#                foo:
+#                  value:
+#                    {
+#                      "versions": [
+#                        {
+#                          "status": "CURRENT",
+#                          "updated": "2011-01-21T11:33:21Z",
+#                          "id": "v2.0",
+#                          "links": [
+#                            {
+#                              "href": "http://127.0.0.1:8774/v2/",
+#                              "rel": "self"
+#                            }
+#                          ]
+#                        },
+#                        {
+#                          "status": "EXPERIMENTAL",
+#                          "updated": "2013-07-23T11:33:21Z",
+#                          "id": "v3.0",
+#                          "links": [
+#                            {
+#                              "href": "http://127.0.0.1:8774/v3/",
+#                              "rel": "self"
+#                            }
+#                          ]
+#                        }
+#                      ]
+#                    }
+#        '502':
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/502_resp'
+#          description: |-
+#            The namespaced PIDs of processes. For each process, the PIDs in their PID
+#            namespaces along the PID namespace hierarchy are returned.
 
 components:
   responses:

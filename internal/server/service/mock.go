@@ -97,7 +97,7 @@ func (s *MockService) GenData(endpoint *model.EndPoint) (ret interface{}, err er
 	vari.GlobalVars.ExportFields = strings.Split(endpoint.Fields, ",")
 
 	dataType := endpoint.Type
-	if dataType == "item" {
+	if dataType != consts.SchemaTypeArray {
 		vari.GlobalVars.Total = 1
 	}
 

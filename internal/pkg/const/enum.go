@@ -71,18 +71,29 @@ var (
 	ParamErr = ResponseCode{200, "Parameter Error"}
 )
 
-type OpenApiType string
+type OpenApiDataType string
 
 const (
-	Integer  OpenApiType = "integer"
-	Long     OpenApiType = "long"
-	Float    OpenApiType = "float"
-	Double   OpenApiType = "double"
-	String   OpenApiType = "string"
-	Byte     OpenApiType = "byte"
-	Binary   OpenApiType = "binary"
-	Boolean  OpenApiType = "boolean"
-	Date     OpenApiType = "date"
-	DateTime OpenApiType = "dateTime"
-	Password OpenApiType = "password"
+	Integer  OpenApiDataType = "integer"
+	Long     OpenApiDataType = "long"
+	Float    OpenApiDataType = "float"
+	Double   OpenApiDataType = "double"
+	String   OpenApiDataType = "string"
+	Byte     OpenApiDataType = "byte"
+	Binary   OpenApiDataType = "binary"
+	Boolean  OpenApiDataType = "boolean"
+	Date     OpenApiDataType = "date"
+	DateTime OpenApiDataType = "dateTime"
+	Password OpenApiDataType = "password"
+)
+
+type OpenApiSchemaType string
+
+const (
+	SchemaTypeString  OpenApiSchemaType = "string" // this includes dates and files
+	SchemaTypeNumber  OpenApiSchemaType = "number"
+	SchemaTypeFloat   OpenApiSchemaType = "integer"
+	SchemaTypeBoolean OpenApiSchemaType = "boolean"
+	SchemaTypeArray   OpenApiSchemaType = "array"
+	SchemaTypeObject  OpenApiSchemaType = "object"
 )

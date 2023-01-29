@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"time"
+)
 
 type ClsInfo struct {
 	Title   string `yaml:"title"`
@@ -43,13 +46,13 @@ type ResInstancesItem struct {
 // common item
 type DefData struct {
 	ClsBase `yaml:",inline"`
-	Fields  []DefField `yaml:"fields,flow"`
+	Fields  []DefField `yaml:"fields"`
 
-	Content string `yaml:"content"` // for article only
+	Content string `yaml:"content,omitempty"` // for article only
 }
 type DefField struct {
 	FieldBase `yaml:",inline"`
-	Fields    []DefField `yaml:"fields,flow,omitempty"`
+	Fields    []DefField `yaml:"fields,omitempty"`
 	Length    int        `yaml:"length,omitempty"`
 	LeftPad   string     `yaml:"leftpad,omitempty"`
 	RightPad  string     `yaml:"rightpad,omitempty"`
@@ -214,13 +217,13 @@ type MockData struct {
 }
 
 type EndPoint struct {
-	Method    HttpMethod `json:"method"`
-	Summary   string     `json:"summary"`
-	Config    string     `json:"config"`
-	MediaType string     `json:"mediaType"`
-	Type      string     `json:"type"`
-	Lines     int        `json:"lines"`
-	Fields    string     `json:"fields"`
+	Method    HttpMethod               `json:"method"`
+	Summary   string                   `json:"summary"`
+	Config    string                   `json:"config"`
+	MediaType string                   `json:"mediaType"`
+	Type      consts.OpenApiSchemaType `json:"type"`
+	Lines     int                      `json:"lines"`
+	Fields    string                   `json:"fields"`
 }
 
 type HttpMethod string

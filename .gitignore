@@ -32,3 +32,4 @@
 *.exe
 /tmp/cache/.data.db
 /ui/package-lock.json
+/demo/mock/output/
