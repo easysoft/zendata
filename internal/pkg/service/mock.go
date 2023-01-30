@@ -7,6 +7,7 @@ import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/getkin/kin-openapi/openapi3"
 	"gopkg.in/yaml.v2"
@@ -28,6 +29,7 @@ func (s *MockService) GenMockDef(input string) (err error) {
 	for _, f := range files {
 		doc3, err := loader.LoadFromFile(f)
 		if err != nil {
+			logUtils.PrintTo(err.Error())
 			continue
 		}
 
@@ -114,11 +116,11 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 		// map[string]*ResponseRef
 
 		for mediaType, mediaItem := range val.Value.Content {
-			// mediaType is responses => 501 => content => application/json:
+			// mediaType is like "responses => 501 => content => application/json"
 
 			// zendata def
 			fields := s.getZendataDefFromMedia(mediaItem)
-			zendataDef.Fields = append(zendataDef.Fields, fields...)
+			zendataDef.Fields = append(zendataDef.Fields, fields...) // maybe has no children from properties
 
 			// mock def
 			endpoint := s.getMockDefFromMedia(mediaItem, fields)
@@ -144,17 +146,16 @@ func (s *MockService) getZendataDefFromMedia(item *openapi3.MediaType) (fields [
 	//encodingNode := item.Encoding
 
 	if schemaNode != nil {
-		schemaField := s.getFieldFromSchema(schemaNode)
-		fields = append(fields, schemaField)
+		s.getFieldFromSchema("schema", &fields, schemaNode)
 	}
 
 	if exampleNode != nil {
-		exampleField := s.getFieldFromExample(exampleNode)
+		exampleField := s.getFieldFromExample("example", exampleNode)
 		fields = append(fields, exampleField)
 	}
 
 	if examplesNode != nil {
-		examplesFields := s.getFieldFromExamples(examplesNode)
+		examplesFields := s.getFieldFromExamples("example", examplesNode)
 
 		for _, field := range examplesFields {
 			fields = append(fields, field)
@@ -179,7 +180,9 @@ func (s *MockService) getMockDefFromMedia(item *openapi3.MediaType, fields []mod
 	if schemaNode != nil {
 		if schemaNode.Value.Type == string(consts.SchemaTypeArray) {
 			endpoint.Type = consts.SchemaTypeArray
-		} else {
+		} else if schemaNode.Value.Type == string(consts.SchemaTypeObject) {
+			endpoint.Type = consts.SchemaTypeObject
+		} else if schemaNode.Value.Type != "" {
 			endpoint.Type = consts.OpenApiSchemaType(schemaNode.Value.Type)
 		}
 
@@ -192,39 +195,75 @@ func (s *MockService) getMockDefFromMedia(item *openapi3.MediaType, fields []mod
 	return
 }
 
-func (s *MockService) getFieldFromSchema(schemaNode *openapi3.SchemaRef) (ret model.DefField) {
-	ret.Field = "schema"
+func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, schemaNodes ...*openapi3.SchemaRef) {
+	for _, schemaNode := range schemaNodes {
+		// properties based
+		if len(schemaNode.Value.Properties) > 0 {
+			for propName, prop := range schemaNode.Value.Properties {
+				field := model.DefField{}
+				field.Field = propName
+				s.getRangeByType(prop.Value.Type, &field)
 
-	for propName, prop := range schemaNode.Value.Properties {
-		field := model.DefField{}
-		field.Field = propName
-		s.getRangeByType(prop.Value.Type, &field)
+				*fields = append(*fields, field)
+			}
 
-		ret.Fields = append(ret.Fields, field)
+		} else if schemaNode.Value.OneOf != nil {
+			s.getFieldFromSchema(name+"-oneof", fields, schemaNode.Value.OneOf[0])
+
+		} else if schemaNode.Value.AllOf != nil {
+			s.getFieldFromSchema(name+"-allof", fields, schemaNode.Value.AllOf...)
+
+		} else if schemaNode.Value.AnyOf != nil {
+			arr := openapi3.SchemaRefs{schemaNode.Value.AnyOf[0]}
+			if len(schemaNode.Value.AnyOf) > 1 {
+				arr = append(arr, schemaNode.Value.AnyOf[len(schemaNode.Value.AnyOf)-1])
+			}
+
+			s.getFieldFromSchema(name+"-anyof", fields, arr...)
+
+		}
+
+		// example based
+		if schemaNode.Value.Example != nil {
+			exampleField := s.getFieldFromExample(name+"-example", schemaNode.Value.Example)
+
+			*fields = append(*fields, exampleField)
+		}
+
+		// items based
+		if schemaNode.Value.Items != nil {
+			s.getFieldFromItems(name+"-items", fields, schemaNode.Value.Items)
+		}
 	}
 
 	return
 }
 
-func (s *MockService) getFieldFromExample(example interface{}) (field model.DefField) {
+func (s *MockService) getFieldFromExample(name string, example interface{}) (field model.DefField) {
 	bytes, _ := json.Marshal(example)
 
-	field.Field = "example"
+	field.Field = name
 	field.Range = fmt.Sprintf("%s", bytes)
 
 	return
 }
 
-func (s *MockService) getFieldFromExamples(examples openapi3.Examples) (fields []model.DefField) {
+func (s *MockService) getFieldFromExamples(name string, examples openapi3.Examples) (fields []model.DefField) {
 	for key, val := range examples {
 		bytes, _ := json.Marshal(val.Value.Value)
 
 		field := model.DefField{}
-		field.Field = "examples_" + key
+		field.Field = name + "-" + key
 		field.Range = fmt.Sprintf("%s", bytes)
 
 		fields = append(fields, field)
 	}
+
+	return
+}
+
+func (s *MockService) getFieldFromItems(name string, fields *[]model.DefField, itemsDef *openapi3.SchemaRef) {
+	s.getFieldFromSchema(name, fields, itemsDef)
 
 	return
 }
@@ -243,7 +282,8 @@ func (s *MockService) getRangeByType(typ string, field *model.DefField) {
 		field.Range = "1.01-99"
 
 	} else if string(consts.String) == typ {
-		field.Range = "1.01-99"
+		field.Range = "a-z"
+		field.Loop = "6-8"
 
 	} else if string(consts.Byte) == typ {
 		field.Range = "a-z"

@@ -9,7 +9,7 @@ info:
     This is a sample server Petstore server.
 
   version: 1.0.0
-  title: Swagger Petstore
+  title: Petstore
   termsOfService: 'http://swagger.io/terms/'
   contact:
     name: API Support
@@ -26,9 +26,21 @@ paths:
   /testpath:
     get:
       responses:
-        "200":
-          $ref: "#/components/responses/200_resp"
-#        '501':
+#        "200":
+#          $ref: "#/components/responses/200_resp"
+
+#        "201":
+#          $ref: "#/components/responses/201_resp"
+
+        '501':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/501_resp'
+          description: |-
+            The namespaced PIDs of processes
+
+#        '502':
 #          content:
 #            application/json:
 #              examples:
@@ -60,14 +72,6 @@ paths:
 #                        }
 #                      ]
 #                    }
-#        '502':
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/502_resp'
-#          description: |-
-#            The namespaced PIDs of processes. For each process, the PIDs in their PID
-#            namespaces along the PID namespace hierarchy are returned.
 
 components:
   responses:
@@ -77,38 +81,59 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/user'
+
           examples:
             json:
               $ref: "#/components/examples/BadRequest"
+
+    201_resp:
+      description: The User
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Cat'
+              - $ref: '#/components/schemas/user'
+            discriminator:
+              propertyName: pet_type
 
   schemas:
     user:
       type: object
       properties:
-        username:
+        nickname:
           type: string
         password:
           type: string
 
-    502_resp:
+    501_resp:
       title: Root Type for PIDMap
       description: |-
-        A "map" of the PIDs of processes in PID namespaces for translating a specific
+        A "map" of the PIDs of processes in PID namespaces
       type: array
       items:
         $ref: '#/components/schemas/pids'
       example:
         -
-          -
-            pid: 12345
-            nsid: 4026531905
-          -
-            pid: 1
-            nsid: 4026538371
+          - pid: 11
+            nsid: 501_resp-1862620
+          - pid: 22
+            nsid: 501_resp-1862620
         -
-          -
-            pid: 666
-            nsid: 4026538371
+          - pid: 33
+            nsid: 501_resp-1862620
+
+    pids:
+      description: |-
+        The list of namespaced PIDs of a process
+      type: array
+      items:
+        $ref: '#/components/schemas/pid'
+      example:
+        - pid: 12345
+          nsid: pids-4026531905
+        - pid: 1
+          nsid: pids-4026532382
 
     pid:
       title: Root Type for NamespacedPID
@@ -125,24 +150,34 @@ components:
         nsid:
           format: int64
           description: |-
-            a PID namespace identified and referenced by its inode number (without any
-            device number).
+            a PID namespace identified
           type: integer
       example:
         pid: 1
-        nsid: 4026531905
+        nsid: 462826
 
-    pids:
-      description: |-
-        The list of namespaced PIDs of a process, ordered according to the PID
-      type: array
-      items:
-        $ref: '#/components/schemas/pid'
-      example:
-        - pid: 12345
-          nsid: 4026531905
-        - pid: 1
-          nsid: 4026532382
+    Cat:
+      allOf:
+        - $ref: "#/components/schemas/animal"
+        - $ref: "#/components/schemas/Pet"
+        - $ref: "#/components/schemas/Dog"
+
+    animal:
+      type: string
+
+    Pet:
+      type: object
+      properties:
+        owner:
+          type: string
+
+    Dog:
+      type: object
+      properties:
+        dogProp1:
+          type: integer
+        dogProp2:
+          format: int64
 
   examples:
     BadRequest:
