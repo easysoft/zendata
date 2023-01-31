@@ -35,3 +35,23 @@ fields:
           - field: child2
             range: a-c
             prefix: CHILD2_
+
+  - field: array
+    mode: p
+    fields:
+      - field: child1
+        range: A-C
+        prefix: PART1_
+        postfix: ' | '
+      - field: child2
+        range: a-c
+        prefix: part2_
+      - field: child3
+        fields:
+          - field: child1
+            range: A-F
+            prefix: CHILD1_
+            postfix: ' | '
+          - field: child2
+            range: a-c
+            prefix: CHILD2_

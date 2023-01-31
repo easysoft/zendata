@@ -35,6 +35,8 @@ func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
 				field.Fields[i].From = field.From
 			}
 			field.Fields[i].FileDir = field.FileDir
+			field.Fields[i].ParentItems = field.Items
+			field.Fields[i].ParentJoin = field.Join
 
 			s.Generate(&field.Fields[i], field.Join)
 		}
@@ -73,7 +75,7 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 
 	s.LoopService.ComputerLoopTimes(field) // change LoopStart, LoopEnd for conf like loop:  1-10             # 循环1次，2次……
 
-	uniqueTotal := s.computerUniqueTotal(field) // computer total for conf like prefix: 1-3, postfix: 1-3
+	uniqueTotal := s.computerUniqueTotal(field) // computer total for array children(items: 3) OR range affixes (prefix: 1-3)
 
 	indexOfRow := 0
 	count := 0
@@ -85,7 +87,7 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 			!(*field).ReferToAnotherYaml &&
 			(*field).IsRand && (*field).LoopIndex > (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
-		if count >= vari.GlobalVars.Total || count >= uniqueTotal || isRandomAndLoopEnd {
+		if count >= uniqueTotal || isRandomAndLoopEnd { // || count >= vari.GlobalVars.Total
 			for _, v := range field.Values {
 				v = s.FixService.AddFix(v, field, count, true)
 
@@ -100,7 +102,7 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 
 		count++
 
-		if count >= vari.GlobalVars.Total || count >= uniqueTotal {
+		if count >= uniqueTotal { // { || count >= vari.GlobalVars.Total{
 			break
 		}
 
@@ -278,6 +280,10 @@ func (s *FieldService) computerUniqueTotal(field *model.DefField) (ret int) {
 
 	if field.PrefixRange != nil && len(field.PrefixRange.Values) > 0 {
 		ret *= len(field.PrefixRange.Values)
+	}
+
+	if !field.ParentJoin && field.ParentItems > 1 {
+		ret *= field.ParentItems
 	}
 
 	return

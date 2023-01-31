@@ -41,7 +41,7 @@ func (s *FixService) AddFix(val interface{}, field *model.DefField, count int, w
 	}
 
 	if commonUtils.GetType(ret) == "string" {
-		ret = s.TrimIfFormatIsNotText(fmt.Sprintf("%v", ret))
+		//ret = s.TrimIfFormatIsNotText(fmt.Sprintf("%v", ret))
 	}
 
 	return

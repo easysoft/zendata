@@ -19,56 +19,58 @@ type CombineService struct {
 }
 
 func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopLevel bool) {
-	if len(field.Fields) == 0 || !field.Join {
+	if len(field.Fields) == 0 {
 		return
 	}
 
-	fieldNameToValuesMap := map[string][]interface{}{}
-	fieldNameToFieldMap := map[string]model.DefField{}
+	if field.Join {
+		fieldNameToValuesMap := map[string][]interface{}{}
+		fieldNameToFieldMap := map[string]model.DefField{}
 
-	// 1. get values for child fields
-	if len(field.Values) == 0 {
-		for index, child := range field.Fields {
-			if len(child.Fields) > 0 && len(child.Values) == 0 { // no need to do if already generated
-				s.CombineChildrenIfNeeded(&(field.Fields[index]), false)
+		// 1. get values for child fields
+		if len(field.Values) == 0 {
+			for index, child := range field.Fields {
+				if len(child.Fields) > 0 && len(child.Values) == 0 { // no need to do if already generated
+					s.CombineChildrenIfNeeded(&(field.Fields[index]), false)
+				}
+
+				fieldNameToValuesMap[field.Fields[index].Field] = field.Fields[index].Values
+				fieldNameToFieldMap[field.Fields[index].Field] = field.Fields[index]
+			}
+		}
+
+		// 2. deal with expression
+		arrByField := make([][]interface{}, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+		for i, child := range field.Fields {
+			childValues := fieldNameToValuesMap[child.Field]
+
+			if child.Value != "" {
+				childValues = s.ExpressionService.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
 			}
 
-			fieldNameToValuesMap[field.Fields[index].Field] = field.Fields[index].Values
-			fieldNameToFieldMap[field.Fields[index].Field] = field.Fields[index]
-		}
-	}
+			// select from excel with expr
+			if genHelper.IsSelectExcelWithExpr(child) {
+				childValues = s.ExcelService.genExcelValuesWithExpr(&child, fieldNameToValuesMap)
+			}
 
-	// 2. deal with expression
-	arrByField := make([][]interface{}, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
-	for i, child := range field.Fields {
-		childValues := fieldNameToValuesMap[child.Field]
+			arrByField = append(arrByField, childValues)
 
-		if child.Value != "" {
-			childValues = s.ExpressionService.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
+			// clear child values after combined
+			field.Fields[i].Values = nil
 		}
 
-		// select from excel with expr
-		if genHelper.IsSelectExcelWithExpr(child) {
-			childValues = s.ExcelService.genExcelValuesWithExpr(&child, fieldNameToValuesMap)
+		// 3. get combined values for parent field
+		isRecursive := vari.GlobalVars.Recursive
+		if stringUtils.InArray(field.Mode, consts.Modes) { // set on field level
+			isRecursive = field.Mode == consts.ModeRecursive || field.Mode == consts.ModeRecursiveShort
 		}
 
-		arrByField = append(arrByField, childValues)
+		if len(field.Values) == 0 && field.Fields != nil {
+			field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
+		}
 
-		// clear child values after combined
-		field.Fields[i].Values = nil
+		s.LoopService.LoopAndFixFieldValues(field, true)
 	}
-
-	// 3. get combined values for parent field
-	isRecursive := vari.GlobalVars.Recursive
-	if stringUtils.InArray(field.Mode, consts.Modes) { // set on field level
-		isRecursive = field.Mode == consts.ModeRecursive || field.Mode == consts.ModeRecursiveShort
-	}
-
-	if len(field.Values) == 0 && field.Fields != nil {
-		field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
-	}
-
-	s.LoopService.LoopAndFixFieldValues(field, true)
 }
 
 func (s *CombineService) combineChildrenValues(arrByField [][]interface{}, isRecursive, isOnTopLevel bool) (ret []interface{}) {
@@ -96,7 +98,7 @@ func (s *CombineService) populateRowsFromTwoDimArr(arrOfArr [][]interface{}, isR
 
 	indexArr := make([]int, 0)
 	if isRecursive {
-		indexArr = s.getModArr(arrOfArr)
+		indexArr = s.getModArrForChildrenRecursive(arrOfArr)
 	}
 
 	for i := 0; i < count; i++ {
@@ -147,9 +149,9 @@ func (s *CombineService) getRecordCountForRecursive(arrOfArr [][]interface{}) in
 	return count
 }
 
-func (s *CombineService) getModArr(arrOfArr [][]interface{}) []int {
+func (s *CombineService) getModArrForChildrenRecursive(arrOfArr [][]interface{}) []int {
 	indexArr := make([]int, 0)
-	for _, _ = range arrOfArr {
+	for range arrOfArr {
 		indexArr = append(indexArr, 0)
 	}
 

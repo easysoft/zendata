@@ -23,7 +23,7 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 
 paths:
-  /testpath:
+  /testpath/{userid}:
     get:
       responses:
 #        "200":
@@ -105,6 +105,9 @@ components:
           type: string
         password:
           type: string
+        profile:
+          type: object
+          $ref: '#/components/schemas/Cat'
 
     501_resp:
       title: Root Type for PIDMap

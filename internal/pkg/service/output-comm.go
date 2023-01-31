@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -42,14 +43,56 @@ func (s *OutputService) GenRecordField(field *model.DefField, mp *map[string]int
 
 		(*mp)[field.Field] = val
 
-	} else { // set child object
-		childMap := map[string]interface{}{}
+	} else { // set children
+		var childVal interface{}
 
-		for _, child := range field.Fields {
-			s.GenRecordField(&child, &childMap, i)
+		isRecursive := field.Mode == consts.ModeRecursive || field.Mode == consts.ModeRecursiveShort
+		indexArr := make([]int, 0)
+		if isRecursive {
+			indexArr = s.getModArrForChildrenRecursive(field)
 		}
 
-		(*mp)[field.Field] = childMap
+		if field.Items == 0 { // output is object
+			mp := map[string]interface{}{}
+			for k, child := range field.Fields {
+				var index int
+				if isRecursive {
+					mod := indexArr[k]
+					index = i / mod % len(child.Values)
+				} else {
+					index = i % len(child.Values)
+				}
+
+				s.GenRecordField(&child, &mp, index)
+			}
+
+			childVal = mp
+
+		} else { // output is array
+			var mpArr []map[string]interface{}
+
+			for itemIndex := 0; itemIndex < field.Items; itemIndex++ {
+				mp := map[string]interface{}{}
+				for k, child := range field.Fields {
+					index := i*field.Items + itemIndex
+
+					if isRecursive {
+						mod := indexArr[k]
+						index = index / mod % len(child.Values)
+					} else {
+						index = index % len(child.Values)
+					}
+
+					s.GenRecordField(&child, &mp, index)
+				}
+
+				mpArr = append(mpArr, mp)
+			}
+
+			childVal = mpArr
+		}
+
+		(*mp)[field.Field] = childVal
 	}
 
 	return
@@ -70,4 +113,26 @@ func (s *OutputService) PrintHumanHeaderIfNeeded() {
 	}
 
 	logUtils.PrintLine(headerLine + "\n")
+}
+
+func (s *OutputService) getModArrForChildrenRecursive(field *model.DefField) []int {
+	indexArr := make([]int, 0)
+	for _, _ = range field.Fields {
+		indexArr = append(indexArr, 0)
+	}
+
+	for i := 0; i < len(field.Fields); i++ {
+		loop := 1
+		for j := i + 1; j < len(field.Fields); j++ {
+			loop = loop * len(field.Fields[j].Values)
+
+			if field.Items > 1 {
+				loop /= field.Items
+			}
+		}
+
+		indexArr[i] = loop
+	}
+
+	return indexArr
 }
