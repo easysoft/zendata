@@ -35,8 +35,8 @@ func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
 				field.Fields[i].From = field.From
 			}
 			field.Fields[i].FileDir = field.FileDir
-			field.Fields[i].ParentItems = field.Items
-			field.Fields[i].ParentJoin = field.Join
+			//field.Fields[i].ParentItems = field.Items
+			//field.Fields[i].ParentJoin = field.Join
 
 			s.Generate(&field.Fields[i], field.Join)
 		}
@@ -282,8 +282,8 @@ func (s *FieldService) computerUniqueTotal(field *model.DefField) (ret int) {
 		ret *= len(field.PrefixRange.Values)
 	}
 
-	if !field.ParentJoin && field.ParentItems > 1 {
-		ret *= field.ParentItems
+	if ret < len(field.Values) {
+		ret = len(field.Values)
 	}
 
 	return

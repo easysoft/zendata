@@ -118,7 +118,7 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 
 	for _, fi := range files {
 		_, found := mp[fi.Path]
-		//logUtils.PrintTo(fi.UpdatedAt.String() + ", " + mp[fi.Path].UpdatedAt.String())
+		//logUtils.PrintTo(fi.UpdatedAt.OpenApiDataTypeString() + ", " + mp[fi.Path].UpdatedAt.OpenApiDataTypeString())
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old

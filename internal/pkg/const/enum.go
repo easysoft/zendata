@@ -74,17 +74,37 @@ var (
 type OpenApiDataType string
 
 const (
-	Integer  OpenApiDataType = "integer"
-	Long     OpenApiDataType = "long"
-	Float    OpenApiDataType = "float"
-	Double   OpenApiDataType = "double"
-	String   OpenApiDataType = "string"
-	Byte     OpenApiDataType = "byte"
-	Binary   OpenApiDataType = "binary"
-	Boolean  OpenApiDataType = "boolean"
-	Date     OpenApiDataType = "date"
-	DateTime OpenApiDataType = "dateTime"
-	Password OpenApiDataType = "password"
+	OpenApiDataTypeInteger  OpenApiDataType = "integer"
+	OpenApiDataTypeLong     OpenApiDataType = "long"
+	OpenApiDataTypeFloat    OpenApiDataType = "float"
+	OpenApiDataTypeDouble   OpenApiDataType = "double"
+	OpenApiDataTypeString   OpenApiDataType = "string"
+	OpenApiDataTypeByte     OpenApiDataType = "byte"
+	OpenApiDataTypeBinary   OpenApiDataType = "binary"
+	OpenApiDataTypeBoolean  OpenApiDataType = "boolean"
+	OpenApiDataTypeDate     OpenApiDataType = "date"
+	OpenApiDataTypeDateTime OpenApiDataType = "dateTime"
+	OpenApiDataTypePassword OpenApiDataType = "password"
+)
+
+type OpenApiDataFormat string
+
+const (
+	// integer
+	OpenApiDataFormatInt32 OpenApiDataFormat = "int32"
+	OpenApiDataFormatInt64 OpenApiDataFormat = "int64"
+
+	// float
+	OpenApiDataFormatFloat  OpenApiDataFormat = "float"
+	OpenApiDataFormatDouble OpenApiDataFormat = "double"
+
+	// date
+	OpenApiDataFormatDate     OpenApiDataFormat = "date"
+	OpenApiDataFormatDateTime OpenApiDataFormat = "date-time"
+
+	OpenApiDataFormatByte     OpenApiDataFormat = "byte"
+	OpenApiDataFormatBinary   OpenApiDataFormat = "binary"
+	OpenApiDataFormatPassword OpenApiDataFormat = "password"
 )
 
 type OpenApiSchemaType string

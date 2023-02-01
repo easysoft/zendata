@@ -202,7 +202,14 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 			for propName, prop := range schemaNode.Value.Properties {
 				field := model.DefField{}
 				field.Field = propName
-				s.getRangeByType(prop.Value.Type, &field)
+
+				if prop.Ref == "" {
+					s.getRangeByTypeFormat(consts.OpenApiDataType(prop.Value.Type), prop.Value.Enum, prop.Value.Default,
+						prop.Value.Min, prop.Value.Max,
+						&field)
+				} else {
+					s.getFieldFromSchema(propName, &field.Fields, prop)
+				}
 
 				*fields = append(*fields, field)
 			}
@@ -268,47 +275,77 @@ func (s *MockService) getFieldFromItems(name string, fields *[]model.DefField, i
 	return
 }
 
-func (s *MockService) getRangeByType(typ string, field *model.DefField) {
-	if string(consts.Integer) == typ {
-		field.Range = "1-99"
+func (s *MockService) getRangeByTypeFormat(typ consts.OpenApiDataType,
+	enums []interface{}, defaultVal interface{},
+	min, max *float64,
+	field *model.DefField) {
+	if enums != nil {
+		field.Range = s.getRangeFromEnum(enums)
+		return
+	}
 
-	} else if string(consts.Long) == typ {
-		field.Range = "1-99"
+	if consts.OpenApiDataTypeInteger == typ {
+		start, end := s.getStartEnd(1, 99, min, max, typ)
+		field.Range = fmt.Sprintf("%d-%d", start, end)
 
-	} else if string(consts.Float) == typ {
-		field.Range = "1.01-99"
+	} else if consts.OpenApiDataTypeLong == typ {
+		start, end := s.getStartEnd(9223372036854775801, 9223372036854775807, min, max, typ)
+		field.Range = fmt.Sprintf("%d-%d", start, end)
 
-	} else if string(consts.Double) == typ {
-		field.Range = "1.01-99"
+	} else if consts.OpenApiDataTypeFloat == typ {
+		start, end := s.getStartEnd(1.01, 99, min, max, typ)
+		field.Range = fmt.Sprintf("%f-%f", start, end)
 
-	} else if string(consts.String) == typ {
+	} else if consts.OpenApiDataTypeDouble == typ {
+		start, end := s.getStartEnd(1.000000000000009, 99, min, max, typ)
+		field.Range = fmt.Sprintf("%f-%f", start, end)
+
+	} else if consts.OpenApiDataTypeString == typ {
 		field.Range = "a-z"
 		field.Loop = "6-8"
 
-	} else if string(consts.Byte) == typ {
-		field.Range = "a-z"
-		field.Loop = "6"
+	} else if consts.OpenApiDataTypeByte == typ {
+		start, end := s.getStartEnd('a', 'z', min, max, typ)
+		field.Range = fmt.Sprintf("%c-%c", start, end)
 
-	} else if string(consts.Binary) == typ {
+	} else if consts.OpenApiDataTypeBinary == typ {
 		field.Format = "binary"
 
-	} else if string(consts.Boolean) == typ {
+	} else if consts.OpenApiDataTypeBoolean == typ {
 		field.Range = "[true,false]"
 
-	} else if string(consts.Date) == typ {
-		field.Range = "20210101 000000-20210101 230000:60"
+	} else if consts.OpenApiDataTypeDate == typ {
+		field.Range = "20230101 000000-20230101 235959:60"
 		field.Type = "timestamp"
 		field.Format = "YY/MM/DD"
 
-	} else if string(consts.DateTime) == typ {
-		field.Range = "20210101 000000-20210101 230000:60"
+	} else if consts.OpenApiDataTypeDateTime == typ {
+		field.Range = "20230101 000000-20230101 235959:60"
 		field.Type = "timestamp"
 		field.Format = "YY/MM/DD hh:mm:ss"
 
-	} else if string(consts.Password) == typ {
+	} else if consts.OpenApiDataTypePassword == typ {
 		field.Format = "password(8)"
 
 	}
+
+	if defaultVal != nil && (consts.OpenApiDataTypeInteger == typ || consts.OpenApiDataTypeLong == typ ||
+		consts.OpenApiDataTypeFloat == typ || consts.OpenApiDataTypeDouble == typ ||
+		consts.OpenApiDataTypeString == typ || consts.OpenApiDataTypeByte == typ) {
+
+		field.Range = fmt.Sprintf("%v, ", defaultVal) + field.Range
+	}
+}
+
+func (s *MockService) getRangeFromEnum(enums []interface{}) (ret string) {
+	var arr []string
+	for _, e := range enums {
+		arr = append(arr, fmt.Sprintf("%v", e))
+	}
+
+	ret = fmt.Sprintf("[%s]", strings.Join(arr, ","))
+
+	return
 }
 
 func (s *MockService) getFilePaths(name string, dir string) (zendataPath, mockPath string) {
@@ -333,4 +370,39 @@ func (s *MockService) saveFile(obj interface{}, pth string) {
 	}
 
 	fileUtils.WriteFile(pth, str)
+}
+
+func (s *MockService) getStartEnd(startDefault, endDefault interface{}, min, max *float64, typ consts.OpenApiDataType) (startRet, endRet interface{}) {
+	startRet = startDefault
+	endRet = endDefault
+
+	if min != nil {
+		if typ == consts.OpenApiDataTypeInteger {
+			startRet = int(*min)
+		} else if typ == consts.OpenApiDataTypeLong {
+			startRet = int64(*min)
+		} else if typ == consts.OpenApiDataTypeFloat {
+			startRet = float32(*min)
+		} else if typ == consts.OpenApiDataTypeDouble {
+			startRet = *min
+		} else if typ == consts.OpenApiDataTypeByte {
+			startRet = int(*min)
+		}
+	}
+
+	if max != nil {
+		if typ == consts.OpenApiDataTypeInteger {
+			endRet = int(*max)
+		} else if typ == consts.OpenApiDataTypeLong {
+			endRet = int64(*max)
+		} else if typ == consts.OpenApiDataTypeFloat {
+			endRet = float32(*max)
+		} else if typ == consts.OpenApiDataTypeDouble {
+			endRet = *max
+		} else if typ == consts.OpenApiDataTypeByte {
+			endRet = int(*max)
+		}
+	}
+
+	return
 }

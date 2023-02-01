@@ -126,9 +126,9 @@ func (s *OutputService) getModArrForChildrenRecursive(field *model.DefField) []i
 		for j := i + 1; j < len(field.Fields); j++ {
 			loop = loop * len(field.Fields[j].Values)
 
-			if field.Items > 1 {
-				loop /= field.Items
-			}
+			//if field.Items > 1 {
+			//	loop /= field.Items
+			//}
 		}
 
 		indexArr[i] = loop

@@ -26,19 +26,19 @@ paths:
   /testpath/{userid}:
     get:
       responses:
-#        "200":
-#          $ref: "#/components/responses/200_resp"
+        "200":
+          $ref: "#/components/responses/200_resp"
 
 #        "201":
 #          $ref: "#/components/responses/201_resp"
 
-        '501':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/501_resp'
-          description: |-
-            The namespaced PIDs of processes
+#        '501':
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/501_resp'
+#          description: |-
+#            The namespaced PIDs of processes
 
 #        '502':
 #          content:
@@ -82,9 +82,9 @@ components:
           schema:
             $ref: '#/components/schemas/user'
 
-          examples:
-            json:
-              $ref: "#/components/examples/BadRequest"
+#          examples:
+#            json:
+#              $ref: "#/components/schemas/user"
 
     201_resp:
       description: The User
@@ -101,6 +101,36 @@ components:
     user:
       type: object
       properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 100
+
+        integer:
+          type: integer
+          minimum: 200
+          maximum: 300
+
+        long:
+          type: long
+          minimum: 200
+          maximum: 300
+
+        float:
+          type: float
+          minimum: 200
+          maximum: 300
+
+        double:
+          type: double
+          minimum: 200
+          maximum: 300
+
+        byte:
+          type: byte
+          minimum: 97
+          maximum: 100
+
         nickname:
           type: string
         password:
