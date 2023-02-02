@@ -4,6 +4,7 @@ import (
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
+	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
 	"io/ioutil"
@@ -309,17 +310,19 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 }
 
 func GetFilesByExtInDir(folder, ext string, files *[]string) {
+	extArr := strings.Split(ext, ",")
+
 	folder, _ = filepath.Abs(folder)
 
 	if !IsDir(folder) {
-		if ext == "" || filepath.Ext(folder) == ext {
+		if ext == "" || stringUtils.StrInArr(filepath.Ext(folder), extArr) {
 			*files = append(*files, folder)
 		}
 
 		return
 	}
 
-	dir, err := ioutil.ReadDir(folder)
+	dir, err := os.ReadDir(folder)
 	if err != nil {
 		return
 	}
@@ -333,7 +336,7 @@ func GetFilesByExtInDir(folder, ext string, files *[]string) {
 		filePath := AddSepIfNeeded(folder) + name
 		if fi.IsDir() {
 			GetFilesByExtInDir(filePath, ext, files)
-		} else if strings.Index(name, "~") != 0 && (ext == "" || filepath.Ext(filePath) == ext) {
+		} else if strings.Index(name, "~") != 0 && (ext == "" || stringUtils.StrInArr(filepath.Ext(filePath), extArr)) {
 			*files = append(*files, filePath)
 		}
 	}
@@ -445,4 +448,16 @@ func HandleFiles(files []string) []string {
 	}
 
 	return files
+}
+
+func NewFileNameWithUlidPostfix(pth string) (ret string) {
+	return AddFilePostfix(pth, stringUtils.Ulid())
+}
+
+func AddFilePostfix(pth, postfix string) (ret string) {
+	ext := filepath.Ext(pth)
+
+	ret = pth[:strings.LastIndex(pth, ext)] + "-" + postfix + ext
+
+	return
 }

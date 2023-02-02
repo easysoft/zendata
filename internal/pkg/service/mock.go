@@ -8,9 +8,11 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	shellUtils "github.com/easysoft/zendata/pkg/utils/shell"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/getkin/kin-openapi/openapi3"
 	"gopkg.in/yaml.v2"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -21,15 +23,19 @@ type MockService struct {
 
 func (s *MockService) GenMockDef(input string) (err error) {
 	var files []string
-	fileUtils.GetFilesByExtInDir(input, ".yaml", &files)
+	fileUtils.GetFilesByExtInDir(input, ".yaml,.json", &files)
 
 	ctx := context.Background()
 	loader := &openapi3.Loader{Context: ctx, IsExternalRefsAllowed: true}
 
 	for _, f := range files {
+		if filepath.Ext(f) == ".json" {
+			f = s.convertPostmanSpec(f)
+		}
+
 		doc3, err := loader.LoadFromFile(f)
 		if err != nil {
-			logUtils.PrintTo(err.Error())
+			logUtils.PrintTo(fmt.Sprintf("skip file %s which is not a vaild openapi3, swagger and postman spec.", f))
 			continue
 		}
 
@@ -54,11 +60,11 @@ func (s *MockService) GenMockDef(input string) (err error) {
 			mp := map[string]map[string]map[string]*model.EndPoint{}
 
 			if pathItem.Connect != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Connect, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Delete != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Delete, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Get != nil {
@@ -66,27 +72,27 @@ func (s *MockService) GenMockDef(input string) (err error) {
 			}
 
 			if pathItem.Head != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Head, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Options != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Options, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Patch != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Patch, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Post != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Post, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Put != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Put, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			if pathItem.Trace != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Trace, &zendataDef, zendataDefPath, model.Get, &mp)
 			}
 
 			mockDef.Paths[pathStr] = mp
@@ -94,6 +100,23 @@ func (s *MockService) GenMockDef(input string) (err error) {
 
 		s.saveFile(zendataDef, zendataDefPath)
 		s.saveFile(mockDef, mockDefPath)
+	}
+
+	return
+}
+
+func (s *MockService) convertPostmanSpec(input string) (ret string) {
+	// npm i postman-to-openapi -g
+
+	ret = input
+
+	content, _ := os.ReadFile(input)
+
+	if strings.Contains(string(content), "_postman_id") {
+		ret = ret + ".yaml"
+		cmd := fmt.Sprintf("p2o %s -f %s", input, ret)
+
+		shellUtils.ExecInDir(cmd, filepath.Dir(ret))
 	}
 
 	return
