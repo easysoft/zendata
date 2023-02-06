@@ -90,7 +90,6 @@ export default {
     }
   },
   created () {
-    this.loadData()
   },
   mounted () {
   },
@@ -103,13 +102,6 @@ export default {
     }
   },
   methods: {
-    loadData() {
-      listDef(this.keywords, this.page).then(json => {
-        this.records = json.data.list
-        this.total = json.data.total
-        this.selected = json.data.list.length ? json.data.list[0].id : null
-      })
-    },
     create() {
       this.editRecord = {};
       this.editModalVisible = true;
