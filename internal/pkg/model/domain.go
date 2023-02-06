@@ -107,7 +107,7 @@ type FieldSimple struct {
 	Rand    bool   `yaml:"rand,omitempty"`
 	Type    string `yaml:"type,omitempty"`
 	Mode    string `yaml:"mode,omitempty"`
-	Items   int    `yaml:"items,omitempty"`
+	Items   int    `yaml:"records,omitempty"`
 	//ParentItems int    `yaml:"-"`
 	//ParentJoin  bool   `yaml:"-"`
 	From string `yaml:"from,omitempty"`

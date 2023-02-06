@@ -75,7 +75,7 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 
 	s.LoopService.ComputerLoopTimes(field) // change LoopStart, LoopEnd for conf like loop:  1-10             # 循环1次，2次……
 
-	uniqueTotal := s.computerUniqueTotal(field) // computer total for array children(items: 3) OR range affixes (prefix: 1-3)
+	uniqueTotal := s.computerUniqueTotal(field) // computer total for array children(records: 3) OR range affixes (prefix: 1-3)
 
 	indexOfRow := 0
 	count := 0

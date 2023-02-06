@@ -57,7 +57,7 @@ func (s *ResInstancesService) prepareNestedInstanceRes(insts model.ResInstances,
 				groupedValueReferenced = s.ResRangesService.GetResFromRanges(referencedRanges)
 
 			} else if len(referencedInstants.Instances) > 0 { // refer to instances
-				for _, referencedInst := range referencedInstants.Instances { // iterate items
+				for _, referencedInst := range referencedInstants.Instances { // iterate records
 					for _, referencedInstField := range referencedInst.Fields { // if item had children, iterate children
 						s.prepareNestedInstanceRes(referencedInstants, referencedInst, referencedInstField)
 					}

@@ -27,5 +27,5 @@ func (m *DefModule) Party() module.WebModule {
 		index.Get("/previewData", m.DefCtrl.PreviewData).Name = "预览数据"
 		index.Post("/sync", m.DefCtrl.Create).Name = "同步"
 	}
-	return module.NewModule("/defs", handler)
+	return module.NewModule("/records", handler)
 }

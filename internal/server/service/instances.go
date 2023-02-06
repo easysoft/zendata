@@ -101,7 +101,7 @@ func (s *InstancesService) updateYaml(id uint) (err error) {
 }
 
 func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
-	//items, err := s.InstancesRepo.GetItems(instances.ID)
+	//records, err := s.InstancesRepo.GetItems(instances.ID)
 	//if err != nil {
 	//	return
 	//}
@@ -109,7 +109,7 @@ func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
 	//yamlObj := model.ResInstances{}
 	//s.InstancesRepo.GenInst(*instances, &yamlObj)
 	//
-	//for _, item := range items {
+	//for _, item := range records {
 	//	inst := instancesItemToResInstForExport(*item)
 	//
 	//	yamlObj.Instances = append(yamlObj.Instances, inst)

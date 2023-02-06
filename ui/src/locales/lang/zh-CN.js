@@ -24,6 +24,7 @@ const locale = {
   'menu.excel.edit': '表格编辑',
   'menu.text.list': '文本列表',
   'menu.text.edit': '文本编辑',
+  'menu.data.mock': 'Mock服务',
 
   'title.data.create': '数据创建',
   'title.config.create': '字段创建',

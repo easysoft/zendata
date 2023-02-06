@@ -24,6 +24,7 @@ const locale = {
   'menu.excel.edit': 'Excel Edit',
   'menu.text.list': 'Text List',
   'menu.text.edit': 'Text Edit',
+  'menu.data.mock': 'Mock Server',
 
   'title.data.create': 'Data Creation',
   'title.config.create': 'Config Creation',

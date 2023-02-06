@@ -188,7 +188,7 @@ func prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesI
 				groupedValueReferenced = getResFromRanges(referencedRanges)
 
 			} else if len(referencedInstants.Instances) > 0 { // refer to instances
-				for _, referencedInst := range referencedInstants.Instances { // iterate items
+				for _, referencedInst := range referencedInstants.Instances { // iterate records
 					for _, referencedInstField := range referencedInst.Fields { // if item had children, iterate children
 						prepareNestedInstanceRes(referencedInstants, referencedInst, referencedInstField)
 					}

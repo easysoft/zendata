@@ -16,6 +16,19 @@ const routes = [
         redirect: '/data/mine/list',
         children: [
             {
+                path:"mock",
+                name: "mock",
+                component: ColLayout,
+                children: [
+                    {
+                        path: 'index',
+                        name: 'mock-index',
+                        component: () => import('../views/mock/Index'),
+                        meta: { title: 'menu.data.mock' }
+                    },
+                ]
+            },
+            {
                 path:"data",
                 name: "data",
                 component: ColLayout,

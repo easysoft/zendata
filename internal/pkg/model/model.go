@@ -44,7 +44,7 @@ type ZdField struct {
 	Format   string `gorm:"column:format" json:"format"`
 	Type     string `gorm:"column:type" json:"type"`
 	Mode     string `gorm:"column:mode" json:"mode"`
-	Items    int    `gorm:"column:items" json:"items"`
+	Items    int    `gorm:"column:records" json:"records"`
 	Length   int    `gorm:"column:length" json:"length"`
 	LeftPad  string `gorm:"column:leftPad" json:"leftPad"`
 	RightPad string `gorm:"column:rightPad" json:"rightPad"`
@@ -207,7 +207,7 @@ type ZdInstancesItem struct {
 	Format   string `gorm:"column:format" json:"format" yaml:"format,omitempty"`
 	Type     string `gorm:"column:type" json:"type" yaml:"type,omitempty"`
 	Mode     string `gorm:"column:mode" json:"mode" yaml:"mode,omitempty"`
-	Items    int    `gorm:"column:items" json:"items,omitempty" yaml:"items,omitempty"`
+	Items    int    `gorm:"column:records" json:"records,omitempty" yaml:"records,omitempty"`
 	Length   int    `gorm:"column:length" json:"length" yaml:"length,omitempty"`
 	LeftPad  string `gorm:"column:leftPad" json:"leftPad" yaml:"leftPad,omitempty"`
 	RightPad string `gorm:"column:rightPad" json:"rightPad" yaml:"rightPad,omitempty"`

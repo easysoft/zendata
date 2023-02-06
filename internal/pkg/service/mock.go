@@ -260,9 +260,9 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 			*fields = append(*fields, exampleField)
 		}
 
-		// items based
+		// records based
 		if schemaNode.Value.Items != nil {
-			s.getFieldFromItems(name+"-items", fields, schemaNode.Value.Items)
+			s.getFieldFromItems(name+"-records", fields, schemaNode.Value.Items)
 		}
 	}
 
