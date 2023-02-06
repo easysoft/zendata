@@ -53,7 +53,7 @@ const errorHandler = error => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-  console.log('---Request---', config.url);
+  console.log('---Request---', config.url, config);
   return config
 }, errorHandler)
 

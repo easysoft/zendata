@@ -1,10 +1,10 @@
 <template>
   <div class="mock-preview-list main-table">
-    <div v-if="defs.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
+    <div v-if="mockItems.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
 
-    <template v-if="defs.length>0">
-      <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id" :custom-row="customRow">
-        <a slot="recordTitle" slot-scope="text, record" @click="design(record)">{{record.title}}</a>
+    <template v-if="mockItems.length>0">
+      <a-table :columns="columns" :data-source="mockItems" :pagination="false" rowKey="id" :custom-row="customRow">
+        <a slot="recordTitle" slot-scope="text, record" @click="view(record)">{{record.title}}</a>
 
         <span slot="folderWithPath" slot-scope="text, record">
                 <a-tooltip placement="top" overlayClassName="tooltip-light">
@@ -35,6 +35,7 @@ import {listDef, removeDef} from "../../api/manage";
 import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../api/utils";
 import debounce from "lodash.debounce"
 import mockMixin from "@/store/mockMixin";
+import {listMock} from "@/api/mock";
 
 export default {
   name: 'Mine',
@@ -67,7 +68,7 @@ export default {
     ];
 
     return {
-      defs: [],
+      mockItems: [],
       columns,
       selected: null,
 
@@ -101,8 +102,8 @@ export default {
   },
   methods: {
     loadData() {
-      listDef(this.keywords, this.page).then(json => {
-        this.defs = json.data.list
+      listMock(this.keywords, this.page).then(json => {
+        this.mockItems = json.data.list
         this.total = json.data.total
         this.selected = json.data.list.length ? json.data.list[0].id : null
       })
@@ -110,10 +111,12 @@ export default {
     create() {
       this.editModalVisible = true;
     },
+    view(record) {
+      this.setMockItem(record)
+    },
     edit(record) {
       this.editModalVisible = true;
       this.setMockItem(record)
-      console.log(record)
     },
     handleCancelEditModal() {
       this.editModalVisible = false;

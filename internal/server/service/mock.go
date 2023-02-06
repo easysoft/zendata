@@ -4,6 +4,7 @@ import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
+	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v2"
@@ -14,9 +15,20 @@ import (
 )
 
 type MockService struct {
-	ResService    *ResService            `inject:""`
 	MainService   *service.MainService   `inject:""`
 	OutputService *service.OutputService `inject:""`
+	MockRepo      *serverRepo.MockRepo   `inject:""`
+}
+
+func (s *MockService) List(keywords string, page int) (pos []*model.ZdMock, total int, err error) {
+	pos, total, err = s.MockRepo.List(strings.TrimSpace(keywords), page)
+	return
+}
+
+func (s *MockService) Get(id int) (po model.ZdMock, err error) {
+	po, err = s.MockRepo.Get(uint(id))
+
+	return
 }
 
 func (s *MockService) Init() (err error) {

@@ -6,8 +6,11 @@ import (
 
 var (
 	CommonPrefix = "zd_"
-	Models       = []interface{}{&ZdDef{}, &ZdField{}, &ZdSection{}, &ZdRefer{},
-		&ZdRanges{}, &ZdRangesItem{}, &ZdText{}, &ZdConfig{}, &ZdInstances{}, &ZdInstancesItem{}, &ZdExcel{}}
+	Models       = []interface{}{
+		&ZdDef{}, &ZdField{}, &ZdSection{}, &ZdRefer{},
+		&ZdRanges{}, &ZdRangesItem{}, &ZdText{}, &ZdConfig{}, &ZdInstances{}, &ZdInstancesItem{}, &ZdExcel{},
+		&ZdMock{},
+	}
 )
 
 type ZdDef struct {

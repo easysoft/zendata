@@ -17,8 +17,11 @@ func NewMockModule() *DataModule {
 // Party 执行
 func (m *MockModule) Party() module.WebModule {
 	handler := func(index iris.Party) {
-		index.Any("/{paths:path}", m.MockCtrl.Mock)
+		index.Get("/", m.MockCtrl.List).Name = "Mock列表"
+		index.Get("/{id:uint}", m.MockCtrl.Get).Name = "Mock详情"
+
+		index.Any("/{paths:path}", m.MockCtrl.Mock) // mock data url
 	}
 
-	return module.NewModule("/", handler)
+	return module.NewModule("/mocks", handler)
 }
