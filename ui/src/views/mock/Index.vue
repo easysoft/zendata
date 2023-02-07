@@ -30,7 +30,7 @@
 import {Icon, Modal} from 'ant-design-vue'
 import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../api/utils";
 import debounce from "lodash.debounce"
-import Msg from '../../utils/msg.js'
+import Bus from '../../utils/bus.js'
 import List from './List';
 import Preview from './Preview';
 
@@ -53,11 +53,11 @@ export default {
   methods: {
     search: debounce(function() {
       console.log('search', this.keywords)
-      Msg.$emit('loadMock',{keywords: this.keywords})
+      Bus.$emit('loadMock',{keywords: this.keywords})
     }, 500),
 
     create() {
-      Msg.$emit('editMock',{})
+      Bus.$emit('editMock',{})
     },
   }
 }

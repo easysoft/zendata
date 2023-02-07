@@ -45,7 +45,7 @@ import {Icon, Modal} from 'ant-design-vue'
 import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../api/utils";
 import debounce from "lodash.debounce"
 import mockMixin from "@/store/mockMixin";
-import Msg from '../../utils/msg.js'
+import Bus from '../../utils/bus.js'
 import {listMock, removeMock} from "@/api/mock";
 import MockEditComp from './components/Edit'
 
@@ -105,11 +105,11 @@ export default {
     this.loadData()
   },
   mounted () {
-    Msg.$on('loadMock',function(data){
+    Bus.$on('loadMock',function(data){
       console.log('loadMock event', data)
     })
 
-    Msg.$on('editMock',function(data){
+    Bus.$on('editMock',function(data){
       console.log('editMock event', data)
     })
   },
