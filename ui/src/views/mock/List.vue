@@ -1,8 +1,6 @@
 <template>
   <div class="mock-preview-list main-table">
-    <div v-if="mockItems.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
-
-    <template v-if="mockItems.length>0">
+    <div>
       <a-table :columns="columns" :data-source="mockItems" :pagination="false" rowKey="id" :custom-row="customRow">
         <a slot="recordTitle" slot-scope="text, record" @click="view(record)">{{record.title}}</a>
 
@@ -24,23 +22,38 @@
       <div class="pagination-wrapper">
         <a-pagination size="small" simple @change="onPageChange" :current="page" :total="total" :defaultPageSize="15" />
       </div>
-    </template>
+    </div>
+
+    <div class="full-screen-modal">
+      <mock-edit-comp
+          ref="editComp"
+          :type="type"
+          :visible="editVisible"
+          :model="editModel"
+          :time="time"
+          @ok="handleEditOk"
+          @cancel="handleEditCancel" >
+      </mock-edit-comp>
+    </div>
+
   </div>
 </template>
 
 <script>
 
 import {Icon, Modal} from 'ant-design-vue'
-import {listDef, removeDef} from "../../api/manage";
 import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../api/utils";
 import debounce from "lodash.debounce"
 import mockMixin from "@/store/mockMixin";
-import {listMock} from "@/api/mock";
+import Msg from '../../utils/msg.js'
+import {listMock, removeMock} from "@/api/mock";
+import MockEditComp from './components/Edit'
 
 export default {
-  name: 'Mine',
+  name: 'MockList',
   components: {
     Icon,
+    MockEditComp,
   },
   props: {
   },
@@ -82,7 +95,8 @@ export default {
       total: 0,
       pageSize: PageSize,
 
-      editModalVisible: false,
+      editVisible: false,
+      editModel: null,
     };
   },
   computed: {
@@ -91,6 +105,13 @@ export default {
     this.loadData()
   },
   mounted () {
+    Msg.$on('loadMock',function(data){
+      console.log('loadMock event', data)
+    })
+
+    Msg.$on('editMock',function(data){
+      console.log('editMock event', data)
+    })
   },
   filters: {
     replacePathSep: function (path) {
@@ -109,29 +130,27 @@ export default {
       })
     },
     create() {
-      this.editModalVisible = true;
+      this.editVisible = true;
+    },
+    edit(record) {
+      this.editVisible = true;
+      this.setMockItem(record)
+    },
+    handleEditOk() {
+      this.editVisible = false;
+      this.loadData();
+    },
+    handleEditCancel() {
+      this.editVisible = false;
+    },
+    remove(record) {
+      console.log(record)
+      removeMock(record.id).then(json => {
+        this.loadData()
+      })
     },
     view(record) {
       this.setMockItem(record)
-    },
-    edit(record) {
-      this.editModalVisible = true;
-      this.setMockItem(record)
-    },
-    handleCancelEditModal() {
-      this.editModalVisible = false;
-    },
-    handleEditSave() {
-      this.editModalVisible = false;
-      this.loadData();
-    },
-
-    remove(record) {
-      console.log(record)
-      removeDef(record.id).then(json => {
-        console.log('removeDef', json)
-        this.loadData()
-      })
     },
 
     onPageChange(page, pageSize) {

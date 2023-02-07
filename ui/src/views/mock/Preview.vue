@@ -18,7 +18,7 @@
 import mockMixin from "@/store/mockMixin";
 
 export default {
-  name: 'Preview',
+  name: 'MockPreview',
   components: {
   },
   props: {
