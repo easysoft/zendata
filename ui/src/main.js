@@ -67,6 +67,9 @@ import 'ant-design-vue/lib/pagination/style';
 import Card from "ant-design-vue/lib/card";
 import "ant-design-vue/lib/card/style";
 
+import Upload from "ant-design-vue/lib/upload";
+import "ant-design-vue/lib/upload/style";
+
 import notification from "ant-design-vue/lib/notification";
 import 'ant-design-vue/lib/notification/style';
 import message from "ant-design-vue/lib/message";
@@ -105,6 +108,7 @@ Vue.use(Popover)
 Vue.use(Tooltip)
 Vue.use(Pagination)
 Vue.use(Card)
+Vue.use(Upload)
 
 new Vue({
   router,

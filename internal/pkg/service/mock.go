@@ -21,7 +21,7 @@ type MockService struct {
 	FileService *FileService `inject:""`
 }
 
-func (s *MockService) GenMockDef(input string) (err error) {
+func (s *MockService) GenMockDef(input string) (mockDefPath, zendataDefPath string, err error) {
 	var files []string
 	fileUtils.GetFilesByExtInDir(input, ".yaml,.json", &files)
 
@@ -44,7 +44,7 @@ func (s *MockService) GenMockDef(input string) (err error) {
 		if vari.GlobalVars.Output != "" {
 			dir = vari.GlobalVars.Output
 		}
-		zendataDefPath, mockDefPath := s.getFilePaths(name, dir)
+		zendataDefPath, mockDefPath = s.getFilePaths(name, dir)
 
 		zendataDef := model.DefData{}
 		zendataDef.ClsInfo.Title = doc3.Info.Title
@@ -98,8 +98,8 @@ func (s *MockService) GenMockDef(input string) (err error) {
 			mockDef.Paths[pathStr] = mp
 		}
 
-		s.saveFile(zendataDef, zendataDefPath)
 		s.saveFile(mockDef, mockDefPath)
+		s.saveFile(zendataDef, zendataDefPath)
 	}
 
 	return
@@ -371,7 +371,7 @@ func (s *MockService) getRangeFromEnum(enums []interface{}) (ret string) {
 	return
 }
 
-func (s *MockService) getFilePaths(name string, dir string) (zendataPath, mockPath string) {
+func (s *MockService) getFilePaths(name string, dir string) (mockPath, zendataPath string) {
 	ext := filepath.Ext(name)
 
 	zendataPath = strings.ReplaceAll(name, ext, "-zd"+ext)

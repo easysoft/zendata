@@ -88,6 +88,11 @@ const locale = {
   'tips.range.and.refer': 'Saved reference settings will overwrite the ones of range.',
   'tips.pls.refresh.data': 'First time to use, please click "Refresh" button on the top-right corner.',
 
+  'upload.spec': 'Upload Spec',
+  'upload.spec.failed': 'Upload spec failed.',
+  'msg.mock.mock': 'Mock Config',
+  'msg.mock.data': 'Data Config',
+
   'form.name': 'Name',
   'form.file': 'File',
   'form.dir': 'Directory',

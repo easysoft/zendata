@@ -1,17 +1,23 @@
 package fileUtils
 
 import (
+	"errors"
+	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
+	"github.com/oklog/ulid/v2"
+	"github.com/snowlyg/helper/str"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 func ReadFile(filePath string) string {
@@ -458,6 +464,26 @@ func AddFilePostfix(pth, postfix string) (ret string) {
 	ext := filepath.Ext(pth)
 
 	ret = pth[:strings.LastIndex(pth, ext)] + "-" + postfix + ext
+
+	return
+}
+
+func GetUploadFileName(name string) (ret string, err error) {
+	fns := strings.Split(strings.TrimPrefix(name, "./"), ".")
+	if len(fns) < 2 {
+		msg := fmt.Sprintf("文件名错误 %s", name)
+		err = errors.New(msg)
+		return
+	}
+
+	base := fns[0]
+	ext := fns[1]
+
+	entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+	ms := ulid.Timestamp(time.Now())
+	rand, _ := ulid.New(ms, entropy)
+
+	ret = str.Join(base, "-", strings.ToLower(rand.String()), ".", ext)
 
 	return
 }

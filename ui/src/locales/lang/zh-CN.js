@@ -88,6 +88,11 @@ const locale = {
   'tips.range.and.refer': '注意：引用和区间之间是互斥的，以最后保存的为准。',
   'tips.pls.refresh.data': '第一次使用，请点击右上角"刷新数据"按钮。',
 
+  'upload.spec': '上传规格文件',
+  'upload.spec.failed': '上传规格文件失败。',
+  'msg.mock.mock': 'Mock配置',
+  'msg.mock.data': '数据配置',
+
   'form.name': '名称',
   'form.file': '文件',
   'form.dir': '目录',

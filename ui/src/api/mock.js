@@ -40,3 +40,11 @@ export function removeMock (id) {
     params: {id: id}
   })
 }
+
+export function uploadMock (formData) {
+  return request({
+    url: `${mocksApi}/upload`,
+    method: 'post',
+    data: formData,
+  })
+}

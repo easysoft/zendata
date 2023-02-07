@@ -1,22 +1,30 @@
 package serverService
 
 import (
+	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
+	dateUtils "github.com/easysoft/zendata/pkg/utils/date"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"github.com/kataras/iris/v12"
+	"github.com/snowlyg/helper/dir"
 	"gopkg.in/yaml.v2"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type MockService struct {
 	MainService   *service.MainService   `inject:""`
 	OutputService *service.OutputService `inject:""`
+	MockService   *service.MockService   `inject:""`
 	MockRepo      *serverRepo.MockRepo   `inject:""`
 }
 
@@ -142,6 +150,42 @@ func (s *MockService) getPathPatten(pth string) (ret string) {
 	ret = regx.ReplaceAllString(pth, "(.+)")
 
 	ret = "^" + ret + "$"
+
+	return
+}
+
+func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (content, mockConf, dataConf, pth string, err error) {
+	filename, err := fileUtils.GetUploadFileName(fh.Filename)
+	if err != nil {
+		logUtils.PrintTo(fmt.Sprintf("获取文件名失败，错误%s", err.Error()))
+		return
+	}
+
+	targetDir := filepath.Join("upload", dateUtils.DateStr(time.Now()))
+	absDir := filepath.Join(dir.GetCurrentAbPath(), targetDir)
+
+	err = dir.InsureDir(targetDir)
+	if err != nil {
+		logUtils.PrintTo(fmt.Sprintf("文件上传失败，错误%s", err.Error()))
+		return
+	}
+
+	pth = filepath.Join(absDir, filename)
+	_, err = ctx.SaveFormFile(fh, pth)
+	if err != nil {
+		logUtils.PrintTo(fmt.Sprintf("文件上传失败，错误%s", err.Error()))
+		return
+	}
+
+	content = fileUtils.ReadFile(pth)
+
+	vari.GlobalVars.Output = fileUtils.GetFileOrFolderDir(pth)
+	mockPath, dataPath, err := s.MockService.GenMockDef(pth)
+
+	if err == nil {
+		mockConf = fileUtils.ReadFile(mockPath)
+		dataConf = fileUtils.ReadFile(dataPath)
+	}
 
 	return
 }

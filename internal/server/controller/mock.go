@@ -52,3 +52,20 @@ func (c *MockCtrl) Mock(ctx iris.Context) {
 
 	ctx.JSON(resp, context.JSON{Indent: "    "})
 }
+
+func (c *MockCtrl) Upload(ctx iris.Context) {
+	f, fh, err := ctx.FormFile("file")
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+	defer f.Close()
+
+	spec, mockConf, dataConf, pth, err := c.MockService.Upload(ctx, fh)
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+
+	ctx.JSON(c.SuccessResp(iris.Map{"spec": spec, "mock": mockConf, "data": dataConf, "path": pth}))
+}
