@@ -1,7 +1,7 @@
 <template>
   <div class="mock-preview-list main-table">
     <div>
-      <a-table :columns="columns" :data-source="mockItems" :pagination="false" rowKey="id" :custom-row="customRow">
+      <a-table :columns="columns" :data-source="models" :pagination="false" rowKey="id" :custom-row="customRow">
         <a slot="recordTitle" slot-scope="text, record" @click="view(record)">{{record.title}}</a>
 
         <span slot="folderWithPath" slot-scope="text, record">
@@ -81,7 +81,7 @@ export default {
     ];
 
     return {
-      mockItems: [],
+      models: [],
       columns,
       selected: null,
 
@@ -105,12 +105,15 @@ export default {
     this.loadData()
   },
   mounted () {
-    Bus.$on('loadMock',function(data){
+    Bus.$on('loadMock',(data) => {
       console.log('loadMock event', data)
+      this.loadData()
     })
 
-    Bus.$on('editMock',function(data){
-      console.log('editMock event', data)
+    Bus.$on('createMock',(data) => {
+      console.log('createMock event', data)
+      this.editModel = {}
+      this.editVisible = true;
     })
   },
   filters: {
@@ -124,7 +127,7 @@ export default {
   methods: {
     loadData() {
       listMock(this.keywords, this.page).then(json => {
-        this.mockItems = json.data.list
+        this.models = json.data.list
         this.total = json.data.total
         this.selected = json.data.list.length ? json.data.list[0].id : null
       })

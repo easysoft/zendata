@@ -61,6 +61,8 @@ const locale = {
   'msg.design.create.child': 'Create Child',
   'msg.design.remove.node': 'Remove node',
 
+  'msg.mock.create': 'Create Mock',
+
   'action.list': 'List',
   'action.create': 'Create',
   'action.add': 'Add',

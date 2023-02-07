@@ -57,7 +57,7 @@ export default {
     }, 500),
 
     create() {
-      Bus.$emit('editMock',{})
+      Bus.$emit('createMock',{})
     },
   }
 }

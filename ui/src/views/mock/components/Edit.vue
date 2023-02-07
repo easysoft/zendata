@@ -1,7 +1,7 @@
 <template>
   <div class="mock-edit-main">
     <a-modal
-      :title="$t('msg.design.title')"
+      :title="$t('msg.mock.create')"
       width="100%"
       dialogClass="full-screen-modal"
       :visible="visible"

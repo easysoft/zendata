@@ -61,6 +61,8 @@ const locale = {
   'msg.design.create.child': '创建子级',
   'msg.design.remove.node': '删除节点',
 
+  'msg.mock.create': '新建Mock配置',
+
   'action.list': '列表',
   'action.create': '创建',
   'action.add': '添加',
