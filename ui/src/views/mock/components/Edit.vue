@@ -2,10 +2,9 @@
   <div class="mock-edit-main">
     <a-modal
       :title="$t('msg.mock.create')"
-      width="100%"
-      dialogClass="full-screen-modal"
       :visible="visible"
       :closable=true
+      :width="600"
       :footer="null"
       @cancel="cancel"
     >

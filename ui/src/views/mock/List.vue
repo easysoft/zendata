@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div class="full-screen-modal">
+    <div>
       <mock-edit-comp
           ref="editComp"
           :type="type"
