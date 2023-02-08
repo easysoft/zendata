@@ -116,13 +116,13 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 			continue
 		}
 
-		ret, _ = s.GenData(mp[reqMethod][respCode][mediaType])
+		ret, _ = s.GenDataForServer(mp[reqMethod][respCode][mediaType])
 	}
 
 	return
 }
 
-func (s *MockService) GenData(endpoint *model.EndPoint) (ret interface{}, err error) {
+func (s *MockService) GenDataForServer(endpoint *model.EndPoint) (ret interface{}, err error) {
 	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	vari.GlobalVars.Total = endpoint.Lines
 	vari.GlobalVars.OutputFormat = "json"
