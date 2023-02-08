@@ -76,15 +76,14 @@ func (webServer *WebServer) initModule() {
 		for _, mod := range webServer.modules {
 			mod := mod
 			webServer.wg.Add(1)
-			go func(mod module.WebModule) {
-				sub := webServer.app.PartyFunc(mod.RelativePath, mod.Handler)
-				if len(mod.Modules) > 0 {
-					for _, subModule := range mod.Modules {
-						sub.PartyFunc(subModule.RelativePath, subModule.Handler)
-					}
+
+			sub := webServer.app.PartyFunc(mod.RelativePath, mod.Handler)
+			if len(mod.Modules) > 0 {
+				for _, subModule := range mod.Modules {
+					sub.PartyFunc(subModule.RelativePath, subModule.Handler)
 				}
-				webServer.wg.Done()
-			}(mod)
+			}
+			webServer.wg.Done()
 		}
 		webServer.wg.Wait()
 	}

@@ -55,6 +55,7 @@ const locale = {
   'msg.text': 'Text Content',
   'msg.exec': 'Yaml Result',
   'msg.file': 'File',
+  'msg.create.time': 'Create Time',
 
   'msg.design.title': 'TestData Design',
   'msg.design.create.brother': 'Create Brother',
@@ -137,6 +138,7 @@ const locale = {
   'form.save': 'Save',
   'form.reset': 'Reset',
   'form.cancel': 'Cancel',
+  'form.close': 'Close',
 
   'valid.required': 'Can not be empty.',
   'valid.type.empty': 'Type cannot be empty.',

@@ -34,13 +34,7 @@ func (r *MockRepo) Get(id uint) (po model.ZdMock, err error) {
 	return
 }
 
-func (r *MockRepo) Create(po *model.ZdMock) (err error) {
-	err = r.DB.Create(po).Error
-
-	return
-}
-
-func (r *MockRepo) Update(po *model.ZdMock) (err error) {
+func (r *MockRepo) Save(po *model.ZdMock) (err error) {
 	err = r.DB.Save(po).Error
 
 	return

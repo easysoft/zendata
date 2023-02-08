@@ -55,6 +55,7 @@ const locale = {
   'msg.text': '文本内容',
   'msg.exec': 'Yaml结果',
   'msg.file': '文件',
+  'msg.create.time': '创建时间',
 
   'msg.design.title': '测试数据设计',
   'msg.design.create.brother': '创建同级',
@@ -137,6 +138,7 @@ const locale = {
   'form.save': '保存',
   'form.reset': '重置',
   'form.cancel': '取消',
+  'form.close': '关闭',
 
   'valid.required': '该字段不能为空。',
   'valid.type.empty': '类型不能为空',

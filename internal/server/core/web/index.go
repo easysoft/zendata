@@ -86,7 +86,9 @@ func injectModule(ws *WebServer) {
 		panic(fmt.Sprintf("populate the incomplete Objects: %v", err))
 	}
 
-	ws.AddModule(indexModule.Party(), indexModule.PartyData(), indexModule.PartyMock())
+	ws.AddModule(indexModule.Party())
+	ws.AddModule(indexModule.PartyData())
+	ws.AddModule(indexModule.PartyMock())
 
 	logUtils.PrintTo("start server")
 }

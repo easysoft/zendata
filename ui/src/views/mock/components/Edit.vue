@@ -3,13 +3,21 @@
     <a-modal
       :title="$t('msg.mock.create')"
       :visible="visible"
-      :closable=true
+      :closable=false
       :footer="null"
-      @cancel="cancel"
       width="100%"
       dialogClass="full-screen-modal"
     >
       <div class="mock-edit-main">
+        <div class="buttons">
+          <a-button @click="save" type="primary" :disabled="!readyToSave">
+            {{ $t('form.save') }}
+          </a-button> &nbsp;&nbsp;&nbsp;
+          <a-button @click="cancel">
+            {{ $t('form.close') }}
+          </a-button>
+        </div>
+
         <a-row :gutter="10" class="content-row">
           <a-col :span="11" class="content-col">
             <div class="upload-bar">
@@ -21,19 +29,21 @@
                   <span>{{$t('upload.spec')}}</span>
                 </a-button>
               </a-upload>
+
+              <span class="title">{{model.name}}</span>
             </div>
             <div class="upload-content">
-              <pre>{{ specContent }}</pre>
+              <pre>{{ model.specContent }}</pre>
             </div>
           </a-col>
 
           <a-col :span="13" class="content-col">
             <a-tabs default-active-key="1" :animated="false">
               <a-tab-pane key="1" :tab="$t('msg.mock.mock')">
-                <pre>{{ mockContent }}</pre>
+                <pre>{{ model.mockContent }}</pre>
               </a-tab-pane>
               <a-tab-pane key="2" :tab="$t('msg.mock.data')">
-                <pre>{{ dataContent }}</pre>
+                <pre>{{ model.dataContent }}</pre>
               </a-tab-pane>
             </a-tabs>
           </a-col>
@@ -48,20 +58,16 @@
 <script>
 import {} from "../../../api/manage";
 import {uploadMock} from "@/api/mock";
+import mockMixin from "@/store/mockMixin";
 
 export default {
   name: 'MockEditComp',
   components: {
   },
   data() {
-    const styl = 'height: ' + (document.documentElement.clientHeight - 56) + 'px;'
     return {
-      styl: styl,
-      modelData: {},
-
-      specContent: null,
-      mockContent: null,
-      dataContent: null,
+      model: {},
+      readyToSave: false,
     };
   },
   props: {
@@ -73,26 +79,16 @@ export default {
       type: Boolean,
       required: true
     },
-    model: {
-      type: Object,
-      default: () => {return {}}
-    },
     time: {
       type: Number,
       default: () => 0
     },
   },
-
+  mixins: [mockMixin],
   computed: {
   },
   created () {
     console.log('created')
-    this.loadData()
-
-    this.$watch('time', () => {
-      console.log('time changed', this.time)
-      this.loadData()
-    })
   },
   mounted: function () {
     console.log('mounted')
@@ -104,22 +100,25 @@ export default {
   methods: {
     save() {
       console.log('save')
-      this.loadData()
+      this.saveMockItem(this.model).then((json) => {
+        console.log('saveMockItem', json)
+        if (json.code === 0) {
+          this.model = {}
+          this.readyToSave = false
+          this.$emit('ok')
+        } else {
+          this.$notification['warning']({
+            message: this.$i18n.t('upload.spec.failed'),
+            duration: 3,
+          });
+        }
+      })
     },
     cancel() {
       console.log('cancel')
+      this.model = {}
+      this.readyToSave = false
       this.$emit('cancel')
-    },
-
-    loadData () {
-      console.log('loadData', this.modelProp)
-
-      if (!this.model?.id) return
-
-      // getDefFieldTree(this.modelProp.id).then(json => {
-      //   console.log('getDefFieldTree', json)
-      //   this.loadTreeCallback(json, selectedKey)
-      // })
     },
 
     getModel(id) {
@@ -135,9 +134,15 @@ export default {
       uploadMock(formData).then((json) => {
         console.log('uploadMock', json)
         if (json.code === 0) {
-          this.specContent = json.data.spec
-          this.mockContent = json.data.mock
-          this.dataContent = json.data.data
+          this.model = {
+            name: json.data.name,
+            specContent: json.data.spec,
+            mockContent: json.data.mock,
+            dataContent: json.data.data,
+          }
+
+          this.readyToSave = true
+
         } else {
           this.$notification['warning']({
             message: this.$i18n.t('upload.spec.failed'),
@@ -154,6 +159,12 @@ export default {
 
 <style lang="less" scoped>
 .mock-edit-main {
+  .buttons {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding: 5px;
+  }
 }
 
 </style>
@@ -178,6 +189,12 @@ export default {
 
           .upload-bar {
             padding: 10px;
+            .title {
+              display: inline-block;
+              padding: 3px 16px;
+              font-size: larger;
+              font-weight: bolder;
+            }
           }
           .upload-content {
             height: calc(~"100% - 50px");

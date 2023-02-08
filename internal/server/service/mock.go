@@ -39,6 +39,18 @@ func (s *MockService) Get(id int) (po model.ZdMock, err error) {
 	return
 }
 
+func (s *MockService) Save(po *model.ZdMock) (err error) {
+	err = s.MockRepo.Save(po)
+
+	return
+}
+
+func (s *MockService) Remove(id int) (err error) {
+	err = s.MockRepo.Remove(uint(id))
+
+	return
+}
+
 func (s *MockService) Init() (err error) {
 	vari.GlobalVars.MockData = &model.MockData{}
 	vari.GlobalVars.MockData.Paths = map[string]map[string]map[string]map[string]*model.EndPoint{}
@@ -154,7 +166,9 @@ func (s *MockService) getPathPatten(pth string) (ret string) {
 	return
 }
 
-func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (content, mockConf, dataConf, pth string, err error) {
+func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (
+	name, content, mockConf, dataConf, pth string, err error) {
+
 	filename, err := fileUtils.GetUploadFileName(fh.Filename)
 	if err != nil {
 		logUtils.PrintTo(fmt.Sprintf("获取文件名失败，错误%s", err.Error()))
@@ -180,7 +194,7 @@ func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (conten
 	content = fileUtils.ReadFile(pth)
 
 	vari.GlobalVars.Output = fileUtils.GetFileOrFolderDir(pth)
-	mockPath, dataPath, err := s.MockService.GenMockDef(pth)
+	name, mockPath, dataPath, err := s.MockService.GenMockDef(pth)
 
 	if err == nil {
 		mockConf = fileUtils.ReadFile(mockPath)

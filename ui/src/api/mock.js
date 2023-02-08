@@ -17,27 +17,18 @@ export function getMock (id) {
   })
 }
 
-export function createMock (data) {
+export function saveMock (data) {
   return request({
     url: mocksApi,
-    method: 'post',
-    data
-  })
-}
-
-export function updateMock (data) {
-  return request({
-    url: mocksApi,
-    method: 'put',
+    method: data.id ? 'put': 'post',
     data
   })
 }
 
 export function removeMock (id) {
   return request({
-    url: mocksApi,
-    method: 'delete',
-    params: {id: id}
+    url: `${mocksApi}/${id}`,
+    method: 'delete'
   })
 }
 

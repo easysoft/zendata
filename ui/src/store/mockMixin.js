@@ -9,7 +9,10 @@ const mockMixin = {
   methods: {
     setMockItem (item) {
       this.$store.dispatch('setMockItem', item)
-    }
+    },
+    saveMockItem (item) {
+      return this.$store.dispatch('saveMockItem', item)
+    },
   }
 }
 

@@ -1,4 +1,6 @@
-import {CURR_MOCK_ITEM} from "@/store/mutation-types";
+import {APP_LANGUAGE, CURR_MOCK_ITEM} from "@/store/mutation-types";
+import {loadLanguageAsync} from "@/locales";
+import {saveMock} from "@/api/mock";
 
 const mock = {
   state: {
@@ -15,7 +17,16 @@ const mock = {
         commit(CURR_MOCK_ITEM, item)
         resolve()
       })
-    }
+    },
+    saveMockItem ({ commit }, item) {
+      return new Promise((resolve, reject) => {
+        saveMock(item).then((json) => {
+            resolve(json)
+          }).catch(e => {
+            reject(e)
+          })
+      })
+    },
   }
 }
 

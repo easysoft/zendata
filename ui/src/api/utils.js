@@ -1,4 +1,5 @@
 import {config} from '../utils/vari'
+import moment from 'moment';
 
 const PageSize = 15
 const ResTypeDef = "def"
@@ -66,6 +67,10 @@ export function sectionStrToArr (str){
   let arr = str.split(',')
   str = arr.join('\n')
   return str
+}
+
+export function formatTime (value){
+  return moment(value).format('YYYY-MM-DD HH:mm:ss');
 }
 
 export function trimChar (str, ch){

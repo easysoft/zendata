@@ -2,20 +2,19 @@
   <div class="mock-preview-list main-table">
     <div>
       <a-table :columns="columns" :data-source="models" :pagination="false" rowKey="id" :custom-row="customRow">
-        <a slot="recordTitle" slot-scope="text, record" @click="view(record)">{{record.title}}</a>
+        <a slot="recordTitle" slot-scope="text, record" @click="view(record)">
+          {{record.name}}
+        </a>
 
-        <span slot="folderWithPath" slot-scope="text, record">
-                <a-tooltip placement="top" overlayClassName="tooltip-light">
-                  <template slot="title">
-                    <span>{{record.path | replacePathSep}}</span>
-                  </template>
-                  <a>{{record.path | pathToRelated}}</a>
-                </a-tooltip>
-              </span>
+        <a slot="createTime" slot-scope="text, record">
+          {{record.createdAt | formatTime}}
+        </a>
 
         <span slot="action" slot-scope="record">
                 <a @click="edit(record)" :title="$t('action.edit')"><Icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
-                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')"><Icon type="delete" :style="{fontSize: '16px'}" /></a>
+                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
+                  <Icon type="delete" :style="{fontSize: '16px'}" />
+                </a>
               </span>
       </a-table>
 
@@ -31,7 +30,7 @@
           :visible="editVisible"
           :model="editModel"
           :time="time"
-          @ok="handleEditOk"
+          @ok="handleEditSave"
           @cancel="handleEditCancel" >
       </mock-edit-comp>
     </div>
@@ -42,7 +41,7 @@
 <script>
 
 import {Icon, Modal} from 'ant-design-vue'
-import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../api/utils";
+import {formatTime, PageSize, pathToRelated, replacePathSep, ResTypeDef} from "../../api/utils";
 import debounce from "lodash.debounce"
 import mockMixin from "@/store/mockMixin";
 import Bus from '../../utils/bus.js'
@@ -58,6 +57,9 @@ export default {
   props: {
   },
   mixins: [mockMixin],
+  filters: {
+    formatTime: formatTime
+  },
   data() {
     const columns = [
       {
@@ -67,9 +69,9 @@ export default {
         scopedSlots: { customRender: 'recordTitle' },
       },
       {
-        title: this.$i18n.t('form.file'),
-        dataIndex: 'folder',
-        scopedSlots: { customRender: 'folderWithPath' },
+        title: this.$i18n.t('msg.create.time'),
+        dataIndex: 'createTime',
+        scopedSlots: { customRender: 'createTime' },
         width: '300px'
       },
       {
@@ -116,14 +118,6 @@ export default {
       this.editVisible = true;
     })
   },
-  filters: {
-    replacePathSep: function (path) {
-      return replacePathSep(path)
-    },
-    pathToRelated: function (path) {
-      return pathToRelated(path)
-    }
-  },
   methods: {
     loadData() {
       listMock(this.keywords, this.page).then(json => {
@@ -139,7 +133,7 @@ export default {
       this.editVisible = true;
       this.setMockItem(record)
     },
-    handleEditOk() {
+    handleEditSave() {
       this.editVisible = false;
       this.loadData();
     },

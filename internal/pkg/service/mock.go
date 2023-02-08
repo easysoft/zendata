@@ -21,7 +21,9 @@ type MockService struct {
 	FileService *FileService `inject:""`
 }
 
-func (s *MockService) GenMockDef(input string) (mockDefPath, zendataDefPath string, err error) {
+func (s *MockService) GenMockDef(input string) (
+	name, mockDefPath, zendataDefPath string, err error) { // return the last one for client spec uploading
+
 	var files []string
 	fileUtils.GetFilesByExtInDir(input, ".yaml,.json", &files)
 
@@ -39,18 +41,19 @@ func (s *MockService) GenMockDef(input string) (mockDefPath, zendataDefPath stri
 			continue
 		}
 
-		name := filepath.Base(f)
+		fileName := filepath.Base(f)
 		dir := filepath.Dir(f)
 		if vari.GlobalVars.Output != "" {
 			dir = vari.GlobalVars.Output
 		}
-		zendataDefPath, mockDefPath = s.getFilePaths(name, dir)
+		zendataDefPath, mockDefPath = s.getFilePaths(fileName, dir)
 
 		zendataDef := model.DefData{}
 		zendataDef.ClsInfo.Title = doc3.Info.Title
 
 		mockDef := model.MockData{}
 		mockDef.Title = doc3.Info.Title
+		name = mockDef.Title
 
 		if mockDef.Paths == nil {
 			mockDef.Paths = map[string]map[string]map[string]map[string]*model.EndPoint{}
