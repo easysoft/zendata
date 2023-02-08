@@ -29,9 +29,15 @@
               </span>
 
               <span slot="action" slot-scope="record">
-                <a @click="design(record)" :title="$t('action.design')"><Icon type="control" :style="{fontSize: '16px'}" /></a> &nbsp;
-                <a @click="edit(record)" :title="$t('action.edit')"><Icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
-                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')"><Icon type="delete" :style="{fontSize: '16px'}" /></a>
+                <a @click="design(record)" :title="$t('action.design')">
+                  <Icon type="control" :style="{fontSize: '16px'}" />
+                </a> &nbsp;
+                <a @click="edit(record)" :title="$t('action.edit')">
+                  <Icon type="form" :style="{fontSize: '16px'}" />
+                </a> &nbsp;
+                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
+                  <Icon type="delete" :style="{fontSize: '16px'}" />
+                </a>
               </span>
             </a-table>
 

@@ -39,3 +39,11 @@ export function uploadMock (formData) {
     data: formData,
   })
 }
+
+export function previewMock (id) {
+  return request({
+    url: `${mocksApi}/preview`,
+    method: 'get',
+    params: {id},
+  })
+}

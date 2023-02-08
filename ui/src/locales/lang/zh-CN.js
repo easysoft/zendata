@@ -72,6 +72,8 @@ const locale = {
   'action.design': '设计',
   'action.back': '返回',
   'action.import.from.file': '刷新数据',
+  'action.edit.mock': '修改Mock配置',
+  'action.edit.data': '修改数据配置',
 
   'tips.refer': '引用',
   'tips.pls.select': '请选择',

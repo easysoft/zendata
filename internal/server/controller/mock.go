@@ -70,6 +70,14 @@ func (c *MockCtrl) Upload(ctx iris.Context) {
 	ctx.JSON(c.SuccessResp(iris.Map{"name": name, "spec": spec, "mock": mockConf, "data": dataConf, "path": pth}))
 }
 
+func (c *MockCtrl) Preview(ctx iris.Context) {
+	id, _ := ctx.Params().GetInt("id")
+
+	data, _ := c.MockService.GetPreviewData(id)
+
+	ctx.JSON(c.SuccessResp(data))
+}
+
 func (c *MockCtrl) Save(ctx iris.Context) {
 	req := model.ZdMock{}
 	if err := ctx.ReadJSON(&req); err != nil {

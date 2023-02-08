@@ -72,6 +72,8 @@ const locale = {
   'action.design': 'Design',
   'action.back': 'Back',
   'action.import.from.file': 'Refresh Data',
+  'action.edit.mock': 'Modify Mock Config',
+  'action.edit.data': 'Modify Data Config',
 
   'tips.refer': 'Reference',
   'tips.pls.select': 'Please select',

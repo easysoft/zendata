@@ -11,11 +11,17 @@
         </a>
 
         <span slot="action" slot-scope="record">
-                <a @click="edit(record)" :title="$t('action.edit')"><Icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
-                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
-                  <Icon type="delete" :style="{fontSize: '16px'}" />
-                </a>
-              </span>
+          <a @click="modifyDataConfig(record)" :title="$t('action.edit.mock')">
+            <Icon type="control" :style="{fontSize: '16px'}" />
+          </a> &nbsp;
+          <a @click="modifyMockConfig(record)" :title="$t('action.edit.data')">
+            <Icon type="form" :style="{fontSize: '16px'}" />
+          </a> &nbsp;
+
+          <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
+            <Icon type="delete" :style="{fontSize: '16px'}" />
+          </a>
+        </span>
       </a-table>
 
       <div class="pagination-wrapper">
@@ -129,10 +135,16 @@ export default {
     create() {
       this.editVisible = true;
     },
-    edit(record) {
+
+    modifyMockConfig(record) {
       this.editVisible = true;
       this.setMockItem(record)
     },
+    modifyDataConfig(record) {
+      this.editVisible = true;
+      this.setMockItem(record)
+    },
+
     handleEditSave() {
       this.editVisible = false;
       this.loadData();
@@ -147,7 +159,7 @@ export default {
       })
     },
     view(record) {
-      this.setMockItem(record)
+      this.previewMockItem(record)
     },
 
     onPageChange(page, pageSize) {
