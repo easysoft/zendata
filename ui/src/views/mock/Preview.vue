@@ -24,7 +24,7 @@
                       <pre>{{respSample}}</pre>
                     </div>
                   </div>
-                  <a @click="preview(url, method, code, media)">{{media}}</a>
+                  <a @click="preview(mockItem.id, url, method, code, media)">{{media}}</a>
                 </a-popover>
               </div>
             </div>
@@ -40,7 +40,7 @@
 <script>
 
 import mockMixin from "@/store/mockMixin";
-import {getPreviewData} from "@/api/mock";
+import {getPreviewResp} from "@/api/mock";
 
 export default {
   name: 'MockPreview',
@@ -59,10 +59,10 @@ export default {
   mounted: function() {
   },
   methods: {
-    preview(url, method, code, media) {
-      console.log(url, method, code, media)
+    preview(id, url, method, code, media) {
+      console.log(id, url, method, code, media)
 
-      getPreviewData(this.mockItem.id, url, method, code, media).then(json => {
+      getPreviewResp(id, url, method, code, media).then(json => {
         if (json.code === 0) {
           this.respSample = json.data
         }

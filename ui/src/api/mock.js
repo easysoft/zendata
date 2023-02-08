@@ -51,7 +51,7 @@ export function getPreviewData (id) {
 export function getPreviewResp (id, url, method, code, media) {
   return request({
     url: `${mocksApi}/getPreviewResp`,
-    method: 'get',
-    params: {id, url, method, code, media},
+    method: 'post',
+    data: {id, url, method, code, media},
   })
 }

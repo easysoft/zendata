@@ -24,7 +24,7 @@ func (m *MockModule) Party() module.WebModule {
 
 		index.Post("/upload", m.MockCtrl.Upload).Name = "上传Spec"
 		index.Get("/getPreviewData", m.MockCtrl.GetPreviewData).Name = "上传Spec"
-		index.Get("/getPreviewResp", m.MockCtrl.GetPreviewResp).Name = "上传Spec"
+		index.Post("/getPreviewResp", m.MockCtrl.GetPreviewResp).Name = "上传Spec"
 
 		index.Any("/{paths:path}", m.MockCtrl.Mock) // mock data url
 	}

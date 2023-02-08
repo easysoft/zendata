@@ -79,9 +79,12 @@ func (c *MockCtrl) GetPreviewData(ctx iris.Context) {
 }
 
 func (c *MockCtrl) GetPreviewResp(ctx iris.Context) {
-	id, _ := ctx.URLParamInt("id")
+	req := model.MockPreviewReq{}
+	if err := ctx.ReadJSON(&req); err != nil {
+		ctx.JSON(c.ErrResp(consts.ParamErr, err.Error()))
+	}
 
-	data, _ := c.MockService.GetPreviewData(id)
+	data, _ := c.MockService.GetPreviewResp(req)
 
 	ctx.JSON(c.SuccessResp(data))
 }

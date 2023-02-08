@@ -211,6 +211,7 @@ type Dir struct {
 }
 
 type MockData struct {
+	Id      int    `json:"id" yaml:"-"`
 	Title   string `json:"title"`
 	Desc    string `json:"desc"`
 	Author  string `json:"author"`
@@ -227,6 +228,14 @@ type EndPoint struct {
 	Type      consts.OpenApiSchemaType `json:"type"`
 	Lines     int                      `json:"lines"`
 	Fields    string                   `json:"fields"`
+}
+
+type MockPreviewReq struct {
+	Id     int    `json:"id"`
+	Url    string `json:"url"`
+	Method string `json:"method"`
+	Code   string `json:"code"`
+	Media  string `json:"media"`
 }
 
 type HttpMethod string
