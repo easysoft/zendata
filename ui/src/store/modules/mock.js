@@ -1,6 +1,6 @@
 import {APP_LANGUAGE, CURR_MOCK_ITEM} from "@/store/mutation-types";
 import {loadLanguageAsync} from "@/locales";
-import {previewMock, saveMock} from "@/api/mock";
+import {getPreviewData, previewMock, saveMock} from "@/api/mock";
 
 const mock = {
   state: {
@@ -12,6 +12,13 @@ const mock = {
     },
   },
   actions: {
+    setMockItem ({ commit }, item) {
+      return new Promise((resolve, reject) => {
+        commit(CURR_MOCK_ITEM, item)
+        resolve()
+      })
+    },
+
     saveMockItem ({ commit }, item) {
       return new Promise((resolve, reject) => {
         saveMock(item).then((json) => {
@@ -24,7 +31,7 @@ const mock = {
 
     previewMockItem ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        previewMock(id).then((json) => {
+        getPreviewData(id).then((json) => {
           commit(CURR_MOCK_ITEM, json.data)
           resolve()
         }).catch(e => {

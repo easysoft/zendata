@@ -40,10 +40,18 @@ export function uploadMock (formData) {
   })
 }
 
-export function previewMock (id) {
+export function getPreviewData (id) {
   return request({
-    url: `${mocksApi}/preview`,
+    url: `${mocksApi}/getPreviewData`,
     method: 'get',
     params: {id},
+  })
+}
+
+export function getPreviewResp (id, url, method, code, media) {
+  return request({
+    url: `${mocksApi}/getPreviewResp`,
+    method: 'get',
+    params: {id, url, method, code, media},
   })
 }

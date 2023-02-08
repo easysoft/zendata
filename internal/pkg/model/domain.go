@@ -229,24 +229,6 @@ type EndPoint struct {
 	Fields    string                   `json:"fields"`
 }
 
-// for preview
-type MockPaths struct {
-	PathKey   string        `json:"pathKey"`
-	PathValue []MockMethods `json:"pathValue"`
-}
-type MockMethods struct {
-	MethodKey   HttpMethod  `json:"methodKey"`
-	MethodValue []MockCodes `json:"methodValue"`
-}
-type MockCodes struct {
-	CodeKey   string       `json:"codeKey"`
-	CodeValue []MockMedias `json:"codeValue"`
-}
-type MockMedias struct {
-	MediaKey   string `json:"mediaKey"`
-	RespSample string `json:"respSample"`
-}
-
 type HttpMethod string
 
 const (

@@ -63,6 +63,7 @@ const locale = {
   'msg.design.remove.node': 'Remove node',
 
   'msg.mock.create': 'Create Mock',
+  'msg.mock.response': 'Mock Response Data',
 
   'action.list': 'List',
   'action.create': 'Create',

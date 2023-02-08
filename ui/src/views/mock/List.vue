@@ -15,7 +15,7 @@
             <Icon type="control" :style="{fontSize: '16px'}" />
           </a> &nbsp;
           <a @click="modifyMockConfig(record)" :title="$t('action.edit.data')">
-            <Icon type="form" :style="{fontSize: '16px'}" />
+            <Icon type="container" :style="{fontSize: '16px'}" />
           </a> &nbsp;
 
           <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
@@ -137,11 +137,9 @@ export default {
     },
 
     modifyMockConfig(record) {
-      this.editVisible = true;
       this.setMockItem(record)
     },
     modifyDataConfig(record) {
-      this.editVisible = true;
       this.setMockItem(record)
     },
 

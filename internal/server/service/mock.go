@@ -204,7 +204,15 @@ func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (
 	return
 }
 
-func (s *MockService) GetPreviewData(id int) (data model.MockPaths, err error) {
+func (s *MockService) GetPreviewData(id int) (data model.MockData, err error) {
+	po, err := s.MockRepo.Get(uint(id))
+
+	yaml.Unmarshal([]byte(po.MockContent), &data)
+
+	return
+}
+
+func (s *MockService) GetPreviewResp(id int) (data model.MockData, err error) {
 	//po, err := s.MockRepo.Get(uint(id))
 
 	return

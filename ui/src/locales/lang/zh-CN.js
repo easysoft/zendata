@@ -63,6 +63,7 @@ const locale = {
   'msg.design.remove.node': '删除节点',
 
   'msg.mock.create': '新建Mock配置',
+  'msg.mock.response': 'Mock数据预览',
 
   'action.list': '列表',
   'action.create': '创建',
