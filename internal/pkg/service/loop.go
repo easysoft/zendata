@@ -60,7 +60,7 @@ func (s *LoopService) LoopFieldValueToSingleStr(field *model.DefField, indexOfRo
 	}
 
 	for j := 0; j < (*field).LoopIndex; j++ {
-		if ret != "" {
+		if ret != nil && ret != "" {
 			ret = fmt.Sprintf("%v", ret) + field.Loopfix
 		}
 
@@ -68,7 +68,13 @@ func (s *LoopService) LoopFieldValueToSingleStr(field *model.DefField, indexOfRo
 		if err != nil {
 			str = "N/A"
 		}
-		ret = fmt.Sprintf("%v", ret) + fmt.Sprintf("%v", str)
+
+		temp := fmt.Sprintf("%v", str)
+		if ret == nil || ret == "" {
+			ret = temp
+		} else {
+			ret = fmt.Sprintf("%v", ret) + temp
+		}
 
 		*indexOfRow++
 	}
