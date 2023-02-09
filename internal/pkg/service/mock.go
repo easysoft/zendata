@@ -151,7 +151,7 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 			endpoint := s.genMockDefFromMedia(mediaItem, fields)
 			endpoint.Method = method
 			endpoint.MediaType = mediaType
-			endpoint.Config = zendataDefPath
+			endpoint.Config = filepath.Base(zendataDefPath) // set a relative path
 			endpoint.Lines = 10
 
 			if mockDef[code] == nil {

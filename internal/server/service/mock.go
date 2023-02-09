@@ -133,7 +133,8 @@ func (s *MockService) GenDataForServerRequest(endpoint *model.EndPoint) (ret int
 		vari.GlobalVars.Total = 1
 	}
 
-	configFile := filepath.Join(vari.ZdDir, endpoint.Config)
+	// eval config file path
+	configFile := filepath.Join(vari.GlobalVars.MockDir, endpoint.Config)
 	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(configFile)
 
 	configContent := fileUtils.ReadFileBuf(configFile)
@@ -164,7 +165,6 @@ func (s *MockService) GenDataForMockPreview(endpoint *model.EndPoint, dataConfig
 	}
 
 	contents := [][]byte{[]byte(dataConfig)}
-
 	s.MainService.GenerateDataByContents(contents)
 
 	records := s.OutputService.GenRecords()
