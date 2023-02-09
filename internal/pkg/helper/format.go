@@ -262,7 +262,7 @@ func ReplaceSpecialChars(bytes []byte) []byte {
 			regx1 := regexp.MustCompile("(?P<x>[^`])\\[")
 			line = regx1.ReplaceAllString(line, "${x}(")
 
-			regx2 := regexp.MustCompile("\\](?P<x>[^`])")
+			regx2 := regexp.MustCompile("\\](?P<x>[^`]*)")
 			line = regx2.ReplaceAllString(line, ")${x}")
 		}
 

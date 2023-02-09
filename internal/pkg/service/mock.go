@@ -46,7 +46,7 @@ func (s *MockService) GenMockDef(input string) (
 		if vari.GlobalVars.Output != "" {
 			dir = vari.GlobalVars.Output
 		}
-		zendataDefPath, mockDefPath = s.getFilePaths(fileName, dir)
+		mockDefPath, zendataDefPath = s.getFilePaths(fileName, dir)
 
 		zendataDef := model.DefData{}
 		zendataDef.ClsInfo.Title = doc3.Info.Title
@@ -265,9 +265,9 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 			*fields = append(*fields, exampleField)
 		}
 
-		// records based
+		// items based
 		if schemaNode.Value.Items != nil {
-			s.getFieldFromItems(name+"-records", fields, schemaNode.Value.Items)
+			s.getFieldFromItems(name+"-items", fields, schemaNode.Value.Items)
 		}
 	}
 

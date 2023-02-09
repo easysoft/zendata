@@ -122,6 +122,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 			}
 
 			val := elemArr[idx]
+			val = strings.Trim(val, "`")
 			total = s.ListService.AppendValues(&items, val, repeat, total)
 
 			if total >= consts.MaxNumb {

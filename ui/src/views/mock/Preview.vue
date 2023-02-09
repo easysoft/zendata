@@ -13,19 +13,7 @@
             <div v-for="(codeVal, code) in methodVal" :key="code" class="code">
               <div>{{code}}</div>
               <div v-for="(mediaVal, media) in codeVal" :key="media" class="media">
-                <a-popover
-                    :title="$t('msg.mock.response')"
-                    trigger="click"
-                    :visible="clicked"
-                    @visibleChange="handleClickChange"
-                >
-                  <div slot="content">
-                    <div class="mock-preview-resp">
-                      <pre>{{respSample}}</pre>
-                    </div>
-                  </div>
-                  <a @click="preview(mockItem.id, url, method, code, media)">{{media}}</a>
-                </a-popover>
+                <a @click="preview(mockItem.id, url, method, code, media)">{{media}}</a>
               </div>
             </div>
           </div>
@@ -34,6 +22,21 @@
       </div>
 
     </a-card>
+
+    <a-drawer
+        :title="$t('msg.mock.response')"
+        placement="left"
+        :closable="false"
+        :visible="responseVisible"
+        width="50%"
+        @close="closePreview">
+      <div>
+        <div class="mock-preview-resp">
+          <pre>{{respSample}}</pre>
+        </div>
+      </div>
+    </a-drawer>
+
   </div>
 </template>
 
@@ -51,7 +54,7 @@ export default {
   mixins: [mockMixin],
   data: function() {
     return {
-      clicked: false,
+      responseVisible: false,
       hovered: false,
       respSample: null,
     };
@@ -65,8 +68,13 @@ export default {
       getPreviewResp(id, url, method, code, media).then(json => {
         if (json.code === 0) {
           this.respSample = json.data
+          this.responseVisible = true
         }
       })
+    },
+
+    closePreview() {
+      this.responseVisible = false;
     },
 
     handleClickChange(visible) {
