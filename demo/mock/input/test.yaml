@@ -73,6 +73,8 @@ components:
           examples:
             json:
               $ref: "#/components/examples/BadRequest"
+            xml:
+              value: "XML CONTENT"
 
     201_resp:
       description: The Cat

@@ -116,13 +116,13 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 			continue
 		}
 
-		ret, _ = s.GenDataForServer(mp[reqMethod][respCode][mediaType])
+		ret, _ = s.GenDataForServerRequest(mp[reqMethod][respCode][mediaType])
 	}
 
 	return
 }
 
-func (s *MockService) GenDataForServer(endpoint *model.EndPoint) (ret interface{}, err error) {
+func (s *MockService) GenDataForServerRequest(endpoint *model.EndPoint) (ret interface{}, err error) {
 	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	vari.GlobalVars.Total = endpoint.Lines
 	vari.GlobalVars.OutputFormat = "json"
@@ -152,8 +152,8 @@ func (s *MockService) GenDataForServer(endpoint *model.EndPoint) (ret interface{
 	return
 }
 
-func (s *MockService) GenDataForPreview(endpoint *model.EndPoint, dataConfig string) (ret interface{}, err error) {
-	vari.GlobalVars.RunMode = consts.RunModeServerRequest
+func (s *MockService) GenDataForMockPreview(endpoint *model.EndPoint, dataConfig string) (ret interface{}, err error) {
+	vari.GlobalVars.RunMode = consts.RunModeMockPreview
 	vari.GlobalVars.Total = endpoint.Lines
 	vari.GlobalVars.OutputFormat = "json"
 	vari.GlobalVars.ExportFields = strings.Split(endpoint.Fields, ",")
@@ -250,7 +250,7 @@ func (s *MockService) GetPreviewResp(req model.MockPreviewReq) (ret interface{},
 	for pth, mp := range data.Paths {
 		if req.Url == pth {
 			endpoint := mp[req.Method][req.Code][req.Media]
-			ret, _ = s.GenDataForPreview(endpoint, po.DataContent)
+			ret, _ = s.GenDataForMockPreview(endpoint, po.DataContent)
 			return
 		}
 	}

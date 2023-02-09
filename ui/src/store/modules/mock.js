@@ -29,9 +29,15 @@ const mock = {
       })
     },
 
-    previewMockItem ({ commit }, id) {
+    previewMockItem ({ commit }, item) {
       return new Promise((resolve, reject) => {
-        getPreviewData(id).then((json) => {
+        if (!item) {
+          commit(CURR_MOCK_ITEM, null)
+          resolve()
+          return
+        }
+
+        getPreviewData(item.id).then((json) => {
           commit(CURR_MOCK_ITEM, json.data)
           resolve()
         }).catch(e => {

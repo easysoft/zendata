@@ -154,6 +154,7 @@ export default {
       console.log(record)
       removeMock(record.id).then(json => {
         this.loadData()
+        this.previewMockItem(null)
       })
     },
     view(record) {

@@ -5,7 +5,7 @@
         <a-icon type="profile" />
       </span>
 
-      <div>
+      <div v-if="mockItem">
         <div v-for="(path, url) in mockItem.paths" :key="url" class="path">
           <div>{{url}}</div>
           <div v-for="(methodVal, method) in path" :key="method" class="method">

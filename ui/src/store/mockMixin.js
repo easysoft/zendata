@@ -11,7 +11,7 @@ const mockMixin = {
       this.$store.dispatch('setMockItem', item)
     },
     previewMockItem (item) {
-      this.$store.dispatch('previewMockItem', item.id)
+      this.$store.dispatch('previewMockItem', item)
     },
     saveMockItem (item) {
       return this.$store.dispatch('saveMockItem', item)

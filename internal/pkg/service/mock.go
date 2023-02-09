@@ -167,28 +167,28 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 
 func (s *MockService) genZendataDefFromMedia(item *openapi3.MediaType) (fields []model.DefField) {
 	schemaNode := item.Schema
-	exampleNode := item.Example
-	examplesNode := item.Examples
+	//exampleNode := item.Example
+	//examplesNode := item.Examples
 	//encodingNode := item.Encoding
 
 	if schemaNode != nil {
 		arr := strings.Split(schemaNode.Ref, "/")
 		name := arr[len(arr)-1]
-		s.getFieldFromSchema("schema-"+name, &fields, schemaNode)
+		s.getFieldFromSchema(name, &fields, schemaNode) // "schema-"+name
 	}
 
-	if exampleNode != nil {
-		exampleField := s.getFieldFromExample("example", exampleNode)
-		fields = append(fields, exampleField)
-	}
-
-	if examplesNode != nil {
-		examplesFields := s.getFieldFromExamples("examples", examplesNode)
-
-		for _, field := range examplesFields {
-			fields = append(fields, field)
-		}
-	}
+	//if exampleNode != nil {
+	//	exampleField := s.getFieldFromExample("", exampleNode) // "example"
+	//	fields = append(fields, exampleField)
+	//}
+	//
+	//if examplesNode != nil {
+	//	examplesFields := s.getFieldFromExamples("", examplesNode) // "examples"
+	//
+	//	for _, field := range examplesFields {
+	//		fields = append(fields, field)
+	//	}
+	//}
 
 	return
 }
@@ -201,8 +201,8 @@ func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []mod
 	endpoint.Fields = strings.Join(fieldNames, ",")
 
 	schemaNode := item.Schema
-	exampleNode := item.Example
-	examplesNode := item.Examples
+	//exampleNode := item.Example
+	//examplesNode := item.Examples
 	//encodingNode := item.Encoding
 
 	if schemaNode != nil {
@@ -214,11 +214,12 @@ func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []mod
 			endpoint.Type = consts.OpenApiSchemaType(schemaNode.Value.Type)
 		}
 
-	} else if exampleNode != nil {
-
-	} else if examplesNode != nil {
-
 	}
+	//else if exampleNode != nil {
+	//
+	//} else if examplesNode != nil {
+	//
+	//}
 
 	return
 }
@@ -229,7 +230,7 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 		if len(schemaNode.Value.Properties) > 0 {
 			for propName, prop := range schemaNode.Value.Properties {
 				field := model.DefField{}
-				field.Field = name + "-" + propName
+				field.Field = propName // name + "-" + propName
 
 				if prop.Ref == "" {
 					s.getRangeByTypeFormat(consts.OpenApiDataType(prop.Value.Type), prop.Value.Enum, prop.Value.Default,
@@ -243,10 +244,10 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 			}
 
 		} else if schemaNode.Value.OneOf != nil {
-			s.getFieldFromSchema(name+"-oneof", fields, schemaNode.Value.OneOf[0])
+			s.getFieldFromSchema(name, fields, schemaNode.Value.OneOf[0]) // (name+"-oneof"
 
 		} else if schemaNode.Value.AllOf != nil {
-			s.getFieldFromSchema(name+"-allof", fields, schemaNode.Value.AllOf...)
+			s.getFieldFromSchema(name, fields, schemaNode.Value.AllOf...) // name+"-allof"
 
 		} else if schemaNode.Value.AnyOf != nil {
 			arr := openapi3.SchemaRefs{schemaNode.Value.AnyOf[0]}
@@ -254,20 +255,20 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 				arr = append(arr, schemaNode.Value.AnyOf[len(schemaNode.Value.AnyOf)-1])
 			}
 
-			s.getFieldFromSchema(name+"-anyof", fields, arr...)
+			s.getFieldFromSchema(name, fields, arr...) // name+"-anyof"
 
 		}
 
 		// example based
 		if schemaNode.Value.Example != nil {
-			exampleField := s.getFieldFromExample(name+"-example", schemaNode.Value.Example)
+			exampleField := s.getFieldFromExample(name, schemaNode.Value.Example) // name+"-example"
 
 			*fields = append(*fields, exampleField)
 		}
 
 		// items based
 		if schemaNode.Value.Items != nil {
-			s.getFieldFromItems(name+"-items", fields, schemaNode.Value.Items)
+			s.getFieldFromItems(name, fields, schemaNode.Value.Items) // name+"-items"
 		}
 	}
 
@@ -288,7 +289,7 @@ func (s *MockService) getFieldFromExamples(name string, examples openapi3.Exampl
 		bytes, _ := json.Marshal(val.Value.Value)
 
 		field := model.DefField{}
-		field.Field = name + "-" + key
+		field.Field = key // name + "-" + key
 		field.RangeLiteral = fmt.Sprintf("%s", bytes)
 
 		fields = append(fields, field)
