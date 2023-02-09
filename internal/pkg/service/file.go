@@ -2,7 +2,7 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -15,7 +15,7 @@ import (
 type FileService struct {
 }
 
-func (s *FileService) ComputerReferFilePath(file string, field *model.DefField) (resPath string) {
+func (s *FileService) ComputerReferFilePath(file string, field *domain.DefField) (resPath string) {
 	resPath = file
 	if fileUtils.IsAbsPath(resPath) && fileUtils.FileExist(resPath) {
 		return

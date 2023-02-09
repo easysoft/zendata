@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	shellUtils "github.com/easysoft/zendata/pkg/utils/shell"
@@ -47,54 +47,54 @@ func (s *MockService) GenMockDef(input string) (
 		}
 		mockDefPath, zendataDefPath = s.getFilePaths(fileName, dir)
 
-		zendataDef := model.DefData{}
+		zendataDef := domain.DefData{}
 		zendataDef.ClsInfo.Title = doc3.Info.Title
 
-		mockDef := model.MockData{}
+		mockDef := domain.MockData{}
 		mockDef.Title = doc3.Info.Title
 		name = mockDef.Title
 
 		if mockDef.Paths == nil {
-			mockDef.Paths = map[string]map[string]map[string]map[string]*model.EndPoint{}
+			mockDef.Paths = map[string]map[string]map[string]map[string]*domain.EndPoint{}
 		}
 
 		for pathStr, pathItem := range doc3.Paths {
-			mp := map[string]map[string]map[string]*model.EndPoint{}
+			mp := map[string]map[string]map[string]*domain.EndPoint{}
 
 			if pathItem.Connect != nil {
-				s.setEndPoint(pathItem.Connect, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Connect, &zendataDef, zendataDefPath, domain.Connect, &mp)
 			}
 
 			if pathItem.Delete != nil {
-				s.setEndPoint(pathItem.Delete, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Delete, &zendataDef, zendataDefPath, domain.Delete, &mp)
 			}
 
 			if pathItem.Get != nil {
-				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Get, &zendataDef, zendataDefPath, domain.Get, &mp)
 			}
 
 			if pathItem.Head != nil {
-				s.setEndPoint(pathItem.Head, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Head, &zendataDef, zendataDefPath, domain.Head, &mp)
 			}
 
 			if pathItem.Options != nil {
-				s.setEndPoint(pathItem.Options, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Options, &zendataDef, zendataDefPath, domain.Options, &mp)
 			}
 
 			if pathItem.Patch != nil {
-				s.setEndPoint(pathItem.Patch, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Patch, &zendataDef, zendataDefPath, domain.Patch, &mp)
 			}
 
 			if pathItem.Post != nil {
-				s.setEndPoint(pathItem.Post, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Post, &zendataDef, zendataDefPath, domain.Post, &mp)
 			}
 
 			if pathItem.Put != nil {
-				s.setEndPoint(pathItem.Put, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Put, &zendataDef, zendataDefPath, domain.Put, &mp)
 			}
 
 			if pathItem.Trace != nil {
-				s.setEndPoint(pathItem.Trace, &zendataDef, zendataDefPath, model.Get, &mp)
+				s.setEndPoint(pathItem.Trace, &zendataDef, zendataDefPath, domain.Trace, &mp)
 			}
 
 			mockDef.Paths[pathStr] = mp
@@ -124,18 +124,18 @@ func (s *MockService) convertPostmanSpec(input string) (ret string) {
 	return
 }
 
-func (s *MockService) setEndPoint(operation *openapi3.Operation, zendataDef *model.DefData,
-	zendataDefPath string, method model.HttpMethod, mp *map[string]map[string]map[string]*model.EndPoint) {
+func (s *MockService) setEndPoint(operation *openapi3.Operation, zendataDef *domain.DefData,
+	zendataDefPath string, method domain.HttpMethod, mp *map[string]map[string]map[string]*domain.EndPoint) {
 
 	codeToEndpointMap := s.createEndPoint(operation, zendataDef, zendataDefPath, method)
 	(*mp)[method.String()] = codeToEndpointMap
 }
 
-func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *model.DefData,
-	zendataDefPath string, method model.HttpMethod) (
-	mockDef map[string]map[string]*model.EndPoint) {
+func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *domain.DefData,
+	zendataDefPath string, method domain.HttpMethod) (
+	mockDef map[string]map[string]*domain.EndPoint) {
 
-	mockDef = map[string]map[string]*model.EndPoint{}
+	mockDef = map[string]map[string]*domain.EndPoint{}
 
 	for code, val := range operation.Responses {
 		// map[string]*ResponseRef
@@ -155,7 +155,7 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 			endpoint.Lines = 10
 
 			if mockDef[code] == nil {
-				mockDef[code] = map[string]*model.EndPoint{}
+				mockDef[code] = map[string]*domain.EndPoint{}
 			}
 			mockDef[code][mediaType] = &endpoint
 		}
@@ -164,7 +164,7 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 	return
 }
 
-func (s *MockService) genZendataDefFromMedia(item *openapi3.MediaType) (fields []model.DefField) {
+func (s *MockService) genZendataDefFromMedia(item *openapi3.MediaType) (fields []domain.DefField) {
 	schemaNode := item.Schema
 	//exampleNode := item.Example
 	//examplesNode := item.Examples
@@ -192,7 +192,7 @@ func (s *MockService) genZendataDefFromMedia(item *openapi3.MediaType) (fields [
 	return
 }
 
-func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []model.DefField) (endpoint model.EndPoint) {
+func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []domain.DefField) (endpoint domain.EndPoint) {
 	var fieldNames []string
 	for _, f := range fields {
 		fieldNames = append(fieldNames, f.Field)
@@ -219,12 +219,12 @@ func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []mod
 	return
 }
 
-func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, schemaNodes ...*openapi3.SchemaRef) {
+func (s *MockService) getFieldFromSchema(name string, fields *[]domain.DefField, schemaNodes ...*openapi3.SchemaRef) {
 	for _, schemaNode := range schemaNodes {
 		// properties based
 		if len(schemaNode.Value.Properties) > 0 {
 			for propName, prop := range schemaNode.Value.Properties {
-				field := model.DefField{}
+				field := domain.DefField{}
 				field.Field = propName // name + "-" + propName
 
 				if prop.Ref == "" {
@@ -293,7 +293,7 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 //	return
 //}
 
-func (s *MockService) getFieldFromItems(name string, fields *[]model.DefField, itemsDef *openapi3.SchemaRef) {
+func (s *MockService) getFieldFromItems(name string, fields *[]domain.DefField, itemsDef *openapi3.SchemaRef) {
 	s.getFieldFromSchema(name, fields, itemsDef)
 
 	return
@@ -302,7 +302,7 @@ func (s *MockService) getFieldFromItems(name string, fields *[]model.DefField, i
 func (s *MockService) getRangeByTypeFormat(typ consts.OpenApiDataType,
 	enums []interface{}, defaultVal interface{},
 	min, max *float64,
-	field *model.DefField) {
+	field *domain.DefField) {
 	if enums != nil {
 		field.Range = s.getRangeFromEnum(enums)
 		return

@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -31,7 +32,7 @@ func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInst
 	return
 }
 
-func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []model.Dir) {
+func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []domain.Dir) {
 	instances, _ = s.InstancesRepo.Get(uint(id))
 
 	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
@@ -125,7 +126,7 @@ func (s *InstancesService) genYaml(instances *model.ZdInstances) (str string) {
 	return
 }
 
-func (s *InstancesService) Sync(files []model.ResFile) {
+func (s *InstancesService) Sync(files []domain.ResFile) {
 	list := s.InstancesRepo.ListAll()
 
 	mp := map[string]*model.ZdInstances{}
@@ -146,7 +147,7 @@ func (s *InstancesService) Sync(files []model.ResFile) {
 	return
 }
 
-func (s *InstancesService) SyncToDB(fi model.ResFile) (err error) {
+func (s *InstancesService) SyncToDB(fi domain.ResFile) (err error) {
 	content, _ := os.ReadFile(fi.Path)
 	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdInstances{}

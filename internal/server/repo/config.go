@@ -2,6 +2,7 @@ package serverRepo
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 )
@@ -60,7 +61,7 @@ func (r *ConfigRepo) UpdateYaml(po model.ZdConfig) (err error) {
 	return
 }
 
-func (r *ConfigRepo) GenConfigRes(config model.ZdConfig, res *model.ResConfig) {
+func (r *ConfigRepo) GenConfigRes(config model.ZdConfig, res *domain.ResConfig) {
 	res.Title = config.Title
 	res.Desc = config.Desc
 	res.Prefix = config.Prefix

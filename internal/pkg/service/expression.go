@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	"github.com/Knetic/govaluate"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
@@ -16,8 +16,8 @@ import (
 type ExpressionService struct {
 }
 
-func (s *ExpressionService) GenExpressionValues(field model.DefField, valuesMap map[string][]interface{},
-	fieldMap map[string]model.DefField) (ret []interface{}) {
+func (s *ExpressionService) GenExpressionValues(field domain.DefField, valuesMap map[string][]interface{},
+	fieldMap map[string]domain.DefField) (ret []interface{}) {
 	exp := field.Value
 
 	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]+)`)

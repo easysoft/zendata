@@ -3,7 +3,7 @@ package gen
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -14,7 +14,7 @@ import (
 	"strings"
 )
 
-func CreateArticleField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+func CreateArticleField(field *domain.DefField, fieldWithValue *domain.FieldWithValues) {
 	fieldWithValue.Field = field.Field
 
 	numMap, nameMap, indexMap, contentWithoutComments := getNumMap(field.Range)
@@ -95,7 +95,7 @@ func genArticle(content string, dataMap map[string][]string, nameMap map[string]
 	return
 }
 
-func getDataMap(numMap map[string]int, nameMap map[string]string, field *model.DefField,
+func getDataMap(numMap map[string]int, nameMap map[string]string, field *domain.DefField,
 	resFile string, resType string, sheet string) (ret map[string][]string) {
 	ret = map[string][]string{}
 

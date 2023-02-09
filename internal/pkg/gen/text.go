@@ -3,9 +3,9 @@ package gen
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateFieldValuesFromText(field *domain.DefField, fieldValue *domain.FieldWithValues) {
 	ranges := strings.Split(strings.TrimSpace(field.Range), ",")
 
 	for _, rang := range ranges {

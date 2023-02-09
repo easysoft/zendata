@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"strings"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
@@ -23,7 +24,7 @@ func (s *ExcelService) List(keywords string, page int) (list []*model.ZdExcel, t
 	return
 }
 
-func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []model.Dir) {
+func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []domain.Dir) {
 	excel, _ = s.ExcelRepo.Get(uint(id))
 
 	serverUtils.GetDirs(consts.ResDirData, &dirs)
@@ -71,7 +72,7 @@ func (s *ExcelService) Remove(id int) (err error) {
 	return
 }
 
-func (s *ExcelService) Sync(files []model.ResFile) (err error) {
+func (s *ExcelService) Sync(files []domain.ResFile) (err error) {
 	list := s.ExcelRepo.ListAll()
 
 	mp := map[string]*model.ZdExcel{}
@@ -94,7 +95,7 @@ func (s *ExcelService) Sync(files []model.ResFile) (err error) {
 
 	return
 }
-func (s *ExcelService) SyncToDB(file model.ResFile) (err error) {
+func (s *ExcelService) SyncToDB(file domain.ResFile) (err error) {
 	excel := model.ZdExcel{
 		Title:     file.Title,
 		Sheet:     file.Title,

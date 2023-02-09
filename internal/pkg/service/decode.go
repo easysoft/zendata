@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"strings"
@@ -58,7 +58,7 @@ func (s *DecodeService) linesToMap(str string, fieldsToExport []string, ret *[]m
 	return
 }
 
-func (s *DecodeService) decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]interface{}) {
+func (s *DecodeService) decodeOneLevel(line string, fields []domain.DefField, rowMap *map[string]interface{}) {
 	left := []rune(line)
 
 	for j, field := range fields {

@@ -1,4 +1,4 @@
-package model
+package domain
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
@@ -223,7 +223,7 @@ type MockData struct {
 
 type EndPoint struct {
 	Method    HttpMethod               `json:"method"`
-	Summary   string                   `json:"summary"`
+	Summary   string                   `json:"summary,omitempty"`
 	Config    string                   `json:"config"`
 	MediaType string                   `json:"mediaType"`
 	Type      consts.OpenApiSchemaType `json:"type"`

@@ -3,8 +3,8 @@ package gen
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"regexp"
 	"strconv"
@@ -161,7 +161,7 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		temp := ""
 		for _, item := range arr {
 			if isScopeStr(item) && isCharOrNumberScope(item) { // only support a-z and 0-9 in []
-				tempField := model.DefField{}
+				tempField := domain.DefField{}
 				values := CreateValuesFromInterval(&tempField, item, "", 1, "")
 
 				for _, val := range values {

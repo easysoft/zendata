@@ -3,6 +3,7 @@ package serverUtils
 import (
 	"encoding/json"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -111,14 +112,14 @@ func AddExt(pth, ext string) string {
 	return pth
 }
 
-func GetDirs(dir string, dirs *[]model.Dir) {
+func GetDirs(dir string, dirs *[]domain.Dir) {
 	isArticleFiles, _ := regexp.MatchString("yaml.article", dir)
 	if isArticleFiles {
 		return
 	}
 
 	folder := fileUtils.AddSepIfNeeded(dir)
-	*dirs = append(*dirs, model.Dir{Name: folder})
+	*dirs = append(*dirs, domain.Dir{Name: folder})
 
 	files, _ := ioutil.ReadDir(folder)
 	for _, fi := range files {

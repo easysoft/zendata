@@ -3,6 +3,7 @@ package serverService
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -52,14 +53,14 @@ func (s *MockService) Remove(id int) (err error) {
 }
 
 func (s *MockService) Init() (err error) {
-	vari.GlobalVars.MockData = &model.MockData{}
-	vari.GlobalVars.MockData.Paths = map[string]map[string]map[string]map[string]*model.EndPoint{}
+	vari.GlobalVars.MockData = &domain.MockData{}
+	vari.GlobalVars.MockData.Paths = map[string]map[string]map[string]map[string]*domain.EndPoint{}
 	var files []string
 
 	s.LoadDef(vari.GlobalVars.MockDir, &files, 0)
 
 	for _, file := range files {
-		data := model.MockData{}
+		data := domain.MockData{}
 
 		content := fileUtils.ReadFileBuf(file)
 		err := yaml.Unmarshal(content, &data)
@@ -122,7 +123,7 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 	return
 }
 
-func (s *MockService) GenDataForServerRequest(endpoint *model.EndPoint) (ret interface{}, err error) {
+func (s *MockService) GenDataForServerRequest(endpoint *domain.EndPoint) (ret interface{}, err error) {
 	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	vari.GlobalVars.Total = endpoint.Lines
 	vari.GlobalVars.OutputFormat = "json"
@@ -153,7 +154,7 @@ func (s *MockService) GenDataForServerRequest(endpoint *model.EndPoint) (ret int
 	return
 }
 
-func (s *MockService) GenDataForMockPreview(endpoint *model.EndPoint, dataConfig string) (ret interface{}, err error) {
+func (s *MockService) GenDataForMockPreview(endpoint *domain.EndPoint, dataConfig string) (ret interface{}, err error) {
 	vari.GlobalVars.RunMode = consts.RunModeMockPreview
 	vari.GlobalVars.Total = endpoint.Lines
 	vari.GlobalVars.OutputFormat = "json"
@@ -229,7 +230,7 @@ func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (
 	return
 }
 
-func (s *MockService) GetPreviewData(id int) (data model.MockData, err error) {
+func (s *MockService) GetPreviewData(id int) (data domain.MockData, err error) {
 	po, err := s.MockRepo.Get(uint(id))
 
 	yaml.Unmarshal([]byte(po.MockContent), &data)
@@ -238,10 +239,10 @@ func (s *MockService) GetPreviewData(id int) (data model.MockData, err error) {
 	return
 }
 
-func (s *MockService) GetPreviewResp(req model.MockPreviewReq) (ret interface{}, err error) {
+func (s *MockService) GetPreviewResp(req domain.MockPreviewReq) (ret interface{}, err error) {
 	po, err := s.MockRepo.Get(uint(req.Id))
 
-	data := model.MockData{}
+	data := domain.MockData{}
 	err = yaml.Unmarshal([]byte(po.MockContent), &data)
 	if err != nil {
 		return

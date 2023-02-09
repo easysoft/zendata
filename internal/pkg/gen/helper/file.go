@@ -2,12 +2,12 @@ package genHelper
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
-func ComputerReferFilePath(file string, field *model.DefField) (resPath string) {
+func ComputerReferFilePath(file string, field *domain.DefField) (resPath string) {
 	resPath = file
 	if fileUtils.IsAbsPath(resPath) && fileUtils.FileExist(resPath) {
 		return

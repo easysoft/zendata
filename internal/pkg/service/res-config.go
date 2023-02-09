@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 )
 
 type ResConfigService struct {
@@ -10,7 +10,7 @@ type ResConfigService struct {
 	RangeService *RangeService `inject:""`
 }
 
-func (s *ResConfigService) GetResForConfig(configRes model.DefField) (groupedValue map[string][]interface{}) {
+func (s *ResConfigService) GetResForConfig(configRes domain.DefField) (groupedValue map[string][]interface{}) {
 	groupedValue = map[string][]interface{}{}
 
 	// config field is a standard field

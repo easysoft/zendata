@@ -2,6 +2,7 @@ package serverRepo
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 )
@@ -140,7 +141,7 @@ func (r *InstancesRepo) haveChild(Data []*model.ZdInstancesItem,
 	return
 }
 
-func (r *InstancesRepo) GenInst(po model.ZdInstances, res *model.ResInstances) {
+func (r *InstancesRepo) GenInst(po model.ZdInstances, res *domain.ResInstances) {
 	res.Title = po.Title
 	res.Desc = po.Desc
 }

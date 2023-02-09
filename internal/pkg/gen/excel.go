@@ -2,6 +2,7 @@ package gen
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"log"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -21,7 +21,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField, total int) (values map[string][]string) {
+func generateFieldValuesFromExcel(filePath, sheet string, field *domain.DefField, total int) (values map[string][]string) {
 	values = map[string][]string{}
 
 	// sql has variable expr
@@ -241,7 +241,7 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	return
 }
 
-func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, total int, filePath string) (
+func ReadDataFromSQLite(field domain.DefField, dbName string, tableName string, total int, filePath string) (
 	[]string, string) {
 	list := make([]string, 0)
 

@@ -2,7 +2,7 @@ package serverService
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 )
 
 type SyncService struct {
@@ -20,10 +20,10 @@ type SyncService struct {
 func (s *SyncService) SyncData() {
 	files := s.ResService.LoadRes("")
 
-	fileMap := map[string][]model.ResFile{}
+	fileMap := map[string][]domain.ResFile{}
 	for _, fi := range files {
 		if fileMap[fi.ResType] == nil {
-			fileMap[fi.ResType] = make([]model.ResFile, 0)
+			fileMap[fi.ResType] = make([]domain.ResFile, 0)
 		}
 		fileMap[fi.ResType] = append(fileMap[fi.ResType], fi)
 	}

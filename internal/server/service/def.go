@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -33,7 +34,7 @@ func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total
 	return
 }
 
-func (s *DefService) Get(id int) (def model.ZdDef, dirs []model.Dir) {
+func (s *DefService) Get(id int) (def model.ZdDef, dirs []domain.Dir) {
 	if id > 0 {
 		def, _ = s.DefRepo.Get(uint(id))
 	} else {
@@ -124,11 +125,11 @@ func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 		return
 	}
 
-	yamlObj := model.DefData{}
+	yamlObj := domain.DefData{}
 	s.DefRepo.GenDef(*def, &yamlObj)
 
 	for _, child := range root.Fields { // ignore the root
-		defField := model.DefField{}
+		defField := domain.DefField{}
 
 		refer, _ := s.ReferRepo.GetByOwnerId(child.ID)
 		s.zdFieldToFieldForExport(*child, refer, &defField)
@@ -142,11 +143,11 @@ func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 	return
 }
 
-func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model.ZdRefer, field *model.DefField) {
+func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model.ZdRefer, field *domain.DefField) {
 	genFieldFromZdField(treeNode, refer, field)
 
 	for _, child := range treeNode.Fields {
-		childField := model.DefField{}
+		childField := domain.DefField{}
 
 		childRefer, _ := s.ReferRepo.GetByOwnerId(child.ID)
 		s.zdFieldToFieldForExport(*child, childRefer, &childField)
@@ -171,7 +172,7 @@ func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model
 	return
 }
 
-func (s *DefService) Sync(files []model.ResFile) (err error) {
+func (s *DefService) Sync(files []domain.ResFile) (err error) {
 	list := s.DefRepo.ListAll()
 
 	mp := map[string]*model.ZdDef{}
@@ -196,7 +197,7 @@ func (s *DefService) Sync(files []model.ResFile) (err error) {
 
 	return
 }
-func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
+func (s *DefService) SyncToDB(fi domain.ResFile) (err error) {
 	content, _ := os.ReadFile(fi.Path)
 	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdDef{}

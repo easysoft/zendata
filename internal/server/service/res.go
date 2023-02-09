@@ -3,6 +3,7 @@ package serverService
 import (
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -18,7 +19,7 @@ type ResService struct {
 	DefRepo       *serverRepo.DefRepo       `inject:""`
 }
 
-func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
+func (s *ResService) LoadRes(resType string) (ret []domain.ResFile) {
 	res, _, _ := helper.GetRes()
 
 	for _, key := range consts.ResKeys {
@@ -31,7 +32,7 @@ func (s *ResService) LoadRes(resType string) (ret []model.ResFile) {
 				ret = append(ret, res)
 
 				var temp interface{} = res // clone
-				res1 := temp.(model.ResFile)
+				res1 := temp.(domain.ResFile)
 				res1.Title = arr[1]
 				ret = append(ret, res1)
 			} else {
@@ -69,7 +70,7 @@ func (s *ResService) ListReferSheetForSelection(referName string) (ret []*model.
 
 	return
 }
-func (s *ResService) ListReferExcelColForSelection(referName string) (ret []model.ResField) {
+func (s *ResService) ListReferExcelColForSelection(referName string) (ret []domain.ResField) {
 	index := strings.LastIndex(referName, ".")
 	file := referName[:index]
 	sheet := referName[index+1:]
@@ -94,7 +95,7 @@ func (s *ResService) ListReferExcelColForSelection(referName string) (ret []mode
 					break
 				}
 
-				field := model.ResField{Name: val, Index: i + 1}
+				field := domain.ResField{Name: val, Index: i + 1}
 				ret = append(ret, field)
 			}
 		}
@@ -103,14 +104,14 @@ func (s *ResService) ListReferExcelColForSelection(referName string) (ret []mode
 	return
 }
 
-func (s *ResService) ListReferResFieldForSelection(resId int, resType string) (ret []model.ResField) {
+func (s *ResService) ListReferResFieldForSelection(resId int, resType string) (ret []domain.ResField) {
 	if resType == "instances" {
 		items, _ := s.InstancesRepo.GetItems(uint(resId))
 		for i, item := range items {
 			if item.ParentID != 0 {
 				return
 			} // ignore sub nodes
-			field := model.ResField{Name: item.Instance, Index: i + 1}
+			field := domain.ResField{Name: item.Instance, Index: i + 1}
 			ret = append(ret, field)
 		}
 	} else if resType == "ranges" {
@@ -119,7 +120,7 @@ func (s *ResService) ListReferResFieldForSelection(resId int, resType string) (r
 			if item.ParentID != 0 {
 				return
 			} // ignore sub nodes
-			field := model.ResField{Name: item.Field, Index: i + 1}
+			field := domain.ResField{Name: item.Field, Index: i + 1}
 			ret = append(ret, field)
 		}
 	}

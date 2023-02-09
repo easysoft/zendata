@@ -3,7 +3,7 @@ package genValue
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/oklog/ulid/v2"
@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func CreateTimestampField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+func CreateTimestampField(field *domain.DefField, fieldWithValue *domain.FieldWithValues) {
 	ConvertTmFormat(field)
 
 	fieldWithValue.Field = field.Field
@@ -33,7 +33,7 @@ func CreateTimestampField(field *model.DefField, fieldWithValue *model.FieldWith
 	fieldWithValue.Values = values
 }
 
-func CreateUlidField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+func CreateUlidField(field *domain.DefField, fieldWithValue *domain.FieldWithValues) {
 	count := 0
 
 	t := time.Unix(1000000, 0)
@@ -50,7 +50,7 @@ func CreateUlidField(field *model.DefField, fieldWithValue *model.FieldWithValue
 	}
 }
 
-func ConvertTmFormat(field *model.DefField) { // to 2006-01-02 15:04:05
+func ConvertTmFormat(field *domain.DefField) { // to 2006-01-02 15:04:05
 	format := field.Format
 
 	if strings.Index(format, "YYYY") > -1 {

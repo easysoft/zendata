@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"strings"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
@@ -24,7 +25,7 @@ func (s *TextService) List(keywords string, page int) (list []*model.ZdText, tot
 	return
 }
 
-func (s *TextService) Get(id int) (text model.ZdText, dirs []model.Dir) {
+func (s *TextService) Get(id int) (text model.ZdText, dirs []domain.Dir) {
 	text, _ = s.TextRepo.Get(uint(id))
 
 	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
@@ -78,7 +79,7 @@ func (s *TextService) Remove(id int) (err error) {
 	return
 }
 
-func (s *TextService) Sync(files []model.ResFile) (err error) {
+func (s *TextService) Sync(files []domain.ResFile) (err error) {
 	list := s.TextRepo.ListAll()
 
 	mp := map[string]*model.ZdText{}
@@ -102,7 +103,7 @@ func (s *TextService) Sync(files []model.ResFile) (err error) {
 	return
 }
 
-func (s *TextService) SyncToDB(file model.ResFile) (err error) {
+func (s *TextService) SyncToDB(file domain.ResFile) (err error) {
 	text := model.ZdText{
 		Title:    file.Title,
 		Path:     file.Path,

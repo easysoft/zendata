@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -18,7 +18,7 @@ type LoopService struct {
 	FormatService *FormatService `inject:""`
 }
 
-func (s *LoopService) LoopAndFixFieldValues(field *model.DefField, withFix bool) {
+func (s *LoopService) LoopAndFixFieldValues(field *domain.DefField, withFix bool) {
 	s.ComputerLoopTimes(field)
 
 	values := make([]interface{}, 0)
@@ -48,7 +48,7 @@ func (s *LoopService) LoopAndFixFieldValues(field *model.DefField, withFix bool)
 	return
 }
 
-func (s *LoopService) LoopFieldValueToSingleStr(field *model.DefField, indexOfRow *int, count int, withFix bool) (
+func (s *LoopService) LoopFieldValueToSingleStr(field *domain.DefField, indexOfRow *int, count int, withFix bool) (
 	ret interface{}) {
 
 	if (*field).LoopIndex <= 1 && field.Loopfix == "" {
@@ -84,7 +84,7 @@ func (s *LoopService) LoopFieldValueToSingleStr(field *model.DefField, indexOfRo
 	return
 }
 
-func (s *LoopService) ComputerLoopTimes(field *model.DefField) {
+func (s *LoopService) ComputerLoopTimes(field *domain.DefField) {
 	if (*field).LoopIndex != 0 {
 		return
 	}
@@ -105,7 +105,7 @@ func (s *LoopService) ComputerLoopTimes(field *model.DefField) {
 	(*field).LoopIndex = (*field).LoopStart
 }
 
-func (s *LoopService) getFieldValByIndex(field model.DefField, index *int) (val interface{}, err error) {
+func (s *LoopService) getFieldValByIndex(field domain.DefField, index *int) (val interface{}, err error) {
 	// 叶节点
 	if len(field.Values) == 0 {
 		if genHelper.IsSelectExcelWithExpr(field) {

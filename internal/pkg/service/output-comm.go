@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
@@ -31,7 +31,7 @@ func (s *OutputService) GenRecords() (records []map[string]interface{}) {
 	return
 }
 
-func (s *OutputService) GenRecordField(field *model.DefField, mp *map[string]interface{}, i int) {
+func (s *OutputService) GenRecordField(field *domain.DefField, mp *map[string]interface{}, i int) {
 	if field.Join || len(field.Fields) == 0 { // set values
 		val := field.Values[i%len(field.Values)]
 
@@ -115,7 +115,7 @@ func (s *OutputService) PrintHumanHeaderIfNeeded() {
 	logUtils.PrintLine(headerLine + "\n")
 }
 
-func (s *OutputService) getModArrForChildrenRecursive(field *model.DefField) []int {
+func (s *OutputService) getModArrForChildrenRecursive(field *domain.DefField) []int {
 	indexArr := make([]int, 0)
 	for _, _ = range field.Fields {
 		indexArr = append(indexArr, 0)

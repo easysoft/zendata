@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -19,7 +19,7 @@ type TextService struct {
 	FileService  *FileService  `inject:""`
 }
 
-func (s *TextService) CreateFieldValuesFromText(field *model.DefField) {
+func (s *TextService) CreateFieldValuesFromText(field *domain.DefField) {
 	ranges := strings.Split(strings.TrimSpace(field.Range), ",")
 
 	for _, rang := range ranges {

@@ -2,6 +2,7 @@ package controller
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverService "github.com/easysoft/zendata/internal/server/service"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -79,7 +80,7 @@ func (c *MockCtrl) GetPreviewData(ctx iris.Context) {
 }
 
 func (c *MockCtrl) GetPreviewResp(ctx iris.Context) {
-	req := model.MockPreviewReq{}
+	req := domain.MockPreviewReq{}
 	if err := ctx.ReadJSON(&req); err != nil {
 		ctx.JSON(c.ErrResp(consts.ParamErr, err.Error()))
 	}

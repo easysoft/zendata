@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
@@ -18,14 +18,14 @@ type CombineService struct {
 	PlaceholderService *PlaceholderService `inject:""`
 }
 
-func (s *CombineService) CombineChildrenIfNeeded(field *model.DefField, isOnTopLevel bool) {
+func (s *CombineService) CombineChildrenIfNeeded(field *domain.DefField, isOnTopLevel bool) {
 	if len(field.Fields) == 0 {
 		return
 	}
 
 	if field.Join {
 		fieldNameToValuesMap := map[string][]interface{}{}
-		fieldNameToFieldMap := map[string]model.DefField{}
+		fieldNameToFieldMap := map[string]domain.DefField{}
 
 		// 1. get values for child fields
 		if len(field.Values) == 0 {

@@ -2,7 +2,7 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"strings"
 )
@@ -12,7 +12,7 @@ type ListService struct {
 	RangeService *RangeService `inject:""`
 }
 
-func (s *ListService) CreateListField(field *model.DefField) {
+func (s *ListService) CreateListField(field *domain.DefField) {
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
 			s.CreateListField(&child)
@@ -22,7 +22,7 @@ func (s *ListService) CreateListField(field *model.DefField) {
 	}
 }
 
-func (s *ListService) CreateListFieldValues(field *model.DefField) {
+func (s *ListService) CreateListFieldValues(field *domain.DefField) {
 	if strings.Index(field.Range, ".txt") > -1 {
 		s.TextService.CreateFieldValuesFromText(field)
 	} else {

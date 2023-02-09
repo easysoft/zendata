@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/jinzhu/copier"
 )
 
@@ -10,7 +10,7 @@ type ResRangesService struct {
 	FieldService *FieldService `inject:""`
 }
 
-func (s *ResRangesService) GetResFromRanges(ranges model.ResRanges) map[string][]interface{} {
+func (s *ResRangesService) GetResFromRanges(ranges domain.ResRanges) map[string][]interface{} {
 	groupedValue := map[string][]interface{}{}
 
 	for group, expression := range ranges.Ranges {
@@ -24,7 +24,7 @@ func (s *ResRangesService) GetResFromRanges(ranges model.ResRanges) map[string][
 	return groupedValue
 }
 
-func (s *ResRangesService) ConvertRangesToField(ranges model.ResRanges, expression string) (field model.DefField) {
+func (s *ResRangesService) ConvertRangesToField(ranges domain.ResRanges, expression string) (field domain.DefField) {
 	field.Note = "ConvertedFromRanges"
 
 	copier.Copy(&field, ranges)

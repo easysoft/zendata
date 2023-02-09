@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -18,7 +18,7 @@ type ArticleService struct {
 	ResService *ResService `inject:""`
 }
 
-func (s *ArticleService) CreateArticleField(field *model.DefField) {
+func (s *ArticleService) CreateArticleField(field *domain.DefField) {
 	values := make([]interface{}, 0)
 
 	numMap, nameMap, indexMap, contentWithoutComments := s.getNumMap(field.Range)
@@ -107,7 +107,7 @@ func (s *ArticleService) genArticle(content string, dataMap map[string][]interfa
 	return
 }
 
-func (s *ArticleService) getDataMap(numMap map[string]int, nameMap map[string]string, field *model.DefField,
+func (s *ArticleService) getDataMap(numMap map[string]int, nameMap map[string]string, field *domain.DefField,
 	resFile string, resType string, sheet string) (ret map[string][]interface{}) {
 	ret = map[string][]interface{}{}
 
