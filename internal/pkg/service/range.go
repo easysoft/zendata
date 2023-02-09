@@ -34,6 +34,12 @@ type RangeService struct {
 
 func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 	rang := field.Range
+	rangLiteral := field.RangeLiteral
+
+	if rangLiteral != "" {
+		field.Values = append(field.Values, rangLiteral)
+		return
+	}
 
 	// gen empty values
 	if rang == "" {

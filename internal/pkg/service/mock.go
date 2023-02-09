@@ -278,7 +278,7 @@ func (s *MockService) getFieldFromExample(name string, example interface{}) (fie
 	bytes, _ := json.Marshal(example)
 
 	field.Field = name
-	field.Range = fmt.Sprintf("%s", bytes)
+	field.RangeLiteral = fmt.Sprintf("%s", bytes)
 
 	return
 }
@@ -289,7 +289,7 @@ func (s *MockService) getFieldFromExamples(name string, examples openapi3.Exampl
 
 		field := model.DefField{}
 		field.Field = name + "-" + key
-		field.Range = fmt.Sprintf("%s", bytes)
+		field.RangeLiteral = fmt.Sprintf("%s", bytes)
 
 		fields = append(fields, field)
 	}

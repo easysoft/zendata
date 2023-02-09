@@ -94,20 +94,21 @@ type DefSimple struct {
 	Fields  []FieldSimple `yaml:"fields"`
 }
 type FieldSimple struct {
-	Field   string `yaml:"field,omitempty"`
-	Note    string `yaml:"note,omitempty"`
-	Range   string `yaml:"range,omitempty"`
-	Value   string `yaml:"value,omitempty"`
-	Prefix  string `yaml:"prefix,omitempty"`
-	Postfix string `yaml:"postfix,omitempty"`
-	Divider string `yaml:"divider,omitempty"`
-	Loop    string `yaml:"loop,omitempty"`
-	Loopfix string `yaml:"loopfix,omitempty"`
-	Format  string `yaml:"format,omitempty"`
-	Rand    bool   `yaml:"rand,omitempty"`
-	Type    string `yaml:"type,omitempty"`
-	Mode    string `yaml:"mode,omitempty"`
-	Items   int    `yaml:"records,omitempty"`
+	Field        string `yaml:"field,omitempty"`
+	Note         string `yaml:"note,omitempty"`
+	Range        string `yaml:"range,omitempty"`
+	RangeLiteral string `yaml:"RangeLiteral,omitempty" json:"-"`
+	Value        string `yaml:"value,omitempty"`
+	Prefix       string `yaml:"prefix,omitempty"`
+	Postfix      string `yaml:"postfix,omitempty"`
+	Divider      string `yaml:"divider,omitempty"`
+	Loop         string `yaml:"loop,omitempty"`
+	Loopfix      string `yaml:"loopfix,omitempty"`
+	Format       string `yaml:"format,omitempty"`
+	Rand         bool   `yaml:"rand,omitempty"`
+	Type         string `yaml:"type,omitempty"`
+	Mode         string `yaml:"mode,omitempty"`
+	Items        int    `yaml:"records,omitempty"`
 	//ParentItems int    `yaml:"-"`
 	//ParentJoin  bool   `yaml:"-"`
 	From string `yaml:"from,omitempty"`
