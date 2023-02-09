@@ -22,7 +22,7 @@ type MockService struct {
 }
 
 func (s *MockService) GenMockDef(input string) (
-	name, mockDefPath, zendataDefPath string, err error) { // return the last one for client spec uploading
+	name, mockDefPath, zendataDefPath string, err error) { // return the last ones for client spec uploading
 
 	var files []string
 	fileUtils.GetFilesByExtInDir(input, ".yaml,.json", &files)
@@ -145,11 +145,11 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 			// mediaType is like "responses => 501 => content => application/json"
 
 			// zendata def
-			fields := s.getZendataDefFromMedia(mediaItem)
+			fields := s.genZendataDefFromMedia(mediaItem)
 			zendataDef.Fields = append(zendataDef.Fields, fields...) // maybe has no children from properties
 
 			// mock def
-			endpoint := s.getMockDefFromMedia(mediaItem, fields)
+			endpoint := s.genMockDefFromMedia(mediaItem, fields)
 			endpoint.Method = method
 			endpoint.MediaType = mediaType
 			endpoint.Config = zendataDefPath
@@ -165,14 +165,16 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 	return
 }
 
-func (s *MockService) getZendataDefFromMedia(item *openapi3.MediaType) (fields []model.DefField) {
+func (s *MockService) genZendataDefFromMedia(item *openapi3.MediaType) (fields []model.DefField) {
 	schemaNode := item.Schema
 	exampleNode := item.Example
 	examplesNode := item.Examples
 	//encodingNode := item.Encoding
 
 	if schemaNode != nil {
-		s.getFieldFromSchema("schema", &fields, schemaNode)
+		arr := strings.Split(schemaNode.Ref, "/")
+		name := arr[len(arr)-1]
+		s.getFieldFromSchema("schema-"+name, &fields, schemaNode)
 	}
 
 	if exampleNode != nil {
@@ -181,7 +183,7 @@ func (s *MockService) getZendataDefFromMedia(item *openapi3.MediaType) (fields [
 	}
 
 	if examplesNode != nil {
-		examplesFields := s.getFieldFromExamples("example", examplesNode)
+		examplesFields := s.getFieldFromExamples("examples", examplesNode)
 
 		for _, field := range examplesFields {
 			fields = append(fields, field)
@@ -191,7 +193,7 @@ func (s *MockService) getZendataDefFromMedia(item *openapi3.MediaType) (fields [
 	return
 }
 
-func (s *MockService) getMockDefFromMedia(item *openapi3.MediaType, fields []model.DefField) (endpoint model.EndPoint) {
+func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []model.DefField) (endpoint model.EndPoint) {
 	var fieldNames []string
 	for _, f := range fields {
 		fieldNames = append(fieldNames, f.Field)
@@ -227,14 +229,14 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 		if len(schemaNode.Value.Properties) > 0 {
 			for propName, prop := range schemaNode.Value.Properties {
 				field := model.DefField{}
-				field.Field = propName
+				field.Field = name + "-" + propName
 
 				if prop.Ref == "" {
 					s.getRangeByTypeFormat(consts.OpenApiDataType(prop.Value.Type), prop.Value.Enum, prop.Value.Default,
 						prop.Value.Min, prop.Value.Max,
 						&field)
 				} else {
-					s.getFieldFromSchema(propName, &field.Fields, prop)
+					s.getFieldFromSchema(field.Field, &field.Fields, prop)
 				}
 
 				*fields = append(*fields, field)
