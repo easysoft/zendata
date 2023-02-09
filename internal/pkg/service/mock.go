@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -212,14 +211,10 @@ func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []mod
 			endpoint.Type = consts.SchemaTypeObject
 		} else if schemaNode.Value.Type != "" {
 			endpoint.Type = consts.OpenApiSchemaType(schemaNode.Value.Type)
+		} else {
+			endpoint.Type = consts.SchemaTypeObject
 		}
-
 	}
-	//else if exampleNode != nil {
-	//
-	//} else if examplesNode != nil {
-	//
-	//}
 
 	return
 }
@@ -259,44 +254,44 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]model.DefField, 
 
 		}
 
-		// example based
-		if schemaNode.Value.Example != nil {
-			exampleField := s.getFieldFromExample(name, schemaNode.Value.Example) // name+"-example"
-
-			*fields = append(*fields, exampleField)
-		}
-
 		// items based
 		if schemaNode.Value.Items != nil {
 			s.getFieldFromItems(name, fields, schemaNode.Value.Items) // name+"-items"
 		}
+
+		//// example based
+		//if schemaNode.Value.Example != nil {
+		//	exampleField := s.getFieldFromExample(name, schemaNode.Value.Example) // name+"-example"
+		//
+		//	*fields = append(*fields, exampleField)
+		//}
 	}
 
 	return
 }
 
-func (s *MockService) getFieldFromExample(name string, example interface{}) (field model.DefField) {
-	bytes, _ := json.Marshal(example)
-
-	field.Field = name
-	field.RangeLiteral = fmt.Sprintf("%s", bytes)
-
-	return
-}
-
-func (s *MockService) getFieldFromExamples(name string, examples openapi3.Examples) (fields []model.DefField) {
-	for key, val := range examples {
-		bytes, _ := json.Marshal(val.Value.Value)
-
-		field := model.DefField{}
-		field.Field = key // name + "-" + key
-		field.RangeLiteral = fmt.Sprintf("%s", bytes)
-
-		fields = append(fields, field)
-	}
-
-	return
-}
+//func (s *MockService) getFieldFromExample(name string, example interface{}) (field model.DefField) {
+//	bytes, _ := json.Marshal(example)
+//
+//	field.Field = name
+//	field.RangeLiteral = fmt.Sprintf("%s", bytes)
+//
+//	return
+//}
+//
+//func (s *MockService) getFieldFromExamples(name string, examples openapi3.Examples) (fields []model.DefField) {
+//	for key, val := range examples {
+//		bytes, _ := json.Marshal(val.Value.Value)
+//
+//		field := model.DefField{}
+//		field.Field = name + "-" + key
+//		field.RangeLiteral = fmt.Sprintf("%s", bytes)
+//
+//		fields = append(fields, field)
+//	}
+//
+//	return
+//}
 
 func (s *MockService) getFieldFromItems(name string, fields *[]model.DefField, itemsDef *openapi3.SchemaRef) {
 	s.getFieldFromSchema(name, fields, itemsDef)

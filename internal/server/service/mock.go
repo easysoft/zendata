@@ -168,7 +168,7 @@ func (s *MockService) GenDataForMockPreview(endpoint *model.EndPoint, dataConfig
 	s.MainService.GenerateDataByContents(contents)
 
 	records := s.OutputService.GenRecords()
-	if dataType == "item" {
+	if dataType == consts.SchemaTypeObject {
 		ret = records[0]
 	} else {
 		ret = records
