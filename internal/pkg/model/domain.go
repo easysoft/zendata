@@ -97,7 +97,7 @@ type FieldSimple struct {
 	Field        string `yaml:"field,omitempty"`
 	Note         string `yaml:"note,omitempty"`
 	Range        string `yaml:"range,omitempty"`
-	RangeLiteral string `yaml:"RangeLiteral,omitempty" json:"omitempty"`
+	RangeLiteral string `yaml:"rangeLiteral,omitempty" json:"rangeLiteral,omitempty"`
 	Value        string `yaml:"value,omitempty"`
 	Prefix       string `yaml:"prefix,omitempty"`
 	Postfix      string `yaml:"postfix,omitempty"`
