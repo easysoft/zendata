@@ -218,8 +218,9 @@ type MockData struct {
 	Author  string `json:"author"`
 	Version string `json:"version"`
 
-	Paths map[string]map[string]map[string]map[string]*EndPoint `json:"paths"`
+	Paths MockPathMap `json:"paths"`
 }
+type MockPathMap map[string]map[string]map[string]map[string]*EndPoint
 
 type EndPoint struct {
 	Method    HttpMethod               `json:"method"`

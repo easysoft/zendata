@@ -171,9 +171,7 @@ func (s *MockService) genZendataDefFromMedia(item *openapi3.MediaType) (fields [
 	//encodingNode := item.Encoding
 
 	if schemaNode != nil {
-		arr := strings.Split(schemaNode.Ref, "/")
-		name := arr[len(arr)-1]
-		s.getFieldFromSchema(name, &fields, schemaNode) // "schema-"+name
+		s.getFieldFromSchema(&fields, schemaNode)
 	}
 
 	//if exampleNode != nil {
@@ -219,30 +217,35 @@ func (s *MockService) genMockDefFromMedia(item *openapi3.MediaType, fields []dom
 	return
 }
 
-func (s *MockService) getFieldFromSchema(name string, fields *[]domain.DefField, schemaNodes ...*openapi3.SchemaRef) {
-	for _, schemaNode := range schemaNodes {
-		// properties based
-		if len(schemaNode.Value.Properties) > 0 {
-			for propName, prop := range schemaNode.Value.Properties {
-				field := domain.DefField{}
-				field.Field = propName // name + "-" + propName
+func (s *MockService) getFieldFromSchema(fields *[]domain.DefField, schemaNodes ...*openapi3.SchemaRef) {
+	propsMap := map[string]bool{}
 
-				if prop.Ref == "" {
-					s.getRangeByTypeFormat(consts.OpenApiDataType(prop.Value.Type), prop.Value.Enum, prop.Value.Default,
-						prop.Value.Min, prop.Value.Max,
-						&field)
-				} else {
-					s.getFieldFromSchema(field.Field, &field.Fields, prop)
+	for _, schemaNode := range schemaNodes {
+		if len(schemaNode.Value.Properties) > 0 { // properties based
+			for propName, prop := range schemaNode.Value.Properties {
+				if propsMap[propName] {
+					continue
+				}
+
+				field := domain.DefField{}
+				field.Field = propName // s.getSchemaNameFromRef(schemaNode.Ref) + "~" + propName
+				propsMap[propName] = true
+
+				if prop.Ref == "" { // leaf property
+					s.getRangeByTypeFormat(consts.OpenApiDataType(prop.Value.Type),
+						prop.Value.Enum, prop.Value.Default, prop.Value.Min, prop.Value.Max, &field)
+				} else { // refer to another schema
+					s.getFieldFromSchema(&field.Fields, prop)
 				}
 
 				*fields = append(*fields, field)
 			}
 
 		} else if schemaNode.Value.OneOf != nil {
-			s.getFieldFromSchema(name, fields, schemaNode.Value.OneOf[0]) // (name+"-oneof"
+			s.getFieldFromSchema(fields, schemaNode.Value.OneOf[0])
 
 		} else if schemaNode.Value.AllOf != nil {
-			s.getFieldFromSchema(name, fields, schemaNode.Value.AllOf...) // name+"-allof"
+			s.getFieldFromSchema(fields, schemaNode.Value.AllOf...)
 
 		} else if schemaNode.Value.AnyOf != nil {
 			arr := openapi3.SchemaRefs{schemaNode.Value.AnyOf[0]}
@@ -250,13 +253,13 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]domain.DefField,
 				arr = append(arr, schemaNode.Value.AnyOf[len(schemaNode.Value.AnyOf)-1])
 			}
 
-			s.getFieldFromSchema(name, fields, arr...) // name+"-anyof"
+			s.getFieldFromSchema(fields, arr...)
 
 		}
 
 		// items based
 		if schemaNode.Value.Items != nil {
-			s.getFieldFromItems(name, fields, schemaNode.Value.Items) // name+"-items"
+			s.getFieldFromItems(fields, schemaNode.Value.Items)
 		}
 
 		//// example based
@@ -266,6 +269,13 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]domain.DefField,
 		//	*fields = append(*fields, exampleField)
 		//}
 	}
+
+	return
+}
+
+func (s *MockService) getSchemaNameFromRef(ref string) (ret string) {
+	arr := strings.Split(ref, "/")
+	ret = arr[len(arr)-1]
 
 	return
 }
@@ -293,8 +303,8 @@ func (s *MockService) getFieldFromSchema(name string, fields *[]domain.DefField,
 //	return
 //}
 
-func (s *MockService) getFieldFromItems(name string, fields *[]domain.DefField, itemsDef *openapi3.SchemaRef) {
-	s.getFieldFromSchema(name, fields, itemsDef)
+func (s *MockService) getFieldFromItems(fields *[]domain.DefField, itemsDef *openapi3.SchemaRef) {
+	s.getFieldFromSchema(fields, itemsDef)
 
 	return
 }

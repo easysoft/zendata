@@ -191,12 +191,16 @@ components:
     Pet:
       type: object
       properties:
+        sameProp:
+          type: string
         owner:
           type: string
 
     Dog:
       type: object
       properties:
+        sameProp:
+          type: string
         dogProp1:
           type: integer
         dogProp2:

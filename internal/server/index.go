@@ -26,7 +26,9 @@ func (m *IndexModule) Party() module.WebModule {
 		m.DefModule.Party(),
 		m.CommModule.Party(),
 		m.AdminModule.Party(),
+
 		m.MockModule.Party(),
+		m.MockModule.PartyData(),
 	}
 	return module.NewModule(consts.ApiPath, handler, modules...)
 }

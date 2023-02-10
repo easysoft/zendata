@@ -24,7 +24,6 @@ type GenVarType struct {
 	DBDsnParsing DBDsnData
 	DBClear      bool
 	MockDir      string
-	MockData     *domain.MockData
 
 	Human     bool
 	Trim      bool

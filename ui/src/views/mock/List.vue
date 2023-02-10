@@ -11,11 +11,14 @@
         </a>
 
         <span slot="action" slot-scope="record">
-          <a @click="modifyDataConfig(record)" :title="$t('action.edit.mock')">
+          <a @click="modifyDataConfig(record)" :title="$t('action.edit.data')">
             <Icon type="control" :style="{fontSize: '16px'}" />
           </a> &nbsp;
-          <a @click="modifyMockConfig(record)" :title="$t('action.edit.data')">
-            <Icon type="container" :style="{fontSize: '16px'}" />
+          <a @click="modifyMockConfig(record)" :title="$t('action.edit.mock')">
+            <Icon type="code" :style="{fontSize: '16px'}" />
+          </a> &nbsp;
+          <a @click="startMockService(record)" :title="$t('action.start.mock')">
+            <Icon type="play-square" :style="{fontSize: '16px'}" />
           </a> &nbsp;
 
           <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
@@ -51,7 +54,7 @@ import {formatTime, PageSize, pathToRelated, replacePathSep, ResTypeDef} from ".
 import debounce from "lodash.debounce"
 import mockMixin from "@/store/mockMixin";
 import Bus from '../../utils/bus.js'
-import {listMock, removeMock} from "@/api/mock";
+import {listMock, removeMock, startMockService} from "@/api/mock";
 import MockEditComp from './components/Edit'
 
 export default {
@@ -84,7 +87,7 @@ export default {
         title: this.$i18n.t('form.opt'),
         key: 'action',
         scopedSlots: { customRender: 'action' },
-        width: '80px'
+        width: '100px'
       },
     ];
 
@@ -141,6 +144,12 @@ export default {
     },
     modifyDataConfig(record) {
       this.setMockItem(record)
+    },
+    startMockService(record) {
+      console.log('startMockService')
+      startMockService(record.id).then(json => {
+        this.loadData()
+      })
     },
 
     handleEditSave() {

@@ -21,16 +21,26 @@
         <a-row :gutter="10" class="content-row">
           <a-col :span="11" class="content-col">
             <div class="upload-bar">
-              <a-upload :before-upload="beforeUpload"
-                        :showUploadList="false"
-                        accept=".yaml,.yml,.json">
-                <a-button>
-                  <a-icon type="upload" />
-                  <span>{{$t('upload.spec')}}</span>
-                </a-button>
-              </a-upload>
+              <a-row>
+                <a-col :span="5">
+                  <a-upload :before-upload="beforeUpload"
+                            :showUploadList="false"
+                            accept=".yaml,.yml,.json">
+                    <a-button>
+                      <a-icon type="upload" />
+                      <span>{{$t('upload.spec')}}</span>
+                    </a-button>
+                  </a-upload>
+                </a-col>
+                <a-col :span="9">
+                  <span class="title">{{model.name}}</span>
+                </a-col>
+                <a-col :span="10">
+                  <span class="label-path"></span>
+                  <a-input v-model="model.path" :placeholder="$t('msg.mock.input.path')" />
+                </a-col>
+              </a-row>
 
-              <span class="title">{{model.name}}</span>
             </div>
             <div class="upload-content">
               <pre>{{ model.specContent }}</pre>
@@ -67,7 +77,7 @@ export default {
   data() {
     return {
       model: {},
-      readyToSave: false,
+      specReady: false,
     };
   },
   props: {
@@ -86,6 +96,9 @@ export default {
   },
   mixins: [mockMixin],
   computed: {
+    readyToSave() {
+      return this.specReady && this.model.path?.trim()
+    },
   },
   created () {
     console.log('created')
@@ -104,7 +117,7 @@ export default {
         console.log('saveMockItem', json)
         if (json.code === 0) {
           this.model = {}
-          this.readyToSave = false
+          this.specReady = false
           this.$emit('ok')
         } else {
           this.$notification['warning']({
@@ -117,7 +130,7 @@ export default {
     cancel() {
       console.log('cancel')
       this.model = {}
-      this.readyToSave = false
+      this.specReady = false
       this.$emit('cancel')
     },
 
@@ -141,7 +154,7 @@ export default {
             dataContent: json.data.data,
           }
 
-          this.readyToSave = true
+          this.specReady = true
 
         } else {
           this.$notification['warning']({
@@ -194,6 +207,18 @@ export default {
               padding: 3px 16px;
               font-size: larger;
               font-weight: bolder;
+            }
+            .label-path:before {
+                display: inline-block;
+                margin-right: 4px;
+                color: #f5222d;
+                font-size: 14px;
+                font-family: SimSun,sans-serif;
+                line-height: 1;
+                content: "*";
+            }
+            input {
+              width: calc(~"100% - 20px");
             }
           }
           .upload-content {
