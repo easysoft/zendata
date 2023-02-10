@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"os"
 	"strings"
 
@@ -27,7 +28,7 @@ func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges,
 	return
 }
 
-func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirs []model.Dir) {
+func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirs []domain.Dir) {
 	ranges, _ = s.RangesRepo.Get(uint(id))
 
 	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
@@ -81,7 +82,7 @@ func (s *RangesService) Remove(id int) (err error) {
 	return
 }
 
-func (s *RangesService) Sync(files []model.ResFile) (err error) {
+func (s *RangesService) Sync(files []domain.ResFile) (err error) {
 	list := s.RangesRepo.ListAll()
 
 	mp := map[string]*model.ZdRanges{}
@@ -102,7 +103,7 @@ func (s *RangesService) Sync(files []model.ResFile) (err error) {
 	return
 }
 
-func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
+func (s *RangesService) SyncToDB(fi domain.ResFile) (err error) {
 	content, _ := os.ReadFile(fi.Path)
 	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdRanges{}
@@ -159,7 +160,7 @@ func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
 		return
 	}
 
-	yamlObj := model.ResRanges{}
+	yamlObj := domain.ResRanges{}
 	yamlObj.Ranges = map[string]string{}
 	s.RangesRepo.GenRangesRes(*ranges, &yamlObj)
 

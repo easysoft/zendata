@@ -1,8 +1,8 @@
 package action
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -23,7 +23,7 @@ func GenYamlFromArticle(file string) {
 	words := genHelper.LoadAllWords()
 
 	templ := replaceWords(content, words)
-	yamlObj := model.DefArticle{Type: "article", Content: templ, Author: "zendata",
+	yamlObj := domain.DefArticle{Type: "article", Content: templ, Author: "zendata",
 		From: "words.v1", Title: "Template", Version: "1.1"}
 	bytes, _ := yaml.Marshal(&yamlObj)
 	yamlStr := string(bytes)

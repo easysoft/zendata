@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"log"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -25,7 +25,7 @@ type ExcelService struct {
 	ExpressionService *ExpressionService `inject:""`
 }
 
-func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField, total int) (
+func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, field *domain.DefField, total int) (
 	values map[string][]interface{}) {
 	values = map[string][]interface{}{}
 
@@ -246,7 +246,7 @@ func (s *ExcelService) ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir s
 	return
 }
 
-func (s *ExcelService) ReadDataFromSQLite(field model.DefField, dbName string, tableName string, total int, filePath string) (
+func (s *ExcelService) ReadDataFromSQLite(field domain.DefField, dbName string, tableName string, total int, filePath string) (
 	[]string, string) {
 	list := make([]string, 0)
 
@@ -358,7 +358,7 @@ func (s *ExcelService) ReadDataFromSQLite(field model.DefField, dbName string, t
 	return list, fieldSelect
 }
 
-func (s *ExcelService) genExcelValuesWithExpr(field *model.DefField, fieldNameToValuesMap map[string][]interface{}) (
+func (s *ExcelService) genExcelValuesWithExpr(field *domain.DefField, fieldNameToValuesMap map[string][]interface{}) (
 	values []interface{}) {
 	selects := s.ExpressionService.ReplaceVariableValues(field.Select, fieldNameToValuesMap)
 	wheres := s.ExpressionService.ReplaceVariableValues(field.Where, fieldNameToValuesMap)

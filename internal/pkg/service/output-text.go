@@ -2,13 +2,13 @@ package service
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
 func (s *OutputService) GenText(returnedForYamlRefer bool) (lines []interface{}) {
-	simulatedFieldFromDef := model.DefField{
+	simulatedFieldFromDef := domain.DefField{
 		Fields: vari.GlobalVars.DefData.Fields,
 		Join:   true,
 	}

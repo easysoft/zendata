@@ -2,8 +2,8 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/oklog/ulid/v2"
 	"math/rand"
@@ -14,7 +14,7 @@ import (
 type ValueService struct {
 }
 
-func (s *ValueService) CreateTimestampField(field *model.DefField) {
+func (s *ValueService) CreateTimestampField(field *domain.DefField) {
 	valueGen.ConvertTmFormat(field)
 
 	rang := strings.Trim(strings.TrimSpace(field.Range), ",")
@@ -32,7 +32,7 @@ func (s *ValueService) CreateTimestampField(field *model.DefField) {
 	field.Values = values
 }
 
-func (s *ValueService) CreateUlidField(field *model.DefField) {
+func (s *ValueService) CreateUlidField(field *domain.DefField) {
 	count := 0
 
 	t := time.Unix(1000000, 0)

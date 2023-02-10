@@ -3,7 +3,7 @@ package controller
 import (
 	"bytes"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -47,7 +47,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 		configFile = filepath.Join(vari.ZdDir, configFile)
 	}
 
-	vari.GlobalVars.DefData = model.DefData{}
+	vari.GlobalVars.DefData = domain.DefData{}
 	vari.GlobalVars.ExportFields = nil
 	if defaultFile != "" {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(defaultFile)

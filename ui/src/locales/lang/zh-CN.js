@@ -64,6 +64,7 @@ const locale = {
 
   'msg.mock.create': '新建Mock配置',
   'msg.mock.edit': '编辑Mock配置',
+  'msg.mock.response': 'Mock数据预览',
 
   'action.list': '列表',
   'action.create': '创建',

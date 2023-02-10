@@ -3,6 +3,7 @@ package gen
 import (
 	"errors"
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"regexp"
@@ -11,7 +12,6 @@ import (
 	"time"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -21,13 +21,13 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
-func DealwithFixRange(field *model.DefField) {
+func DealwithFixRange(field *domain.DefField) {
 	if isRangeFix(field.Prefix) {
 		field.PrefixRange = CreateFieldFixValuesFromList(field.Prefix, field)
 	} else {
 		var tmp interface{}
 		tmp = field.Prefix
-		field.PrefixRange = &model.Range{Values: []interface{}{tmp}}
+		field.PrefixRange = &domain.Range{Values: []interface{}{tmp}}
 	}
 
 	if isRangeFix(field.Postfix) {
@@ -35,13 +35,13 @@ func DealwithFixRange(field *model.DefField) {
 	} else {
 		var tmp interface{}
 		tmp = field.Postfix
-		field.PostfixRange = &model.Range{Values: []interface{}{tmp}}
+		field.PostfixRange = &domain.Range{Values: []interface{}{tmp}}
 	}
 }
 
-func genValuesForChildFields(field *model.DefField, withFix bool, total int) (values []string) {
+func genValuesForChildFields(field *domain.DefField, withFix bool, total int) (values []string) {
 	fieldNameToValuesMap := map[string][]string{}
-	fieldNameToFieldMap := map[string]model.DefField{}
+	fieldNameToFieldMap := map[string]domain.DefField{}
 
 	// 1. generate values for sub fields
 	for _, child := range field.Fields {
@@ -78,7 +78,7 @@ func genValuesForChildFields(field *model.DefField, withFix bool, total int) (va
 	return
 }
 
-func GenValuesForMultiRes(field *model.DefField, withFix bool, total int) (values []string) {
+func GenValuesForMultiRes(field *domain.DefField, withFix bool, total int) (values []string) {
 	unionValues := make([]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 
 	for _, child := range field.Froms {
@@ -100,7 +100,7 @@ func GenValuesForMultiRes(field *model.DefField, withFix bool, total int) (value
 	return
 }
 
-func GenValuesForSingleRes(field *model.DefField, total int) (values []string) {
+func GenValuesForSingleRes(field *domain.DefField, total int) (values []string) {
 	if field.Use != "" { // refer to ranges or instance
 		groupValues := vari.Res[getFromKey(field)]
 
@@ -131,7 +131,7 @@ func GenValuesForSingleRes(field *model.DefField, total int) (values []string) {
 	return
 }
 
-func GenValuesForConfig(field *model.DefField, total int) (values []string) {
+func GenValuesForConfig(field *domain.DefField, total int) (values []string) {
 	groupValues := vari.Res[field.Config]
 	values = append(values, groupValues["all"]...)
 
@@ -146,7 +146,7 @@ func isRangeFix(fix string) bool {
 	return index > 0 && index < len(fix)-1
 }
 
-func GetFieldValStr(field model.DefField, val interface{}) string {
+func GetFieldValStr(field domain.DefField, val interface{}) string {
 	str := "n/a"
 	success := false
 
@@ -202,8 +202,8 @@ func GetFieldValStr(field model.DefField, val interface{}) string {
 	return str
 }
 
-func loopFieldValues(field *model.DefField, oldValues []string, total int, withFix bool) (values []string) {
-	fieldValue := model.FieldWithValues{}
+func loopFieldValues(field *domain.DefField, oldValues []string, total int, withFix bool) (values []string) {
+	fieldValue := domain.FieldWithValues{}
 
 	for _, val := range oldValues {
 		fieldValue.Values = append(fieldValue.Values, val)
@@ -233,7 +233,7 @@ func loopFieldValues(field *model.DefField, oldValues []string, total int, withF
 	return
 }
 
-func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
+func loopFieldValWithFix(field *domain.DefField, fieldValue domain.FieldWithValues,
 	indexOfRow *int, count int, withFix bool) (loopStr string) {
 
 	for j := 0; j < (*field).LoopIndex; j++ {
@@ -255,7 +255,7 @@ func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues
 	return
 }
 
-func addFix(str string, field *model.DefField, count int, withFix bool) (ret string) {
+func addFix(str string, field *domain.DefField, count int, withFix bool) (ret string) {
 	prefix := GetStrValueFromRange(field.PrefixRange, count)
 	postfix := GetStrValueFromRange(field.PostfixRange, count)
 	divider := field.Divider
@@ -274,7 +274,7 @@ func addFix(str string, field *model.DefField, count int, withFix bool) (ret str
 	return
 }
 
-func GetStrValueFromRange(rang *model.Range, index int) string {
+func GetStrValueFromRange(rang *domain.Range, index int) string {
 	if len(rang.Values) == 0 {
 		return ""
 	}
@@ -330,7 +330,7 @@ func convPrefixVal2Str(val interface{}, format string) string {
 	return str
 }
 
-func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {
+func GenerateFieldVal(field domain.DefField, fieldValue domain.FieldWithValues, index *int) (val string, err error) {
 	// 叶节点
 	if len(fieldValue.Values) == 0 {
 		if genHelper.IsSelectExcelWithExpr(field) {
@@ -347,7 +347,7 @@ func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, in
 	return
 }
 
-func computerLoop(field *model.DefField) {
+func computerLoop(field *domain.DefField) {
 	if (*field).LoopIndex != 0 {
 		return
 	}
@@ -597,6 +597,6 @@ exit:
 	return
 }
 
-func getFromKey(field *model.DefField) string {
+func getFromKey(field *domain.DefField) string {
 	return fmt.Sprintf("%s-%s-%s", field.From, field.Use, field.Select)
 }

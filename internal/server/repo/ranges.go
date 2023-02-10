@@ -2,6 +2,7 @@ package serverRepo
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 )
@@ -95,7 +96,7 @@ func (r *RangesRepo) UpdateYaml(po model.ZdRanges) (err error) {
 	return
 }
 
-func (r *RangesRepo) GenRangesRes(ranges model.ZdRanges, res *model.ResRanges) {
+func (r *RangesRepo) GenRangesRes(ranges model.ZdRanges, res *domain.ResRanges) {
 	res.Title = ranges.Title
 	res.Desc = ranges.Desc
 }

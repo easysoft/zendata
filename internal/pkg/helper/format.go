@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/Chain-Zhang/pinyin"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/mattn/go-runewidth"
 	uuid "github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
@@ -109,7 +109,7 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 	return str, true
 }
 
-func AddPad(str string, field model.DefField) string {
+func AddPad(str string, field domain.DefField) string {
 	if field.Length > 0 && field.Length > runewidth.StringWidth(str) {
 		gap := field.Length - len(str)
 		if field.LeftPad != "" {
@@ -262,7 +262,7 @@ func ReplaceSpecialChars(bytes []byte) []byte {
 			regx1 := regexp.MustCompile("(?P<x>[^`])\\[")
 			line = regx1.ReplaceAllString(line, "${x}(")
 
-			regx2 := regexp.MustCompile("\\](?P<x>[^`])")
+			regx2 := regexp.MustCompile("\\](?P<x>[^`]*)")
 			line = regx2.ReplaceAllString(line, ")${x}")
 		}
 

@@ -64,6 +64,7 @@ const locale = {
 
   'msg.mock.create': 'Create Mock',
   'msg.mock.edit': 'Edit Mock',
+  'msg.mock.response': 'Mock Response Data',
 
   'action.list': 'List',
   'action.create': 'Create',

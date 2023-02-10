@@ -1,12 +1,12 @@
 package ctrl
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/service"
 )
 
 type FieldCtrl struct {
-	Field          *model.DefField
+	Field          *domain.DefField
 	FieldService   *service.FieldService
 	ValueService   *service.ValueService
 	ListService    *service.ListService    `inject:""`

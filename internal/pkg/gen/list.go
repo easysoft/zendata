@@ -2,6 +2,7 @@ package gen
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"math"
@@ -9,18 +10,17 @@ import (
 	"strings"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
-func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+func CreateListField(field *domain.DefField, fieldWithValue *domain.FieldWithValues) {
 	fieldWithValue.Field = field.Field
 	fieldWithValue.Precision = field.Precision
 
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
-			childFieldWithValue := model.FieldWithValues{}
+			childFieldWithValue := domain.FieldWithValues{}
 			CreateListField(&child, &childFieldWithValue)
 		}
 	} else {
@@ -28,7 +28,7 @@ func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValue
 	}
 }
 
-func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateListFieldValues(field *domain.DefField, fieldValue *domain.FieldWithValues) {
 	if strings.Index(field.Range, ".txt") > -1 {
 		CreateFieldValuesFromText(field, fieldValue)
 	} else {
@@ -36,7 +36,7 @@ func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithVal
 	}
 }
 
-func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateFieldValuesFromList(field *domain.DefField, fieldValue *domain.FieldWithValues) {
 	rang := field.Range
 	if rang == "" {
 		for i := 0; i < vari.GlobalVars.Total; i++ {
@@ -87,8 +87,8 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 	}
 }
 
-func CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *model.Range) {
-	rang = &model.Range{}
+func CreateFieldFixValuesFromList(strRang string, field *domain.DefField) (rang *domain.Range) {
+	rang = &domain.Range{}
 
 	if strRang == "" {
 		return
@@ -218,7 +218,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 	return
 }
 
-func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func CreateValuesFromLiteral(field *domain.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	elemArr := ParseDesc(desc)
 	step, _ := strconv.Atoi(stepStr)
 	if step == 0 {
@@ -273,7 +273,7 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	return
 }
 
-func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func CreateValuesFromInterval(field *domain.DefField, desc, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr
@@ -338,7 +338,7 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	return
 }
 
-func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func CreateValuesFromYaml(field *domain.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
 	rootDef := vari.GlobalVars.DefData
 	configDir := vari.GlobalVars.ConfigFileDir

@@ -3,7 +3,7 @@ package helper
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -31,7 +31,7 @@ func View(res string) {
 	}
 }
 
-func ReadYamlData(path string) (typ string, insts model.ResInstances, ranges model.ResRanges) {
+func ReadYamlData(path string) (typ string, insts domain.ResInstances, ranges domain.ResRanges) {
 	yamlContent, err := ioutil.ReadFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
@@ -49,7 +49,7 @@ func ReadYamlData(path string) (typ string, insts model.ResInstances, ranges mod
 	return
 }
 
-func printInst(inst model.ResInstances) {
+func printInst(inst domain.ResInstances) {
 	msg := ""
 	msg = msg + inst.Title + " " + inst.Desc + "\n"
 
@@ -72,7 +72,7 @@ func printInst(inst model.ResInstances) {
 	logUtils.PrintTo(msg)
 }
 
-func printRanges(ranges model.ResRanges) {
+func printRanges(ranges domain.ResRanges) {
 	msg := ""
 	msg = msg + ranges.Title + " " + ranges.Desc + "\n"
 

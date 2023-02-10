@@ -2,7 +2,7 @@ package gen
 
 import (
 	"encoding/json"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -58,7 +58,7 @@ func linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface
 	return
 }
 
-func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]interface{}) {
+func decodeOneLevel(line string, fields []domain.DefField, rowMap *map[string]interface{}) {
 	left := []rune(line)
 
 	for j, field := range fields {

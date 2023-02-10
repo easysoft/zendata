@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -43,7 +43,7 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	return
 }
 
-func GenerateForFieldRecursive(field *model.DefField, withFix bool, total int) (values []string) {
+func GenerateForFieldRecursive(field *domain.DefField, withFix bool, total int) (values []string) {
 	DealwithFixRange(field)
 
 	if len(field.Fields) > 0 { // has child fields
@@ -69,7 +69,7 @@ func GenerateForFieldRecursive(field *model.DefField, withFix bool, total int) (
 	return values
 }
 
-func GenerateValuesForField(field *model.DefField, total int) []string {
+func GenerateValuesForField(field *domain.DefField, total int) []string {
 	values := make([]string, 0)
 
 	fieldWithValues := CreateField(field)

@@ -1,8 +1,8 @@
 package service
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -21,8 +21,8 @@ type DefService struct {
 	FileService     *FileService     `inject:""`
 }
 
-func (s *DefService) LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret model.DefData) {
-	ret = model.DefData{}
+func (s *DefService) LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret domain.DefData) {
+	ret = domain.DefData{}
 	for _, f := range filesContents {
 		right := s.LoadContentDef(f)
 		ret = s.MergeDef(ret, right, fieldsToExport)
@@ -31,7 +31,7 @@ func (s *DefService) LoadDataContentDef(filesContents [][]byte, fieldsToExport *
 	return
 }
 
-func (s *DefService) LoadContentDef(content []byte) (ret model.DefData) {
+func (s *DefService) LoadContentDef(content []byte) (ret domain.DefData) {
 	content = helper.ReplaceSpecialChars(content)
 	err := yaml.Unmarshal(content, &ret)
 	if err != nil {
@@ -42,7 +42,7 @@ func (s *DefService) LoadContentDef(content []byte) (ret model.DefData) {
 	return
 }
 
-func (s *DefService) MergeDef(defaultDef model.DefData, configDef model.DefData, fieldsToExport *[]string) model.DefData {
+func (s *DefService) MergeDef(defaultDef domain.DefData, configDef domain.DefData, fieldsToExport *[]string) domain.DefData {
 	if configDef.Type == "article" && configDef.Content != "" {
 		s.convertArticleContent(&configDef)
 	}
@@ -60,8 +60,8 @@ func (s *DefService) MergeDef(defaultDef model.DefData, configDef model.DefData,
 	return defaultDef
 }
 
-func (s *DefService) convertArticleContent(config *model.DefData) {
-	field := model.DefField{}
+func (s *DefService) convertArticleContent(config *domain.DefData) {
+	field := domain.DefField{}
 	field.Type = config.Type
 	field.From = config.From
 	field.Range = "`" + config.Content + "`"
@@ -69,14 +69,14 @@ func (s *DefService) convertArticleContent(config *model.DefData) {
 	config.Fields = append(config.Fields, field)
 }
 
-func (s *DefService) mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string) {
+func (s *DefService) mergerDefine(defaultDef, configDef *domain.DefData, fieldsToExport *[]string) {
 	isSetFieldsToExport := false
 	if len(*fieldsToExport) > 0 {
 		isSetFieldsToExport = true
 	}
 
-	defaultFieldMap := map[string]*model.DefField{}
-	configFieldMap := map[string]*model.DefField{}
+	defaultFieldMap := map[string]*domain.DefField{}
+	configFieldMap := map[string]*domain.DefField{}
 	sortedKeys := make([]string, 0)
 
 	//if configDef.Type != "" {
@@ -144,13 +144,13 @@ func (s *DefService) mergerDefine(defaultDef, configDef *model.DefData, fieldsTo
 	}
 }
 
-func (s *DefService) orderFields(defaultDef *model.DefData, fieldsToExport []string) {
-	mp := map[string]model.DefField{}
+func (s *DefService) orderFields(defaultDef *domain.DefData, fieldsToExport []string) {
+	mp := map[string]domain.DefField{}
 	for _, field := range defaultDef.Fields {
 		mp[field.Field] = field
 	}
 
-	fields := make([]model.DefField, 0)
+	fields := make([]domain.DefField, 0)
 	for _, fieldName := range fieldsToExport {
 		fields = append(fields, mp[fieldName])
 	}
@@ -158,7 +158,7 @@ func (s *DefService) orderFields(defaultDef *model.DefData, fieldsToExport []str
 	defaultDef.Fields = fields
 }
 
-func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, keys *[]string) {
+func CreatePathToFieldMap(field *domain.DefField, mp map[string]*domain.DefField, keys *[]string) {
 	if field.Path == "" { // root
 		field.Path = field.Field
 	}
@@ -180,7 +180,7 @@ func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, 
 	}
 }
 
-func CopyField(child model.DefField, parent *model.DefField) {
+func CopyField(child domain.DefField, parent *domain.DefField) {
 	if child.Note != "" {
 		(*parent).Note = child.Note
 	}

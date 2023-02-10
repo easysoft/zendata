@@ -2,12 +2,12 @@ package gen
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
-	"github.com/easysoft/zendata/internal/pkg/model"
 )
 
-func CreateField(field *model.DefField) model.FieldWithValues {
-	fieldWithValue := model.FieldWithValues{}
+func CreateField(field *domain.DefField) domain.FieldWithValues {
+	fieldWithValue := domain.FieldWithValues{}
 
 	if field.Type == "" { // set default
 		field.Type = consts.FieldTypeList

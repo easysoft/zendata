@@ -2,6 +2,7 @@ package controller
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverService "github.com/easysoft/zendata/internal/server/service"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -70,10 +71,21 @@ func (c *MockCtrl) Upload(ctx iris.Context) {
 	ctx.JSON(c.SuccessResp(iris.Map{"name": name, "spec": spec, "mock": mockConf, "data": dataConf, "path": pth}))
 }
 
-func (c *MockCtrl) Preview(ctx iris.Context) {
-	id, _ := ctx.Params().GetInt("id")
+func (c *MockCtrl) GetPreviewData(ctx iris.Context) {
+	id, _ := ctx.URLParamInt("id")
 
 	data, _ := c.MockService.GetPreviewData(id)
+
+	ctx.JSON(c.SuccessResp(data))
+}
+
+func (c *MockCtrl) GetPreviewResp(ctx iris.Context) {
+	req := domain.MockPreviewReq{}
+	if err := ctx.ReadJSON(&req); err != nil {
+		ctx.JSON(c.ErrResp(consts.ParamErr, err.Error()))
+	}
+
+	data, _ := c.MockService.GetPreviewResp(req)
 
 	ctx.JSON(c.SuccessResp(data))
 }

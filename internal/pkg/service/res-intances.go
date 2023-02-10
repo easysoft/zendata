@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/jinzhu/copier"
@@ -15,7 +15,7 @@ type ResInstancesService struct {
 	ResInstancesService *ResInstancesService `inject:""`
 }
 
-func (s *ResInstancesService) GetResFromInstances(insts model.ResInstances) (groupedValue map[string][]interface{}) {
+func (s *ResInstancesService) GetResFromInstances(insts domain.ResInstances) (groupedValue map[string][]interface{}) {
 	groupedValue = map[string][]interface{}{}
 
 	for _, inst := range insts.Instances {
@@ -35,7 +35,7 @@ func (s *ResInstancesService) GetResFromInstances(insts model.ResInstances) (gro
 	return groupedValue
 }
 
-func (s *ResInstancesService) prepareNestedInstanceRes(insts model.ResInstances, inst model.ResInstancesItem, instField model.DefField) {
+func (s *ResInstancesService) prepareNestedInstanceRes(insts domain.ResInstances, inst domain.ResInstancesItem, instField domain.DefField) {
 	// set "from" val from parent if needed
 	if instField.From == "" {
 		if insts.From != "" {
@@ -83,13 +83,13 @@ func (s *ResInstancesService) prepareNestedInstanceRes(insts model.ResInstances,
 	}
 }
 
-func (s *ResInstancesService) ConvertInstantsToField(insts model.ResInstances, inst model.ResInstancesItem) (field model.DefField) {
+func (s *ResInstancesService) ConvertInstantsToField(insts domain.ResInstances, inst domain.ResInstancesItem) (field domain.DefField) {
 	field.Note = "Converted From Instances " + insts.Title
 
 	//field.Field = insts.Field
 	field.From = insts.From
 
-	child := model.DefField{}
+	child := domain.DefField{}
 	child.Field = inst.Instance
 
 	// some props are from parent instances

@@ -2,6 +2,7 @@ package serverRepo
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 )
@@ -66,7 +67,7 @@ func (r *DefRepo) UpdateYaml(po model.ZdDef) (err error) {
 	return
 }
 
-func (r *DefRepo) GenDef(def model.ZdDef, data *model.DefData) {
+func (r *DefRepo) GenDef(def model.ZdDef, data *domain.DefData) {
 	data.Title = def.Title
 	data.Desc = def.Desc
 	data.Type = def.Type

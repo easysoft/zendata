@@ -23,7 +23,8 @@ func (m *MockModule) Party() module.WebModule {
 		index.Delete("/{id:uint}", m.MockCtrl.Remove).Name = "删除Mock"
 
 		index.Post("/upload", m.MockCtrl.Upload).Name = "上传Spec"
-		index.Get("/preview", m.MockCtrl.Preview).Name = "上传Spec"
+		index.Get("/getPreviewData", m.MockCtrl.GetPreviewData).Name = "上传Spec"
+		index.Post("/getPreviewResp", m.MockCtrl.GetPreviewResp).Name = "上传Spec"
 
 		index.Any("/{paths:path}", m.MockCtrl.Mock) // mock data url
 	}

@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
@@ -16,7 +16,7 @@ import (
 type FixService struct {
 }
 
-func (s *FixService) AddFix(val interface{}, field *model.DefField, count int, withFix bool) (ret interface{}) {
+func (s *FixService) AddFix(val interface{}, field *domain.DefField, count int, withFix bool) (ret interface{}) {
 	prefix := s.getStrValueFromFixRange(field.PrefixRange, count)
 	postfix := s.getStrValueFromFixRange(field.PostfixRange, count)
 	divider := field.Divider
@@ -47,7 +47,7 @@ func (s *FixService) AddFix(val interface{}, field *model.DefField, count int, w
 	return
 }
 
-func (s *FixService) getStrValueFromFixRange(rang *model.Range, index int) string {
+func (s *FixService) getStrValueFromFixRange(rang *domain.Range, index int) string {
 	if rang == nil || len(rang.Values) == 0 {
 		return ""
 	}

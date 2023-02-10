@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -19,22 +19,22 @@ import (
 )
 
 func ListData() {
-	res := map[string][]model.ResFile{}
+	res := map[string][]domain.ResFile{}
 	GetFilesAndDirs(vari.ZdDir, consts.ResDirUsers, &res)
 
 	res, nameWidth, titleWidth := LoadRes(res)
 	PrintRes(res, nameWidth, titleWidth)
 }
 
-func ListRes() (ret map[string][]model.ResFile) {
+func ListRes() (ret map[string][]domain.ResFile) {
 	res, nameWidth, titleWidth := GetRes()
 	PrintRes(res, nameWidth, titleWidth)
 
 	return
 }
 
-func GetRes() (ret map[string][]model.ResFile, nameWidth, titleWidth int) {
-	ret = map[string][]model.ResFile{}
+func GetRes() (ret map[string][]domain.ResFile, nameWidth, titleWidth int) {
+	ret = map[string][]domain.ResFile{}
 
 	for _, key := range consts.ResKeys {
 		GetFilesAndDirs(key, key, &ret)
@@ -45,11 +45,11 @@ func GetRes() (ret map[string][]model.ResFile, nameWidth, titleWidth int) {
 	return
 }
 
-func LoadRes(res map[string][]model.ResFile) (ret map[string][]model.ResFile, nameWidth, titleWidth int) {
-	ret = map[string][]model.ResFile{}
+func LoadRes(res map[string][]domain.ResFile) (ret map[string][]domain.ResFile, nameWidth, titleWidth int) {
+	ret = map[string][]domain.ResFile{}
 
 	for _, key := range consts.ResKeys {
-		arr := make([]model.ResFile, 0)
+		arr := make([]domain.ResFile, 0)
 
 		for _, item := range res[key] {
 			pth := item.Path
@@ -106,7 +106,7 @@ func LoadRes(res map[string][]model.ResFile) (ret map[string][]model.ResFile, na
 	return
 }
 
-func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
+func PrintRes(res map[string][]domain.ResFile, nameWidth, titleWidth int) {
 	dataMsg := ""
 	yamlMsg := ""
 	usersMsg := ""
@@ -148,7 +148,7 @@ func PrintRes(res map[string][]model.ResFile, nameWidth, titleWidth int) {
 	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
 }
 
-func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
+func GetFilesAndDirs(pth, typ string, res *map[string][]domain.ResFile) {
 	if !fileUtils.IsAbsPath(pth) {
 		pth = vari.ZdDir + pth
 	}
@@ -168,14 +168,14 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]model.ResFile) {
 				continue
 			}
 
-			file := model.ResFile{Path: filepath.Join(pth, name), UpdatedAt: fi.ModTime()}
+			file := domain.ResFile{Path: filepath.Join(pth, name), UpdatedAt: fi.ModTime()}
 			(*res)[typ] = append((*res)[typ], file)
 		}
 	}
 }
 
 func ReadYamlInfo(path string) (title, desc, resType string) {
-	info := model.DefInfo{}
+	info := domain.DefInfo{}
 
 	if strings.Index(path, "apache") > -1 {
 		logUtils.PrintTo("")
@@ -253,7 +253,7 @@ func removeDirPrefix(name, seq string) (ret string) {
 	return
 }
 
-func SortByName(arr []model.ResFile) []model.ResFile {
+func SortByName(arr []domain.ResFile) []domain.ResFile {
 	sort.Slice(arr, func(i, j int) bool {
 		flag := false
 		if arr[i].ReferName > (arr[j].ReferName) {
@@ -264,7 +264,7 @@ func SortByName(arr []model.ResFile) []model.ResFile {
 	return arr
 }
 
-func GetYamlResType(def model.DefInfo) string {
+func GetYamlResType(def domain.DefInfo) string {
 	if def.Ranges != nil {
 		return consts.ResTypeRanges
 	} else if def.Instances != nil {

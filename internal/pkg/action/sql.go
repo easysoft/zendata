@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -49,11 +50,11 @@ func GenYamlFromSql(file string) {
 
 		columns, types := getColumnsFromCreateStatement(createStr)
 
-		def := model.DefSimple{}
+		def := domain.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.FieldSimple{Field: col}
+			field := domain.FieldSimple{Field: col}
 
 			// pk
 			isPk := col == pkMap[tableName]

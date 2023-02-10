@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/action"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/server/repo"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -44,10 +45,10 @@ func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data 
 		ref, _ = s.ReferRepo.GetByOwnerId(field.ID)
 	}
 
-	fld := model.DefField{}
+	fld := domain.DefField{}
 	genFieldFromZdField(field, ref, &fld)
 
-	def := model.DefData{}
+	def := domain.DefData{}
 	def.Fields = append(def.Fields, fld)
 	defContent, _ := yaml.Marshal(def)
 

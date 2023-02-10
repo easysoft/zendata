@@ -2,7 +2,7 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"regexp"
 	"strconv"
@@ -23,7 +23,7 @@ type FieldService struct {
 	CombineService *CombineService `inject:""`
 }
 
-func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
+func (s *FieldService) Generate(field *domain.DefField, parentJoin bool) {
 	field.Join = field.Join || parentJoin
 
 	s.RangeService.DealwithFixRange(field)
@@ -70,7 +70,7 @@ func (s *FieldService) Generate(field *model.DefField, parentJoin bool) {
 	}
 }
 
-func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
+func (s *FieldService) GenerateValuesForNoReferField(field *domain.DefField) {
 	s.CreateField(field)
 
 	s.LoopService.ComputerLoopTimes(field) // change LoopStart, LoopEnd for conf like loop:  1-10             # 循环1次，2次……
@@ -117,7 +117,7 @@ func (s *FieldService) GenerateValuesForNoReferField(field *model.DefField) {
 	return
 }
 
-func (s *FieldService) CreateField(field *model.DefField) {
+func (s *FieldService) CreateField(field *domain.DefField) {
 	if field.Type == "" { // set default
 		field.Type = consts.FieldTypeList
 	}
@@ -142,7 +142,7 @@ func (s *FieldService) CreateField(field *model.DefField) {
 	return
 }
 
-func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []interface{}) {
+func (s *FieldService) GenValuesForConfig(field *domain.DefField) (values []interface{}) {
 	groupValues := vari.GlobalVars.ResData[field.Config]
 
 	field.Values = groupValues["all"]
@@ -152,7 +152,7 @@ func (s *FieldService) GenValuesForConfig(field *model.DefField) (values []inter
 	return
 }
 
-func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
+func (s *FieldService) GenValuesForSingleRes(field *domain.DefField) {
 	if field.Use != "" { // refer to ranges or instance
 		key := s.ResService.GetFromKey(field)
 		groupValues := vari.GlobalVars.ResData[key]
@@ -186,7 +186,7 @@ func (s *FieldService) GenValuesForSingleRes(field *model.DefField) {
 	return
 }
 
-func (s *FieldService) GenValuesForMultiRes(field *model.DefField, withFix bool) {
+func (s *FieldService) GenValuesForMultiRes(field *domain.DefField, withFix bool) {
 	unionValues := make([]interface{}, 0) // 2 dimension arr for from, [ [a,b,c], [1,2,3] ]
 
 	for _, from := range field.Froms {
@@ -271,7 +271,7 @@ exit:
 	return
 }
 
-func (s *FieldService) computerUniqueTotal(field *model.DefField) (ret int) {
+func (s *FieldService) computerUniqueTotal(field *domain.DefField) (ret int) {
 	ret = len(field.Values)
 
 	if field.PostfixRange != nil && len(field.PostfixRange.Values) > 0 {

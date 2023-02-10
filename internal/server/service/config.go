@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"os"
 	"regexp"
 	"strings"
@@ -28,7 +29,7 @@ func (s *ConfigService) List(keywords string, page int) (list []*model.ZdConfig,
 	return
 }
 
-func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []model.Dir) {
+func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []domain.Dir) {
 	if id > 0 {
 		config, _ = s.ConfigRepo.Get(uint(id))
 	}
@@ -99,7 +100,7 @@ func (s *ConfigService) updateYaml(id uint) (err error) {
 	return
 }
 func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
-	yamlObj := model.ResConfig{}
+	yamlObj := domain.ResConfig{}
 	s.ConfigRepo.GenConfigRes(*config, &yamlObj)
 
 	bytes, _ := yaml.Marshal(yamlObj)
@@ -108,7 +109,7 @@ func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
 	return
 }
 
-func (s *ConfigService) Sync(files []model.ResFile) (err error) {
+func (s *ConfigService) Sync(files []domain.ResFile) (err error) {
 	list := s.ConfigRepo.ListAll()
 
 	mp := map[string]*model.ZdConfig{}
@@ -131,7 +132,7 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 
 	return
 }
-func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
+func (s *ConfigService) SyncToDB(fi domain.ResFile) (err error) {
 	content, _ := os.ReadFile(fi.Path)
 	yamlContent := helper.ReplaceSpecialChars(content)
 

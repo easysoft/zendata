@@ -3,8 +3,8 @@ package genHelper
 import (
 	"fmt"
 	"github.com/Knetic/govaluate"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-func GenExpressionValues(field model.DefField, valuesMap map[string][]string,
-	fieldMap map[string]model.DefField) (ret []string) {
+func GenExpressionValues(field domain.DefField, valuesMap map[string][]string,
+	fieldMap map[string]domain.DefField) (ret []string) {
 	exp := field.Value
 
 	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]+)`)

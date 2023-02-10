@@ -2,6 +2,7 @@ package vari
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 	"time"
@@ -13,7 +14,7 @@ type GenVarType struct {
 
 	Output       string
 	OutputFormat string
-	TopFieldMap  map[string]model.DefField
+	TopFieldMap  map[string]domain.DefField
 	ExportFields []string
 	ColIsNumArr  []bool
 
@@ -23,7 +24,7 @@ type GenVarType struct {
 	DBDsnParsing DBDsnData
 	DBClear      bool
 	MockDir      string
-	MockData     *model.MockData
+	MockData     *domain.MockData
 
 	Human     bool
 	Trim      bool
@@ -31,7 +32,7 @@ type GenVarType struct {
 
 	ConfigFileDir string
 
-	DefData model.DefData
+	DefData domain.DefData
 	ResData map[string]map[string][]interface{}
 
 	CacheResFileToMap                  map[string]map[string][]interface{}
@@ -44,9 +45,9 @@ type GenVarType struct {
 
 var (
 	GlobalVars = GenVarType{
-		DefData:      model.DefData{},
+		DefData:      domain.DefData{},
 		OutputFormat: consts.FormatText,
-		TopFieldMap:  map[string]model.DefField{},
+		TopFieldMap:  map[string]domain.DefField{},
 
 		CacheResFileToMap:                  map[string]map[string][]interface{}{},
 		RandFieldSectionPathToValuesMap:    map[int]map[string]interface{}{},

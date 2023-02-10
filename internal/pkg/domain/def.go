@@ -1,4 +1,4 @@
-package model
+package domain
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
@@ -94,20 +94,21 @@ type DefSimple struct {
 	Fields  []FieldSimple `yaml:"fields"`
 }
 type FieldSimple struct {
-	Field   string `yaml:"field,omitempty"`
-	Note    string `yaml:"note,omitempty"`
-	Range   string `yaml:"range,omitempty"`
-	Value   string `yaml:"value,omitempty"`
-	Prefix  string `yaml:"prefix,omitempty"`
-	Postfix string `yaml:"postfix,omitempty"`
-	Divider string `yaml:"divider,omitempty"`
-	Loop    string `yaml:"loop,omitempty"`
-	Loopfix string `yaml:"loopfix,omitempty"`
-	Format  string `yaml:"format,omitempty"`
-	Rand    bool   `yaml:"rand,omitempty"`
-	Type    string `yaml:"type,omitempty"`
-	Mode    string `yaml:"mode,omitempty"`
-	Items   int    `yaml:"records,omitempty"`
+	Field        string `yaml:"field,omitempty"`
+	Note         string `yaml:"note,omitempty"`
+	Range        string `yaml:"range,omitempty"`
+	RangeLiteral string `yaml:"rangeLiteral,omitempty" json:"rangeLiteral,omitempty"`
+	Value        string `yaml:"value,omitempty"`
+	Prefix       string `yaml:"prefix,omitempty"`
+	Postfix      string `yaml:"postfix,omitempty"`
+	Divider      string `yaml:"divider,omitempty"`
+	Loop         string `yaml:"loop,omitempty"`
+	Loopfix      string `yaml:"loopfix,omitempty"`
+	Format       string `yaml:"format,omitempty"`
+	Rand         bool   `yaml:"rand,omitempty"`
+	Type         string `yaml:"type,omitempty"`
+	Mode         string `yaml:"mode,omitempty"`
+	Items        int    `yaml:"records,omitempty"`
 	//ParentItems int    `yaml:"-"`
 	//ParentJoin  bool   `yaml:"-"`
 	From string `yaml:"from,omitempty"`
@@ -211,6 +212,7 @@ type Dir struct {
 }
 
 type MockData struct {
+	Id      int    `json:"id" yaml:"-"`
 	Title   string `json:"title"`
 	Desc    string `json:"desc"`
 	Author  string `json:"author"`
@@ -221,7 +223,7 @@ type MockData struct {
 
 type EndPoint struct {
 	Method    HttpMethod               `json:"method"`
-	Summary   string                   `json:"summary"`
+	Summary   string                   `json:"summary,omitempty"`
 	Config    string                   `json:"config"`
 	MediaType string                   `json:"mediaType"`
 	Type      consts.OpenApiSchemaType `json:"type"`
@@ -229,22 +231,12 @@ type EndPoint struct {
 	Fields    string                   `json:"fields"`
 }
 
-// for preview
-type MockPaths struct {
-	PathKey   string        `json:"pathKey"`
-	PathValue []MockMethods `json:"pathValue"`
-}
-type MockMethods struct {
-	MethodKey   HttpMethod  `json:"methodKey"`
-	MethodValue []MockCodes `json:"methodValue"`
-}
-type MockCodes struct {
-	CodeKey   string       `json:"codeKey"`
-	CodeValue []MockMedias `json:"codeValue"`
-}
-type MockMedias struct {
-	MediaKey   string `json:"mediaKey"`
-	RespSample string `json:"respSample"`
+type MockPreviewReq struct {
+	Id     int    `json:"id"`
+	Url    string `json:"url"`
+	Method string `json:"method"`
+	Code   string `json:"code"`
+	Media  string `json:"media"`
 }
 
 type HttpMethod string

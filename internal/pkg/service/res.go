@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -39,7 +39,7 @@ func (s *ResService) LoadResDef(fieldsToExport []string) (res map[string]map[str
 	return
 }
 
-func (s *ResService) loadResForFieldRecursive(field *model.DefField) {
+func (s *ResService) loadResForFieldRecursive(field *domain.DefField) {
 	if len(field.Fields) > 0 { // child fields
 		for _, child := range field.Fields {
 			if child.Use != "" && child.From == "" {
@@ -85,7 +85,7 @@ func (s *ResService) loadResForFieldRecursive(field *model.DefField) {
 	}
 }
 
-func (s *ResService) GetResValueFromExcelOrYaml(resFile, resType, sheet string, field *model.DefField) (map[string][]interface{}, string) {
+func (s *ResService) GetResValueFromExcelOrYaml(resFile, resType, sheet string, field *domain.DefField) (map[string][]interface{}, string) {
 	resName := ""
 	groupedValues := map[string][]interface{}{}
 
@@ -98,7 +98,7 @@ func (s *ResService) GetResValueFromExcelOrYaml(resFile, resType, sheet string, 
 	return groupedValues, resName
 }
 
-func (s *ResService) GetReferencedRangeOrInstant(inst model.DefField) (referencedRanges model.ResRanges, referencedInsts model.ResInstances) {
+func (s *ResService) GetReferencedRangeOrInstant(inst domain.DefField) (referencedRanges domain.ResRanges, referencedInsts domain.ResInstances) {
 	resFile, _, _ := fileUtils.GetResProp(inst.From, inst.FileDir)
 
 	yamlContent, err := os.ReadFile(resFile)
@@ -124,6 +124,6 @@ func (s *ResService) GetReferencedRangeOrInstant(inst model.DefField) (reference
 	return
 }
 
-func (s *ResService) GetFromKey(field *model.DefField) string {
+func (s *ResService) GetFromKey(field *domain.DefField) string {
 	return fmt.Sprintf("%s-%s-%s", field.From, field.Use, field.Select)
 }

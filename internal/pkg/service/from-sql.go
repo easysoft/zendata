@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -52,11 +53,11 @@ func (s *SqlParseService) GenYamlFromSql(file string) {
 
 		columns, types := s.getColumnsFromCreateStatement(createStr)
 
-		def := model.DefSimple{}
+		def := domain.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.FieldSimple{Field: col}
+			field := domain.FieldSimple{Field: col}
 
 			// pk
 			isPk := col == pkMap[tableName]
@@ -329,11 +330,11 @@ func (s *SqlParseService) genTablesYaml(statementMap map[string]string, pkMap ma
 
 		columns, types := s.getColumnsFromCreateStatement(createStr)
 
-		def := model.DefSimple{}
+		def := domain.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.FieldSimple{Field: col}
+			field := domain.FieldSimple{Field: col}
 
 			// pk
 			isPk := col == pkMap[tableName]

@@ -30,6 +30,7 @@ const (
 	RunModeGen RunMode = iota
 	RunModeServer
 	RunModeServerRequest
+	RunModeMockPreview
 )
 
 func (c RunMode) String() string {

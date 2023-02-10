@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -32,8 +32,14 @@ type RangeService struct {
 	MainService  *MainService  `inject:""`
 }
 
-func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
+func (s *RangeService) CreateFieldValuesFromRange(field *domain.DefField) {
 	rang := field.Range
+	rangLiteral := field.RangeLiteral
+
+	if rangLiteral != "" {
+		field.Values = append(field.Values, rangLiteral)
+		return
+	}
 
 	// gen empty values
 	if rang == "" {
@@ -91,7 +97,7 @@ func (s *RangeService) CreateFieldValuesFromRange(field *model.DefField) {
 	}
 }
 
-func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func (s *RangeService) CreateValuesFromLiteral(field *domain.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	field.IsNumb = false
 
 	elemArr := s.ParseDesc(desc)
@@ -122,6 +128,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 			}
 
 			val := elemArr[idx]
+			val = strings.Trim(val, "`")
 			total = s.ListService.AppendValues(&items, val, repeat, total)
 
 			if total >= consts.MaxNumb {
@@ -148,7 +155,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *model.DefField, desc strin
 	return
 }
 
-func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func (s *RangeService) CreateValuesFromInterval(field *domain.DefField, desc, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr
@@ -216,7 +223,7 @@ func (s *RangeService) CreateValuesFromInterval(field *model.DefField, desc, ste
 	return
 }
 
-func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func (s *RangeService) CreateValuesFromYaml(field *domain.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	field.IsNumb = false
 
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
@@ -255,13 +262,13 @@ func (s *RangeService) CreateValuesFromYaml(field *model.DefField, yamlFile, ste
 	return
 }
 
-func (s *RangeService) DealwithFixRange(field *model.DefField) {
+func (s *RangeService) DealwithFixRange(field *domain.DefField) {
 	if s.FixIsARange(field.Prefix) {
 		field.PrefixRange = s.CreateAffixValuesFromRange(field.Prefix, field)
 	} else {
 		var tmp interface{}
 		tmp = field.Prefix
-		field.PrefixRange = &model.Range{Values: []interface{}{tmp}}
+		field.PrefixRange = &domain.Range{Values: []interface{}{tmp}}
 	}
 
 	if s.FixIsARange(field.Postfix) {
@@ -269,12 +276,12 @@ func (s *RangeService) DealwithFixRange(field *model.DefField) {
 	} else {
 		var tmp interface{}
 		tmp = field.Postfix
-		field.PostfixRange = &model.Range{Values: []interface{}{tmp}}
+		field.PostfixRange = &domain.Range{Values: []interface{}{tmp}}
 	}
 }
 
-func (s *RangeService) CreateAffixValuesFromRange(strRang string, field *model.DefField) (rang *model.Range) {
-	rang = &model.Range{}
+func (s *RangeService) CreateAffixValuesFromRange(strRang string, field *domain.DefField) (rang *domain.Range) {
+	rang = &domain.Range{}
 
 	if strRang == "" {
 		return
@@ -478,7 +485,7 @@ func (s *RangeService) ParseRangeSectionDesc(str string) (typ string, desc strin
 		temp := ""
 		for _, item := range arr {
 			if isScopeStr(item) && s.isCharOrNumberScope(item) { // only support a-z and 0-9 in []
-				tempField := model.DefField{}
+				tempField := domain.DefField{}
 				values := s.CreateValuesFromInterval(&tempField, item, "", 1, "")
 
 				for _, val := range values {

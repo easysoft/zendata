@@ -2,8 +2,8 @@ package service
 
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,7 +13,7 @@ import (
 type FormatService struct {
 }
 
-func (s *FormatService) GetFieldValStr(field model.DefField, val interface{}) interface{} {
+func (s *FormatService) GetFieldValStr(field domain.DefField, val interface{}) interface{} {
 	str := "n/a"
 	success := false
 
