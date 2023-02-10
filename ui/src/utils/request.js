@@ -17,7 +17,7 @@ function initRequest(remoteUrl) {
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8848/api/v1'
+    url = 'http://localhost:8848/api/v1'
     console.log('dev env, url is ' + url)
 
   } else {

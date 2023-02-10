@@ -34,7 +34,7 @@
           ref="editComp"
           :type="type"
           :visible="editVisible"
-          :model="editModel"
+          :mock="editModel"
           :time="time"
           @ok="handleEditSave"
           @cancel="handleEditCancel" >
@@ -143,6 +143,9 @@ export default {
     modifyDataConfig(record) {
       this.editVisible = true;
       this.setMockItem(record)
+    },
+    setMockItem(record) {
+        this.editModel = record;
     },
 
     handleEditSave() {

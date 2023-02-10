@@ -1,7 +1,7 @@
 <template>
   <div class="mock-edit-modal">
     <a-modal
-      :title="$t('msg.mock.create')"
+      :title="model.id == undefined ? $t('msg.mock.create') : $t('msg.mock.edit')"
       :visible="visible"
       :closable=false
       :footer="null"
@@ -19,7 +19,7 @@
         </div>
 
         <a-row :gutter="10" class="content-row">
-          <a-col :span="11" class="content-col">
+          <a-col :span="11" class="content-col" v-if="model.id == undefined">
             <div class="upload-bar">
               <a-upload :before-upload="beforeUpload"
                         :showUploadList="false"
@@ -37,13 +37,20 @@
             </div>
           </a-col>
 
-          <a-col :span="13" class="content-col">
+          <a-col :span="model.id == undefined ? 13 : 24" class="content-col">
             <a-tabs default-active-key="1" :animated="false">
               <a-tab-pane key="1" :tab="$t('msg.mock.mock')">
                 <pre>{{ model.mockContent }}</pre>
               </a-tab-pane>
               <a-tab-pane key="2" :tab="$t('msg.mock.data')">
-                <pre>{{ model.dataContent }}</pre>
+                <!-- <pre>{{ model.dataContent }}</pre> -->
+                <design-in-component
+                  ref="designPage"
+                  :visible="true"
+                  :type="resType"
+                  :modelProp="model"
+                  :time="time" >
+                </design-in-component>
               </a-tab-pane>
             </a-tabs>
           </a-col>
@@ -59,15 +66,19 @@
 import {} from "../../../api/manage";
 import {uploadMock} from "@/api/mock";
 import mockMixin from "@/store/mockMixin";
+import {DesignInComponent} from '../../../components'
+import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../../api/utils";
 
 export default {
   name: 'MockEditComp',
   components: {
+    DesignInComponent,
   },
   data() {
     return {
       model: {},
       readyToSave: false,
+      resType: ResTypeDef,
     };
   },
   props: {
@@ -78,6 +89,10 @@ export default {
     visible: {
       type: Boolean,
       required: true
+    },
+    mock: {
+        type: Object,
+        default: () => null
     },
     time: {
       type: Number,
@@ -95,6 +110,12 @@ export default {
   },
   beforeDestroy() {
     console.log('beforeDestroy')
+  },
+  watch:{
+    mock(val){
+      this.model = val
+      console.log("watch mock :", val)
+    },
   },
 
   methods: {
@@ -152,6 +173,8 @@ export default {
       })
 
       return false
+    },
+    handleEditSave() {
     },
   }
 }
