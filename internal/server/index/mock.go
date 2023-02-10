@@ -26,8 +26,7 @@ func (m *MockModule) Party() module.WebModule {
 		index.Get("/getPreviewData", m.MockCtrl.GetPreviewData).Name = "上传Spec"
 		index.Post("/getPreviewResp", m.MockCtrl.GetPreviewResp).Name = "上传Spec"
 
-		index.Post("/startMockService", m.MockCtrl.StartMockService).Name = "启动Mock服务"
-		index.Post("/stopMockService", m.MockCtrl.StopMockService).Name = "关闭Mock服务"
+		index.Post("/startMockService", m.MockCtrl.StartMockService).Name = "启动/关闭Mock服务"
 	}
 
 	return module.NewModule("/mocks", handler)

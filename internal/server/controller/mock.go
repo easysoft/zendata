@@ -36,25 +36,6 @@ func (c *MockCtrl) Get(ctx iris.Context) {
 	ctx.JSON(c.SuccessResp(data))
 }
 
-func (c *MockCtrl) Mock(ctx iris.Context) {
-	paths := ctx.Params().Get("paths")
-	mediaType := ctx.URLParam("contentType")
-	code := ctx.URLParam("code")
-	if code == "" {
-		code = "200"
-	}
-	if mediaType == "" {
-		mediaType = ctx.GetHeader("Content-Type")
-		if mediaType == "" {
-			mediaType = "application/json"
-		}
-	}
-
-	resp, _ := c.MockService.GetResp(paths, ctx.Method(), code, mediaType)
-
-	ctx.JSON(resp, context.JSON{Indent: "    "})
-}
-
 func (c *MockCtrl) Upload(ctx iris.Context) {
 	f, fh, err := ctx.FormFile("file")
 	if err != nil {
@@ -129,7 +110,14 @@ func (c *MockCtrl) StartMockService(ctx iris.Context) {
 		return
 	}
 
-	err = c.MockService.StartMockService(id)
+	act := ctx.URLParam("act")
+
+	if act != "stop" {
+		err = c.MockService.StartMockService(id)
+	} else {
+		err = c.MockService.StopMockService(id)
+	}
+
 	if err != nil {
 		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
 		return
@@ -138,18 +126,24 @@ func (c *MockCtrl) StartMockService(ctx iris.Context) {
 	ctx.JSON(c.SuccessResp(nil))
 }
 
-func (c *MockCtrl) StopMockService(ctx iris.Context) {
-	id, err := ctx.Params().GetInt("id")
-	if err != nil {
-		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
-		return
+func (c *MockCtrl) Mock(ctx iris.Context) {
+	paths := ctx.Params().Get("paths")
+	mediaType := ctx.URLParam("contentType")
+	code := ctx.URLParam("code")
+	if code == "" {
+		code = "200"
+	}
+	if mediaType == "" {
+		mediaType = ctx.GetHeader("Content-Type")
+		if mediaType == "" {
+			mediaType = "application/json"
+		}
 	}
 
-	err = c.MockService.StopMockService(id)
+	resp, err := c.MockService.GetResp(paths, ctx.Method(), code, mediaType)
 	if err != nil {
-		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
-		return
+		resp = iris.Map{"err": err.Error()}
 	}
 
-	ctx.JSON(c.SuccessResp(nil))
+	ctx.JSON(resp, context.JSON{Indent: "    "})
 }

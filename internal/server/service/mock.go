@@ -88,6 +88,11 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 	servicePath, apiPath := s.getServiceAndApiPath(reqPath)
 	reqMethod = strings.ToLower(reqMethod)
 
+	if MockServiceDataMap[servicePath] == nil {
+		err = errors.New("no matched service")
+		return
+	}
+
 	for pth, mp := range MockServiceDataMap[servicePath] {
 		if !regexp.MustCompile(pth).MatchString(apiPath) { // no match
 			continue
@@ -97,15 +102,20 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 			continue
 		}
 
-		ret, _ = s.GenDataForServerRequest(mp[reqMethod][respCode][mediaType], MockServiceDataDefMap[servicePath])
+		ret, err = s.GenDataForServerRequest(mp[reqMethod][respCode][mediaType], MockServiceDataDefMap[servicePath])
+		if err != nil {
+			return
+		}
 	}
 
 	if ret == nil {
-		ret = errors.New("NOT FOUND")
+		err = errors.New("no matched api")
+		return
 	}
 
 	return
 }
+
 func (s *MockService) GenDataForServerRequest(endpoint *domain.EndPoint, dataConfigContent string) (ret interface{}, err error) {
 	if endpoint == nil || dataConfigContent == "" {
 		return

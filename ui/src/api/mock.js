@@ -56,17 +56,10 @@ export function getPreviewResp (id, url, method, code, media) {
   })
 }
 
-export function startMockService (id) {
+export function startMockService (id, act) {
   return request({
     url: `${mocksApi}/startMockService`,
     method: 'post',
-    params: {id}
-  })
-}
-export function stopMockService (id) {
-  return request({
-    url: `${mocksApi}/stopMockService`,
-    method: 'post',
-    params: {id}
+    params: {id, act}
   })
 }
