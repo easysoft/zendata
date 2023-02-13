@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"errors"
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
@@ -20,6 +21,11 @@ import (
 	"regexp"
 	"strings"
 	"time"
+)
+
+var (
+	MockServiceDataMap    = map[string]domain.MockPathMap{}
+	MockServiceDataDefMap = map[string]string{}
 )
 
 type MockService struct {
@@ -53,32 +59,6 @@ func (s *MockService) Remove(id int) (err error) {
 	return
 }
 
-func (s *MockService) Init() (err error) {
-	vari.GlobalVars.MockData = &domain.MockData{}
-	vari.GlobalVars.MockData.Paths = map[string]map[string]map[string]map[string]*domain.EndPoint{}
-	var files []string
-
-	s.LoadDef(vari.GlobalVars.MockDir, &files, 0)
-
-	for _, file := range files {
-		data := domain.MockData{}
-
-		content := fileUtils.ReadFileBuf(file)
-		err := yaml.Unmarshal(content, &data)
-
-		if err != nil {
-			continue
-		}
-
-		for pth, mp := range data.Paths {
-			pattern := s.getPathPatten(pth)
-			vari.GlobalVars.MockData.Paths[pattern] = mp
-		}
-	}
-
-	return
-}
-
 func (s *MockService) LoadDef(pth string, files *[]string, level int) (err error) {
 	if !fileUtils.IsDir(pth) {
 		*files = append(*files, pth)
@@ -106,11 +86,11 @@ func (s *MockService) LoadDef(pth string, files *[]string, level int) (err error
 }
 
 func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (ret interface{}, err error) {
-	reqPath = s.addPrefixIfNeeded(reqPath)
+	servicePath, apiPath := s.getServiceAndApiPath(reqPath)
 	reqMethod = strings.ToLower(reqMethod)
 
-	for pth, mp := range vari.GlobalVars.MockData.Paths {
-		if !regexp.MustCompile(pth).MatchString(reqPath) { // no match
+	for pth, mp := range MockServiceDataMap[servicePath] {
+		if !regexp.MustCompile(pth).MatchString(apiPath) { // no match
 			continue
 		}
 
@@ -118,13 +98,20 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 			continue
 		}
 
-		ret, _ = s.GenDataForServerRequest(mp[reqMethod][respCode][mediaType])
+		ret, _ = s.GenDataForServerRequest(mp[reqMethod][respCode][mediaType], MockServiceDataDefMap[servicePath])
+	}
+
+	if ret == nil {
+		ret = errors.New("NOT FOUND")
 	}
 
 	return
 }
+func (s *MockService) GenDataForServerRequest(endpoint *domain.EndPoint, dataConfigContent string) (ret interface{}, err error) {
+	if endpoint == nil || dataConfigContent == "" {
+		return
+	}
 
-func (s *MockService) GenDataForServerRequest(endpoint *domain.EndPoint) (ret interface{}, err error) {
 	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	vari.GlobalVars.Total = endpoint.Lines
 	vari.GlobalVars.OutputFormat = "json"
@@ -135,13 +122,7 @@ func (s *MockService) GenDataForServerRequest(endpoint *domain.EndPoint) (ret in
 		vari.GlobalVars.Total = 1
 	}
 
-	// eval config file path
-	configFile := filepath.Join(vari.GlobalVars.MockDir, endpoint.Config)
-	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(configFile)
-
-	configContent := fileUtils.ReadFileBuf(configFile)
-
-	contents := [][]byte{configContent}
+	contents := [][]byte{[]byte(dataConfigContent)}
 
 	s.MainService.GenerateDataByContents(contents)
 
@@ -258,6 +239,72 @@ func (s *MockService) GetPreviewResp(req domain.MockPreviewReq) (ret interface{}
 			return
 		}
 	}
+
+	return
+}
+
+func (s *MockService) StartMockService(id int) (err error) {
+	po, err := s.MockRepo.Get(uint(id))
+
+	mockDef := domain.MockData{}
+	err = yaml.Unmarshal([]byte(po.MockContent), &mockDef)
+	if err != nil {
+		return
+	}
+
+	dataDef := domain.DefData{}
+	err = yaml.Unmarshal([]byte(po.DataContent), &dataDef)
+	if err != nil {
+		return
+	}
+
+	apiPath := po.Path
+	MockServiceDataDefMap[apiPath] = po.DataContent
+
+	if MockServiceDataMap[apiPath] == nil {
+		MockServiceDataMap[apiPath] = domain.MockPathMap{}
+	}
+
+	for pth, mp := range mockDef.Paths {
+		pattern := s.getPathPatten(pth)
+		MockServiceDataMap[apiPath][pattern] = mp
+	}
+
+	return
+}
+
+func (s *MockService) StopMockService(id int) (err error) {
+	po, err := s.MockRepo.Get(uint(id))
+
+	mockDef := domain.MockData{}
+	err = yaml.Unmarshal([]byte(po.MockContent), &mockDef)
+	if err != nil {
+		return
+	}
+
+	dataDef := domain.DefData{}
+	err = yaml.Unmarshal([]byte(po.DataContent), &dataDef)
+	if err != nil {
+		return
+	}
+
+	apiPath := po.Path
+
+	MockServiceDataMap[apiPath] = domain.MockPathMap{}
+
+	return
+}
+
+func (s *MockService) getServiceAndApiPath(uri string) (servicePath, apiPath string) {
+	arr := strings.Split(uri, "/")
+	if len(arr) < 2 {
+		return
+	}
+
+	servicePath = arr[0]
+	apiPath = strings.Join(arr[1:], "/")
+
+	apiPath = s.addPrefixIfNeeded(apiPath)
 
 	return
 }

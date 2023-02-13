@@ -5,7 +5,6 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverService "github.com/easysoft/zendata/internal/server/service"
-	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 )
@@ -39,14 +38,16 @@ func (c *MockCtrl) Get(ctx iris.Context) {
 
 func (c *MockCtrl) Mock(ctx iris.Context) {
 	paths := ctx.Params().Get("paths")
-	mediaType := ctx.Params().Get("paths")
+	mediaType := ctx.URLParam("contentType")
 	code := ctx.URLParam("code")
 	if code == "" {
 		code = "200"
 	}
-
-	if vari.GlobalVars.MockData == nil {
-		c.MockService.Init()
+	if mediaType == "" {
+		mediaType = ctx.GetHeader("Content-Type")
+		if mediaType == "" {
+			mediaType = "application/json"
+		}
 	}
 
 	resp, _ := c.MockService.GetResp(paths, ctx.Method(), code, mediaType)
@@ -113,6 +114,38 @@ func (c *MockCtrl) Remove(ctx iris.Context) {
 	}
 
 	err = c.MockService.Remove(id)
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+
+	ctx.JSON(c.SuccessResp(nil))
+}
+
+func (c *MockCtrl) StartMockService(ctx iris.Context) {
+	id, err := ctx.URLParamInt("id")
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+
+	err = c.MockService.StartMockService(id)
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+
+	ctx.JSON(c.SuccessResp(nil))
+}
+
+func (c *MockCtrl) StopMockService(ctx iris.Context) {
+	id, err := ctx.Params().GetInt("id")
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+
+	err = c.MockService.StopMockService(id)
 	if err != nil {
 		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
 		return

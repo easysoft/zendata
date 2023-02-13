@@ -55,3 +55,18 @@ export function getPreviewResp (id, url, method, code, media) {
     data: {id, url, method, code, media},
   })
 }
+
+export function startMockService (id) {
+  return request({
+    url: `${mocksApi}/startMockService`,
+    method: 'post',
+    params: {id}
+  })
+}
+export function stopMockService (id) {
+  return request({
+    url: `${mocksApi}/stopMockService`,
+    method: 'post',
+    params: {id}
+  })
+}

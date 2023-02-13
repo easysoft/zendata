@@ -65,6 +65,7 @@ const locale = {
   'msg.mock.create': 'Create Mock',
   'msg.mock.edit': 'Edit Mock',
   'msg.mock.response': 'Mock Response Data',
+  'msg.mock.input.path': 'Input mock url prefix',
 
   'action.list': 'List',
   'action.create': 'Create',
@@ -76,6 +77,8 @@ const locale = {
   'action.import.from.file': 'Refresh Data',
   'action.edit.mock': 'Modify Mock Config',
   'action.edit.data': 'Modify Data Config',
+  'action.start.mock': 'Start Mock Service',
+  'action.stop.mock': 'Stop Mock Service',
 
   'tips.refer': 'Reference',
   'tips.pls.select': 'Please select',

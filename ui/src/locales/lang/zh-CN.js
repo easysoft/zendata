@@ -76,6 +76,8 @@ const locale = {
   'action.import.from.file': '刷新数据',
   'action.edit.mock': '修改Mock配置',
   'action.edit.data': '修改数据配置',
+  'action.start.mock': '启动Mock服务',
+  'action.stop.mock': '关闭Mock服务',
 
   'tips.refer': '引用',
   'tips.pls.select': '请选择',
@@ -97,6 +99,7 @@ const locale = {
   'upload.spec.failed': '上传规格文件失败。',
   'msg.mock.mock': 'Mock配置',
   'msg.mock.data': '数据配置',
+  'msg.mock.input.path': '输入唯一的访问路径前缀',
 
   'form.name': '名称',
   'form.file': '文件',

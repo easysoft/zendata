@@ -7,6 +7,7 @@ import (
 type ZdMock struct {
 	Model
 	Name string `json:"name"`
+	Path string `json:"path"`
 	Desc string `json:"desc"`
 
 	SpecContent string `json:"specContent"`
