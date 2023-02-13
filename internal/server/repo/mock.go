@@ -34,6 +34,12 @@ func (r *MockRepo) Get(id uint) (po model.ZdMock, err error) {
 	return
 }
 
+func (r *MockRepo) GetByPath(path string) (po model.ZdMock, err error) {
+	err = r.DB.Where("path=?", path).First(&po).Error
+
+	return
+}
+
 func (r *MockRepo) Save(po *model.ZdMock) (err error) {
 	err = r.DB.Save(po).Error
 
@@ -46,6 +52,32 @@ func (r *MockRepo) Remove(id uint) (err error) {
 
 	err = r.DB.Delete(&po).Error
 	err = r.DB.Where("id = ?", id).Delete(&model.ZdField{}).Error
+
+	return
+}
+
+func (r *MockRepo) ListSampleSrc(mockId int) (pos []model.ZdMockSampleSrc, err error) {
+	err = r.DB.Find(&pos).Error
+	return
+}
+
+func (r *MockRepo) GetSampleSrc(mockId uint, key string) (po model.ZdMockSampleSrc, err error) {
+	err = r.DB.Where("mock_id=? AND key=?", mockId, key).
+		Find(&po).Error
+	return
+}
+
+func (r *MockRepo) ChangeSampleSrc(mockId int, req model.ZdMockSampleSrc) (err error) {
+	po := model.ZdMockSampleSrc{}
+
+	err = r.DB.Where("mock_id=? AND key=?", mockId, req.Key).First(&po).Error
+	if err != nil { // not found
+		po.MockId = uint(mockId)
+		po.Key = req.Key
+	}
+
+	po.Value = req.Value
+	err = r.DB.Save(&po).Error
 
 	return
 }

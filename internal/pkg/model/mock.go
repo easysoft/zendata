@@ -18,3 +18,14 @@ type ZdMock struct {
 func (*ZdMock) TableName() string {
 	return consts.TablePrefix + "mock"
 }
+
+type ZdMockSampleSrc struct {
+	Model
+	MockId uint   `json:"mockId"`
+	Key    string `json:"key"`
+	Value  string `json:"value"`
+}
+
+func (*ZdMockSampleSrc) TableName() string {
+	return consts.TablePrefix + "mock_sample_src"
+}

@@ -147,3 +147,32 @@ func (c *MockCtrl) Mock(ctx iris.Context) {
 
 	ctx.JSON(resp, context.JSON{Indent: "    "})
 }
+
+// SampleSrc
+func (c *MockCtrl) ListSampleSrc(ctx iris.Context) {
+	mockId, _ := ctx.Params().GetInt("id")
+
+	mp, err := c.MockService.ListSampleSrc(mockId)
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+
+	ctx.JSON(c.SuccessResp(mp))
+}
+func (c *MockCtrl) ChangeSampleSrc(ctx iris.Context) {
+	mockId, _ := ctx.Params().GetInt("id")
+
+	req := model.ZdMockSampleSrc{}
+	if err := ctx.ReadJSON(&req); err != nil {
+		ctx.JSON(c.ErrResp(consts.ParamErr, err.Error()))
+	}
+
+	err := c.MockService.ChangeSampleSrc(mockId, req)
+	if err != nil {
+		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
+		return
+	}
+
+	ctx.JSON(c.SuccessResp(nil))
+}

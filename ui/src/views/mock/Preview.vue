@@ -6,14 +6,28 @@
       </span>
 
       <div v-if="mockItem">
-        <div v-for="(path, url) in mockItem.paths" :key="url" class="path">
+        <div v-for="(path, url) in mockItem.paths" :key="url" class="path item">
           <div>{{url}}</div>
-          <div v-for="(methodVal, method) in path" :key="method" class="method">
+          <div v-for="(methodVal, method) in path" :key="method" class="method item">
             <div>{{method}}</div>
-            <div v-for="(codeVal, code) in methodVal" :key="code" class="code">
+            <div v-for="(codeVal, code) in methodVal" :key="code" class="code item">
               <div>{{code}}</div>
-              <div v-for="(mediaVal, media) in codeVal" :key="media" class="media">
+              <div v-for="(mediaVal, media) in codeVal" :key="media" class="media item">
                 <a @click="preview(mockItem.id, url, method, code, media)">{{media}}</a>
+
+                <span :param="fullKey = url+'-'+method+'-'+code+'-'+media">
+                  <span :param="samples = dataSrc[fullKey]">
+                    <a-select v-if="samples && samples.length > 1"
+                              :defaultValue="mockSrcs[fullKey] || samples[0]"
+                              @change="selectSample"
+                              size="small" class="data-src">
+                      <a-select-option v-for="(item, index) in samples" :value="item+'~~~'+fullKey" :key="index">
+                        {{item}}
+                      </a-select-option>
+                    </a-select>
+                  </span>
+                </span>
+
               </div>
             </div>
           </div>
@@ -43,7 +57,7 @@
 <script>
 
 import mockMixin from "@/store/mockMixin";
-import {getPreviewResp} from "@/api/mock";
+import {changeSampleSrc, getPreviewResp} from "@/api/mock";
 
 export default {
   name: 'MockPreview',
@@ -77,13 +91,12 @@ export default {
       this.responseVisible = false;
     },
 
-    handleClickChange(visible) {
-      this.clicked = visible;
-      this.hovered = false;
-    },
-    hide() {
-      this.clicked = false;
-      this.hovered = false;
+    selectSample(value) {
+      const arr = value.split('~~~')
+      const val = arr[0]
+      const key = arr[1]
+
+      changeSampleSrc(this.mockItem.id, key, val)
     },
   },
   watch: {
@@ -94,6 +107,9 @@ export default {
 
 <style lang="less" scoped>
 .mock-preview-main {
+  .item {
+    line-height: 26px;
+  }
   .path {
     padding-left: 10px;
     .method {
@@ -102,6 +118,10 @@ export default {
         padding-left: 10px;
         .media {
           padding-left: 10px;
+          .data-src {
+            margin-left: 10px;
+            width: 100px;
+          }
         }
       }
     }

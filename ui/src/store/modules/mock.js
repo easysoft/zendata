@@ -1,24 +1,24 @@
-import {APP_LANGUAGE, CURR_MOCK_ITEM} from "@/store/mutation-types";
-import {loadLanguageAsync} from "@/locales";
-import {getPreviewData, previewMock, saveMock} from "@/api/mock";
+import {CURR_MOCK_ITEM, CURR_DATA_SRC, CURR_MOCK_SRCS} from "@/store/mutation-types";
+import {getMockDataSrc, getMockSataSrc, getPreviewData, listSampleSrc, saveMock} from "@/api/mock";
 
 const mock = {
   state: {
-    mockItem: {}
+    mockItem: {},
+    mockSrcs: [],
+    dataSrc: {}
   },
   mutations: {
     [CURR_MOCK_ITEM]: (state, item = {}) => {
       state.mockItem = item
     },
+    [CURR_MOCK_SRCS]: (state, item = {}) => {
+      state.mockSrcs = item
+    },
+    [CURR_DATA_SRC]: (state, data = {}) => {
+      state.dataSrc = data
+    },
   },
   actions: {
-    setMockItem ({ commit }, item) {
-      return new Promise((resolve, reject) => {
-        commit(CURR_MOCK_ITEM, item)
-        resolve()
-      })
-    },
-
     saveMockItem ({ commit }, item) {
       return new Promise((resolve, reject) => {
         saveMock(item).then((json) => {
@@ -37,12 +37,21 @@ const mock = {
           return
         }
 
+        listSampleSrc(item.id).then((json) => {
+          commit(CURR_MOCK_SRCS, json.data)
+        })
+
         getPreviewData(item.id).then((json) => {
           commit(CURR_MOCK_ITEM, json.data)
+
+          const dataSrc = getMockDataSrc(json.data.paths)
+          commit(CURR_DATA_SRC, dataSrc)
+
           resolve()
         }).catch(e => {
           reject(e)
         })
+
       })
     },
   }

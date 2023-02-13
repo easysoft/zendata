@@ -22,6 +22,9 @@ func (m *MockModule) Party() module.WebModule {
 		index.Post("/", m.MockCtrl.Save).Name = "保存Mock"
 		index.Delete("/{id:uint}", m.MockCtrl.Remove).Name = "删除Mock"
 
+		index.Get("/{id:uint}/listSampleSrc", m.MockCtrl.ListSampleSrc).Name = "获取Sample来源列表"
+		index.Post("/{id:uint}/changeSampleSrc", m.MockCtrl.ChangeSampleSrc).Name = "修改Sample来源"
+
 		index.Post("/upload", m.MockCtrl.Upload).Name = "上传Spec"
 		index.Get("/getPreviewData", m.MockCtrl.GetPreviewData).Name = "上传Spec"
 		index.Post("/getPreviewResp", m.MockCtrl.GetPreviewResp).Name = "上传Spec"
