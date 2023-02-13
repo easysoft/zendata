@@ -197,7 +197,7 @@ func (s *DefService) Sync(files []domain.ResFile) (err error) {
 
 	return
 }
-func (s *DefService) SyncToDB(fi domain.ResFile) (err error) {
+func (s *DefService) SyncToDB(fi domain.ResFile) (err error, id uint) {
 	content, _ := os.ReadFile(fi.Path)
 	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdDef{}
@@ -214,6 +214,7 @@ func (s *DefService) SyncToDB(fi domain.ResFile) (err error) {
 	po.Yaml = string(content)
 
 	s.DefRepo.Create(&po)
+	id = po.ID
 
 	rootField, _ := s.FieldRepo.CreateTreeNode(po.ID, 0, "字段", "root")
 	s.ReferRepo.CreateDefault(rootField.ID, consts.ResTypeDef)

@@ -26,6 +26,7 @@ type MockService struct {
 	MainService   *service.MainService   `inject:""`
 	OutputService *service.OutputService `inject:""`
 	MockService   *service.MockService   `inject:""`
+	DefService    *DefService            `inject:""`
 	MockRepo      *serverRepo.MockRepo   `inject:""`
 }
 
@@ -193,7 +194,7 @@ func (s *MockService) getPathPatten(pth string) (ret string) {
 }
 
 func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (
-	name, content, mockConf, dataConf, pth string, err error) {
+	name, content, mockConf, dataConf, pth string, err error, id uint) {
 
 	filename, err := fileUtils.GetUploadFileName(fh.Filename)
 	if err != nil {
@@ -225,6 +226,8 @@ func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (
 	if err == nil {
 		mockConf = fileUtils.ReadFile(mockPath)
 		dataConf = fileUtils.ReadFile(dataPath)
+		fi := domain.ResFile{FileName: fh.Filename, Path: dataPath}
+		_, id = s.DefService.SyncToDB(fi)
 	}
 
 	return
