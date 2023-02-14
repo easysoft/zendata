@@ -18,11 +18,11 @@ function initRequest(remoteUrl) {
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8848/api/v1'
+    url = 'http://127.0.0.1:8848'
     console.log('dev env, url is ' + url)
   } else {
     const location = decodeURI(window.location.href);
-    url = location.split('ui')[0] + 'api/v1';
+    url = location.split('ui')[0];
     console.log('prod env, url is ' + url)
   }
 
