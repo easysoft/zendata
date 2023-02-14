@@ -6,28 +6,42 @@
       </span>
 
       <div v-if="mockItem">
-        <div v-for="(path, url) in mockItem.paths" :key="url" class="path item">
+        <div v-for="(path, url) in mockItem.item.paths" :key="url" class="path item">
           <div>{{url}}</div>
           <div v-for="(methodVal, method) in path" :key="method" class="method item">
             <div>{{method}}</div>
             <div v-for="(codeVal, code) in methodVal" :key="code" class="code item">
               <div>{{code}}</div>
               <div v-for="(mediaVal, media) in codeVal" :key="media" class="media item">
-                <a @click="preview(mockItem.id, url, method, code, media)">{{media}}</a>
+                <div class="media-text">
+                  <a @click="preview(mockItem.item.id, url, method, code, media)">{{media}}</a>
+                </div>
 
-                <span :param="fullKey = url+'-'+method+'-'+code+'-'+media">
-                  <span :param="samples = dataSrc[fullKey]">
-                    <a-select v-if="samples && samples.length > 1"
-                              :defaultValue="mockSrcs[fullKey] || samples[0]"
-                              @change="selectSample"
-                              size="small" class="data-src">
-                      <a-select-option v-for="(item, index) in samples" :value="item+'~~~'+fullKey" :key="index">
-                        {{item}}
-                      </a-select-option>
-                    </a-select>
+                <div class="copy-link">
+                  <a-tooltip>
+                    <template slot="title">
+                      {{ serverUrl + '/m/' + mockItem.path + url }}
+                    </template>
+                    <a><a-icon type="link" /></a>
+                  </a-tooltip>
+                </div>
+
+                <div class="data-src">
+                  <span :param="fullKey = url+'-'+method+'-'+code+'-'+media">
+                    <span :param="samples = dataSrc[fullKey]">
+                      <a-select v-if="samples && samples.length > 1"
+                                :defaultValue="mockSrcs[fullKey] || samples[0]"
+                                @change="selectSample"
+                                size="small">
+                        <a-select-option v-for="(item, index) in samples" :value="item+'~~~'+fullKey" :key="index">
+                          {{item}}
+                        </a-select-option>
+                      </a-select>
+                    </span>
                   </span>
-                </span>
+                </div>
 
+                <div class="clear-both"></div>
               </div>
             </div>
           </div>
@@ -58,6 +72,7 @@
 
 import mockMixin from "@/store/mockMixin";
 import {changeSampleSrc, getPreviewResp} from "@/api/mock";
+import request, {serverUrl} from "@/utils/request";
 
 export default {
   name: 'MockPreview',
@@ -71,9 +86,11 @@ export default {
       responseVisible: false,
       hovered: false,
       respSample: null,
+      serverUrl: ''
     };
   },
   mounted: function() {
+    this.serverUrl = serverUrl
   },
   methods: {
     preview(id, url, method, code, media) {
@@ -96,7 +113,7 @@ export default {
       const val = arr[0]
       const key = arr[1]
 
-      changeSampleSrc(this.mockItem.id, key, val)
+      changeSampleSrc(this.mockItem.item.id, key, val)
     },
   },
   watch: {
@@ -118,8 +135,17 @@ export default {
         padding-left: 10px;
         .media {
           padding-left: 10px;
+          .media-text {
+            float: left;
+          }
+          .copy-link {
+            float: left;
+            margin-left: 16px;
+            margin-top: 2px;
+          }
           .data-src {
-            margin-left: 10px;
+            float: left;
+            margin-left: 16px;
             width: 100px;
           }
         }

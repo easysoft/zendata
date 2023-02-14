@@ -1,15 +1,16 @@
 import notification from 'ant-design-vue/es/notification'
 import axios, {AxiosInstance} from 'axios'
 
+let serverUrl = ''
 let request = null
 initRequest()
 
 // used to switch to another remote service
 function initRequest(remoteUrl) {
-  const url = remoteUrl ? remoteUrl : getUrl()
+  serverUrl = remoteUrl ? remoteUrl : getUrl()
 
   request = axios.create({
-    baseURL: url,
+    baseURL: serverUrl,
     timeout: 100000,
   })
 }
@@ -19,12 +20,10 @@ function getUrl() {
   if (process.env.NODE_ENV === "development") {
     url = 'http://127.0.0.1:8848/api/v1'
     console.log('dev env, url is ' + url)
-
   } else {
     const location = decodeURI(window.location.href);
     url = location.split('ui')[0] + 'api/v1';
     console.log('prod env, url is ' + url)
-
   }
 
   return url
@@ -63,4 +62,5 @@ request.interceptors.response.use(resp => {
   return resp.data
 }, errorHandler)
 
+export {serverUrl}
 export default request

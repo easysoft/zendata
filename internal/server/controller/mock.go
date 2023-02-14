@@ -55,8 +55,11 @@ func (c *MockCtrl) Upload(ctx iris.Context) {
 
 func (c *MockCtrl) GetPreviewData(ctx iris.Context) {
 	id, _ := ctx.URLParamInt("id")
+	mock, _ := c.MockService.Get(id)
 
-	data, _ := c.MockService.GetPreviewData(id)
+	item, _ := c.MockService.GetPreviewData(id)
+
+	data := iris.Map{"item": item, "path": mock.Path}
 
 	ctx.JSON(c.SuccessResp(data))
 }

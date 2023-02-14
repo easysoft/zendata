@@ -91,8 +91,6 @@ export function getMockDataSrc (paths) {
       Object.keys(methodVal).forEach((codeKey) => {
         const codeVal = methodVal[codeKey]
 
-        const arr = []
-
         Object.keys(codeVal).forEach((mediaKey) => {
           const samples = codeVal[mediaKey].samples
 

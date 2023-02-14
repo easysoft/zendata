@@ -142,6 +142,9 @@ func (s *MockService) createEndPoint(operation *openapi3.Operation, zendataDef *
 		// map[string]*ResponseRef
 
 		for mediaType, mediaItem := range val.Value.Content {
+			if mediaItem == nil {
+				continue
+			}
 			// mediaType is like "responses => 501 => content => application/json"
 
 			// zendata def

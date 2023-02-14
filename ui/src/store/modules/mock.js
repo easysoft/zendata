@@ -44,7 +44,7 @@ const mock = {
         getPreviewData(item.id).then((json) => {
           commit(CURR_MOCK_ITEM, json.data)
 
-          const dataSrc = getMockDataSrc(json.data.paths)
+          const dataSrc = getMockDataSrc(json.data.item.paths)
           commit(CURR_DATA_SRC, dataSrc)
 
           resolve()
