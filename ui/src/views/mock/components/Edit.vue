@@ -87,7 +87,6 @@ export default {
   data() {
     return {
       model: {},
-      readyToSave: false,
       resType: ResTypeDef,
       specReady: false,
     };
@@ -174,6 +173,7 @@ export default {
             specContent: json.data.spec,
             mockContent: json.data.mock,
             dataContent: json.data.data,
+            // id: json.data.id,
           }
 
           this.specReady = true

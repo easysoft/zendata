@@ -152,7 +152,7 @@ export default {
     },
     setMockItem(record) {
         this.editModel = record;
-    }
+    },
     startMockService(record) {
       console.log('startMockService')
       const act = this.serviceStatusMap[record.id] ? 'stop' : 'start'
