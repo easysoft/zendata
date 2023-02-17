@@ -3,7 +3,9 @@ import { mapState } from 'vuex'
 const mockMixin = {
   computed: {
     ...mapState({
-      mockItem: state => state.mock.mockItem
+      mockItem: state => state.mock.mockItem,
+      mockSrcs: state => state.mock.mockSrcs,
+      dataSrc: state => state.mock.dataSrc,
     })
   },
   methods: {

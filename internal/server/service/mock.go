@@ -1,6 +1,8 @@
 package serverService
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
@@ -11,6 +13,7 @@ import (
 	dateUtils "github.com/easysoft/zendata/pkg/utils/date"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/kataras/iris/v12"
 	"github.com/snowlyg/helper/dir"
@@ -24,8 +27,9 @@ import (
 )
 
 var (
-	MockServiceDataMap    = map[string]domain.MockPathMap{}
-	MockServiceDataDefMap = map[string]string{}
+	MockServiceDataMap                = map[string]domain.MockPathMap{}
+	MockServiceDataDefMap             = map[string]string{}
+	MockServiceDataRegxPathToOrigPath = map[string]map[string]string{}
 )
 
 type MockService struct {
@@ -89,6 +93,11 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 	servicePath, apiPath := s.getServiceAndApiPath(reqPath)
 	reqMethod = strings.ToLower(reqMethod)
 
+	if MockServiceDataMap[servicePath] == nil {
+		err = errors.New("no matched service OR service not start")
+		return
+	}
+
 	for pth, mp := range MockServiceDataMap[servicePath] {
 		if !regexp.MustCompile(pth).MatchString(apiPath) { // no match
 			continue
@@ -98,15 +107,41 @@ func (s *MockService) GetResp(reqPath, reqMethod, respCode, mediaType string) (r
 			continue
 		}
 
-		ret, _ = s.GenDataForServerRequest(mp[reqMethod][respCode][mediaType], MockServiceDataDefMap[servicePath])
+		mockPo, err := s.MockRepo.GetByPath(servicePath)
+		if err != nil {
+			continue
+		}
+
+		endpoint := mp[reqMethod][respCode][mediaType]
+
+		key := fmt.Sprintf("%s-%s-%s-%s",
+			MockServiceDataRegxPathToOrigPath[servicePath][pth], reqMethod, respCode, mediaType)
+		src, _ := s.MockRepo.GetSampleSrc(mockPo.ID, key)
+		if src.Value != "" && src.Value != "schema" {
+			str := endpoint.Samples[src.Value]
+			if src.Value == "json" {
+				json.Unmarshal([]byte(str), &ret)
+			} else if src.Value == "xml" {
+				xml.Unmarshal([]byte(str), &ret)
+			} else {
+				ret = str
+			}
+		} else {
+			ret, err = s.GenDataForServerRequest(mp[reqMethod][respCode][mediaType], MockServiceDataDefMap[servicePath])
+			if err != nil {
+				continue
+			}
+		}
 	}
 
 	if ret == nil {
-		ret = errors.New("NOT FOUND")
+		err = errors.New("no matched api")
+		return
 	}
 
 	return
 }
+
 func (s *MockService) GenDataForServerRequest(endpoint *domain.EndPoint, dataConfigContent string) (ret interface{}, err error) {
 	if endpoint == nil || dataConfigContent == "" {
 		return
@@ -235,7 +270,20 @@ func (s *MockService) GetPreviewResp(req domain.MockPreviewReq) (ret interface{}
 	for pth, mp := range data.Paths {
 		if req.Url == pth {
 			endpoint := mp[req.Method][req.Code][req.Media]
-			ret, _ = s.GenDataForMockPreview(endpoint, po.DataContent)
+
+			key := fmt.Sprintf("%s-%s-%s-%s", pth, req.Method, req.Code, req.Media)
+			src, _ := s.MockRepo.GetSampleSrc(uint(req.Id), key)
+			if src.Value != "" && src.Value != "schema" {
+				str := endpoint.Samples[src.Value]
+				if src.Value == "json" {
+					ret = stringUtils.FormatJsonStr(str)
+				} else {
+					ret = str
+				}
+			} else {
+				ret, _ = s.GenDataForMockPreview(endpoint, po.DataContent)
+			}
+
 			return
 		}
 	}
@@ -268,6 +316,11 @@ func (s *MockService) StartMockService(id int) (err error) {
 	for pth, mp := range mockDef.Paths {
 		pattern := s.getPathPatten(pth)
 		MockServiceDataMap[apiPath][pattern] = mp
+
+		if MockServiceDataRegxPathToOrigPath[apiPath] == nil {
+			MockServiceDataRegxPathToOrigPath[apiPath] = map[string]string{}
+		}
+		MockServiceDataRegxPathToOrigPath[apiPath][pattern] = pth
 	}
 
 	return
@@ -307,4 +360,22 @@ func (s *MockService) getServiceAndApiPath(uri string) (servicePath, apiPath str
 	apiPath = s.addPrefixIfNeeded(apiPath)
 
 	return
+}
+
+func (s *MockService) ListSampleSrc(mockId int) (ret map[string]string, err error) {
+	pos, err := s.MockRepo.ListSampleSrc(mockId)
+	if err != nil {
+		return
+	}
+
+	ret = map[string]string{}
+	for _, po := range pos {
+		ret[po.Key] = po.Value
+	}
+
+	return
+}
+
+func (s *MockService) ChangeSampleSrc(mockId int, req model.ZdMockSampleSrc) (err error) {
+	return s.MockRepo.ChangeSampleSrc(mockId, req)
 }

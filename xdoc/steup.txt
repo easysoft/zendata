@@ -26,3 +26,5 @@ curl -i -X POST -F default=@demo/default.yaml \
     http://localhost:8848/api/v1/data/generate?trim=true\&format=json\&lines=3
 
 scp ~/work/zentao/qiniu/zd/2.3/linux/zd.zip 192.168.0.105:~
+
+http://localhost:8848/api/v1/m/petstore/users/1

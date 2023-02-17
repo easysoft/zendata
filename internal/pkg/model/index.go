@@ -9,7 +9,7 @@ var (
 	Models       = []interface{}{
 		&ZdDef{}, &ZdField{}, &ZdSection{}, &ZdRefer{},
 		&ZdRanges{}, &ZdRangesItem{}, &ZdText{}, &ZdConfig{}, &ZdInstances{}, &ZdInstancesItem{}, &ZdExcel{},
-		&ZdMock{},
+		&ZdMock{}, &ZdMockSampleSrc{},
 	}
 )
 
