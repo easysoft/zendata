@@ -56,17 +56,56 @@ export function getPreviewResp (id, url, method, code, media) {
   })
 }
 
-export function startMockService (id) {
+export function startMockService (id, act) {
   return request({
     url: `${mocksApi}/startMockService`,
     method: 'post',
-    params: {id}
+    params: {id, act}
   })
 }
-export function stopMockService (id) {
+
+export function listSampleSrc (mockId) {
   return request({
-    url: `${mocksApi}/stopMockService`,
-    method: 'post',
-    params: {id}
+    url: `${mocksApi}/${mockId}/listSampleSrc`,
+    method: 'get'
   })
+}
+
+export function changeSampleSrc (mockId, key, value) {
+  return request({
+    url: `${mocksApi}/${mockId}/changeSampleSrc`,
+    method: 'post',
+    data: {key, value}
+  })
+}
+
+export function getMockDataSrc (paths) {
+  const dataSrc = {}
+
+  Object.keys(paths).forEach((pathKey) => {
+    const pathVal = paths[pathKey]
+
+    Object.keys(pathVal).forEach((methodKey) => {
+      const methodVal = pathVal[methodKey]
+
+      Object.keys(methodVal).forEach((codeKey) => {
+        const codeVal = methodVal[codeKey]
+
+        Object.keys(codeVal).forEach((mediaKey) => {
+          const samples = codeVal[mediaKey].samples
+
+          const arr = ['schema']
+          Object.keys(samples).forEach((sampleKey) => {
+            // console.log(pathKey, methodKey, codeKey, mediaKey, sampleKey, samples[sampleKey])
+            arr.push(sampleKey)
+          })
+
+          dataSrc[`${pathKey}-${methodKey}-${codeKey}-${mediaKey}`] = arr
+        })
+
+      })
+    })
+  })
+
+  return dataSrc
 }

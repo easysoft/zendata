@@ -17,8 +17,12 @@
           <a @click="modifyMockConfig(record)" :title="$t('action.edit.mock')">
             <Icon type="code" :style="{fontSize: '16px'}" />
           </a> &nbsp;
-          <a @click="startMockService(record)" :title="$t('action.start.mock')">
-            <Icon type="play-square" :style="{fontSize: '16px'}" />
+
+          <a v-if="isStart(record.id)==false" @click="startMockService(record)" :title="$t('action.start.mock')">
+            <Icon type="right-circle" :style="{fontSize: '16px'}" />
+          </a> &nbsp;
+          <a v-if="isStart(record.id)==true" @click="startMockService(record)" :title="$t('action.stop.mock')">
+            <Icon type="pause-circle" :style="{fontSize: '16px'}" />
           </a> &nbsp;
 
           <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
@@ -93,6 +97,7 @@ export default {
 
     return {
       models: [],
+      serviceStatusMap: {},
       columns,
       selected: null,
 
@@ -150,7 +155,9 @@ export default {
     }
     startMockService(record) {
       console.log('startMockService')
-      startMockService(record.id).then(json => {
+      const act = this.serviceStatusMap[record.id] ? 'stop' : 'start'
+      startMockService(record.id, act).then(json => {
+        this.serviceStatusMap[record.id] = !this.serviceStatusMap[record.id]
         this.loadData()
       })
     },
@@ -208,7 +215,10 @@ export default {
           this.remove(record)
         },
       });
-    }
+    },
+    isStart(id) {
+      return !!this.serviceStatusMap[id]
+    },
   }
 }
 </script>

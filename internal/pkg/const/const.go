@@ -11,8 +11,8 @@ const (
 )
 
 var (
-	ApiPath = "/api/v1"
-	WsPath  = ApiPath + "/ws"
+	ApiPath = "/"
+	WsPath  = "ws"
 
 	PthSep = string(os.PathSeparator)
 

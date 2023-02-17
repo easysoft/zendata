@@ -226,10 +226,11 @@ type EndPoint struct {
 	Method    HttpMethod               `json:"method"`
 	Summary   string                   `json:"summary,omitempty"`
 	Config    string                   `json:"config"`
+	Fields    string                   `json:"fields"`
 	MediaType string                   `json:"mediaType"`
 	Type      consts.OpenApiSchemaType `json:"type"`
 	Lines     int                      `json:"lines"`
-	Fields    string                   `json:"fields"`
+	Samples   map[string]string        `json:"samples"`
 }
 
 type MockPreviewReq struct {
@@ -238,6 +239,11 @@ type MockPreviewReq struct {
 	Method string `json:"method"`
 	Code   string `json:"code"`
 	Media  string `json:"media"`
+}
+
+type MockChangeSampleSrcReq struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 type HttpMethod string

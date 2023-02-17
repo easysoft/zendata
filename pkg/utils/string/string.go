@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
+	"encoding/json"
 	"strconv"
 	"strings"
 	"unicode"
@@ -99,4 +100,12 @@ func StartWith(str, sub string) bool {
 }
 func EndWith(str, sub string) bool {
 	return strings.Contains(str, sub) && strings.LastIndex(str, sub) == len(str)-len(sub)
+}
+
+func FormatJsonStr(str string) (ret string) {
+	var out bytes.Buffer
+	json.Indent(&out, []byte(str), "", "    ")
+	ret = out.String()
+
+	return
 }
