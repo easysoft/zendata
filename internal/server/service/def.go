@@ -1,6 +1,7 @@
 package serverService
 
 import (
+	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"os"
 	"path/filepath"
@@ -24,6 +25,7 @@ type DefService struct {
 	FieldRepo   *serverRepo.FieldRepo   `inject:""`
 	ReferRepo   *serverRepo.ReferRepo   `inject:""`
 	SectionRepo *serverRepo.SectionRepo `inject:""`
+	MockRepo    *serverRepo.MockRepo    `inject:""`
 
 	ResService     *ResService     `inject:""`
 	SectionService *SectionService `inject:""`
@@ -114,6 +116,12 @@ func (s *DefService) updateYaml(id uint) (err error) {
 
 	s.genYaml(&po)
 	err = s.DefRepo.UpdateYaml(po)
+	//update mock content
+	mockData := s.MockRepo.GetByDefID(id)
+	if mockData.ID > 0 {
+		mockData.DataContent = po.Yaml
+		s.MockRepo.Save(&mockData)
+	}
 	fileUtils.WriteFile(po.Path, po.Yaml)
 
 	return
@@ -131,7 +139,7 @@ func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 	for _, child := range root.Fields { // ignore the root
 		defField := domain.DefField{}
 
-		refer, _ := s.ReferRepo.GetByOwnerId(child.ID)
+		refer, _ := s.ReferRepo.GetByOwnerIdAndType(child.ID, consts.ResTypeDef)
 		s.zdFieldToFieldForExport(*child, refer, &defField)
 
 		yamlObj.Fields = append(yamlObj.Fields, defField)
@@ -188,16 +196,16 @@ func (s *DefService) Sync(files []domain.ResFile) (err error) {
 
 		_, found := mp[fi.Path]
 		if !found { // no record
-			s.SyncToDB(fi)
+			s.SyncToDB(fi, false)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
 			s.DefRepo.Remove(mp[fi.Path].ID)
-			s.SyncToDB(fi)
+			s.SyncToDB(fi, false)
 		}
 	}
 
 	return
 }
-func (s *DefService) SyncToDB(fi domain.ResFile) (err error, id uint) {
+func (s *DefService) SyncToDB(fi domain.ResFile, isMock bool) (err error, id uint) {
 	content, _ := os.ReadFile(fi.Path)
 	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdDef{}
@@ -206,6 +214,7 @@ func (s *DefService) SyncToDB(fi domain.ResFile) (err error, id uint) {
 	po.Type = fi.ResType
 	po.Desc = fi.Desc
 	po.Path = fi.Path
+	po.IsMock = isMock
 	po.Folder = serverUtils.GetRelativePath(po.Path)
 
 	po.ReferName = helper.PathToName(po.Path, consts.ResDirUsers, po.Type)
@@ -218,6 +227,7 @@ func (s *DefService) SyncToDB(fi domain.ResFile) (err error, id uint) {
 
 	rootField, _ := s.FieldRepo.CreateTreeNode(po.ID, 0, "字段", "root")
 	s.ReferRepo.CreateDefault(rootField.ID, consts.ResTypeDef)
+	fmt.Println(rootField.ID, po.Type, po, rootField)
 	for i, field := range po.Fields {
 		field.Ord = i + 1
 		s.saveFieldToDB(&field, po, fi.Path, rootField.ID, po.ID)

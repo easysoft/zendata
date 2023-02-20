@@ -17,7 +17,7 @@ func (r *DefRepo) ListAll() (models []*model.ZdDef) {
 }
 
 func (r *DefRepo) List(keywords string, page int) (models []*model.ZdDef, total int, err error) {
-	query := r.DB.Select("id,title,folder,path,referName").Order("id ASC")
+	query := r.DB.Select("id,title,folder,path,referName").Order("id ASC").Where("isMock = false")
 	if keywords != "" {
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}

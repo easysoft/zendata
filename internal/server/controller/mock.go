@@ -44,13 +44,13 @@ func (c *MockCtrl) Upload(ctx iris.Context) {
 	}
 	defer f.Close()
 
-	name, spec, mockConf, dataConf, pth, err, id := c.MockService.Upload(ctx, fh)
+	name, spec, mockConf, dataConf, pth, err, dataPath := c.MockService.Upload(ctx, fh)
 	if err != nil {
 		ctx.JSON(c.ErrResp(consts.CommErr, err.Error()))
 		return
 	}
 
-	ctx.JSON(c.SuccessResp(iris.Map{"name": name, "spec": spec, "mock": mockConf, "data": dataConf, "path": pth, "id": id}))
+	ctx.JSON(c.SuccessResp(iris.Map{"name": name, "spec": spec, "mock": mockConf, "data": dataConf, "path": pth, "dataPath": dataPath}))
 }
 
 func (c *MockCtrl) GetPreviewData(ctx iris.Context) {

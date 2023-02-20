@@ -1,16 +1,16 @@
 <template>
   <div class="mock-edit-modal">
     <a-modal
-      :title="model.id == undefined ? $t('msg.mock.create') : $t('msg.mock.edit')"
-      :visible="visible"
-      :closable=false
-      :footer="null"
-      width="100%"
-      dialogClass="full-screen-modal"
+        :closable=false
+        :footer="null"
+        :title="model.id == undefined ? $t('msg.mock.create') : $t('msg.mock.edit')"
+        :visible="visible"
+        dialogClass="full-screen-modal"
+        width="100%"
     >
       <div class="mock-edit-main">
         <div class="buttons">
-          <a-button @click="save" type="primary" :disabled="!readyToSave">
+          <a-button :disabled="!readyToSave" type="primary" @click="save">
             {{ $t('form.save') }}
           </a-button> &nbsp;&nbsp;&nbsp;
           <a-button @click="cancel">
@@ -19,7 +19,7 @@
         </div>
 
         <a-row :gutter="10" class="content-row">
-          <a-col :span="11" class="content-col" v-if="model.id == undefined">
+          <a-col v-if="model.id == undefined" :span="11" class="content-col">
             <div class="upload-bar">
               <a-row>
                 <a-col :span="5">
@@ -27,17 +27,17 @@
                             :showUploadList="false"
                             accept=".yaml,.yml,.json">
                     <a-button>
-                      <a-icon type="upload" />
-                      <span>{{$t('upload.spec')}}</span>
+                      <a-icon type="upload"/>
+                      <span>{{ $t('upload.spec') }}</span>
                     </a-button>
                   </a-upload>
                 </a-col>
                 <a-col :span="9">
-                  <span class="title">{{model.name}}</span>
+                  <span class="title">{{ model.name }}</span>
                 </a-col>
                 <a-col :span="10">
                   <span class="label-path"></span>
-                  <a-input v-model="model.path" :placeholder="$t('msg.mock.input.path')" />
+                  <a-input v-model="model.path" :placeholder="$t('msg.mock.input.path')"/>
                 </a-col>
               </a-row>
 
@@ -47,20 +47,24 @@
             </div>
           </a-col>
 
-          <a-col :span="model.id == undefined ? 13 : 24" class="content-col">
-            <a-tabs default-active-key="1" :animated="false">
-              <a-tab-pane key="1" :tab="$t('msg.mock.mock')">
-                <pre>{{ model.mockContent }}</pre>
-              </a-tab-pane>
-              <a-tab-pane key="2" :tab="$t('msg.mock.data')">
-                <!-- <pre>{{ model.dataContent }}</pre> -->
+          <a-col :span="model.id === undefined ? 13 : 24" class="content-col">
+            <a-tabs :activeKey="currentTab" :animated="false" @change="tabChange">
+              <a-tab-pane key="data" :tab="$t('msg.mock.data')">
+                <pre v-show="model.id === undefined">{{ model.dataContent }}</pre>
                 <design-in-component
-                  ref="designPage"
-                  :visible="true"
-                  :type="resType"
-                  :modelProp="model"
-                  :time="time" >
+                    v-show="model.id !== undefined"
+                    ref="designPage"
+                    :modelProp="dataModel"
+                    :time="time"
+                    :type="resType"
+                    :visible="true">
                 </design-in-component>
+              </a-tab-pane>
+              <a-tab-pane key="mock" :tab="$t('msg.mock.mock')">
+                <!--                <pre>{{ model.mockContent }}</pre>-->
+                <div class="yaml-editor">
+                  <yaml-editor v-model="model.mockContent"/>
+                </div>
               </a-tab-pane>
             </a-tabs>
           </a-col>
@@ -73,22 +77,33 @@
 </template>
 
 <script>
-import {} from "../../../api/manage";
 import {uploadMock} from "@/api/mock";
 import mockMixin from "@/store/mockMixin";
 import {DesignInComponent} from '../../../components'
-import {PageSize, ResTypeDef, replacePathSep, pathToRelated} from "../../../api/utils";
+import {ResTypeDef} from "../../../api/utils";
+import YamlEditor from './Yaml.vue';
+
 
 export default {
   name: 'MockEditComp',
   components: {
     DesignInComponent,
+    YamlEditor,
   },
   data() {
     return {
       model: {},
+      dataModel: {},
       resType: ResTypeDef,
       specReady: false,
+      currentTab: this.current,
+      cmOptions: {
+        lineNumbers: true, // 显示行号
+        mode: 'text/x-yaml', // 语法model
+        gutters: ['CodeMirror-lint-markers'],  // 语法检查器
+        theme: 'monokai', // 编辑器主题
+        lint: true // 开启语法检查
+      },
     };
   },
   props: {
@@ -101,12 +116,16 @@ export default {
       required: true
     },
     mock: {
-        type: Object,
-        default: () => null
+      type: Object,
+      default: () => null
     },
     time: {
       type: Number,
       default: () => 0
+    },
+    current: {
+      type: String,
+      default: () => ''
     },
   },
   mixins: [mockMixin],
@@ -114,8 +133,11 @@ export default {
     readyToSave() {
       return this.specReady && this.model.path?.trim()
     },
+    codemirror() {
+      return this.$refs.cmEditor.codemirror
+    }
   },
-  created () {
+  created() {
     console.log('created')
   },
   mounted: function () {
@@ -124,11 +146,18 @@ export default {
   beforeDestroy() {
     console.log('beforeDestroy')
   },
-  watch:{
-    mock(val){
+  watch: {
+    mock(val) {
       this.model = val
+      this.dataModel = {id: val.defId}
+      if(val.id !== undefined){
+        this.specReady = true;
+      }
       console.log("watch mock :", val)
     },
+    current(val) {
+      this.currentTab = val
+    }
   },
 
   methods: {
@@ -137,7 +166,7 @@ export default {
       this.saveMockItem(this.model).then((json) => {
         console.log('saveMockItem', json)
         if (json.code === 0) {
-          this.model = {}
+          // this.model = {}
           this.specReady = false
           this.$emit('ok')
         } else {
@@ -150,9 +179,12 @@ export default {
     },
     cancel() {
       console.log('cancel')
-      this.model = {}
+      // this.model = {}
       this.specReady = false
       this.$emit('cancel')
+    },
+    tabChange(key) {
+      this.currentTab = key
     },
 
     getModel(id) {
@@ -173,7 +205,7 @@ export default {
             specContent: json.data.spec,
             mockContent: json.data.mock,
             dataContent: json.data.data,
-            // id: json.data.id,
+            dataPath: json.data.dataPath,
           }
 
           this.specReady = true
@@ -196,12 +228,14 @@ export default {
 
 <style lang="less" scoped>
 .mock-edit-main {
+
   .buttons {
     position: absolute;
     top: 6px;
     right: 6px;
     padding: 5px;
   }
+
 }
 
 </style>
@@ -209,16 +243,19 @@ export default {
 <style lang="less">
 .ant-modal-content {
   overflow: hidden;
+
   .ant-modal-body {
-    height: calc(~"100% - 55px");
+    height: calc(~ "100% - 55px");
 
     .mock-edit-main {
       height: 100%;
+
       .content-row {
         height: 100%;
 
         .content-col {
           height: 100%;
+
           pre {
             padding: 10px;
             height: 100%;
@@ -226,46 +263,60 @@ export default {
 
           .upload-bar {
             padding: 10px;
+
             .title {
               display: inline-block;
               padding: 3px 16px;
               font-size: larger;
               font-weight: bolder;
             }
+
             .label-path:before {
-                display: inline-block;
-                margin-right: 4px;
-                color: #f5222d;
-                font-size: 14px;
-                font-family: SimSun,sans-serif;
-                line-height: 1;
-                content: "*";
+              display: inline-block;
+              margin-right: 4px;
+              color: #f5222d;
+              font-size: 14px;
+              font-family: SimSun, sans-serif;
+              line-height: 1;
+              content: "*";
             }
+
             input {
-              width: calc(~"100% - 20px");
+              width: calc(~ "100% - 20px");
             }
+
           }
+
           .upload-content {
-            height: calc(~"100% - 50px");
+            height: calc(~ "100% - 50px");
           }
 
           .ant-tabs {
             height: 100%;
+
             .ant-tabs-bar {
               margin-bottom: 10px;
             }
+
             .ant-tabs-content {
-              height: calc(~"100% - 40px");
+              height: calc(~ "100% - 40px");
               overflow-y: auto;
 
               .ant-tabs-tabpane-active {
-                height: calc(~"100% - 10px");
+                height: calc(~ "100% - 10px");
               }
+
             }
           }
         }
       }
     }
   }
+}
+</style>
+
+<style lang="less">
+.CodeMirror pre.CodeMirror-line {
+  padding: 3px !important;
 }
 </style>
