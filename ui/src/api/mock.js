@@ -20,7 +20,7 @@ export function getMock (id) {
 export function saveMock (data) {
   return request({
     url: mocksApi,
-    method: data.id ? 'put': 'post',
+    method: 'post',
     data
   })
 }

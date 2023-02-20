@@ -12,10 +12,14 @@ BIN_WIN32=${BIN_OUT}win32/
 BIN_LINUX=${BIN_OUT}linux/
 BIN_MAC=${BIN_OUT}darwin/
 
+COMMAND_BIN_DIR=bin/
+CLIENT_BIN_DIR=client/bin/
+CLIENT_OUT_DIR=client/out/
+
 default: update_version_in_config gen_version_file prepare_res compile_all copy_files package
 
 win64: update_version_in_config gen_version_file prepare_res compile_win64 copy_files package
-win32: update_version_in_config gen_version_file prepare_res compile_win32 copy_files package
+win32: update_version_in_config gen_version_file prepare_res compile_win32 package_gui_win32_client copy_files package
 linux: update_version_in_config gen_version_file prepare_res compile_linux copy_files package
 mac: update_version_in_config gen_version_file prepare_res compile_mac copy_files package
 upload: upload_to
@@ -36,8 +40,9 @@ compile_win64:
 	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -ldflags "-s -w" -o ${BIN_WIN64}${BINARY}.exe cmd/command/main.go
 
 compile_win32:
-	@echo 'start compile win32'
-	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -x -v -ldflags "-s -w" -o ${BIN_WIN32}${BINARY}.exe cmd/command/main.go
+	@echo 'start compile server win32'
+	@rm -rf ${COMMAND_BIN_DIR}win32/${PROJECT}-server.exe
+	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -x -v -ldflags "-s -w" -o ${COMMAND_BIN_DIR}win32/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
 
 compile_linux:
 	@echo 'start compile linux'
@@ -46,6 +51,15 @@ compile_linux:
 compile_mac:
 	@echo 'start compile mac'
 	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -o ${BIN_MAC}${BINARY} cmd/command/main.go
+
+package_gui_win32_client:
+	@echo 'start package gui win32'
+	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir ${CLIENT_BIN_DIR}win32
+	@cp -rf ${COMMAND_BIN_DIR}win64/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
+
+	@cd client && npm run package-win32 && cd ..
+	@rm -rf ${CLIENT_OUT_DIR}win32 && mkdir ${CLIENT_OUT_DIR}win32 && \
+		mv ${CLIENT_OUT_DIR}${PROJECT}-win32-ia32 ${CLIENT_OUT_DIR}win32/gui
 
 copy_files:
 	@echo 'start copy files to ${BIN_DIR}'
