@@ -1,25 +1,48 @@
 VERSION=2.3
 PROJECT=zd
-QINIU_DIR=/Users/aaron/work/zentao/qiniu/
+
+ifeq ($(OS),Windows_NT)
+    OS="Windows"
+else
+    ifeq ($(shell uname),Darwin)
+        OS="Mac"
+    else
+        OS="Unix"
+    endif
+endif
+
+ifeq ($(OS),"Mac")
+    QINIU_DIR=/Users/aaron/work/zentao/qiniu/
+else
+    QINIU_DIR=~/zentao/
+endif
+
 QINIU_DIST_DIR=${QINIU_DIR}${PROJECT}/${VERSION}/
 PACKAGE=${PROJECT}-${VERSION}
 BINARY=zd
 BIN_DIR=bin
 BIN_ZIP_DIR=${BIN_DIR}/zip/${PROJECT}/${VERSION}/
 BIN_OUT=${BIN_DIR}/${PROJECT}/${VERSION}/
-BIN_WIN64=${BIN_OUT}win64/
-BIN_WIN32=${BIN_OUT}win32/
-BIN_LINUX=${BIN_OUT}linux/
-BIN_MAC=${BIN_OUT}darwin/
+CLIENT_OUT_DIR=client/out/
+
+BIN_WIN64=${BIN_DIR}win64/
+BIN_WIN32=${BIN_DIR}win32/
+BIN_LINUX=${BIN_DIR}linux/
+BIN_MAC=${BIN_DIR}darwin/
 
 COMMAND_BIN_DIR=bin/
 CLIENT_BIN_DIR=client/bin/
 CLIENT_OUT_DIR=client/out/
 
+COMMAND_MAIN_DIR=cmd/command/
+COMMAND_MAIN_FILE=${COMMAND_MAIN_DIR}main.go
+
+SERVER_MAIN_FILE=cmd/server/main.go
+
 default: update_version_in_config gen_version_file prepare_res compile_all copy_files package
 
-win64: update_version_in_config gen_version_file prepare_res compile_win64 copy_files package
-win32: update_version_in_config gen_version_file prepare_res compile_win32 package_gui_win32_client copy_files package
+win64: update_version_in_config gen_version_file prepare_res compile_win64 package_gui_win64_client compile_command_win64 copy_files package
+win32: update_version_in_config gen_version_file prepare_res compile_win32 package_gui_win32_client compile_command_win32 copy_files package
 linux: update_version_in_config gen_version_file prepare_res compile_linux copy_files package
 mac: update_version_in_config gen_version_file prepare_res compile_mac copy_files package
 upload: upload_to
@@ -35,9 +58,18 @@ build_ui:
 	@echo 'compile ui'
 	@cd ui && yarn build && cd ..
 
+compile_ui:
+ifeq ($(OS),"Mac")
+	@cd ui && UI_IN_CLIENT=1 && yarn build --dest ../client/ui && cd ..
+else
+	@cd ui && set UI_IN_CLIENT=1 && yarn build --dest ../client/ui && cd ..
+endif
+
+	@cd ui && yarn build --dest ../client/ui && cd ..
+
 compile_win64:
 	@echo 'start compile win64'
-	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -ldflags "-s -w" -o ${BIN_WIN64}${BINARY}.exe cmd/command/main.go
+	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -ldflags "-s -w" -o ${COMMAND_BIN_DIR}win64/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
 
 compile_win32:
 	@echo 'start compile server win32'
@@ -52,24 +84,59 @@ compile_mac:
 	@echo 'start compile mac'
 	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -o ${BIN_MAC}${BINARY} cmd/command/main.go
 
-package_gui_win32_client:
-	@echo 'start package gui win32'
+# gui
+package_gui_win64_client:
+	@echo 'start package gui win64'
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir ${CLIENT_BIN_DIR}win32
 	@cp -rf ${COMMAND_BIN_DIR}win64/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
 
+	@cd client && npm run package-win64 && cd ..
+	@rm -rf ${CLIENT_OUT_DIR}win64 && mkdir ${CLIENT_OUT_DIR}win64 && \
+		mv ${CLIENT_OUT_DIR}${PROJECT}-win32-x64 ${CLIENT_OUT_DIR}win64/gui
+
+package_gui_win32_client:
+	@echo 'start package gui win32'
+	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}win32
+	@cp -rf ${COMMAND_BIN_DIR}win64/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
+
 	@cd client && npm run package-win32 && cd ..
-	@rm -rf ${CLIENT_OUT_DIR}win32 && mkdir ${CLIENT_OUT_DIR}win32 && \
+	@rm -rf ${CLIENT_OUT_DIR}win32 && mkdir -p ${CLIENT_OUT_DIR}win32 && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-win32-ia32 ${CLIENT_OUT_DIR}win32/gui
+
+# command line
+compile_command_win64:
+	@echo 'start compile win64'
+	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
+		go build -x -v -ldflags "-s -w" -o ${COMMAND_BIN_DIR}win64/${PROJECT}.exe ${COMMAND_MAIN_FILE}
+
+compile_command_win32:
+	@echo 'start compile win32'
+	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 \
+		go build -x -v -ldflags "-s -w" -o ${COMMAND_BIN_DIR}win32/${PROJECT}.exe ${COMMAND_MAIN_FILE}
 
 copy_files:
 	@echo 'start copy files to ${BIN_DIR}'
-	@cp -r {.zd.conf,data,yaml,users,demo,runtime} ${BIN_DIR}
+	@cp -r .zd.conf ${BIN_DIR}
+	@cp -r data ${BIN_DIR}
+	@cp -r yaml ${BIN_DIR}
+	@cp -r users ${BIN_DIR}
+	@cp -r demo ${BIN_DIR}
+	@cp -r runtime ${BIN_DIR}
 	@rm -rf ${BIN_DIR}/demo/out ${BIN_DIR}/yaml/article/chinese/slang/out ${BIN_DIR}/runtime/protobuf/out
 
 	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
 	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
 
-	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/runtime,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}"; done
+	@for platform in `ls ${CLIENT_OUT_DIR}`;do \
+		cp -r .zd.conf "${CLIENT_OUT_DIR}$${platform}"; \
+		cp -r bin/data "${CLIENT_OUT_DIR}$${platform}"; \
+		cp -r bin/runtime "${CLIENT_OUT_DIR}$${platform}"; \
+		cp -r bin/users "${CLIENT_OUT_DIR}$${platform}"; \
+		cp -r bin/demo "${CLIENT_OUT_DIR}$${platform}"; \
+		cp -r bin/tmp "${CLIENT_OUT_DIR}$${platform}"; \
+		cp ${COMMAND_BIN_DIR}$${platform}/zd.exe "${CLIENT_OUT_DIR}$${platform}"; \
+		# cp ${COMMAND_BIN_DIR}$${platform}/zd-gui.exe "${CLIENT_OUT_DIR}$${platform}"; \
+	done
 
 	@rm -rf ${BIN_OUT}linux/runtime/php \
 		${BIN_OUT}linux/runtime/protobuf/bin/mac \
@@ -87,9 +154,9 @@ copy_files:
 package:
 	@echo 'start package'
 	@find . -name .DS_Store -print0 | xargs -0 rm -f
-	@for platform in `ls ${BIN_OUT}`; do mkdir -p ${QINIU_DIST_DIR}$${platform}; done
+	@for platform in `ls ${CLIENT_OUT_DIR}`; do mkdir -p ${QINIU_DIST_DIR}$${platform}; done
 
-	@cd ${BIN_OUT} && \
+	@cd ${CLIENT_OUT_DIR} && \
 		for platform in `ls ./`; \
 			do  cd $${platform} && \
 				zip -ry ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip ./* && \
@@ -99,7 +166,11 @@ package:
 			done
 
 update_version_in_config:
+ifeq ($(OS),"Mac")
 	@gsed -i "s/Version.*/Version = ${VERSION}/" .zd.conf
+else
+	@sed -i "s/Version.*/Version = ${VERSION}/" .zd.conf
+endif
 
 gen_version_file:
 	@echo 'gen version'

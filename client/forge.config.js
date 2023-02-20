@@ -4,7 +4,7 @@ module.exports = {
         "icon": "./ui/favicon.ico"
     },
     packagerConfig: {
-        "name": "ZenData",
+        "name": "zd",
         "icon": "./icon/favicon",
         extraResource: [
             './bin',
