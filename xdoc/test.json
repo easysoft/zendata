@@ -12,7 +12,7 @@
         "consumes": [
           "application/json"
         ],
-        "description": "",
+        "description": "### 自定义参数传递说明\n\n支持两种结构的传递，列表和字典\n\n#### settings\n\n为列表结构，列表元素为字典，参数项和参数值分别作为key 和 values 的值\n\n``` javascript\n[\n    {\n    \t\"key\": \"replicas\", \"value\": \"2\"\n    },\n    {\n        \"key\": \"mysql.resource.memory\", \"value\": \"1Gi\"\n    }\n]\n```\n\n### settings_map (已实现)\n\n为字典结构，字典第一层为组件名，内容为具体的参数 map 结构，以zentao为例\n\n```\n{\n    \"zentao\": {\n        \"replicas\": 1\n    },\n    \"mysql\": {\n        \"resources\": {\n            \"memory\": \"1Gi\"\n        }\n    }\n}\n```\n\n经 cne 处理过后，最终参数变为\n\n``` yaml\nreplicas: 1\n\nmysql:\n  resources:\n    memory: 1Gi\n```",
         "parameters": [
           {
             "in": "body",
@@ -21,76 +21,76 @@
               "$schema": "http://json-schema.org/draft-04/schema#",
               "properties": {
                 "channel": {
-                  "description": "cloud \u6e20\u6210\u79c1\u6709, test \u6d4b\u8bd5, stable \u7528\u6237\u53ef\u89c1",
+                  "description": "cloud 渠成私有, test 测试, stable 用户可见",
                   "mock": {
                     "mock": "test"
                   },
-                  "title": "\u5e94\u7528\u4ed3\u5e93\u6807\u7b7e",
+                  "title": "应用仓库标签",
                   "type": "string"
                 },
                 "chart": {
-                  "description": "helm\u5e94\u7528\u540d\u79f0\uff0c\u7eafying wen",
-                  "title": "\u88ab\u5b89\u88c5\u7684\u5e94\u7528\u540d\u79f0",
+                  "description": "helm应用名称，纯ying wen",
+                  "title": "被安装的应用名称",
                   "type": "string"
                 },
                 "cluster": {
-                  "description": "\u53ef\u4e3a\u7a7a\uff0c\u9ed8\u8ba4\u672c\u5730\u96c6\u7fa4",
-                  "title": "\u96c6\u7fa4\u6807\u793a",
+                  "description": "可为空，默认本地集群",
+                  "title": "集群标示",
                   "type": "string"
                 },
                 "name": {
-                  "description": "\u552f\u4e00,\u5e94\u4ee5chart\u540d\u79f0\u6253\u5934\u52a0\u968f\u673a\u5b57\u7b26\u4e32",
-                  "title": "\u5e94\u7528\u5b9e\u4f8b\u5316\u540d\u79f0",
+                  "description": "唯一,应以chart名称打头加随机字符串",
+                  "title": "应用实例化名称",
                   "type": "string"
                 },
                 "namespace": {
                   "mock": {
                     "mock": "test"
                   },
-                  "title": "\u5bf9\u5e94\u547d\u540d\u7a7a\u95f4",
+                  "title": "对应命名空间",
                   "type": "string"
                 },
                 "settings": {
                   "items": {
                     "properties": {
                       "key": {
-                        "description": "\u5bf9\u5e94helm values\u6587\u4ef6\u4e2d\u7684yaml\u8def\u5f84",
-                        "title": "\u53c2\u6570\u540d",
+                        "description": "对应helm values文件中的yaml路径",
+                        "title": "参数名",
                         "type": "string"
                       },
                       "value": {
-                        "title": "\u53c2\u6570\u503c",
+                        "title": "参数值",
                         "type": "string"
                       }
                     },
                     "type": "object"
                   },
-                  "title": "\u81ea\u5b9a\u4e49\u53c2\u6570",
+                  "title": "自定义参数",
                   "type": "array"
                 },
                 "settings_map": {
-                  "title": "map\u7ed3\u6784\u7684\u81ea\u5b9a\u4e49\u53c2\u6570",
+                  "title": "map结构的自定义参数",
                   "type": "object"
                 },
                 "settings_snippets": {
-                  "description": "\u76ee\u524d\u7531\u540e\u7aef\u63d0\u4f9b\u540d\u79f0",
+                  "description": "目前由后端提供名称",
                   "items": {
                     "type": "string"
                   },
-                  "title": "\u914d\u7f6e\u7247\u6bb5\u540d\u79f0",
+                  "title": "配置片段名称",
                   "type": "array"
                 },
                 "username": {
-                  "description": "\u975e\u5fc5\u586b\uff0c\u4e3a\u6e20\u6210\u5e73\u53f0\u4e1a\u52a1\u5c42\u5197\u4f59\u6570\u636e",
+                  "description": "非必填，为渠成平台业务层冗余数据",
                   "mock": {
                     "mock": "admin"
                   },
-                  "title": "\u521b\u5efa\u8005\u540d\u79f0",
+                  "title": "创建者名称",
                   "type": "string"
                 },
                 "version": {
-                  "description": "\u5982\u4e3a\u7a7a\uff0c\u5c06\u9ed8\u8ba4\u9009\u62e9\u6700\u65b0\u7248\u672c",
-                  "title": "\u5e94\u7528\u7248\u672c\u53f7",
+                  "description": "如为空，将默认选择最新版本",
+                  "title": "应用版本号",
                   "type": "string"
                 }
               },
@@ -133,9 +133,9 @@
             }
           }
         },
-        "summary": "\u5e94\u7528\u5b89\u88c5",
+        "summary": "应用安装",
         "tags": [
-          "\u5e94\u7528\u7ba1\u7406"
+          "应用管理"
         ]
       }
     }
@@ -146,28 +146,28 @@
   "swagger": "2.0",
   "tags": [
     {
-      "name": "\u5e94\u7528\u7ba1\u7406"
+      "name": "应用管理"
     },
     {
-      "name": "\u7a7a\u95f4\u7ba1\u7406"
+      "name": "空间管理"
     },
     {
-      "name": "\u4e2d\u95f4\u4ef6\u7ba1\u7406"
+      "name": "中间件管理"
     },
     {
-      "name": "\u6570\u636e\u7edf\u8ba1"
+      "name": "数据统计"
     },
     {
-      "name": "\u5907\u4efd\u8fd8\u539f"
+      "name": "备份还原"
     },
     {
-      "name": "\u7ec4\u4ef6\u7ba1\u7406"
+      "name": "组件管理"
     },
     {
-      "name": "\u7cfb\u7edf\u7ba1\u7406"
+      "name": "系统管理"
     },
     {
-      "name": "\u914d\u7f6e\u7247\u6bb5"
+      "name": "配置片段"
     }
   ]
 }
