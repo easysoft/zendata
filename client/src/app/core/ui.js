@@ -14,13 +14,10 @@ export function startUIService() {
         return Promise.resolve();
     }
 
-    let {UI_SERVER_URL: uiServerUrl, UI_IN_ZD: uiInZd} = process.env;
-    if(parseInt(uiInZd)){
-       return Promise.resolve("http://127.0.0.1:" + portServer + "/ui");
-    }
+    let {UI_SERVER_URL: uiServerUrl} = process.env;
     
     if (!uiServerUrl && !DEBUG) {
-        uiServerUrl = path.resolve(process.resourcesPath, 'ui');
+        return Promise.resolve("http://127.0.0.1:" + portServer + "/ui");
     }
 
     if (uiServerUrl) {
