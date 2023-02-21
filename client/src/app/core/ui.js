@@ -2,6 +2,7 @@ import {app} from 'electron';
 import path from 'path';
 import {spawn} from 'child_process';
 import express from 'express';
+import {portServer} from "../utils/consts";
 
 import {DEBUG, portClient} from '../utils/consts';
 import {logInfo, logErr} from '../utils/log';
@@ -13,7 +14,11 @@ export function startUIService() {
         return Promise.resolve();
     }
 
-    let {UI_SERVER_URL: uiServerUrl} = process.env;
+    let {UI_SERVER_URL: uiServerUrl, UI_IN_ZD: uiInZd} = process.env;
+    if(parseInt(uiInZd)){
+       return Promise.resolve("http://127.0.0.1:" + portServer + "/ui");
+    }
+    
     if (!uiServerUrl && !DEBUG) {
         uiServerUrl = path.resolve(process.resourcesPath, 'ui');
     }
