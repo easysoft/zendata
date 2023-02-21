@@ -128,7 +128,12 @@ func GetExeDir() string { // where zd.exe file in
 	if strings.Index(name, "zd") == 0 && strings.Index(arg1, "go-build") < 0 {
 		p, _ := exec.LookPath(os.Args[0])
 		if strings.Index(p, string(os.PathSeparator)) > -1 {
-			dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
+			if strings.Index(p, "gui") > -1 {
+				guiDir := p[:strings.LastIndex(p, "gui")]
+				dir = guiDir[:strings.LastIndex(guiDir, string(os.PathSeparator))]
+			} else {
+				dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
+			}
 		}
 	} else { // debug
 		dir = vari.ZdDir
