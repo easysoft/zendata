@@ -44,6 +44,8 @@ func main() {
 
 	flagSet.Parse(os.Args[1:])
 
+	vari.GlobalVars.RunMode = consts.RunModeServer
+
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
 

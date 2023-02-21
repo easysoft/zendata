@@ -27,6 +27,10 @@ func InitConfig(root string) {
 	vari.ZdDir = fileUtils.GetExeDir()
 	vari.DevDir = fileUtils.GetDevDir()
 
+	vari.Config = getInst()
+
+	i118Utils.InitI118(vari.Config.Language)
+
 	if root != "" {
 		if !fileUtils.IsAbsPath(root) {
 			root, err = filepath.Abs(root)
@@ -51,10 +55,6 @@ func InitConfig(root string) {
 	if commonUtils.IsWin() {
 		shellUtils.Exec("chcp 65001")
 	}
-
-	vari.Config = getInst()
-
-	i118Utils.InitI118(vari.Config.Language)
 
 	//logUtils.PrintToWithColor("workdir = "+vari.ZdPath, color.FgCyan)
 	consts.SqliteFile = strings.Replace(consts.SqliteFile, "file:", "file:"+vari.ZdDir, 1)
