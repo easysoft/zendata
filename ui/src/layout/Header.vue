@@ -25,10 +25,10 @@
         <Icon type="question-circle" :title="$t('msg.help')" :style="{ fontSize: '18px' }" />
       </a>
       <div v-if="isElectron" id="windowBtn">
-        <span v-if="!fullScreen" @click="fullScreen" :title="$t('window.fullscreen')" class="window-btn">
+        <span v-if="!fullScreenDef" @click="fullScreen" :title="$t('window.fullscreen')" class="window-btn">
           <Icon type="fullscreen" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>
-        <span v-if="fullScreen" @click="fullScreen" :title="$t('window.exit_fullscreen')" class="window-btn">
+        <span v-if="fullScreenDef" @click="fullScreen" :title="$t('window.exit_fullscreen')" class="window-btn">
           <Icon type="fullscreen-exit" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>
   
@@ -36,10 +36,10 @@
           <Icon type="minus" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>
   
-        <span v-if="maximize" :title="$t('window.restore')" @click="maximize" class="window-btn">
+        <span v-if="maximizeDef" :title="$t('window.restore')" @click="maximize" class="window-btn">
           <Icon type="block" :style="{ fontSize: '18px' }" />
         </span>
-        <span v-if="!maximize" :title="$t('window.maximize')" @click="maximize" class="window-btn">
+        <span v-if="!maximizeDef" :title="$t('window.maximize')" @click="maximize" class="window-btn">
           <Icon type="border" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>
   
