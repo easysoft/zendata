@@ -71,7 +71,7 @@ export default {
     return {
       workDir: '',
       logoPath: '',
-      maximizeDef: false,
+      maximizeDef: true,
       fullScreenDef: false,
       isElectron: getElectron(),
     }
@@ -116,7 +116,7 @@ export default {
 
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.send('electronMsg', this.maximizeDef ? 'unmaximize' : 'maximize')
-      this.maximizeDef.value = !this.maximizeDef.value
+      this.maximizeDef = !this.maximizeDef
     },
 
     exit() {
@@ -178,7 +178,7 @@ export default {
     }
 
     .window-btn {
-      margin-left: 15px;
+      margin-left: 8px;
     }
   }
 
