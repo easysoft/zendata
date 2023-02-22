@@ -1,6 +1,6 @@
 import notification from 'ant-design-vue/es/notification'
 import axios, {AxiosInstance} from 'axios'
-import { getElectron } from "@/utils/common";
+import { getElectron } from "./common";
 
 let serverUrl = ''
 let request = null

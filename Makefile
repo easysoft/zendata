@@ -33,6 +33,8 @@ BIN_MAC=${BIN_DIR}darwin/
 COMMAND_BIN_DIR=bin/
 CLIENT_BIN_DIR=client/bin/
 CLIENT_OUT_DIR=client/out/
+CLIENT_OUT_DIR_EXECUTABLE=${CLIENT_OUT_DIR}executable/
+CLIENT_OUT_DIR_UPGRADE=${CLIENT_OUT_DIR}upgrade/
 
 COMMAND_MAIN_DIR=cmd/command/
 COMMAND_MAIN_FILE=${COMMAND_MAIN_DIR}main.go
@@ -58,8 +60,8 @@ build_ui:
 	@echo 'compile ui'
 	@cd ui && yarn build && cd ..
 
-compile_ui:
-	@cd ui && yarn build
+compile_client_ui:
+	@cd ui && UI_IN_CLIENT=1 yarn build --dest ../client/ui && cd ..
 
 compile_win64:
 	@echo 'start compile win64'
