@@ -59,13 +59,7 @@ build_ui:
 	@cd ui && yarn build && cd ..
 
 compile_ui:
-ifeq ($(OS),"Mac")
-	@cd ui && UI_IN_CLIENT=1 && yarn build --dest ../client/ui && cd ..
-else
-	@cd ui && set UI_IN_CLIENT=1 && yarn build --dest ../client/ui && cd ..
-endif
-
-	@cd ui && yarn build --dest ../client/ui && cd ..
+	@cd ui && yarn build
 
 compile_win64:
 	@echo 'start compile win64'
@@ -74,7 +68,7 @@ compile_win64:
 compile_win32:
 	@echo 'start compile server win32'
 	@rm -rf ${COMMAND_BIN_DIR}win32/${PROJECT}-server.exe
-	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -x -v -ldflags "-s -w" -o ${COMMAND_BIN_DIR}win32/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
+	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -ldflags "-s -w" -x -v -o ${COMMAND_BIN_DIR}win32/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
 
 compile_linux:
 	@echo 'start compile linux'
@@ -90,14 +84,14 @@ package_gui_win64_client:
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir ${CLIENT_BIN_DIR}win32
 	@cp -rf ${COMMAND_BIN_DIR}win64/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
 
-	@cd client && npm run package-win64 && cd ..
+	@cd client  && npm run package-win64 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR}win64 && mkdir ${CLIENT_OUT_DIR}win64 && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-win32-x64 ${CLIENT_OUT_DIR}win64/gui
 
 package_gui_win32_client:
 	@echo 'start package gui win32'
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}win32
-	@cp -rf ${COMMAND_BIN_DIR}win64/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
+	@cp -rf ${COMMAND_BIN_DIR}win32/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
 
 	@cd client && npm run package-win32 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR}win32 && mkdir -p ${CLIENT_OUT_DIR}win32 && \
@@ -134,7 +128,7 @@ copy_files:
 		cp -r bin/users "${CLIENT_OUT_DIR}$${platform}"; \
 		cp -r bin/demo "${CLIENT_OUT_DIR}$${platform}"; \
 		cp -r bin/tmp "${CLIENT_OUT_DIR}$${platform}"; \
-		cp ${COMMAND_BIN_DIR}$${platform}/zd.exe "${CLIENT_OUT_DIR}$${platform}"; \
+		true || cp ${COMMAND_BIN_DIR}$${platform}/zd.exe "${CLIENT_OUT_DIR}$${platform}"; \
 		# cp ${COMMAND_BIN_DIR}$${platform}/zd-gui.exe "${CLIENT_OUT_DIR}$${platform}"; \
 	done
 

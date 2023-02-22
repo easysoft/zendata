@@ -155,8 +155,14 @@ const locale = {
   'valid.loop.check': '需为整数或整数区间。',
   'valid.folder.users': '用户数据必须保存在users/目录下。',
   'valid.folder.yaml': '公用数据必须保存在/yaml目录下。',
-  'valid.folder.data': 'Excel数据必须保存在data/目录下。'
+  'valid.folder.data': 'Excel数据必须保存在data/目录下。',
 
+  'window.fullscreen': '全屏',
+  'window.exit_fullscreen': '退出全屏',
+  'window.maximize': '最大化',
+  'window.minimize': '最小化',
+  'window.restore': '还原',
+  'window.close': '关闭',
 }
 
 export default {
