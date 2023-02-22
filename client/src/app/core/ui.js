@@ -17,7 +17,7 @@ export function startUIService() {
     let {UI_SERVER_URL: uiServerUrl} = process.env;
     
     if (!uiServerUrl && !DEBUG) {
-        return Promise.resolve("http://127.0.0.1:" + portServer + "/ui");
+        uiServerUrl = path.resolve(process.resourcesPath, 'ui');
     }
 
     if (uiServerUrl) {
