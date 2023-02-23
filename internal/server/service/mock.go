@@ -5,8 +5,16 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"mime/multipart"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"time"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -18,12 +26,6 @@ import (
 	"github.com/kataras/iris/v12"
 	"github.com/snowlyg/helper/dir"
 	"gopkg.in/yaml.v2"
-	"mime/multipart"
-	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
-	"time"
 )
 
 var (
@@ -52,6 +54,12 @@ func (s *MockService) Get(id int) (po model.ZdMock, err error) {
 }
 
 func (s *MockService) Save(po *model.ZdMock) (err error) {
+	zdDef, err := helper.GetDefFromYamlString(po.MockContent)
+	if err != nil {
+		return
+	}
+	po.Name = zdDef.Title
+
 	if po.DefId == 0 {
 		fi := domain.ResFile{FileName: po.Name, Path: po.DataPath}
 		_, po.DefId = s.DefService.SyncToDB(fi, true)

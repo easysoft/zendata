@@ -39,3 +39,5 @@
 /client/out
 /client/ui
 /client/.webpack
+
+/zendata

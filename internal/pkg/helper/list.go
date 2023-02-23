@@ -2,20 +2,23 @@ package helper
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"regexp"
+	"sort"
+	"strings"
+
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
-	"path/filepath"
-	"regexp"
-	"sort"
-	"strings"
 )
 
 func ListData() {
@@ -276,4 +279,23 @@ func GetYamlResType(def domain.DefInfo) string {
 	}
 
 	return ""
+}
+
+func GetDefFromYamlFile(path string) (po *model.ZdDef, content string, err error) {
+	po = &model.ZdDef{}
+	contentByte, _ := os.ReadFile(path)
+	content = string(contentByte)
+
+	yamlContent := ReplaceSpecialChars(contentByte)
+	err = yaml.Unmarshal(yamlContent, po)
+
+	return
+}
+
+func GetDefFromYamlString(content string) (po *model.ZdDef, err error) {
+	po = &model.ZdDef{}
+	yamlContent := ReplaceSpecialChars([]byte(content))
+	err = yaml.Unmarshal(yamlContent, po)
+
+	return
 }
