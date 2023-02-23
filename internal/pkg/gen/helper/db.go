@@ -1,12 +1,13 @@
 package genHelper
 
 import (
+	"database/sql"
 	"fmt"
+	"regexp"
+	"strings"
+
 	"github.com/dzwvip/oracle"
-<<<<<<< HEAD
-=======
 	consts "github.com/easysoft/zendata/internal/pkg/const"
->>>>>>> 3.0
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -119,8 +120,6 @@ func LoadAllWords() (ret map[string]string) {
 	return
 }
 
-<<<<<<< HEAD
-=======
 func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 	var (
 		driver, user, password, host, port, db, code string
@@ -157,7 +156,6 @@ func parserDsnAndConn(dsn string) (conn *sql.DB, err error) {
 	return
 }
 
->>>>>>> 3.0
 func parserDsnAndConnByGorm(dsn string) (db *gorm.DB, err error) {
 	if vari.GlobalVars.DBDsnParsing.Driver == "mysql" {
 		dsn := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",

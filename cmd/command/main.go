@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
@@ -10,20 +9,13 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
-<<<<<<< HEAD
-	serverUtils "github.com/easysoft/zendata/internal/server/utils"
-	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-=======
 	"github.com/easysoft/zendata/internal/server/core/web"
 	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
->>>>>>> 3.0
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
-	"io"
 	"io/ioutil"
 	"os"
 	"os/signal"
@@ -40,15 +32,8 @@ var (
 	defaultDefContent []byte
 	configDefContent  []byte
 
-<<<<<<< HEAD
-	uuid   = ""
-	root   string
-	input  string
-	decode bool
-=======
 	root  string
 	input string
->>>>>>> 3.0
 
 	parse    bool
 	decode   bool
@@ -79,8 +64,6 @@ func main() {
 	}()
 
 	flagSet = flag.NewFlagSet("zd", flag.ContinueOnError)
-
-	flagSet.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
 
 	flagSet.StringVar(&defaultFile, "d", "", "")
 	flagSet.StringVar(&defaultFile, "default", "", "")
@@ -192,77 +175,9 @@ func execCommand() {
 	}
 }
 
-<<<<<<< HEAD
-func toGen(files []string) {
-	tmStart := time.Now()
-	if vari.Verbose {
-		logUtils.PrintTo(fmt.Sprintf("Start at %s.", tmStart.Format("2006-01-02 15:04:05")))
-	}
-
-	if vari.RunMode == constant.RunModeParse {
-		ext := filepath.Ext(input)
-		if ext == ".sql" {
-			action.ParseSql(input, vari.Out)
-		} else if ext == ".txt" {
-			action.ParseArticle(input, vari.Out)
-		}
-	} else if vari.RunMode == constant.RunModeServer {
-		vari.AgentLogDir = vari.ZdPath + serverConst.AgentLogDir + constant.PthSep
-		err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
-		if err != nil {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)
-			os.Exit(1)
-		}
-
-		startServer() // will init its own db
-
-	} else if vari.RunMode == constant.RunModeServerRequest {
-		vari.Format = constant.FormatJson
-		if defaultFile != "" || configFile != "" {
-			files := []string{defaultFile, configFile}
-			action.Generate(files, fields, vari.Format, vari.Table)
-		} else {
-			contents := [][]byte{defaultDefContent, configDefContent}
-			action.GenerateByContent(contents, fields, vari.Format, vari.Table)
-		}
-
-	} else if vari.RunMode == constant.RunModeGen {
-		if vari.Human {
-			vari.WithHead = true
-		}
-
-		if vari.Out != "" {
-			fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
-			fileUtils.RemoveExist(vari.Out)
-
-			ext := strings.ToLower(filepath.Ext(vari.Out))
-			if len(ext) > 1 {
-				ext = strings.TrimLeft(ext, ".")
-			}
-			if stringUtils.InArray(ext, constant.Formats) {
-				vari.Format = ext
-			}
-
-			if vari.Format == constant.FormatExcel {
-				logUtils.FilePath = vari.Out
-			} else {
-				logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
-				defer logUtils.FileWriter.Close()
-			}
-		}
-		if vari.DBDsn != "" {
-			vari.Format = constant.FormatSql
-		}
-
-		if vari.Format == constant.FormatSql && vari.Table == "" {
-			logUtils.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
-			return
-		}
-=======
 func startServer() {
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
->>>>>>> 3.0
 
 	vari.AgentLogDir = vari.ZdDir + serverConst.AgentLogDir + consts.PthSep
 	err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
@@ -332,24 +247,6 @@ func genYaml(input string) {
 	mainCtrl.GenYaml(input)
 }
 
-<<<<<<< HEAD
-	mux.HandleFunc("/api/v1/heartbeat", heartbeat) // test
-
-	return mux
-}
-
-func heartbeat(writer http.ResponseWriter, req *http.Request) {
-	serverUtils.SetupCORS(&writer, req)
-
-	ret := map[string]interface{}{"code": 0, "msg": "ok"}
-
-	bytes, _ := json.Marshal(ret)
-	io.WriteString(writer, string(bytes))
-}
-
-func DataHandler(writer http.ResponseWriter, req *http.Request) {
-	logUtils.HttpWriter = writer
-=======
 func genMock(input string) {
 	mainCtrl, _ := command.InitCtrl()
 	mainCtrl.GenMock(input)
@@ -357,7 +254,6 @@ func genMock(input string) {
 
 func genData(files []string) {
 	command.PrintStartInfo()
->>>>>>> 3.0
 
 	if command.ClearCache() {
 		return

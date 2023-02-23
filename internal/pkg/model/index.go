@@ -239,11 +239,7 @@ type ZdInstancesItem struct {
 	Sections []ZdSection `gorm:"ForeignKey:ownerID" json:"sections" yaml:"-"`
 
 	// for refer edit
-<<<<<<< HEAD:internal/pkg/model/model.go
-	Refer ZdRefer `gorm:"ForeignKey:ownerID" json:"refer" yaml:"-"` //
-=======
 	Refer ZdRefer `gorm:"ForeignKey:ownerID" json:"refer" yaml:"-"`
->>>>>>> 3.0:internal/pkg/model/index.go
 }
 
 func (*ZdInstancesItem) TableName() string {
