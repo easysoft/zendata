@@ -18,9 +18,7 @@
 /._config.yaml
 /._default.yaml
 /res/res.go
-/tmp/.temp.yaml
-/tmp/.default.yaml
-/tmp/.config.yaml
+
 /qshell.log
 /log/
 /data/test/
@@ -30,10 +28,13 @@
 /runtime/protobuf/out/
 /users/common/
 *.exe
-/tmp/cache/.data.db
 /ui/package-lock.json
 /demo/mock/output/
 /upload/
+/tmp/cache/.data.db
+/tmp/.temp.yaml
+/tmp/.default.yaml
+/tmp/.config.yaml
 
 /client/node_modules
 /client/out

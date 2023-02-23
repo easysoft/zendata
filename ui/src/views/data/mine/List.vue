@@ -13,9 +13,9 @@
     <a-row :gutter="10">
       <a-col :span="hasSelected ? 12 : 24">
         <div class="main-table">
-          <div v-if="!defs || defs.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
+          <div v-if="defs.length==0" class="no-data-tips">{{$t('tips.pls.refresh.data')}}</div>
 
-          <template v-if="defs && defs.length>0">
+          <template v-if="defs.length>0">
             <a-table :columns="columns" :data-source="defs" :pagination="false" rowKey="id" :custom-row="customRow">
               <a slot="recordTitle" slot-scope="text, record" @click="design(record)">{{record.title}}</a>
 
@@ -65,17 +65,17 @@
     </div>
 
     <a-modal
-      :visible="editModalVisible"
-      :title="editModalVisible ? editRecord.id ? `${$t('menu.data.edit')}: ${editRecord.title}` : $t('title.data.create') : ''"
-      :footer="false"
-      :centered="true"
-      :width="700"
-      @cancel="handleCancelEditModal"
+        :visible="editModalVisible"
+        :title="editModalVisible ? editRecord.id ? `${$t('menu.data.edit')}: ${editRecord.title}` : $t('title.data.create') : ''"
+        :footer="false"
+        :centered="true"
+        :width="700"
+        @cancel="handleCancelEditModal"
     >
       <Edit
-        :v-if="editModalVisible"
-        :id="editModalVisible ? editRecord ? editRecord.id : 0 : null"
-        :afterSave="handleEditSave"
+          :v-if="editModalVisible"
+          :id="editModalVisible ? editRecord ? editRecord.id : 0 : null"
+          :afterSave="handleEditSave"
       />
     </a-modal>
   </div>
@@ -142,11 +142,6 @@ export default {
   },
   computed: {
     hasSelected: function() {
-<<<<<<< HEAD
-      return this.defs?.some(x => x.id == this.selected);
-    },
-    selectedRecord: function() {
-=======
       if (!this.defs) return false
 
       return this.defs.some(x => x.id == this.selected);
@@ -154,7 +149,6 @@ export default {
     selectedRecord: function() {
       if (!this.defs) return null
 
->>>>>>> 3.0
       return this.defs?.find(x => x.id == this.selected);
     }
   },
@@ -174,18 +168,9 @@ export default {
   methods: {
     loadData() {
       listDef(this.keywords, this.page).then(json => {
-<<<<<<< HEAD
-        console.log('listDefs', json)
-        const that = this
-        that.defs = json.data
-        that.total = json.total
-
-        that.selected = json.data? (json.data.length ? json.data[0].id : null) : null
-=======
         this.defs = json.data.list
         this.total = json.data.total
         this.selected = json.data.list.length ? json.data.list[0].id : null
->>>>>>> 3.0
       })
     },
     create() {
