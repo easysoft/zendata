@@ -1,10 +1,10 @@
 module.exports = {
     electronPackagerConfig: {
-        "name": "ZenData",
+        "name": "ztf",
         "icon": "./ui/favicon.ico"
     },
     packagerConfig: {
-        "name": "zd",
+        "name": "ztf",
         "icon": "./icon/favicon",
         extraResource: [
             './bin',
@@ -16,7 +16,7 @@ module.exports = {
         {
             name: '@electron-forge/maker-squirrel',
             config: {
-                name: 'zd'
+                name: 'ztf'
             }
         },
         {
@@ -35,9 +35,9 @@ module.exports = {
         }
     ],
     plugins: [
-        [
-            '@electron-forge/plugin-webpack',
-            {
+          {
+            'name': '@electron-forge/plugin-webpack',
+            'config': {
                 mainConfig: './webpack.main.config.js',
                 renderer: {
                     config: './webpack.renderer.config.js',
@@ -50,6 +50,6 @@ module.exports = {
                     ]
                 }
             }
-        ]
+        }
     ]
 }

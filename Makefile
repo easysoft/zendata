@@ -111,10 +111,10 @@ compile_server_mac:
 	@echo 'start compile server mac'
 	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 CC=gcc CXX=g++ \
 		${BUILD_CMD_UNIX} \
-		-o ${BIN_DIR}/darwin/${PROJECT}-server ${SERVER_MAIN_FILE}
-	
+		-o ${BIN_DIR}/darwin/server ${SERVER_MAIN_FILE}
+
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}darwin" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}darwin" && \
-  		cp ${BIN_DIR}/darwin/${PROJECT}-server "${CLIENT_OUT_DIR_UPGRADE}darwin/${PROJECT}"
+  		cp ${BIN_DIR}/darwin/server "${CLIENT_OUT_DIR_UPGRADE}darwin"
 
 # gui
 package_gui_win64_client:
@@ -147,12 +147,12 @@ package_gui_linux_client:
 package_gui_mac_client:
 	@echo 'start package gui mac'
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}darwin
-	@cp -rf ${BIN_DIR}/darwin/${PROJECT}-server ${CLIENT_BIN_DIR}darwin/${PROJECT}
+	@cp -rf ${BIN_DIR}/darwin/server ${CLIENT_BIN_DIR}darwin/${PROJECT}
 
 	@cd client && npm run package-mac && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin && mkdir ${CLIENT_OUT_DIR_EXECUTABLE}darwin && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-darwin-x64 ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui && \
-		mv ${CLIENT_OUT_DIR}darwin/gui/ztf.app ${CLIENT_OUT_DIR_EXECUTABLE}darwin/ztf.app && rm -rf ${CLIENT_OUT_DIR}darwin/gui
+		mv ${CLIENT_OUT_DIR}darwin/gui/zd.app ${CLIENT_OUT_DIR_EXECUTABLE}darwin/zd.app && rm -rf ${CLIENT_OUT_DIR}darwin/gui
 
 
 # launcher

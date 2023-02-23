@@ -145,6 +145,7 @@ func main() {
 
 	flagSet.Parse(os.Args[1:])
 	if isStartServer {
+		vari.GlobalVars.RunMode = consts.RunModeServer
 		startServer()
 	} else {
 		execCommand()

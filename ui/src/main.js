@@ -73,6 +73,9 @@ import "ant-design-vue/lib/upload/style";
 import Drawer from "ant-design-vue/lib/drawer";
 import "ant-design-vue/lib/drawer/style";
 
+import Progress from "ant-design-vue/lib/progress";
+import "ant-design-vue/lib/progress/style";
+
 import notification from "ant-design-vue/lib/notification";
 import 'ant-design-vue/lib/notification/style';
 import message from "ant-design-vue/lib/message";
@@ -113,6 +116,7 @@ Vue.use(Pagination)
 Vue.use(Card)
 Vue.use(Upload)
 Vue.use(Drawer)
+Vue.use(Progress)
 
 new Vue({
   router,

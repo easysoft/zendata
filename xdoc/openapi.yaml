@@ -1,0 +1,221 @@
+openapi: 3.0.0
+servers:
+  - url: //petstore.swagger.io/v2
+    description: Default server
+  - url: //petstore.swagger.io/sandbox
+    description: Sandbox server
+info:
+  description: |
+    This is a sample server Petstore server.
+
+  version: 1.0.0
+  title: Petstore
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    name: API Support
+    email: apiteam@swagger.io
+    url: https://github.com/Redocly/redoc
+  x-logo:
+    url: 'https://redocly.github.io/redoc/petstore-logo.png'
+    altText: Petstore logo
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+paths:
+  /users/{userid}:
+    get:
+      responses:
+        "200":
+          $ref: "#/components/responses/200_resp"
+
+        "201":
+          $ref: "#/components/responses/201_resp"
+
+        '501':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/501_resp'
+          description: |-
+            The namespaced PIDs of processes
+
+        '502':
+          content:
+            application/json:
+              examples:
+                foo:
+                  value:
+                    {
+                      "versions": [
+                        {
+                          "status": "CURRENT",
+                          "id": "v2.0",
+                          "links": [
+                            {
+                              "href": "http://127.0.0.1:8774/v2/",
+                              "rel": "self"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+
+components:
+  responses:
+    200_resp:
+      description: The User
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/user'
+
+          examples:
+            json:
+              $ref: "#/components/examples/BadRequest"
+            xml:
+              value: "XML CONTENT"
+
+    201_resp:
+      description: The Cat
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Cat'
+#              - $ref: '#/components/schemas/user'
+            discriminator:
+              propertyName: pet_type
+
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 100
+
+        integer:
+          type: integer
+          minimum: 200
+          maximum: 300
+
+        long:
+          type: long
+          minimum: 200
+          maximum: 300
+
+        float:
+          type: float
+          minimum: 200
+          maximum: 300
+
+        double:
+          type: double
+          minimum: 200
+          maximum: 300
+
+        byte:
+          type: byte
+          minimum: 97
+          maximum: 100
+
+        nickname:
+          type: string
+        password:
+          type: string
+        profile:
+          type: object
+          $ref: '#/components/schemas/Cat'
+
+    501_resp:
+      title: Root Type for PIDMap
+      description: |-
+        A "map" of the PIDs of processes in PID namespaces
+      type: array
+      items:
+        $ref: '#/components/schemas/pids'
+      example:
+        -
+          - pid: 11
+            nsid: 501_resp-1862620
+          - pid: 22
+            nsid: 501_resp-1862620
+        -
+          - pid: 33
+            nsid: 501_resp-1862620
+
+    pids:
+      description: |-
+        The list of namespaced PIDs of a process
+      type: array
+      items:
+        $ref: '#/components/schemas/pid'
+      example:
+        - pid: 12345
+          nsid: pids-4026531905
+        - pid: 1
+          nsid: pids-4026532382
+
+    pid:
+      title: Root Type for NamespacedPID
+      description: |-
+        A process identifier (PID) valid only in the accompanying PID namespace.
+      required:
+        - pid
+        - nsid
+      type: object
+      properties:
+        pid:
+          description: a process identifier
+          type: integer
+        nsid:
+          format: int64
+          description: |-
+            a PID namespace identified
+          type: integer
+      example:
+        pid: 1
+        nsid: 462826
+
+    Cat:
+      allOf:
+        - $ref: "#/components/schemas/animal"
+        - $ref: "#/components/schemas/Pet"
+        - $ref: "#/components/schemas/Dog"
+
+    animal:
+      type: string
+
+    Pet:
+      type: object
+      properties:
+        sameProp:
+          type: string
+        owner:
+          type: string
+
+    Dog:
+      type: object
+      properties:
+        sameProp:
+          type: string
+        dogProp1:
+          type: integer
+        dogProp2:
+          format: int64
+
+  examples:
+    BadRequest:
+      summary: Wrong format
+      value:
+        error:
+          type: validation-error
+          title: Your request parameters didn't validate.
+          status: 400
+          invalid-params:
+            - name: age
+              reason: must be a positive integer
+            - name: color
+              reason: must be 'green', 'red' or 'blue'

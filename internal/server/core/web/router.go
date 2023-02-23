@@ -29,8 +29,6 @@ func (webServer *WebServer) InitRouter() error {
 
 		webServer.initModule()
 
-		webServer.AddUIStatic()
-
 		err := webServer.app.Build()
 		if err != nil {
 			return fmt.Errorf("build router %w", err)

@@ -28,3 +28,16 @@ curl -i -X POST -F default=@demo/default.yaml \
 scp ~/work/zentao/qiniu/zd/2.3/linux/zd.zip 192.168.0.105:~
 
 http://localhost:8848/api/v1/m/petstore/users/1
+
+docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v6.2.1 generate \
+    -i https://gitee.com/aaronchen2k/zd/raw/3.0/xdoc/test.json \
+    -g php \
+    -o ~/out/php
+
+openapi-generator-cli generate --skip-validate-spec \
+ -i /Users/aaron/out/input.json \
+ -g php -o ~/out/php
+
+openapi-generator-cli generate --skip-validate-spec \
+ -i /Users/aaron/out/input.json \
+ -g python -o ~/out/python

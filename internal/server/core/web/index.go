@@ -3,7 +3,6 @@ package web
 import (
 	stdContext "context"
 	"fmt"
-	zd "github.com/easysoft/zendata"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	"github.com/easysoft/zendata/internal/server/core/module"
@@ -12,7 +11,6 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/facebookgo/inject"
 	"github.com/fatih/color"
-	"net/http"
 	"strconv"
 	"sync"
 	"time"
@@ -101,20 +99,6 @@ func (webServer *WebServer) GetAddr() string {
 // AddModule 添加模块
 func (webServer *WebServer) AddModule(module ...module.WebModule) {
 	webServer.modules = append(webServer.modules, module...)
-}
-
-// AddUIStatic 添加前端访问地址
-func (webServer *WebServer) AddUIStatic() {
-	uiFs, err := zd.GetUiFileSys()
-	if err != nil {
-		panic(fmt.Sprintf("获取UI文件系统错误： %v", err))
-	}
-
-	webServer.app.HandleDir("/ui", http.FS(uiFs), iris.DirOptions{
-		IndexName: "index.html",
-		ShowList:  false,
-		SPA:       true,
-	})
 }
 
 // GetModules 获取模块
