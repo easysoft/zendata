@@ -8,7 +8,7 @@ instances:
     note: log
     fields:
     - field: host
-      from: ip.v2.yaml
+      from: ip.v1.yaml
       use: ipC{10},ipB{10},ipA{10}
       postfix: " - - "
 

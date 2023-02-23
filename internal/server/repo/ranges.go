@@ -1,7 +1,8 @@
 package serverRepo
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 )
@@ -21,7 +22,7 @@ func (r *RangesRepo) List(keywords string, page int) (models []*model.ZdRanges, 
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
 	if page > 0 {
-		query = query.Offset((page - 1) * constant.PageSize).Limit(constant.PageSize)
+		query = query.Offset((page - 1) * consts.PageSize).Limit(consts.PageSize)
 	}
 
 	err = query.Find(&models).Error
@@ -95,7 +96,7 @@ func (r *RangesRepo) UpdateYaml(po model.ZdRanges) (err error) {
 	return
 }
 
-func (r *RangesRepo) GenRangesRes(ranges model.ZdRanges, res *model.ResRanges) {
+func (r *RangesRepo) GenRangesRes(ranges model.ZdRanges, res *domain.ResRanges) {
 	res.Title = ranges.Title
 	res.Desc = ranges.Desc
 }

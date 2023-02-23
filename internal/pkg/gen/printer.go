@@ -3,31 +3,34 @@ package gen
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"regexp"
+	"strconv"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
-func Print(rows [][]string, format string, table string, colIsNumArr []bool,
+func PrintLines(rows [][]string, format string, table string, colIsNumArr []bool,
 	fields []string) (lines []interface{}) {
 
 	var sqlHeader string
 
-	if format == constant.FormatText {
-		printTextHeader(fields)
-	} else if format == constant.FormatSql {
+	if format == consts.FormatText {
+		PrintHumanHeaderIfNeeded(fields)
+
+	} else if format == consts.FormatSql {
 		sqlHeader = getInsertSqlHeader(fields, table)
-		if vari.DBDsn != "" {
+		if vari.GlobalVars.DBDsn != "" {
 			lines = append(lines, sqlHeader)
 		}
-	} else if format == constant.FormatJson {
+
+	} else if format == consts.FormatJson {
 		printJsonHeader()
-	} else if format == constant.FormatXml {
+
+	} else if format == consts.FormatXml {
 		printXmlHeader(fields, table)
 	}
 
@@ -40,12 +43,12 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 		for j, col := range cols {
 			// 3. random replacement
 			col = replacePlaceholder(col)
-			field := vari.TopFieldMap[fields[j]]
+			field := vari.GlobalVars.TopFieldMap[fields[j]]
 			//if field.Length > runewidth.StringWidth(col) {
 			//col = stringUtils.AddPad(col, field)
 			//}
 
-			if j > 0 && vari.Human { // use a tab
+			if j > 0 && vari.GlobalVars.Human { // use a tab
 				lineForText = strings.TrimRight(lineForText, "\t")
 				col = strings.TrimLeft(col, "\t")
 
@@ -59,39 +62,39 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 
 			colVal := col
 			if !colIsNumArr[j] {
-				switch vari.Server {
-				case constant.DBTypeSqlServer:
-					colVal = "'" + stringUtils.EscapeValueOfSqlServer(colVal) + "'"
-				case constant.DBTypeOracle:
-					colVal = "'" + stringUtils.EscapeValueOfOracle(colVal) + "'"
-				// case constant.DBTypeMysql:
+				switch vari.GlobalVars.DBType {
+				case consts.DBTypeSqlServer:
+					colVal = "'" + helper.EscapeValueOfSqlServer(colVal) + "'"
+				case consts.DBTypeOracle:
+					colVal = "'" + helper.EscapeValueOfOracle(colVal) + "'"
+				// case consts.DBTypeMysql:
 				default:
-					colVal = "'" + stringUtils.EscapeValueOfMysql(colVal) + "'"
+					colVal = "'" + helper.EscapeValueOfMysql(colVal) + "'"
 				}
 			}
 			valuesForSql = append(valuesForSql, colVal)
 		} // for cols
 
-		if format == constant.FormatText && vari.Def.Type == constant.ConfigTypeArticle { // article need to write to more than one files
+		if format == consts.FormatText && vari.GlobalVars.DefData.Type == consts.DefTypeArticle { // article need to write to more than one files
 			lines = append(lines, lineForText)
 
-		} else if format == constant.FormatText && vari.Def.Type != constant.ConfigTypeArticle {
+		} else if format == consts.FormatText && vari.GlobalVars.DefData.Type != consts.DefTypeArticle {
 			logUtils.PrintLine(lineForText)
 
-		} else if format == constant.FormatSql {
-			if vari.DBDsn != "" { // add to return array for exec sql
+		} else if format == consts.FormatSql {
+			if vari.GlobalVars.DBDsn != "" { // add to return array for exec sql
 				sql := strings.Join(valuesForSql, ", ")
 				lines = append(lines, sql)
 			} else {
 
-				sql := genSqlLine(sqlHeader, valuesForSql, vari.Server)
+				sql := genSqlLine(sqlHeader, valuesForSql, vari.GlobalVars.DBType)
 				logUtils.PrintLine(sql)
 			}
-		} else if format == constant.FormatJson {
+		} else if format == consts.FormatJson {
 			logUtils.PrintLine(genJsonLine(i, row, len(rows), fields))
-		} else if format == constant.FormatXml {
+		} else if format == consts.FormatXml {
 			logUtils.PrintLine(getXmlLine(i, rowMap, len(rows)))
-		} else if format == constant.FormatData {
+		} else if format == consts.FormatData {
 			lines = append(lines, lineForText)
 		}
 	}
@@ -99,8 +102,8 @@ func Print(rows [][]string, format string, table string, colIsNumArr []bool,
 	return
 }
 
-func printTextHeader(fields []string) {
-	if !vari.WithHead {
+func PrintHumanHeaderIfNeeded(fields []string) {
+	if !vari.GlobalVars.Human {
 		return
 	}
 	headerLine := ""
@@ -111,34 +114,34 @@ func printTextHeader(fields []string) {
 		}
 	}
 
-	logUtils.PrintLine(headerLine)
+	logUtils.PrintLine(headerLine + "\n")
 }
 
-// return "Table> (<column1, column2,...)"
+// return Table (column1, column2, ...)
 func getInsertSqlHeader(fields []string, table string) string {
 	fieldNames := make([]string, 0)
+
 	for _, f := range fields {
-		if vari.Server == constant.DBTypeSqlServer {
-			f = "[" + stringUtils.EscapeColumnOfSqlServer(f) + "]"
-		} else if vari.Server == constant.DBTypeOracle {
+		if vari.GlobalVars.DBType == consts.DBTypeMysql {
+			f = "`" + helper.EscapeColumnOfMysql(f) + "`"
+		} else if vari.GlobalVars.DBType == consts.DBTypeOracle {
 			f = `"` + f + `"`
-		} else {
-			f = "`" + stringUtils.EscapeColumnOfMysql(f) + "`"
-			//vari.Server == constant.DBTypeMysql {
+		} else if vari.GlobalVars.DBType == consts.DBTypeSqlServer {
+			f = "[" + helper.EscapeColumnOfSqlServer(f) + "]"
 		}
 
 		fieldNames = append(fieldNames, f)
 	}
 
 	var ret string
-	switch vari.Server {
-	case constant.DBTypeSqlServer:
-		ret = fmt.Sprintf("[%s] (%s)", table, strings.Join(fieldNames, ", "))
-	case constant.DBTypeOracle:
-		ret = fmt.Sprintf(`"%s" (%s)`, table, strings.Join(fieldNames, ", "))
-	// case constant.DBTypeMysql:
-	default:
+	switch vari.GlobalVars.DBType {
+	case consts.DBTypeMysql:
 		ret = fmt.Sprintf("`%s` (%s)", table, strings.Join(fieldNames, ", "))
+	case consts.DBTypeOracle:
+		ret = fmt.Sprintf(`"%s" (%s)`, table, strings.Join(fieldNames, ", "))
+	case consts.DBTypeSqlServer:
+		ret = fmt.Sprintf("[%s] (%s)", table, strings.Join(fieldNames, ", "))
+	default:
 	}
 
 	return ret
@@ -152,14 +155,16 @@ func printXmlHeader(fields []string, table string) {
 	logUtils.PrintLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<testdata>\n  <title>Test Data</title>")
 }
 
-func RowToJson(cols []string, fieldsToExport []string) string {
+func rowToJson(cols []string, fieldsToExport []string) string {
 	rowMap := map[string]string{}
 	for j, col := range cols {
 		rowMap[fieldsToExport[j]] = col
 	}
 
-	jsonObj, _ := json.Marshal(rowMap)
+	jsonObj, _ := json.MarshalIndent(rowMap, "", "\t")
 	respJson := string(jsonObj)
+
+	respJson = strings.ReplaceAll("\t"+respJson, "\n", "\n\t")
 
 	return respJson
 }
@@ -168,11 +173,11 @@ func RowToJson(cols []string, fieldsToExport []string) string {
 func genSqlLine(sqlheader string, values []string, dbtype string) string {
 	var tmp string
 	switch dbtype {
-	case constant.DBTypeSqlServer:
+	case consts.DBTypeSqlServer:
 		tmp = "INSERT INTO " + sqlheader + " VALUES (" + strings.Join(values, ",") + "); GO"
 	default:
-		// constant.DBTypeMysql
-		// constant.DBTypeOracle:
+		// consts.DBTypeMysql
+		// consts.DBTypeOracle:
 		tmp = "INSERT INTO " + sqlheader + " VALUES (" + strings.Join(values, ",") + ");"
 	}
 
@@ -180,7 +185,7 @@ func genSqlLine(sqlheader string, values []string, dbtype string) string {
 }
 
 func genJsonLine(i int, row []string, length int, fields []string) string {
-	temp := "  " + RowToJson(row, fields)
+	temp := rowToJson(row, fields)
 	if i < length-1 {
 		temp = temp + ", "
 	} else {
@@ -221,7 +226,8 @@ func replacePlaceholder(col string) string {
 		values := getValForPlaceholder(placeholderStr, matchTimes)
 
 		for _, str := range values {
-			temp := Placeholder(placeholderStr)
+			key, _ := strconv.Atoi(placeholderStr)
+			temp := Placeholder(key)
 			ret = strings.Replace(ret, temp, str, 1)
 		}
 	}
@@ -229,45 +235,57 @@ func replacePlaceholder(col string) string {
 	return ret
 }
 
-func getValForPlaceholder(placeholderStr string, count int) []string {
-	mp := vari.RandFieldNameToValuesMap[placeholderStr]
+func getValForPlaceholder(placeholderStr string, count int) (strArr []string) {
+	//placeholderInt, _ := strconv.Atoi(placeholderStr)
+	//mp := vari.GlobalVars.RandFieldSectionPathToValuesMap[placeholderInt]
+	//
+	//tp := mp["type"].(string)
+	//repeatObj := mp["repeat"]
+	//
+	//repeat := 1
+	//if repeatObj != nil {
+	//	repeat = repeatObj.(int)
+	//}
+	//
+	//repeatTag := mp["repeatTag"].(string)
+	//if tp == "int" {
+	//	start := mp["start"].(string)
+	//	end := mp["end"].(string)
+	//	precision := mp["precision"].(string)
+	//	format := mp["format"].(string)
+	//
+	//	strArr = genHelper.GetRandValuesFromRange("int", start, end, "1",
+	//		repeat, repeatTag, precision, format, count)
+	//
+	//} else if tp == "float" {
+	//	start := mp["start"].(string)
+	//	end := mp["end"].(string)
+	//	stepStr := fmt.Sprintf("%v", mp["step"])
+	//
+	//	precision := mp["precision"].(string)
+	//	format := mp["format"].(string)
+	//
+	//	strArr = genHelper.GetRandValuesFromRange("float", start, end, stepStr,
+	//		repeat, repeatTag, precision, format, count)
+	//
+	//} else if tp == "char" {
+	//	start := mp["start"].(string)
+	//	end := mp["end"].(string)
+	//	precision := mp["precision"].(string)
+	//	format := mp["format"].(string)
+	//
+	//	strArr = genHelper.GetRandValuesFromRange("char", start, end, "1",
+	//		repeat, repeatTag, precision, format, count)
+	//
+	//} else if tp == "list" {
+	//	list := mp["list"].([]string)
+	//	strArr = genHelper.GetRandFromList(list, repeat, count)
+	//
+	//}
+	//
+	//strArr = strArr[:count]
+	//return strArr
 
-	tp := mp["type"].(string)
-	repeatObj := mp["repeat"]
-
-	repeat := 1
-	if repeatObj != nil {
-		repeat = repeatObj.(int)
-	}
-
-	strs := make([]string, 0)
-	repeatTag := mp["repeatTag"].(string)
-	if tp == "int" {
-		start := mp["start"].(string)
-		end := mp["end"].(string)
-		precision := mp["precision"].(string)
-		format := mp["format"].(string)
-
-		strs = helper.GetRandFromRange("int", start, end, "1", repeat, repeatTag, precision, count, format)
-	} else if tp == "float" {
-		start := mp["start"].(string)
-		end := mp["end"].(string)
-		precision := mp["precision"].(string)
-		format := mp["format"].(string)
-
-		strs = helper.GetRandFromRange("float", start, end, "1", repeat, repeatTag, precision, count, format)
-	} else if tp == "char" {
-		start := mp["start"].(string)
-		end := mp["end"].(string)
-		precision := mp["precision"].(string)
-		format := mp["format"].(string)
-
-		strs = helper.GetRandFromRange("char", start, end, "1", repeat, repeatTag, precision, count, format)
-	} else if tp == "list" {
-		list := mp["list"].([]string)
-		strs = helper.GetRandFromList(list, repeat, count)
-	}
-
-	strs = strs[:count]
-	return strs
+	// method not used
+	return
 }

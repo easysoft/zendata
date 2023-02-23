@@ -7,11 +7,14 @@
         mode="horizontal"
         @click="handleClick"
     >
-      <a-menu-item key="mine/list">
+      <a-menu-item key="/data/mine/list">
         <Icon type="database" :style="{fontSize: '16px'}" />{{$t('msg.mine')}}
       </a-menu-item>
-      <a-menu-item key="buildin/config/list">
+      <a-menu-item key="/data/buildin/config/list">
         <Icon type="build" :style="{fontSize: '16px'}" />{{$t('msg.buildin')}}
+      </a-menu-item>
+      <a-menu-item key="/mock/index">
+        <Icon type="cloud-server" :style="{fontSize: '16px'}" />{{$t('menu.data.mock')}}
       </a-menu-item>
     </a-menu>
   </div>
@@ -33,7 +36,18 @@ export default {
   },
   computed: {
     selectedKey: function() {
-      return this.$route.path.split('/')[2] === 'mine' ? 'mine/list' : 'buildin/config/list';
+      console.log(this.$route.path)
+      const arr = this.$route.path.split('/')
+
+      if (arr[2] === 'mine') {
+        return '/data/mine/list'
+      } else if (arr[2] === 'buildin') {
+        return '/data/buildin/config/list'
+      } else if (arr[1] === 'mock') {
+        return '/mock/index'
+      }
+
+      return ''
     }
   },
   watch: {
@@ -46,7 +60,7 @@ export default {
       console.log('handleClick', e, this.$route.path, e.key)
       if (e.key.indexOf('buildin') > -1) this.openKeys = ['buildin']
 
-      const path = '/data/' + e.key
+      const path =  e.key
       if (this.$route.path != path) this.$router.push(path);
     },
   }

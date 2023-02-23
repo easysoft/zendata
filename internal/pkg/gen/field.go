@@ -1,15 +1,16 @@
 package gen
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 )
 
-func CreateField(field *model.DefField) model.FieldWithValues {
-	fieldWithValue := model.FieldWithValues{}
+func CreateField(field *domain.DefField) domain.FieldWithValues {
+	fieldWithValue := domain.FieldWithValues{}
 
 	if field.Type == "" { // set default
-		field.Type = constant.FieldTypeList
+		field.Type = consts.FieldTypeList
 	}
 	if field.Length > 0 {
 		field.Length = field.Length - len(field.Prefix) - len(field.Postfix)
@@ -18,13 +19,13 @@ func CreateField(field *model.DefField) model.FieldWithValues {
 		}
 	}
 
-	if field.Type == constant.FieldTypeList {
+	if field.Type == consts.FieldTypeList {
 		CreateListField(field, &fieldWithValue)
-	} else if field.Type == constant.FieldTypeTimestamp {
-		CreateTimestampField(field, &fieldWithValue)
-	} else if field.Type == constant.FieldTypeUlid {
-		CreateUlidField(field, &fieldWithValue)
-	} else if field.Type == constant.FieldTypeArticle {
+	} else if field.Type == consts.FieldTypeTimestamp {
+		valueGen.CreateTimestampField(field, &fieldWithValue)
+	} else if field.Type == consts.FieldTypeUlid {
+		valueGen.CreateUlidField(field, &fieldWithValue)
+	} else if field.Type == consts.FieldTypeArticle {
 		CreateArticleField(field, &fieldWithValue)
 	}
 

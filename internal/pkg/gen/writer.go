@@ -3,7 +3,7 @@ package gen
 import (
 	"encoding/csv"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
@@ -24,10 +24,10 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 	index := f.NewSheet(sheetName)
 	f.SetActiveSheet(index)
 
-	if vari.Format == constant.FormatExcel {
+	if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 		printExcelHeader(fields, f)
-	} else if vari.Format == constant.FormatCsv {
-		csvWriter = csv.NewWriter(logUtils.FileWriter)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
+		csvWriter = csv.NewWriter(logUtils.OutputFileWriter)
 	}
 
 	csvData := make([][]string, 0)
@@ -36,16 +36,16 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 
 		for j, col := range cols {
 			col = replacePlaceholder(col)
-			field := vari.TopFieldMap[fields[j]]
+			field := vari.GlobalVars.TopFieldMap[fields[j]]
 			if field.Length > runewidth.StringWidth(col) {
 				//col = stringUtils.AddPad(col, field)
 			}
 
-			if vari.Format == constant.FormatExcel {
+			if vari.GlobalVars.OutputFormat == consts.FormatExcel {
 				colName, _ := excelize.CoordinatesToCellName(j+1, i+2)
 				f.SetCellValue(sheetName, colName, col)
 
-			} else if vari.Format == constant.FormatCsv {
+			} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 				csvRow = append(csvRow, col)
 			}
 		}
@@ -53,9 +53,9 @@ func Write(rows [][]string, table string, colIsNumArr []bool,
 	}
 
 	var err error
-	if vari.Format == constant.FormatExcel {
-		err = f.SaveAs(logUtils.FilePath)
-	} else if vari.Format == constant.FormatCsv {
+	if vari.GlobalVars.OutputFormat == consts.FormatExcel {
+		err = f.SaveAs(logUtils.OutputFilePath)
+	} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
 		err = csvWriter.WriteAll(csvData)
 		csvWriter.Flush()
 	}

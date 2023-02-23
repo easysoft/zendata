@@ -1,11 +1,11 @@
-package helper
+package genHelper
 
 import (
 	"fmt"
 	"github.com/Knetic/govaluate"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"regexp"
@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-func GenExpressionValues(field model.DefField, valuesMap map[string][]string,
-	fieldMap map[string]model.DefField) (ret []string) {
+func GenExpressionValues(field domain.DefField, valuesMap map[string][]string,
+	fieldMap map[string]domain.DefField) (ret []string) {
 	exp := field.Value
 
 	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]+)`)
@@ -89,7 +89,7 @@ func GenExpressionValues(field model.DefField, valuesMap map[string][]string,
 
 			str := fmt.Sprintf(mask, result)
 			if field.Length > runewidth.StringWidth(str) {
-				str = stringUtils.AddPad(str, field)
+				str = helper.AddPad(str, field)
 			}
 			str = field.Prefix + str + field.Postfix
 			ret = append(ret, str)
@@ -119,7 +119,7 @@ func ReplaceVariableValues(exp string, valuesMap map[string][]string) (ret []str
 			fieldSlot := items[0]
 			fieldName := items[1]
 			referValues := valuesMap[fieldName]
-			referField := vari.TopFieldMap[fieldName]
+			referField := vari.GlobalVars.TopFieldMap[fieldName]
 
 			valStr := "N/A"
 			if len(referValues) > 0 {

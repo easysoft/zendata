@@ -1,4 +1,4 @@
-package constant
+package consts
 
 import (
 	"fmt"
@@ -11,6 +11,9 @@ const (
 )
 
 var (
+	ApiPath = "/"
+	WsPath  = "ws"
+
 	PthSep = string(os.PathSeparator)
 
 	ConfigVer      = 1.0
@@ -20,8 +23,12 @@ var (
 	LanguageEN      = "en"
 	LanguageZH      = "zh"
 
-	EnRes = fmt.Sprintf("res%sen%smessages.json", PthSep, PthSep)
-	ZhRes = fmt.Sprintf("res%szh%smessages.json", PthSep, PthSep)
+	CachePrefix  = "cache_"
+	CachePostfix = "_is_num"
+	EnRes        = fmt.Sprintf("res/en/messages.json")
+	ZhRes        = fmt.Sprintf("res/zh/messages.json")
+
+	Localhost = "localhost"
 
 	LeftWidth = 36
 	MinWidth  = 130
@@ -29,10 +36,10 @@ var (
 
 	CmdViewHeight = 10
 
-	MaxNumb = 100000 // max number in array
-	//MaxNumbForLangeRange = 1000000
+	MaxNumb         = 100000
+	MaxNumbForAsync = 100
 
-	FormatText  = "text"
+	FormatText  = "txt"
 	FormatJson  = "json"
 	FormatXml   = "xml"
 	FormatSql   = "sql"
@@ -48,11 +55,11 @@ var (
 	ModeRecursiveShort = "r"
 	Modes              = []string{ModeParallel, ModeRecursive, ModeParallelShort, ModeRecursiveShort}
 
-	ConfigTypeText    = "text"
-	ConfigTypeArticle = "article"
-	ConfigTypeImage   = "image"
-	ConfigTypeVoice   = "voice"
-	ConfigTypeVideo   = "video"
+	DefTypeText    = "text"
+	DefTypeArticle = "article"
+	DefTypeImage   = "image"
+	DefTypeVoice   = "voice"
+	DefTypeVideo   = "video"
 
 	FieldTypeList      = "list"
 	FieldTypeTimestamp = "timestamp"
@@ -63,9 +70,9 @@ var (
 	RightBrackets rune = ')'
 	Backtick      rune = '`'
 
-	DefaultPort   = 8848
-	DefaultRoot   = "./"
-	DefaultNumber = 10
+	DefaultDataServicePort = 8848
+	DefaultRoot            = "./"
+	DefaultNumber          = 10
 
 	ResDirData  = "data"
 	ResDirYaml  = "yaml"

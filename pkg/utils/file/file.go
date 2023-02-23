@@ -1,19 +1,23 @@
 package fileUtils
 
 import (
+	"errors"
 	"fmt"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
+	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/easysoft/zendata/res"
 	"github.com/fatih/color"
+	"github.com/oklog/ulid/v2"
+	"github.com/snowlyg/helper/str"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 func ReadFile(filePath string) string {
@@ -40,8 +44,8 @@ func WriteFile(filePath string, content string) {
 	MkDirIfNeeded(dir)
 
 	var d1 = []byte(content)
-	err2 := ioutil.WriteFile(filePath, d1, 0666) //写入文件(字节数组)
-	check(err2)
+	err := os.WriteFile(filePath, d1, 0666) //写入文件(字节数组)
+	check(err)
 }
 
 func RemoveExist(path string) {
@@ -102,12 +106,6 @@ func GetAbsoluteDir(pth string) string {
 	return pth
 }
 
-func GetRelatPath(pth string) string {
-	pth = strings.TrimPrefix(pth, vari.ZdPath)
-
-	return pth
-}
-
 func IsAbsPath(pth string) bool {
 	return filepath.IsAbs(pth) ||
 		strings.Index(pth, ":") == 1 // windows
@@ -122,20 +120,6 @@ func AddSepIfNeeded(pth string) string {
 	return pth
 }
 
-func ReadResData(path string) string {
-	isRelease := commonUtils.IsRelease()
-
-	var jsonStr string
-	if isRelease {
-		data, _ := res.Asset(path)
-		jsonStr = string(data)
-	} else {
-		jsonStr = ReadFile(path)
-	}
-
-	return jsonStr
-}
-
 func GetExeDir() string { // where zd.exe file in
 	var dir string
 	arg1 := strings.ToLower(os.Args[0])
@@ -144,10 +128,15 @@ func GetExeDir() string { // where zd.exe file in
 	if strings.Index(name, "zd") == 0 && strings.Index(arg1, "go-build") < 0 {
 		p, _ := exec.LookPath(os.Args[0])
 		if strings.Index(p, string(os.PathSeparator)) > -1 {
-			dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
+			if strings.Index(p, "gui") > -1 {
+				guiDir := p[:strings.LastIndex(p, "gui")]
+				dir = guiDir[:strings.LastIndex(guiDir, string(os.PathSeparator))]
+			} else {
+				dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
+			}
 		}
 	} else { // debug
-		dir = vari.WorkDir
+		dir = vari.ZdDir
 	}
 
 	dir, _ = filepath.Abs(dir)
@@ -157,7 +146,7 @@ func GetExeDir() string { // where zd.exe file in
 	return dir
 }
 
-func GetWorkDir() string { // where we run file in
+func GetDevDir() string { // where we run file in
 	dir, _ := os.Getwd()
 
 	dir, _ = filepath.Abs(dir)
@@ -173,6 +162,19 @@ func GetAbsDir(path string) string {
 	return abs
 }
 
+func GetFileOrFolderDir(pth string) (ret string) {
+	if IsDir(pth) {
+		ret = pth
+	} else {
+		ret = filepath.Dir(pth)
+	}
+
+	ret, _ = filepath.Abs(ret)
+	ret = AddSepIfNeeded(ret)
+
+	return
+}
+
 func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // from resource
 	if strings.LastIndex(from, ".yaml") > -1 { // yaml, ip.v1.yaml
 		resFile = ConvertResYamlPath(from, currFileDir)
@@ -186,9 +188,9 @@ func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // 
 	}
 
 	if resFile == "" {
-		resPath := vari.ConfigFileDir + from
+		resPath := vari.GlobalVars.ConfigFileDir + from
 		if !FileExist(resPath) { // in same folder with passed config file, like dir/name.yaml
-			resPath = vari.ZdPath + from
+			resPath = vari.ZdDir + from
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -214,7 +216,7 @@ func ConvertReferRangeToPath(file, currFile string) (path string) {
 	if path == "" {
 		resPath := GetAbsDir(currFile) + file
 		if !FileExist(resPath) { // in same folder
-			resPath = vari.ZdPath + file
+			resPath = vari.ZdDir + file
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -248,8 +250,8 @@ func ConvertResYamlPath(from, workDir string) (ret string) {
 		}
 
 		realPth0 := filepath.Join(workDir, relatPath)
-		realPth1 := vari.ZdPath + constant.ResDirYaml + constant.PthSep + relatPath
-		realPth2 := vari.ZdPath + constant.ResDirUsers + constant.PthSep + relatPath
+		realPth1 := vari.ZdDir + constant.ResDirYaml + constant.PthSep + relatPath
+		realPth2 := vari.ZdDir + constant.ResDirUsers + constant.PthSep + relatPath
 		if FileExist(realPth0) {
 			ret = realPth0
 			break
@@ -295,7 +297,7 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 				relatPath = tagFile
 			}
 
-			realPth := vari.ZdPath + constant.ResDirData + constant.PthSep + relatPath
+			realPth := vari.ZdDir + constant.ResDirData + constant.PthSep + relatPath
 			if FileExist(realPth) {
 				if index == 1 {
 					sheet = from[strings.LastIndex(from, ".")+1:]
@@ -307,7 +309,7 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	}
 
 	if ret == "" { // try excel dir
-		realPth := vari.ZdPath + constant.ResDirData + constant.PthSep +
+		realPth := vari.ZdDir + constant.ResDirData + constant.PthSep +
 			strings.Replace(from, ".", constant.PthSep, -1)
 		if IsDir(realPth) {
 			ret = realPth
@@ -318,51 +320,20 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	return
 }
 
-func ComputerReferFilePath(file string, field *model.DefField) (resPath string) {
-	resPath = file
-	if IsAbsPath(resPath) && FileExist(resPath) {
-		return
-	}
-
-	resPath = field.FileDir + file
-	if FileExist(resPath) {
-		return
-	}
-
-	resPath = vari.ConfigFileDir + file
-	if FileExist(resPath) {
-		return
-	}
-
-	resPath = vari.ZdPath + constant.ResDirUsers + constant.PthSep + file
-	if FileExist(resPath) {
-		return
-	}
-	resPath = vari.ZdPath + constant.ResDirYaml + constant.PthSep + file
-	if FileExist(resPath) {
-		return
-	}
-
-	resPath = vari.ZdPath + file
-	if FileExist(resPath) {
-		return
-	}
-
-	return
-}
-
 func GetFilesByExtInDir(folder, ext string, files *[]string) {
+	extArr := strings.Split(ext, ",")
+
 	folder, _ = filepath.Abs(folder)
 
 	if !IsDir(folder) {
-		if ext == "" || filepath.Ext(folder) == ext {
+		if ext == "" || stringUtils.StrInArr(filepath.Ext(folder), extArr) {
 			*files = append(*files, folder)
 		}
 
 		return
 	}
 
-	dir, err := ioutil.ReadDir(folder)
+	dir, err := os.ReadDir(folder)
 	if err != nil {
 		return
 	}
@@ -376,7 +347,7 @@ func GetFilesByExtInDir(folder, ext string, files *[]string) {
 		filePath := AddSepIfNeeded(folder) + name
 		if fi.IsDir() {
 			GetFilesByExtInDir(filePath, ext, files)
-		} else if strings.Index(name, "~") != 0 && (ext == "" || filepath.Ext(filePath) == ext) {
+		} else if strings.Index(name, "~") != 0 && (ext == "" || stringUtils.StrInArr(filepath.Ext(filePath), extArr)) {
 			*files = append(*files, filePath)
 		}
 	}
@@ -461,15 +432,6 @@ func namedFileExistInDir(file, dir string) (pth string) {
 	return
 }
 
-func GenArticleFiles(pth string, index int) (ret string) {
-	pfix := fmt.Sprintf("%03d", index+1)
-
-	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
-	ret += "-" + pfix + filepath.Ext(pth)
-
-	return
-}
-
 func GetFilesFromParams(args []string) (files []string, count int) {
 	for _, arg := range args {
 		if strings.Index(arg, "-") != 0 {
@@ -497,4 +459,36 @@ func HandleFiles(files []string) []string {
 	}
 
 	return files
+}
+
+func NewFileNameWithUlidPostfix(pth string) (ret string) {
+	return AddFilePostfix(pth, stringUtils.Ulid())
+}
+
+func AddFilePostfix(pth, postfix string) (ret string) {
+	ext := filepath.Ext(pth)
+
+	ret = pth[:strings.LastIndex(pth, ext)] + "-" + postfix + ext
+
+	return
+}
+
+func GetUploadFileName(name string) (ret string, err error) {
+	fns := strings.Split(strings.TrimPrefix(name, "./"), ".")
+	if len(fns) < 2 {
+		msg := fmt.Sprintf("文件名错误 %s", name)
+		err = errors.New(msg)
+		return
+	}
+
+	base := fns[0]
+	ext := fns[1]
+
+	entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+	ms := ulid.Timestamp(time.Now())
+	rand, _ := ulid.New(ms, entropy)
+
+	ret = str.Join(base, "-", strings.ToLower(rand.String()), ".", ext)
+
+	return
 }

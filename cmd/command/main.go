@@ -3,61 +3,68 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
+	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
-	"github.com/easysoft/zendata/internal/pkg/action"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	"github.com/easysoft/zendata/internal/server"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
+<<<<<<< HEAD
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
+=======
+	"github.com/easysoft/zendata/internal/server/core/web"
+	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
+>>>>>>> 3.0
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/easysoft/zendata/res"
-	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/fatih/color"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
-	"strconv"
 	"strings"
 	"syscall"
-	"time"
 )
 
 var (
-	configs     []string
-	defaultFile string
-	configFile  string
-	// content
+	configs      []string
+	defaultFile  string
+	configFile   string
+	exportFields string
+
 	defaultDefContent []byte
 	configDefContent  []byte
-	//count       int
-	fields string
 
+<<<<<<< HEAD
 	uuid   = ""
 	root   string
 	input  string
 	decode bool
+=======
+	root  string
+	input string
+>>>>>>> 3.0
 
+	parse    bool
+	decode   bool
 	listData bool
 	listRes  bool
 	view     string
 	md5      string
+	salt     string
+	mock     bool
 
 	example bool
 	help    bool
 	set     bool
+
+	isStartServer bool
+	uuid          = ""
 
 	flagSet *flag.FlagSet
 )
@@ -79,19 +86,24 @@ func main() {
 	flagSet.StringVar(&defaultFile, "default", "", "")
 
 	flagSet.StringVar(&configFile, "c", "", "")
-	flagSet.StringVar(&configFile, "Config", "", "")
+	flagSet.StringVar(&configFile, "config", "", "")
+
+	flagSet.IntVar(&vari.GlobalVars.Total, "n", -1, "")
+	flagSet.IntVar(&vari.GlobalVars.Total, "lines", -1, "")
+
+	flagSet.StringVar(&exportFields, "F", "", "")
+	flagSet.StringVar(&exportFields, "field", "", "")
+
+	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "f", consts.FormatText, "")
+	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "format", consts.FormatText, "")
 
 	flagSet.StringVar(&input, "i", "", "")
 	flagSet.StringVar(&input, "input", "", "")
 
-	flagSet.IntVar(&vari.Total, "n", -1, "")
-	flagSet.IntVar(&vari.Total, "lines", -1, "")
+	flagSet.StringVar(&vari.GlobalVars.Output, "o", "", "")
+	flagSet.StringVar(&vari.GlobalVars.Output, "output", "", "")
 
-	flagSet.StringVar(&fields, "F", "", "")
-	flagSet.StringVar(&fields, "field", "", "")
-
-	flagSet.StringVar(&vari.Out, "o", "", "")
-	flagSet.StringVar(&vari.Out, "output", "", "")
+	flagSet.BoolVar(&parse, "parse", false, "")
 
 	flagSet.BoolVar(&listData, "l", false, "")
 	flagSet.BoolVar(&listData, "list", false, "")
@@ -101,105 +113,86 @@ func main() {
 	flagSet.StringVar(&view, "view", "", "")
 
 	flagSet.StringVar(&md5, "md5", "", "")
+	flagSet.StringVar(&salt, "salt", "", "")
 
-	flagSet.BoolVar(&vari.Human, "H", false, "")
-	flagSet.BoolVar(&vari.Human, "human", false, "")
+	flagSet.BoolVar(&mock, "m", false, "")
 
-	flagSet.BoolVar(&decode, "D", false, "")
-	flagSet.BoolVar(&decode, "decode", false, "")
-
-	flagSet.StringVar(&vari.Ip, "b", "", "")
-	flagSet.StringVar(&vari.Ip, "bind", "", "")
-	flagSet.IntVar(&vari.Port, "p", 0, "")
-	flagSet.IntVar(&vari.Port, "port", 0, "")
 	flagSet.StringVar(&root, "R", "", "")
 	flagSet.StringVar(&root, "root", "", "")
 
-	flagSet.BoolVar(&vari.Trim, "T", false, "")
-	flagSet.BoolVar(&vari.Trim, "trim", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Human, "H", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Human, "human", false, "")
 
-	flagSet.BoolVar(&vari.Recursive, "r", false, "")
-	flagSet.BoolVar(&vari.Recursive, "recursive", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Trim, "T", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Trim, "trim", false, "")
+
+	flagSet.BoolVar(&vari.GlobalVars.Recursive, "r", false, "")
+	flagSet.BoolVar(&vari.GlobalVars.Recursive, "recursive", false, "")
+
+	//flagSet.StringVar(&vari.CacheParam, "C", "", "")
+	//flagSet.StringVar(&vari.CacheParam, "cache", "", "")
 
 	flagSet.BoolVar(&example, "e", false, "")
 	flagSet.BoolVar(&example, "example", false, "")
 
-	flagSet.BoolVar(&help, "h", false, "")
-	flagSet.BoolVar(&help, "help", false, "")
-
 	flagSet.BoolVar(&set, "S", false, "")
 	flagSet.BoolVar(&set, "set", false, "")
 
-	flagSet.StringVar(&vari.Table, "t", "", "")
-	flagSet.StringVar(&vari.Table, "table", "", "")
-	flagSet.StringVar(&vari.Server, "s", "mysql", "")
-	flagSet.StringVar(&vari.Server, "server", "mysql", "")
-	flagSet.StringVar(&vari.DBDsn, "dsn", "", "")
-	flagSet.BoolVar(&vari.DBClear, "clear", false, "")
+	flagSet.StringVar(&vari.GlobalVars.Table, "t", "", "")
+	flagSet.StringVar(&vari.GlobalVars.Table, "table", "", "")
+	flagSet.StringVar(&vari.GlobalVars.DBDsn, "dsn", "", "")
+	flagSet.StringVar(&vari.GlobalVars.DBType, "db", "db", "")
+	flagSet.StringVar(&vari.GlobalVars.DBType, "server", "mysql", "") // TODO: will remove
+	flagSet.BoolVar(&vari.GlobalVars.DBClear, "clear", false, "")
 
 	flagSet.StringVar(&vari.ProtoCls, "cls", "", "")
+	flagSet.StringVar(&vari.GlobalVars.MockDir, "mock", "", "")
 
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
+	flagSet.BoolVar(&help, "h", false, "")
+	flagSet.BoolVar(&help, "help", false, "")
+
+	// for server
+	flagSet.BoolVar(&isStartServer, "s", false, "启动服务")
+	flagSet.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
+
+	flagSet.IntVar(&vari.Port, "p", 8848, "")
+	flagSet.IntVar(&vari.Port, "port", 0, "")
+
+	flagSet.Parse(os.Args[1:])
+	if isStartServer {
+		vari.GlobalVars.RunMode = consts.RunModeServer
+		startServer()
+	} else {
+		execCommand()
+	}
+}
+
+func execCommand() {
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, "-help")
 	}
 
-	files, count := fileUtils.GetFilesFromParams(os.Args[1:])
+	files, count := fileUtils.GetFilesFromParams(os.Args[1:]) // zd.exe demo\default.yaml demo\test.yaml
 	flagSet.Parse(os.Args[1+count:])
-	if count == 0 {
+	if count == 0 { // not has a def file list, use -d and -c files
 		files = []string{defaultFile, configFile}
-	}
-
-	if vari.Ip != "" || vari.Port != 0 {
-		vari.RunMode = constant.RunModeServer
 	}
 
 	configUtils.InitConfig(root)
 	vari.DB, _ = commandConfig.NewGormDB()
 	//defer vari.DB.Close()
 
-	switch os.Args[1] {
-	default:
-		flagSet.SetOutput(ioutil.Discard)
-		if err := flagSet.Parse(os.Args[1:]); err == nil {
-			if example {
-				logUtils.PrintExample()
-				return
-			} else if help {
-				logUtils.PrintUsage()
-				return
-			} else if set {
-				helper.Set()
-				return
-			} else if listData {
-				helper.ListData()
-				return
-			} else if listRes {
-				helper.ListRes()
-				return
-			} else if view != "" {
-				helper.View(view)
-				return
-			} else if md5 != "" {
-				helper.AddMd5(md5)
-				return
-			} else if decode {
-				gen.Decode(files, fields, input)
-				return
-			}
-
-			if input != "" {
-				vari.RunMode = constant.RunModeParse
-			}
-
-			toGen(files)
-		} else {
-			logUtils.PrintUsage()
-		}
+	flagSet.SetOutput(ioutil.Discard)
+	if err := flagSet.Parse(os.Args[1:]); err == nil {
+		opts(files)
+	} else {
+		logUtils.PrintUsage()
 	}
 }
 
+<<<<<<< HEAD
 func toGen(files []string) {
 	tmStart := time.Now()
 	if vari.Verbose {
@@ -265,54 +258,81 @@ func toGen(files []string) {
 			logUtils.PrintErrMsg(i118Utils.I118Prt.Sprintf("miss_table_name"))
 			return
 		}
-
-		action.Generate(files, fields, vari.Format, vari.Table)
-	}
-
-	tmEnd := time.Now()
-	if vari.Verbose {
-		logUtils.PrintTo(fmt.Sprintf("End at %s.", tmEnd.Format("2006-01-02 15:04:05")))
-
-		dur := tmEnd.Unix() - tmStart.Unix()
-		logUtils.PrintTo(fmt.Sprintf("Duriation %d sec.", dur))
-	}
-}
-
+=======
 func startServer() {
-	if vari.Ip == "" {
-		vari.Ip = commonUtils.GetIp()
-	}
-	if vari.Port == 0 {
-		vari.Port = constant.DefaultPort
-	}
+	configUtils.InitConfig(root)
+	vari.DB, _ = serverConfig.NewGormDB()
+>>>>>>> 3.0
 
-	port := strconv.Itoa(vari.Port)
-	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server",
-		vari.Ip, port, vari.Ip, port, vari.Ip, port), color.FgCyan)
-
-	// start admin server
-	config := serverConfig.NewConfig()
-	server, err := server.InitServer(config)
+	vari.AgentLogDir = vari.ZdDir + serverConst.AgentLogDir + consts.PthSep
+	err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server_fail", port), color.FgRed)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)
+		os.Exit(1)
 	}
 
-	httpServer := &http.Server{
-		Addr:    fmt.Sprintf(":%d", server.Config.ServerPort),
-		Handler: Handler(server),
+	if vari.Port == 0 {
+		vari.Port = consts.DefaultDataServicePort
 	}
 
-	httpServer.ListenAndServe()
+	webServer := web.Init()
+	if webServer == nil {
+		return
+	}
+
+	webServer.Run()
 }
 
-func Handler(s *server.Server) http.Handler {
-	mux := http.NewServeMux()
+func opts(files []string) {
+	if exportFields != "" {
+		vari.GlobalVars.ExportFields = strings.Split(exportFields, ",")
+	}
 
-	mux.Handle("/", http.FileServer( // client static
-		&assetfs.AssetFS{Asset: res.Asset, AssetDir: res.AssetDir, AssetInfo: res.AssetInfo, Prefix: "ui/dist"}))
-	mux.HandleFunc("/admin", s.Admin)    // data admin
-	mux.HandleFunc("/data", DataHandler) // data gen
+	if example {
+		logUtils.PrintExample()
+		return
+	} else if help {
+		logUtils.PrintUsage()
+		return
+	} else if set {
+		helper.Set()
+		return
+	} else if listData {
+		helper.ListData()
+		return
+	} else if listRes {
+		helper.ListRes()
+		return
+	} else if view != "" {
+		helper.View(view)
+		return
+	} else if md5 != "" {
+		helper.AddMd5(md5, salt)
+		return
+	} else if decode {
+		gen.Decode(files, input)
+		return
+	} else if parse {
+		genYaml(input)
+		return
+	} else if mock {
+		if input == "" {
+			return
+		}
+		genMock(input)
 
+		return
+	}
+
+	genData(files)
+}
+
+func genYaml(input string) {
+	mainCtrl, _ := command.InitCtrl()
+	mainCtrl.GenYaml(input)
+}
+
+<<<<<<< HEAD
 	mux.HandleFunc("/api/v1/heartbeat", heartbeat) // test
 
 	return mux
@@ -329,35 +349,30 @@ func heartbeat(writer http.ResponseWriter, req *http.Request) {
 
 func DataHandler(writer http.ResponseWriter, req *http.Request) {
 	logUtils.HttpWriter = writer
+=======
+func genMock(input string) {
+	mainCtrl, _ := command.InitCtrl()
+	mainCtrl.GenMock(input)
+}
 
-	if req.Method == http.MethodGet {
-		defaultFile, configFile, fields, vari.Total,
-			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParams(req)
-	} else if req.Method == http.MethodPost {
-		defaultDefContent, configDefContent, fields, vari.Total,
-			vari.Format, vari.Trim, vari.Table, decode, input, vari.Out = serverUtils.ParseGenParamsToByte(req)
+func genData(files []string) {
+	command.PrintStartInfo()
+>>>>>>> 3.0
+
+	if command.ClearCache() {
+		return
 	}
 
-	if decode {
-		files := []string{defaultFile, configFile}
-		gen.Decode(files, fields, input)
-	} else if defaultDefContent != nil || configDefContent != nil {
-		vari.RunMode = constant.RunModeServerRequest
-		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
-
-		toGen(nil)
-		// Avoid variable affecting the results of request.
-		defaultDefContent = nil
-		configDefContent = nil
-	} else if defaultFile != "" || configFile != "" {
-		vari.RunMode = constant.RunModeServerRequest
-		logUtils.PrintToWithoutNewLine(i118Utils.I118Prt.Sprintf("server_request", req.Method, req.URL))
-
-		toGen(nil)
-		// Avoid variable affecting the results of request.
-		defaultFile = ""
-		configFile = ""
+	err := command.SetOutFormat()
+	defer logUtils.OutputFileWriter.Close()
+	if err != nil {
+		return
 	}
+
+	mainCtrl, _ := command.InitCtrl()
+	mainCtrl.Generate(files)
+
+	command.PrintEndInfo()
 }
 
 func init() {

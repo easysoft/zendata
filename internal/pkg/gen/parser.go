@@ -2,8 +2,9 @@ package gen
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"log"
 	"regexp"
@@ -25,13 +26,13 @@ func ParseRangeProperty(rang string) []string {
 	for i := 0; i < len(runeArr); i++ {
 		c := runeArr[i]
 
-		if c == constant.RightBrackets {
+		if c == consts.RightBrackets {
 			bracketsOpen = false
-		} else if c == constant.LeftBrackets {
+		} else if c == consts.LeftBrackets {
 			bracketsOpen = true
-		} else if !backtickOpen && c == constant.Backtick {
+		} else if !backtickOpen && c == consts.Backtick {
 			backtickOpen = true
-		} else if backtickOpen && c == constant.Backtick {
+		} else if backtickOpen && c == consts.Backtick {
 			backtickOpen = false
 		}
 
@@ -63,11 +64,11 @@ func ParseDesc(desc string) (items []string) {
 
 	runeArr := []rune(desc)
 
-	if runeArr[0] == constant.Backtick && runeArr[len(runeArr)-1] == constant.Backtick { // `xxx`
+	if runeArr[0] == consts.Backtick && runeArr[len(runeArr)-1] == consts.Backtick { // `xxx`
 		desc = string(runeArr[1 : len(runeArr)-1])
 		items = append(items, desc)
 
-	} else if runeArr[0] == constant.LeftBrackets && runeArr[len(runeArr)-1] == constant.RightBrackets { // [abc,123]
+	} else if runeArr[0] == consts.LeftBrackets && runeArr[len(runeArr)-1] == consts.RightBrackets { // [abc,123]
 		desc = string(runeArr[1 : len(runeArr)-1])
 		items = strings.Split(desc, ",")
 
@@ -78,11 +79,13 @@ func ParseDesc(desc string) (items []string) {
 	return
 }
 
-/**
-	convert range item to entity, step, repeat
-	[user1,user2]{2} -> entry  =>[user1,user2]
-                        step   =>1
-                        repeat =>2
+/*
+*
+
+		convert range item to entity, step, repeat
+		[user1,user2]{2} -> entry  =>[user1,user2]
+	                        step   =>1
+	                        repeat =>2
 */
 func ParseRangeSection(rang string) (entry string, step string, repeat int, repeatTag string) {
 	rang = strings.TrimSpace(rang)
@@ -93,9 +96,9 @@ func ParseRangeSection(rang string) (entry string, step string, repeat int, repe
 	}
 
 	runeArr := []rune(rang)
-	if (runeArr[0] == constant.Backtick && runeArr[len(runeArr)-1] == constant.Backtick) || // `xxx`
-		(string(runeArr[0]) == string(constant.LeftBrackets) && // (xxx)
-			string(runeArr[len(runeArr)-1]) == string(constant.RightBrackets)) {
+	if (runeArr[0] == consts.Backtick && runeArr[len(runeArr)-1] == consts.Backtick) || // `xxx`
+		(string(runeArr[0]) == string(consts.LeftBrackets) && // (xxx)
+			string(runeArr[len(runeArr)-1]) == string(consts.RightBrackets)) {
 
 		entry = rang
 		if repeat == 0 {
@@ -127,12 +130,14 @@ func ParseRangeSection(rang string) (entry string, step string, repeat int, repe
 	return entry, step, repeat, repeatTag
 }
 
-/**
-	get range item entity's type and desc
-	1-9 or [1-9]  -> type => interval
-                     desc => 1-9 or [1-9]
-	[user1,user2] -> type => literal
-                     desc => user2,user3
+/*
+*
+
+		get range item entity's type and desc
+		1-9 or [1-9]  -> type => interval
+	                     desc => 1-9 or [1-9]
+		[user1,user2] -> type => literal
+	                     desc => user2,user3
 */
 func ParseRangeSectionDesc(str string) (typ string, desc string) {
 	desc = strings.TrimSpace(str)
@@ -148,8 +153,8 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		return
 	}
 
-	if string(runeArr[0]) == string(constant.LeftBrackets) && // [a-z,1-9,userA,UserB]
-		string(runeArr[len(runeArr)-1]) == string(constant.RightBrackets) {
+	if string(runeArr[0]) == string(consts.LeftBrackets) && // [a-z,1-9,userA,UserB]
+		string(runeArr[len(runeArr)-1]) == string(consts.RightBrackets) {
 
 		desc = removeBoundary(desc)
 		arr := strings.Split(desc, ",")
@@ -157,11 +162,11 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		temp := ""
 		for _, item := range arr {
 			if isScopeStr(item) && isCharOrNumberScope(item) { // only support a-z and 0-9 in []
-				tempField := model.DefField{}
+				tempField := domain.DefField{}
 				values := CreateValuesFromInterval(&tempField, item, "", 1, "")
 
 				for _, val := range values {
-					temp += InterfaceToStr(val) + ","
+					temp += valueGen.InterfaceToStr(val) + ","
 				}
 			} else {
 				temp += item + ","
@@ -169,7 +174,7 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 		}
 
 		temp = strings.TrimSuffix(temp, ",")
-		desc = string(constant.LeftBrackets) + temp + string(constant.RightBrackets)
+		desc = string(consts.LeftBrackets) + temp + string(consts.RightBrackets)
 		typ = "literal"
 
 		return
@@ -192,8 +197,8 @@ func ParseRangeSectionDesc(str string) (typ string, desc string) {
 }
 
 func removeBoundary(str string) string {
-	str = strings.TrimLeft(str, string(constant.LeftBrackets))
-	str = strings.TrimRight(str, string(constant.RightBrackets))
+	str = strings.TrimLeft(str, string(consts.LeftBrackets))
+	str = strings.TrimRight(str, string(consts.RightBrackets))
 
 	return str
 }

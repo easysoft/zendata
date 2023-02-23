@@ -1,10 +1,13 @@
 package serverConfig
 
 import (
+<<<<<<< HEAD
 	"fmt"
+=======
+>>>>>>> 3.0
 	"gorm.io/gorm/logger"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gorm.io/driver/sqlite"
@@ -12,7 +15,11 @@ import (
 )
 
 func NewGormDB() (gormDb *gorm.DB, err error) {
+<<<<<<< HEAD
 	gormDb, err = gorm.Open(sqlite.Open(constant.SqliteFile), &gorm.Config{
+=======
+	gormDb, err = gorm.Open(sqlite.Open(consts.SqliteFile), &gorm.Config{
+>>>>>>> 3.0
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 
@@ -20,13 +27,9 @@ func NewGormDB() (gormDb *gorm.DB, err error) {
 		gormDb = gormDb.Debug()
 	}
 
-	if vari.RunMode == constant.RunModeServer {
-		for _, model := range model.Models {
-			if err := gormDb.Set("gorm:table_options", "").AutoMigrate(model); err != nil {
-				return nil, fmt.Errorf("auto migrate table %+v failure %s", model, err.Error())
-			}
-		}
-	}
+	err = gormDb.AutoMigrate(
+		model.Models...,
+	)
 
 	return
 }

@@ -1,18 +1,18 @@
 package serverService
 
 import (
-	"io/ioutil"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"os"
 	"regexp"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
 	"gorm.io/gorm"
@@ -29,20 +29,20 @@ func (s *ConfigService) List(keywords string, page int) (list []*model.ZdConfig,
 	return
 }
 
-func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []model.Dir) {
+func (s *ConfigService) Get(id int) (config model.ZdConfig, dirs []domain.Dir) {
 	if id > 0 {
 		config, _ = s.ConfigRepo.Get(uint(id))
 	}
 
-	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
+	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
 
 	return
 }
 
 func (s *ConfigService) Save(config *model.ZdConfig) (err error) {
 	config.Folder = serverUtils.DealWithPathSepRight(config.Folder)
-	config.Path = vari.ZdPath + config.Folder + serverUtils.AddExt(config.FileName, ".yaml")
-	config.ReferName = helper.PathToName(config.Path, constant.ResDirYaml, constant.ResTypeConfig)
+	config.Path = vari.ZdDir + config.Folder + serverUtils.AddExt(config.FileName, ".yaml")
+	config.ReferName = helper.PathToName(config.Path, consts.ResDirYaml, consts.ResTypeConfig)
 
 	if config.ID == 0 {
 		err = s.Create(config)
@@ -100,16 +100,16 @@ func (s *ConfigService) updateYaml(id uint) (err error) {
 	return
 }
 func (s *ConfigService) genYaml(config *model.ZdConfig) (str string) {
-	yamlObj := model.ResConfig{}
+	yamlObj := domain.ResConfig{}
 	s.ConfigRepo.GenConfigRes(*config, &yamlObj)
 
 	bytes, _ := yaml.Marshal(yamlObj)
-	config.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
+	config.Yaml = helper.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }
 
-func (s *ConfigService) Sync(files []model.ResFile) (err error) {
+func (s *ConfigService) Sync(files []domain.ResFile) (err error) {
 	list := s.ConfigRepo.ListAll()
 
 	mp := map[string]*model.ZdConfig{}
@@ -119,7 +119,7 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 
 	for _, fi := range files {
 		_, found := mp[fi.Path]
-		//logUtils.PrintTo(fi.UpdatedAt.String() + ", " + mp[fi.Path].UpdatedAt.String())
+		//logUtils.PrintTo(fi.UpdatedAt.OpenApiDataTypeString() + ", " + mp[fi.Path].UpdatedAt.OpenApiDataTypeString())
 		if !found { // no record
 			s.SyncToDB(fi)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
@@ -132,9 +132,9 @@ func (s *ConfigService) Sync(files []model.ResFile) (err error) {
 
 	return
 }
-func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
-	content, _ := ioutil.ReadFile(fi.Path)
-	yamlContent := stringUtils.ReplaceSpecialChars(content)
+func (s *ConfigService) SyncToDB(fi domain.ResFile) (err error) {
+	content, _ := os.ReadFile(fi.Path)
+	yamlContent := helper.ReplaceSpecialChars(content)
 
 	po := model.ZdConfig{}
 	err = yaml.Unmarshal(yamlContent, &po)
@@ -143,10 +143,10 @@ func (s *ConfigService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, vari.ZdPath+constant.ResDirYaml) > -1 {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeConfig)
+	if strings.Index(po.Path, vari.ZdDir+consts.ResDirYaml) > -1 {
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirYaml, consts.ResTypeConfig)
 	} else {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeConfig)
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirUsers, consts.ResTypeConfig)
 	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)

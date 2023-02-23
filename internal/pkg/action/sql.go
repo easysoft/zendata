@@ -2,22 +2,24 @@ package action
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func ParseSql(file string, out string) {
+func GenYamlFromSql(file string) {
 	startTime := time.Now().Unix()
 
-	statementMap, pkMap, fkMap := getCreateStatement(file)
+	sql := fileUtils.ReadFile(file)
+	statementMap, pkMap, fkMap := getCreateStatement(sql)
 
 	// gen key yaml files
 	inst := model.ZdInstances{Title: "keys", Desc: "automated export"}
@@ -34,10 +36,10 @@ func ParseSql(file string, out string) {
 	bytes, _ := yaml.Marshal(&inst)
 	content := strings.ReplaceAll(string(bytes), "'-'", "\"\"")
 
-	if out != "" {
-		out = fileUtils.AddSepIfNeeded(out)
-		outFile := out + "keys.yaml"
-		WriteToFile(outFile, content)
+	if vari.GlobalVars.Output != "" {
+		vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+		outFile := vari.GlobalVars.Output + "keys.yaml"
+		fileUtils.WriteFile(outFile, content)
 	} else {
 		logUtils.PrintTo(content)
 	}
@@ -48,11 +50,11 @@ func ParseSql(file string, out string) {
 
 		columns, types := getColumnsFromCreateStatement(createStr)
 
-		def := model.DefSimple{}
+		def := domain.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
 
 		for _, col := range columns {
-			field := model.FieldSimple{Field: col}
+			field := domain.FieldSimple{Field: col}
 
 			// pk
 			isPk := col == pkMap[tableName]
@@ -86,29 +88,23 @@ func ParseSql(file string, out string) {
 
 		bytes, _ := yaml.Marshal(&def)
 		content := strings.ReplaceAll(string(bytes), "'", "")
-		if out != "" {
-			out = fileUtils.AddSepIfNeeded(out)
-			outFile := out + tableName + ".yaml"
-			WriteToFile(outFile, content)
+		if vari.GlobalVars.Output != "" {
+			vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+			outFile := vari.GlobalVars.Output + tableName + ".yaml"
+			fileUtils.WriteFile(outFile, content)
 		} else {
 			logUtils.PrintTo(content)
 		}
 	}
 
 	entTime := time.Now().Unix()
-	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), out, entTime-startTime))
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), vari.GlobalVars.Output, entTime-startTime))
 }
 
-func getCreateStatement(file string) (statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
+func getCreateStatement(content string) (statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
 	statementMap = map[string]string{}
 	pkMap = map[string]string{}
 	fkMap = map[string][2]string{}
-
-	content, err := ioutil.ReadFile(file)
-	if err != nil {
-		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file))
-		return
-	}
 
 	re := regexp.MustCompile("(?siU)(CREATE TABLE.*;)")
 	arr := re.FindAllString(string(content), -1)
@@ -156,11 +152,14 @@ func getColumnsFromCreateStatement(sent string) (fieldLines []string, fieldInfo 
 
 	for _, item := range arr {
 		line := strings.ToLower(item[0])
+
 		if !strings.Contains(line, " table ") && !strings.Contains(line, " key ") {
-			fieldTmp := item[1]
-			field := strings.ReplaceAll(fieldTmp, "`", "")
-			fieldInfo[field] = parseFieldInfo(strings.ToUpper(fieldTmp), item[0])
+			colName := item[1]
+
+			field := strings.ReplaceAll(colName, "`", "")
+
 			fieldLines = append(fieldLines, field)
+			fieldInfo[field] = parseFieldInfo(strings.ToUpper(colName), item[0])
 		}
 	}
 
@@ -168,7 +167,6 @@ func getColumnsFromCreateStatement(sent string) (fieldLines []string, fieldInfo 
 }
 
 func parseFieldInfo(fieldTmp, fieldTypeInfo string) (FieldTypeInfoIns FieldTypeInfo) {
-
 	var ret []string
 	isUnsigned := false
 	fieldTypeInfo = strings.ToUpper(fieldTypeInfo)
@@ -178,6 +176,7 @@ func parseFieldInfo(fieldTmp, fieldTypeInfo string) (FieldTypeInfoIns FieldTypeI
 
 	myExp := regexp.MustCompile(fieldTmp + `\s([A-Z]+)\(([^,]*),?([^,]*)\)`)
 	ret = myExp.FindStringSubmatch(fieldTypeInfo)
+
 	if ret != nil {
 		FieldTypeInfoIns = judgeFieldType(ret[1], ret[2], isUnsigned)
 	} else {

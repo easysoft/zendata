@@ -2,9 +2,10 @@ package gen
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -14,7 +15,7 @@ import (
 	"strings"
 )
 
-func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateFieldValuesFromText(field *domain.DefField, fieldValue *domain.FieldWithValues) {
 	ranges := strings.Split(strings.TrimSpace(field.Range), ",")
 
 	for _, rang := range ranges {
@@ -31,7 +32,7 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 
 		// read from file
 		list := make([]string, 0)
-		realPath := fileUtils.ComputerReferFilePath(file, field)
+		realPath := genHelper.ComputerReferFilePath(file, field)
 		content, err := ioutil.ReadFile(realPath)
 		if err != nil {
 			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", file+" - "+realPath))
@@ -60,8 +61,9 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 			}
 		}
 
-		// get index for data retrieve
-		numbs := GenerateIntItems(0, (int64)(len(list)-1), step, rand, 1, "")
+		// get index list for data retrieve
+		numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(step), 0, rand, 1, "", 0)
+
 		// gen data by index
 		count := 0
 		if repeatTag == "" {
@@ -75,13 +77,13 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 					fieldValue.Values = append(fieldValue.Values, item)
 
 					count++
-					if count >= constant.MaxNumb {
+					if count >= consts.MaxNumb {
 						break
 					}
 				}
 
 				count++
-				if count >= constant.MaxNumb {
+				if count >= consts.MaxNumb {
 					break
 				}
 			}
@@ -96,13 +98,13 @@ func CreateFieldValuesFromText(field *model.DefField, fieldValue *model.FieldWit
 					fieldValue.Values = append(fieldValue.Values, item)
 
 					count++
-					if count >= constant.MaxNumb {
+					if count >= consts.MaxNumb {
 						break
 					}
 				}
 
 				count++
-				if count >= constant.MaxNumb {
+				if count >= consts.MaxNumb {
 					break
 				}
 			}

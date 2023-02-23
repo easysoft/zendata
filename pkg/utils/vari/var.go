@@ -1,19 +1,67 @@
 package vari
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
+	"time"
+)
+
+type GenVarType struct {
+	RunMode consts.RunMode
+	Total   int
+
+	Output       string
+	OutputFormat string
+	TopFieldMap  map[string]domain.DefField
+	ExportFields []string
+	ColIsNumArr  []bool
+
+	Table        string
+	DBType       string // database type
+	DBDsn        string
+	DBDsnParsing DBDsnData
+	DBClear      bool
+	MockDir      string
+
+	Human     bool
+	Trim      bool
+	Recursive bool
+
+	ConfigFileDir string
+
+	DefData domain.DefData
+	ResData map[string]map[string][]interface{}
+
+	CacheResFileToMap                  map[string]map[string][]interface{}
+	RandFieldSectionPathToValuesMap    map[int]map[string]interface{}
+	RandFieldSectionShortKeysToPathMap map[int]string
+
+	StartTime time.Time
+	EndTime   time.Time
+}
+
+var (
+	GlobalVars = GenVarType{
+		DefData:      domain.DefData{},
+		OutputFormat: consts.FormatText,
+		TopFieldMap:  map[string]domain.DefField{},
+
+		CacheResFileToMap:                  map[string]map[string][]interface{}{},
+		RandFieldSectionPathToValuesMap:    map[int]map[string]interface{}{},
+		RandFieldSectionShortKeysToPathMap: map[int]string{},
+
+		RunMode: consts.RunModeGen,
+	}
 )
 
 var (
 	Config = model.Config{Version: 1, Language: "en"}
 	DB     *gorm.DB
 
-	RunMode constant.RunMode
-
-	WorkDir      string
-	ZdPath       string
+	ZdDir        string
+	DevDir       string
 	CurrFilePath string
 
 	CfgFile      string
@@ -25,36 +73,20 @@ var (
 	Verbose     bool
 	Interpreter string
 
-	Total     int
-	WithHead  bool
-	Human     bool
-	Trim      bool
-	Recursive bool
-	Format    = constant.FormatText
+	CacheParam string
 
-	Out          string
-	Table        string
-	Type         string
-	Server       string // database type
-	DBDsn        string
-	DBDsnParsing DBDsnData
-	DBClear      bool
-	ProtoCls     string
+	DefType string
 
-	JsonResp string = "[]"
-	Ip       string
+	ProtoCls string
+
+	JsonResp = "[]"
 	Port     int
 
-	ResLoading               = false
-	Def                      = model.DefData{}
-	Res                      = map[string]map[string][]string{}
-	RandFieldNameToValuesMap = map[string]map[string]interface{}{}
-	TopFieldMap              = map[string]model.DefField{}
+	ResLoading = false
+	Res        = map[string]map[string][]string{}
 
 	CacheResFileToMap  = map[string]map[string][]string{}
 	CacheResFileToName = map[string]string{}
-
-	ConfigFileDir string
 
 	AgentLogDir string
 )

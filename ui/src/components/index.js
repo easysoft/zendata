@@ -1,3 +1,4 @@
-import DesignComponent from './Design'
+import DesignComponent from './DesignModal'
+import DesignInComponent from './Design'
 
-export { DesignComponent }
+export { DesignComponent,DesignInComponent }

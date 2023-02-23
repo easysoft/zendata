@@ -1,20 +1,32 @@
 import notification from 'ant-design-vue/es/notification'
-import axios from 'axios'
-import { VueAxios } from './axios'
+import axios, {AxiosInstance} from 'axios'
+import { getElectron } from "./common";
 
-const request = axios.create({
-  baseURL: getUrl(),
-  timeout: 100000,
-})
+let serverUrl = ''
+let request = null
+initRequest()
+
+// used to switch to another remote service
+function initRequest(remoteUrl) {
+  serverUrl = remoteUrl ? remoteUrl : getUrl()
+
+  request = axios.create({
+    baseURL: serverUrl,
+    timeout: 100000,
+  })
+}
 
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8848'
+    url = 'http://localhost:8848'
     console.log('dev env, url is ' + url)
+    } else if(getElectron()){
+    url = 'http://localhost:55234'
+    console.log('product in client, url is ' + url)
   } else {
-    const location = unescape(window.location.href);
-    url = location.split('#')[0].split('index.html')[0];
+    const location = decodeURI(window.location.href);
+    url = location.split('ui')[0];
     console.log('prod env, url is ' + url)
   }
 
@@ -44,21 +56,15 @@ const errorHandler = error => {
 
 // request interceptor
 request.interceptors.request.use(config => {
-  console.log('===Axios Request===', config.url, config.data);
+  console.log('---Request---', config.url, config);
   return config
 }, errorHandler)
 
 // response interceptor
-request.interceptors.response.use(response => {
-  return response.data
+request.interceptors.response.use(resp => {
+  console.log('---Response---', resp.config.url, resp.data);
+  return resp.data
 }, errorHandler)
 
-const installer = {
-  vm: {},
-  install (Vue) {
-    Vue.use(VueAxios, request)
-  }
-}
-
+export {serverUrl}
 export default request
-export { installer as VueAxios, request as axios }

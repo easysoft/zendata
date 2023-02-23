@@ -1,19 +1,20 @@
 package serverService
 
 import (
-	"io/ioutil"
+	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
 	"gorm.io/gorm"
@@ -24,6 +25,7 @@ type DefService struct {
 	FieldRepo   *serverRepo.FieldRepo   `inject:""`
 	ReferRepo   *serverRepo.ReferRepo   `inject:""`
 	SectionRepo *serverRepo.SectionRepo `inject:""`
+	MockRepo    *serverRepo.MockRepo    `inject:""`
 
 	ResService     *ResService     `inject:""`
 	SectionService *SectionService `inject:""`
@@ -34,22 +36,24 @@ func (s *DefService) List(keywords string, page int) (list []*model.ZdDef, total
 	return
 }
 
-func (s *DefService) Get(id int) (def model.ZdDef, dirs []model.Dir) {
+func (s *DefService) Get(id int) (def model.ZdDef, dirs []domain.Dir) {
 	if id > 0 {
 		def, _ = s.DefRepo.Get(uint(id))
 	} else {
-		def.Folder = "users" + constant.PthSep
+		def.Folder = "users" + consts.PthSep
 		def.Type = "text"
 	}
 
-	serverUtils.GetDirs(constant.ResDirUsers, &dirs)
+	serverUtils.GetDirs(consts.ResDirUsers, &dirs)
 
 	return
 }
 
 func (s *DefService) Save(def *model.ZdDef) (err error) {
 	def.Folder = serverUtils.DealWithPathSepRight(def.Folder)
-	def.Path = vari.ZdPath + def.Folder + serverUtils.AddExt(def.FileName, ".yaml")
+
+	def.Path = vari.ZdDir + def.Folder +
+		serverUtils.AddExt(strings.TrimSuffix(def.FileName, ".yaml"), ".yaml")
 
 	if def.ID == 0 {
 		err = s.Create(def)
@@ -62,12 +66,12 @@ func (s *DefService) Save(def *model.ZdDef) (err error) {
 }
 
 func (s *DefService) Create(def *model.ZdDef) (err error) {
-	def.ReferName = helper.PathToName(def.Path, constant.ResDirUsers, def.Type)
+	def.ReferName = helper.PathToName(def.Path, consts.ResDirUsers, def.Type)
 	err = s.DefRepo.Create(def)
 
 	// add root field node
 	rootField, err := s.FieldRepo.CreateTreeNode(def.ID, 0, "字段", "root")
-	s.ReferRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
+	s.ReferRepo.CreateDefault(rootField.ID, consts.ResTypeDef)
 	err = s.DefRepo.Update(def)
 
 	return
@@ -83,7 +87,7 @@ func (s *DefService) Update(def *model.ZdDef) (err error) {
 		fileUtils.RemoveExist(old.Path)
 	}
 
-	def.ReferName = helper.PathToName(def.Path, constant.ResDirUsers, def.Type)
+	def.ReferName = helper.PathToName(def.Path, consts.ResDirUsers, def.Type)
 	err = s.DefRepo.Update(def)
 
 	return
@@ -112,6 +116,12 @@ func (s *DefService) updateYaml(id uint) (err error) {
 
 	s.genYaml(&po)
 	err = s.DefRepo.UpdateYaml(po)
+	//update mock content
+	mockData := s.MockRepo.GetByDefID(id)
+	if mockData.ID > 0 {
+		mockData.DataContent = po.Yaml
+		s.MockRepo.Save(&mockData)
+	}
 	fileUtils.WriteFile(po.Path, po.Yaml)
 
 	return
@@ -123,29 +133,29 @@ func (s *DefService) genYaml(def *model.ZdDef) (str string) {
 		return
 	}
 
-	yamlObj := model.DefData{}
+	yamlObj := domain.DefData{}
 	s.DefRepo.GenDef(*def, &yamlObj)
 
 	for _, child := range root.Fields { // ignore the root
-		defField := model.DefField{}
+		defField := domain.DefField{}
 
-		refer, _ := s.ReferRepo.GetByOwnerId(child.ID)
+		refer, _ := s.ReferRepo.GetByOwnerIdAndType(child.ID, consts.ResTypeDef)
 		s.zdFieldToFieldForExport(*child, refer, &defField)
 
 		yamlObj.Fields = append(yamlObj.Fields, defField)
 	}
 
 	bytes, err := yaml.Marshal(yamlObj)
-	def.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
+	def.Yaml = helper.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }
 
-func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model.ZdRefer, field *model.DefField) {
+func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model.ZdRefer, field *domain.DefField) {
 	genFieldFromZdField(treeNode, refer, field)
 
 	for _, child := range treeNode.Fields {
-		childField := model.DefField{}
+		childField := domain.DefField{}
 
 		childRefer, _ := s.ReferRepo.GetByOwnerId(child.ID)
 		s.zdFieldToFieldForExport(*child, childRefer, &childField)
@@ -170,7 +180,7 @@ func (s *DefService) zdFieldToFieldForExport(treeNode model.ZdField, refer model
 	return
 }
 
-func (s *DefService) Sync(files []model.ResFile) (err error) {
+func (s *DefService) Sync(files []domain.ResFile) (err error) {
 	list := s.DefRepo.ListAll()
 
 	mp := map[string]*model.ZdDef{}
@@ -180,41 +190,44 @@ func (s *DefService) Sync(files []model.ResFile) (err error) {
 
 	for _, fi := range files {
 		// for yaml "res", "data" type should be default value text
-		if fi.ResType == "" || fi.ResType == constant.ResTypeYaml {
-			fi.ResType = constant.ResTypeText
+		if fi.ResType == "" || fi.ResType == consts.ResTypeYaml {
+			fi.ResType = consts.ResTypeText
 		}
 
 		_, found := mp[fi.Path]
 		if !found { // no record
-			s.SyncToDB(fi)
+			s.SyncToDB(fi, false)
 		} else if fi.UpdatedAt.Unix() > mp[fi.Path].UpdatedAt.Unix() { // db is old
 			s.DefRepo.Remove(mp[fi.Path].ID)
-			s.SyncToDB(fi)
+			s.SyncToDB(fi, false)
 		}
 	}
 
 	return
 }
-func (s *DefService) SyncToDB(fi model.ResFile) (err error) {
-	content, _ := ioutil.ReadFile(fi.Path)
-	yamlContent := stringUtils.ReplaceSpecialChars(content)
+func (s *DefService) SyncToDB(fi domain.ResFile, isMock bool) (err error, id uint) {
+	content, _ := os.ReadFile(fi.Path)
+	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdDef{}
 	err = yaml.Unmarshal(yamlContent, &po)
 	po.Title = fi.Title
 	po.Type = fi.ResType
 	po.Desc = fi.Desc
 	po.Path = fi.Path
+	po.IsMock = isMock
 	po.Folder = serverUtils.GetRelativePath(po.Path)
 
-	po.ReferName = helper.PathToName(po.Path, constant.ResDirUsers, po.Type)
+	po.ReferName = helper.PathToName(po.Path, consts.ResDirUsers, po.Type)
 	po.FileName = fileUtils.GetFileName(po.Path)
 
 	po.Yaml = string(content)
 
 	s.DefRepo.Create(&po)
+	id = po.ID
 
 	rootField, _ := s.FieldRepo.CreateTreeNode(po.ID, 0, "字段", "root")
-	s.ReferRepo.CreateDefault(rootField.ID, constant.ResTypeDef)
+	s.ReferRepo.CreateDefault(rootField.ID, consts.ResTypeDef)
+	fmt.Println(rootField.ID, po.Type, po, rootField)
 	for i, field := range po.Fields {
 		field.Ord = i + 1
 		s.saveFieldToDB(&field, po, fi.Path, rootField.ID, po.ID)
@@ -241,10 +254,10 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 		field.From = def.From
 	}
 	if field.Type == "" {
-		field.Type = constant.FieldTypeList
+		field.Type = consts.FieldTypeList
 	}
 	if field.Mode == "" {
-		field.Mode = constant.ModeParallel
+		field.Mode = consts.ModeParallel
 	}
 
 	field.Range = strings.TrimSpace(field.Range)
@@ -257,7 +270,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 
 	needToCreateSections := false
 	if field.Select != "" { // refer to excel
-		refer.Type = constant.ResTypeExcel
+		refer.Type = consts.ResTypeExcel
 
 		refer.ColName = field.Select
 		refer.Condition = field.Where
@@ -282,7 +295,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 		refer.File = field.From
 
 	} else if field.Config != "" { // refer to config
-		refer.Type = constant.ResTypeConfig
+		refer.Type = consts.ResTypeConfig
 
 		rangeSections := gen.ParseRangeProperty(field.Config) // dir/config.yaml
 		if len(rangeSections) > 0 {                           // only get the first one
@@ -302,7 +315,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 			desc, step, count, countTag := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
 			if filepath.Ext(desc) == ".txt" || filepath.Ext(desc) == ".yaml" {
 				if filepath.Ext(desc) == ".txt" { // dir/users.txt:2
-					refer.Type = constant.ResTypeText
+					refer.Type = consts.ResTypeText
 
 					if strings.ToLower(step) == "r" {
 						refer.Rand = true
@@ -311,7 +324,7 @@ func (s *DefService) saveFieldToDB(field *model.ZdField, def model.ZdDef, currPa
 					}
 
 				} else if filepath.Ext(desc) == ".yaml" { // dir/content.yaml{3}
-					refer.Type = constant.ResTypeYaml
+					refer.Type = consts.ResTypeYaml
 
 					refer.Count = count
 					refer.CountTag = countTag

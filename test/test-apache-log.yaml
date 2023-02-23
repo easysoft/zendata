@@ -1,8 +1,0 @@
-title: test
-desc: 描述
-version: 1.0
-fields:
-
-  - field: apache log
-    from: log.apache.access.v1.yaml
-    use: log

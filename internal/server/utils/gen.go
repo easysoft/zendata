@@ -1,7 +1,7 @@
 package serverUtils
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,7 +21,7 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 
 	fields = ParserGetParams(query, "field", "F")
 
-	format = constant.FormatJson
+	format = consts.FormatJson
 	table = ""
 
 	trimStr = strings.ToLower(strings.TrimSpace(trimStr))
@@ -40,7 +40,7 @@ func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, 
 func ParseGenParamsToByte(req *http.Request) (defaultDefContent, configDefContent []byte, fields string, count int,
 	format string, trim bool, table string, decode bool, input, output string) {
 
-	format = constant.FormatJson
+	format = consts.FormatJson
 	table = ""
 	req.ParseForm()
 

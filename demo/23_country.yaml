@@ -1,17 +1,17 @@
 from: country.v1.yaml
 fields:
-  - field: cnfull
-    use: cnfull
-    prefix: 'cnfull: ' 
-    postfix: "\t" 
+  - field: chinese_full
+    use: chinese_full
+    prefix: 'chinese_full: '
+    postfix: "\t"
 
-  - field: cnshort
-    use: cnshort
-    prefix: 'cnshort: ' 
-    postfix: "\t" 
+  - field: chinese_short
+    use: chinese_short
+    prefix: 'chinese_short: '
+    postfix: "\t"
 
-  - field: asia_enfull
-    use: asia_enfull
-    prefix: 'asia_enfull: ' 
-    postfix: "\t" 
+  - field: asia_english_full
+    use: asia_english_full
+    prefix: 'asia_english_full: '
+    postfix: "\t"
 

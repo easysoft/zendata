@@ -24,6 +24,7 @@ const locale = {
   'menu.excel.edit': 'Excel Edit',
   'menu.text.list': 'Text List',
   'menu.text.edit': 'Text Edit',
+  'menu.data.mock': 'Mock Server',
 
   'title.data.create': 'Data Creation',
   'title.config.create': 'Config Creation',
@@ -54,11 +55,17 @@ const locale = {
   'msg.text': 'Text Content',
   'msg.exec': 'Yaml Result',
   'msg.file': 'File',
+  'msg.create.time': 'Create Time',
 
   'msg.design.title': 'TestData Design',
   'msg.design.create.brother': 'Create Brother',
   'msg.design.create.child': 'Create Child',
   'msg.design.remove.node': 'Remove node',
+
+  'msg.mock.create': 'Create Mock',
+  'msg.mock.edit': 'Edit Mock',
+  'msg.mock.response': 'Mock Response Data',
+  'msg.mock.input.path': 'Input mock url prefix',
 
   'action.list': 'List',
   'action.create': 'Create',
@@ -68,6 +75,10 @@ const locale = {
   'action.design': 'Design',
   'action.back': 'Back',
   'action.import.from.file': 'Refresh Data',
+  'action.edit.mock': 'Modify Mock Config',
+  'action.edit.data': 'Modify Data Config',
+  'action.start.mock': 'Start Mock Service',
+  'action.stop.mock': 'Stop Mock Service',
 
   'tips.refer': 'Reference',
   'tips.pls.select': 'Please select',
@@ -85,6 +96,11 @@ const locale = {
   'tips.range.and.refer': 'Saved reference settings will overwrite the ones of range.',
   'tips.pls.refresh.data': 'First time to use, please click "Refresh" button on the top-right corner.',
 
+  'upload.spec': 'Upload Spec',
+  'upload.spec.failed': 'Upload spec failed.',
+  'msg.mock.mock': 'Mock Config',
+  'msg.mock.data': 'Data Config',
+
   'form.name': 'Name',
   'form.file': 'File',
   'form.dir': 'Directory',
@@ -92,6 +108,7 @@ const locale = {
   'form.folder': 'Folder',
   'form.path': 'Path',
   'form.file.name': 'File Name',
+  'form.file.content': 'File Content',
   'form.desc': 'Description',
   'form.content': 'Content',
   'form.prefix': 'Prefix',
@@ -128,6 +145,7 @@ const locale = {
   'form.save': 'Save',
   'form.reset': 'Reset',
   'form.cancel': 'Cancel',
+  'form.close': 'Close',
 
   'valid.required': 'Can not be empty.',
   'valid.type.empty': 'Type cannot be empty.',

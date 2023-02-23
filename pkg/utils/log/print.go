@@ -2,9 +2,9 @@ package logUtils
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
 	"net/http"
@@ -17,9 +17,9 @@ var (
 	exampleFile = fmt.Sprintf("res%sen%ssample.yaml", string(os.PathSeparator), string(os.PathSeparator))
 	usageFile   = fmt.Sprintf("res%sen%susage.txt", string(os.PathSeparator), string(os.PathSeparator))
 
-	FileWriter *os.File
-	HttpWriter http.ResponseWriter
-	FilePath   string // for excel output
+	OutputFileWriter *os.File
+	OutputHttpWriter http.ResponseWriter
+	OutputFilePath   string // for excel output
 )
 
 func PrintExample() {
@@ -28,7 +28,7 @@ func PrintExample() {
 		usageFile = strings.Replace(usageFile, "en", "zh", 1)
 	}
 
-	content := fileUtils.ReadResData(exampleFile)
+	content, _ := zd.ReadResData(exampleFile)
 	fmt.Printf("%s\n", content)
 }
 
@@ -38,7 +38,8 @@ func PrintUsage() {
 		usageFile = strings.Replace(usageFile, "en", "zh", 1)
 	}
 
-	usage := fileUtils.ReadResData(usageFile)
+	usageBytes, _ := zd.ReadResData(usageFile)
+	usage := string(usageBytes)
 	exeFile := "zd"
 	if commonUtils.IsWin() {
 		exeFile += ".exe"
@@ -51,7 +52,7 @@ func PrintUsage() {
 		regx, _ = regexp.Compile(`zd.exe`)
 		usage = regx.ReplaceAllString(usage, "zd")
 
-		regx, _ = regexp.Compile(`d:/zd/config        `)
+		regx, _ = regexp.Compile(`d:\\zd\\config        `)
 		usage = regx.ReplaceAllString(usage, "/home/user/zd/config")
 	}
 	fmt.Printf("%s\n", usage)
@@ -81,14 +82,24 @@ func PrintErrMsg(msg string) {
 	PrintToWithColor(msg, color.FgCyan)
 }
 
+func PrintRecord(str string) {
+	if OutputFileWriter != nil {
+		PrintToFile(str)
+	} else if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
+		PrintToHttp(str)
+	} else {
+		PrintToScreen(fmt.Sprintf("%s", str))
+	}
+}
+
 func PrintLine(line string) {
-	if vari.Type == constant.ConfigTypeText {
+	if vari.DefType == constant.DefTypeText {
 		line += "\n"
 	}
 
-	if FileWriter != nil {
+	if OutputFileWriter != nil {
 		PrintToFile(line)
-	} else if vari.RunMode == constant.RunModeServerRequest {
+	} else if vari.GlobalVars.RunMode == constant.RunModeServerRequest {
 		PrintToHttp(line)
 	} else {
 		PrintToScreen(line)
@@ -97,10 +108,10 @@ func PrintLine(line string) {
 	return
 }
 func PrintToFile(line string) {
-	fmt.Fprint(FileWriter, line)
+	fmt.Fprint(OutputFileWriter, line)
 }
 func PrintToHttp(line string) {
-	fmt.Fprint(HttpWriter, line)
+	fmt.Fprint(OutputHttpWriter, line)
 }
 func PrintToScreen(line string) {
 	fmt.Print(line)

@@ -43,6 +43,7 @@
 import {getText, saveText} from "../../../../api/manage";
 import {checkDirIsYaml} from "../../../../api/utils";
 import {colsFull, colsHalf, labelColFull, wrapperColFull, labelColHalf, labelColHalf2, wrapperColHalf} from "../../../../utils/const";
+import {getDir} from "@/utils/utils";
 
 export default {
   name: 'TestEdit',
@@ -77,7 +78,7 @@ export default {
         ],
       },
 
-      model: {folder: 'yaml/'},
+      model: {folder: getDir('yaml')},
       dirs: [],
       workDir: '',
     };
@@ -97,20 +98,18 @@ export default {
   methods: {
     loadData () {
       let id = this.id;
-      if (id === null) {
-        return;
-      }
-      if (id) {
-        if (typeof id === 'string') id = Number.parseInt(id);
-        getText(id).then(json => {
-          console.log('getText', json)
-          this.model = json.data
-          this.dirs = json.res
-          this.workDir = json.workDir
-        })
-      } else {
+      if (typeof id === 'string') id = Number.parseInt(id);
+      if (!id) {
         this.reset();
+        return
       }
+
+      getText(id).then(json => {
+        console.log('getText', json)
+        this.model = json.data
+        this.dirs = json.res
+        this.workDir = json.workDir
+      })
     },
     save() {
       console.log('save')
@@ -132,8 +131,8 @@ export default {
     },
     reset() {
       console.log('reset')
-      this.model = {folder: 'yaml/'};
-      this.$refs.editForm.reset()
+      this.$refs.editForm.resetFields()
+      this.model = {folder: getDir('yaml')};
     },
   }
 }

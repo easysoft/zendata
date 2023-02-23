@@ -1,23 +1,27 @@
 package gen
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"fmt"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
 
-func CreateArticleField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+func CreateArticleField(field *domain.DefField, fieldWithValue *domain.FieldWithValues) {
 	fieldWithValue.Field = field.Field
 
 	numMap, nameMap, indexMap, contentWithoutComments := getNumMap(field.Range)
 	resFile, resType, sheet := fileUtils.GetResProp(field.From, "")
 	dataMap := getDataMap(numMap, nameMap, field, resFile, resType, sheet)
 
-	for i := 0; i < vari.Total; i++ {
+	for i := 0; i < vari.GlobalVars.Total; i++ {
 		content := genArticle(contentWithoutComments, dataMap, nameMap, indexMap) + "\n"
 		fieldWithValue.Values = append(fieldWithValue.Values, content)
 	}
@@ -91,14 +95,14 @@ func genArticle(content string, dataMap map[string][]string, nameMap map[string]
 	return
 }
 
-func getDataMap(numMap map[string]int, nameMap map[string]string, field *model.DefField,
+func getDataMap(numMap map[string]int, nameMap map[string]string, field *domain.DefField,
 	resFile string, resType string, sheet string) (ret map[string][]string) {
 	ret = map[string][]string{}
 
 	field.Rand = false
 	for key, _ := range numMap {
-		originTotal := vari.Total
-		vari.Total = constant.MaxNumb // load all words
+		originTotal := vari.GlobalVars.Total
+		vari.GlobalVars.Total = consts.MaxNumb // load all words
 
 		slct, ok := nameMap[key]
 		if ok {
@@ -110,7 +114,7 @@ func getDataMap(numMap map[string]int, nameMap map[string]string, field *model.D
 		valueMap, _ := getResValue(resFile, resType, sheet, field)
 		ret[key] = valueMap[field.Select]
 
-		vari.Total = originTotal // rollback
+		vari.GlobalVars.Total = originTotal // rollback
 	}
 
 	return
@@ -173,6 +177,28 @@ func getNumMap(content string) (numMap map[string]int, nameMap map[string]string
 	}
 
 	contentWithoutComments = strings.Join(arrWithoutComments, "\n")
+
+	return
+}
+
+func GenArticle(lines []interface{}) {
+	var filePath = logUtils.OutputFileWriter.Name()
+	defer logUtils.OutputFileWriter.Close()
+	fileUtils.RmFile(filePath)
+
+	for index, line := range lines {
+		articlePath := genArticleFiles(filePath, index)
+		fileWriter, _ := os.OpenFile(articlePath, os.O_RDWR|os.O_CREATE, 0777)
+		fmt.Fprint(fileWriter, line)
+		fileWriter.Close()
+	}
+}
+
+func genArticleFiles(pth string, index int) (ret string) {
+	pfix := fmt.Sprintf("%03d", index+1)
+
+	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
+	ret += "-" + pfix + filepath.Ext(pth)
 
 	return
 }

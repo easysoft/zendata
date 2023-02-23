@@ -2,6 +2,9 @@ package gen
 
 import (
 	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"log"
 	"os"
 	"strconv"
@@ -9,9 +12,7 @@ import (
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -20,11 +21,11 @@ import (
 	"gorm.io/gorm"
 )
 
-func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField, total int) (values map[string][]string) {
+func generateFieldValuesFromExcel(filePath, sheet string, field *domain.DefField, total int) (values map[string][]string) {
 	values = map[string][]string{}
 
 	// sql has variable expr
-	if filePath == "" || helper.SelectExcelWithExpr(*field) {
+	if filePath == "" || genHelper.IsSelectExcelWithExpr(*field) {
 		return
 	}
 
@@ -40,14 +41,15 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 	}
 
 	list, fieldSelect := ReadDataFromSQLite(*field, dbName, sheet, total, filePath)
-	// get index for data retrieve
-	numbs := GenerateIntItems(0, (int64)(len(list)-1), 1, false, 1, "")
+	// get index list for data retrieve
+	numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(1), 0, false, 1, "", 0)
+
 	// get data by index
 	index := 0
 	for _, numb := range numbs {
 		item := list[numb.(int64)%(int64(len(list)))]
 
-		if index >= constant.MaxNumb {
+		if index >= consts.MaxNumb {
 			break
 		}
 
@@ -59,8 +61,8 @@ func generateFieldValuesFromExcel(filePath, sheet string, field *model.DefField,
 }
 
 func getDbName(path string) (dbName string) {
-	dbName = strings.Replace(path, vari.ZdPath+constant.ResDirData+constant.PthSep, "", -1)
-	dbName = strings.Replace(dbName, constant.PthSep, "_", -1)
+	dbName = strings.Replace(path, vari.ZdDir+consts.ResDirData+consts.PthSep, "", -1)
+	dbName = strings.Replace(dbName, consts.PthSep, "_", -1)
 	dbName = strings.Replace(dbName, ".", "_", -1)
 
 	return
@@ -119,10 +121,6 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 
 		valList := ""
 		for rowIndex, row := range rows {
-			if vari.Verbose {
-				logUtils.PrintLine(fmt.Sprintf("deal with excel row %d", rowIndex))
-			}
-
 			if rowIndex == 0 {
 				continue
 			}
@@ -132,6 +130,7 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 			}
 			valList = valList + "("
 
+			dataColCount := 0
 			for colIndex, colCell := range row {
 				if colIndex >= colCount {
 					break
@@ -142,7 +141,15 @@ func ConvertSingleExcelToSQLiteIfNeeded(dbName string, path string) (firstSheet 
 				}
 				colCell = strings.Replace(colCell, "'", "''", -1)
 				valList = valList + "'" + colCell + "'"
+
+				dataColCount++
 			}
+
+			for dataColCount < colCount {
+				valList = valList + ", ''"
+				dataColCount++
+			}
+
 			valList = valList + ")"
 		}
 
@@ -234,7 +241,7 @@ func ConvertWordExcelsToSQLiteIfNeeded(tableName string, dir string) {
 	return
 }
 
-func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, total int, filePath string) (
+func ReadDataFromSQLite(field domain.DefField, dbName string, tableName string, total int, filePath string) (
 	[]string, string) {
 	list := make([]string, 0)
 
@@ -245,7 +252,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	where := strings.TrimSpace(field.Where)
-	if vari.Def.Type == constant.ConfigTypeArticle {
+	if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 		if where == "" {
 			where = "y"
 		}
@@ -274,8 +281,8 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	if !strings.Contains(where, "LIMIT") {
-		if total > constant.MaxNumb {
-			total = constant.MaxNumb
+		if total > consts.MaxNumb {
+			total = consts.MaxNumb
 		}
 		if field.Limit > 0 && total > field.Limit {
 			total = field.Limit
@@ -285,7 +292,7 @@ func ReadDataFromSQLite(field model.DefField, dbName string, tableName string, t
 	}
 
 	colStr := fieldSelect
-	if vari.Def.Type == constant.ConfigTypeArticle {
+	if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
 		colStr = "`词语` AS `" + fieldSelect + "`"
 	}
 
@@ -368,7 +375,7 @@ func isExcelChanged(path string) (changed bool, sqlBeforeCompleted string) {
 		"WHERE name = '%s' "+
 		"ORDER BY changeTime DESC "+
 		"LIMIT 1;",
-		constant.SqliteTrackTable, path)
+		consts.SqliteTrackTable, path)
 
 	record := ExcelChangedResult{}
 	err := vari.DB.Raw(sqlStr).Scan(&record).Error
@@ -395,10 +402,10 @@ func isExcelChanged(path string) (changed bool, sqlBeforeCompleted string) {
 	if changed {
 		if !found {
 			sqlBeforeCompleted = fmt.Sprintf("INSERT INTO %s(name, changeTime) VALUES('%s', %d)",
-				constant.SqliteTrackTable, path, fileChangeTime)
+				consts.SqliteTrackTable, path, fileChangeTime)
 		} else {
 			sqlBeforeCompleted = fmt.Sprintf("UPDATE %s SET changeTime = %d WHERE name = '%s'",
-				constant.SqliteTrackTable, fileChangeTime, path)
+				consts.SqliteTrackTable, fileChangeTime, path)
 		}
 	}
 

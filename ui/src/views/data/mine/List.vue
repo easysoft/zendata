@@ -29,9 +29,15 @@
               </span>
 
               <span slot="action" slot-scope="record">
-                <a @click="design(record)" :title="$t('action.design')"><Icon type="control" :style="{fontSize: '16px'}" /></a> &nbsp;
-                <a @click="edit(record)" :title="$t('action.edit')"><Icon type="form" :style="{fontSize: '16px'}" /></a> &nbsp;
-                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')"><Icon type="delete" :style="{fontSize: '16px'}" /></a>
+                <a @click="design(record)" :title="$t('action.design')">
+                  <Icon type="control" :style="{fontSize: '16px'}" />
+                </a> &nbsp;
+                <a @click="edit(record)" :title="$t('action.edit')">
+                  <Icon type="form" :style="{fontSize: '16px'}" />
+                </a> &nbsp;
+                <a @click="showDeleteConfirm(record)" :title="$t('action.delete')">
+                  <Icon type="delete" :style="{fontSize: '16px'}" />
+                </a>
               </span>
             </a-table>
 
@@ -60,7 +66,7 @@
 
     <a-modal
       :visible="editModalVisible"
-      :title="editModalVisible ? editRecord ? `${$t('menu.data.edit')}: ${editRecord.title}` : $t('title.data.create') : ''"
+      :title="editModalVisible ? editRecord.id ? `${$t('menu.data.edit')}: ${editRecord.title}` : $t('title.data.create') : ''"
       :footer="false"
       :centered="true"
       :width="700"
@@ -136,9 +142,19 @@ export default {
   },
   computed: {
     hasSelected: function() {
+<<<<<<< HEAD
       return this.defs?.some(x => x.id == this.selected);
     },
     selectedRecord: function() {
+=======
+      if (!this.defs) return false
+
+      return this.defs.some(x => x.id == this.selected);
+    },
+    selectedRecord: function() {
+      if (!this.defs) return null
+
+>>>>>>> 3.0
       return this.defs?.find(x => x.id == this.selected);
     }
   },
@@ -158,12 +174,18 @@ export default {
   methods: {
     loadData() {
       listDef(this.keywords, this.page).then(json => {
+<<<<<<< HEAD
         console.log('listDefs', json)
         const that = this
         that.defs = json.data
         that.total = json.total
 
         that.selected = json.data? (json.data.length ? json.data[0].id : null) : null
+=======
+        this.defs = json.data.list
+        this.total = json.data.total
+        this.selected = json.data.list.length ? json.data.list[0].id : null
+>>>>>>> 3.0
       })
     },
     create() {

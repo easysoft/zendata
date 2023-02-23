@@ -25,10 +25,11 @@ export default {
     return {previewData: null};
   },
   mounted: function() {
-    this.loadPrevewData();
+    this.loadPreviewData();
   },
   methods: {
-    loadPrevewData() {
+    loadPreviewData() {
+      console.log(this.record)
       this.previewData = null;
       previewDefData(this.record.id).then(json => {
         this.previewData = json.data
@@ -37,7 +38,7 @@ export default {
   },
   watch: {
     record: function() {
-      this.loadPrevewData();
+      this.loadPreviewData();
     }
   }
 }

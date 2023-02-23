@@ -118,7 +118,7 @@
     },
     {
       "id": "start_server",
-      "translation": "正在启动ZenData HTTP服务，按CTRL+C键退出。\n数据设计请访问http://%s:%s。\n数据生成请调用http://%s:%s/data接口，如curl http://%s:%s/data?config=demo/default.yaml&lines=10。"
+      "translation": "正在启动ZenData HTTP服务，按CTRL+C键退出。\n数据设计请访问http://%s:%s/ui。\n数据生成请调用http://%s:%s/data/generate，如curl http://%s:%s/data/generate?config=demo/default.yaml&lines=3。"
     },
     {
       "id": "start_server_fail",
@@ -220,7 +220,7 @@
     },
     {
       "id": "root_invalid",
-      "translation": "ZenData资源路径%s错误。"
+      "translation": "%s不是有效的ZenData目录。"
     },
     {
       "id": "print_common_yaml_file",
@@ -238,6 +238,20 @@
     {
       "id" : "dsn_param_parsing_error",
       "translation": "-dsn 参数解析错误"
+    },
+
+    {
+      "id" : "success_to_clear_cache",
+      "translation": "成功清除缓存'%s'。"
+    },
+    {
+      "id" : "success_to_clear_all_cache",
+      "translation": "成功清除所有缓存。"
+    },
+    {
+      "id" : "miss_cache_param",
+      "translation": "生成数量超多%d，请提供-cache参数。"
     }
+
   ]
 }

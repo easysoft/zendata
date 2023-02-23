@@ -1,8 +1,8 @@
 package gen
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -14,8 +14,8 @@ import (
 	"strings"
 )
 
-func LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret model.DefData) {
-	ret = model.DefData{}
+func LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret domain.DefData) {
+	ret = domain.DefData{}
 	for _, f := range filesContents {
 		right := LoadContentDef(f)
 		ret = MergeDef(ret, right, fieldsToExport)
@@ -24,8 +24,8 @@ func LoadDataContentDef(filesContents [][]byte, fieldsToExport *[]string) (ret m
 	return
 }
 
-func LoadContentDef(content []byte) (ret model.DefData) {
-	content = stringUtils.ReplaceSpecialChars(content)
+func LoadContentDef(content []byte) (ret domain.DefData) {
+	content = helper.ReplaceSpecialChars(content)
 	err := yaml.Unmarshal(content, &ret)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
@@ -56,7 +56,7 @@ func LoadFilesContents(files []string) (contents [][]byte) {
 	return
 }
 
-func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
+func LoadDataDef(files []string, fieldsToExport *[]string) (ret domain.DefData) {
 	newFiles := make([]string, 0)
 	for _, f := range files {
 		if f == "" {
@@ -65,7 +65,7 @@ func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
 		newFiles = append(newFiles, f)
 	}
 
-	ret = model.DefData{}
+	ret = domain.DefData{}
 	for _, f := range newFiles {
 		right := LoadDef(f)
 
@@ -75,7 +75,7 @@ func LoadDataDef(files []string, fieldsToExport *[]string) (ret model.DefData) {
 	return
 }
 
-func LoadDef(file string) (ret model.DefData) {
+func LoadDef(file string) (ret domain.DefData) {
 	pathDefaultFile := fileUtils.GetAbsolutePath(file)
 
 	if !fileUtils.FileExist(pathDefaultFile) {
@@ -83,7 +83,7 @@ func LoadDef(file string) (ret model.DefData) {
 	}
 
 	defaultContent, err := ioutil.ReadFile(pathDefaultFile)
-	defaultContent = stringUtils.ReplaceSpecialChars(defaultContent)
+	defaultContent = helper.ReplaceSpecialChars(defaultContent)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_read_file", pathDefaultFile), color.FgCyan)
 		return
@@ -97,7 +97,7 @@ func LoadDef(file string) (ret model.DefData) {
 	return
 }
 
-func MergeDef(defaultDef model.DefData, configDef model.DefData, fieldsToExport *[]string) model.DefData {
+func MergeDef(defaultDef domain.DefData, configDef domain.DefData, fieldsToExport *[]string) domain.DefData {
 	if configDef.Type == "article" && configDef.Content != "" {
 		convertArticleContent(&configDef)
 	}
@@ -106,7 +106,7 @@ func MergeDef(defaultDef model.DefData, configDef model.DefData, fieldsToExport 
 	orderFields(&defaultDef, *fieldsToExport)
 
 	for index, _ := range defaultDef.Fields {
-		if vari.Trim {
+		if vari.GlobalVars.Trim {
 			defaultDef.Fields[index].Prefix = ""
 			defaultDef.Fields[index].Postfix = ""
 		}
@@ -115,8 +115,8 @@ func MergeDef(defaultDef model.DefData, configDef model.DefData, fieldsToExport 
 	return defaultDef
 }
 
-func convertArticleContent(config *model.DefData) {
-	field := model.DefField{}
+func convertArticleContent(config *domain.DefData) {
+	field := domain.DefField{}
 	field.Type = config.Type
 	field.From = config.From
 	field.Range = "`" + config.Content + "`"
@@ -124,23 +124,23 @@ func convertArticleContent(config *model.DefData) {
 	config.Fields = append(config.Fields, field)
 }
 
-func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string) {
+func mergerDefine(defaultDef, configDef *domain.DefData, fieldsToExport *[]string) {
 	isSetFieldsToExport := false
 	if len(*fieldsToExport) > 0 {
 		isSetFieldsToExport = true
 	}
 
-	defaultFieldMap := map[string]*model.DefField{}
-	configFieldMap := map[string]*model.DefField{}
+	defaultFieldMap := map[string]*domain.DefField{}
+	configFieldMap := map[string]*domain.DefField{}
 	sortedKeys := make([]string, 0)
 
-	if configDef.Type != "" {
-		vari.Type = configDef.Type
-	} else if defaultDef.Type != "" {
-		vari.Type = defaultDef.Type
-	} else {
-		vari.Type = constant.ConfigTypeText
-	}
+	//if configDef.Type != "" {
+	//	vari.GlobalVars.DefDataType = configDef.Type
+	//} else if defaultDef.Type != "" {
+	//	vari.GlobalVars.DefDataType = defaultDef.Type
+	//} else {
+	//	vari.GlobalVars.DefDataType = consts.DefTypeText
+	//}
 
 	if configDef.Content != "" && defaultDef.Content == "" {
 		defaultDef.Content = configDef.Content
@@ -157,18 +157,18 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 			*fieldsToExport = append(*fieldsToExport, field.Field)
 		}
 
-		defaultDef.Fields[i].FileDir = vari.ConfigFileDir
+		defaultDef.Fields[i].FileDir = vari.GlobalVars.ConfigFileDir
 		CreatePathToFieldMap(&defaultDef.Fields[i], defaultFieldMap, nil)
 	}
 	for i, field := range configDef.Fields {
-		vari.TopFieldMap[field.Field] = field
+		vari.GlobalVars.TopFieldMap[field.Field] = field
 		if !isSetFieldsToExport {
 			if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
 				*fieldsToExport = append(*fieldsToExport, field.Field)
 			}
 		}
 
-		configDef.Fields[i].FileDir = vari.ConfigFileDir
+		configDef.Fields[i].FileDir = vari.GlobalVars.ConfigFileDir
 		CreatePathToFieldMap(&configDef.Fields[i], configFieldMap, &sortedKeys)
 	}
 
@@ -195,17 +195,17 @@ func mergerDefine(defaultDef, configDef *model.DefData, fieldsToExport *[]string
 	}
 
 	for _, field := range defaultDef.Fields {
-		vari.TopFieldMap[field.Field] = field
+		vari.GlobalVars.TopFieldMap[field.Field] = field
 	}
 }
 
-func orderFields(defaultDef *model.DefData, fieldsToExport []string) {
-	mp := map[string]model.DefField{}
+func orderFields(defaultDef *domain.DefData, fieldsToExport []string) {
+	mp := map[string]domain.DefField{}
 	for _, field := range defaultDef.Fields {
 		mp[field.Field] = field
 	}
 
-	fields := make([]model.DefField, 0)
+	fields := make([]domain.DefField, 0)
 	for _, fieldName := range fieldsToExport {
 		fields = append(fields, mp[fieldName])
 	}
@@ -213,7 +213,7 @@ func orderFields(defaultDef *model.DefData, fieldsToExport []string) {
 	defaultDef.Fields = fields
 }
 
-func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, keys *[]string) {
+func CreatePathToFieldMap(field *domain.DefField, mp map[string]*domain.DefField, keys *[]string) {
 	if field.Path == "" { // root
 		field.Path = field.Field
 	}
@@ -235,7 +235,7 @@ func CreatePathToFieldMap(field *model.DefField, mp map[string]*model.DefField, 
 	}
 }
 
-func CopyField(child model.DefField, parent *model.DefField) {
+func CopyField(child domain.DefField, parent *domain.DefField) {
 	if child.Note != "" {
 		(*parent).Note = child.Note
 	}

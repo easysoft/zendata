@@ -1,123 +1,113 @@
 <template>
   <div id="design-page">
-    <a-modal
-      :title="$t('msg.design.title')"
-      width="100%"
-      dialogClass="full-screen-modal"
-      :visible="visible"
-      :closable=true
-      :footer="null"
-      @cancel="cancel"
-    >
-      <div class="container">
-      <div class="left" :style="styl">
-        <a-tree
-            ref="fieldTree"
-            class="draggable-tree"
-            :show-line="true"
-            :show-icon="false"
-            :expandedKeys.sync="openKeys"
-            :selectedKeys.sync="selectedKeys"
-            :tree-data="treeData"
-            :replaceFields="fieldMap"
-            @select="onSelect"
-            @rightClick="onRightClick"
-            :draggable="true"
-            @dragenter="onDragEnter"
-            @drop="onDrop"
-        />
-        <div v-if="treeNode" :style="this.tmpStyle" class="tree-context-menu">
-          <a-menu @click="menuClick" mode="inline" class="menu">
-            <a-menu-item key="addNeighbor" v-if="!isRoot">
-              <a-icon type="plus" />{{ $t('msg.design.create.brother') }}
-            </a-menu-item>
-            <a-menu-item key="addChild" v-if="type=='def'|| ((type=='ranges' || type=='instances') && isRoot)">
-              <a-icon type="plus" />{{ $t('msg.design.create.child') }}
-            </a-menu-item>
-            <a-menu-item key="remove" v-if="!isRoot">
-              <a-icon type="delete" />{{ $t('msg.design.remove.node') }}
-            </a-menu-item>
-          </a-menu>
-        </div>
-      </div>
+    <div class="container">
+    <div class="left" :style="styl">
+    <a-tree
+        ref="fieldTree"
+        class="draggable-tree"
+        :show-line="true"
+        :show-icon="false"
+        :expandedKeys.sync="openKeys"
+        :selectedKeys.sync="selectedKeys"
+        :tree-data="treeData"
+        :replaceFields="fieldMap"
+        @select="onSelect"
+        @rightClick="onRightClick"
+        :draggable="true"
+        @dragenter="onDragEnter"
+        @drop="onDrop"
+    />
+    <div v-if="treeNode" :style="this.tmpStyle" class="tree-context-menu">
+        <a-menu @click="menuClick" mode="inline" class="menu">
+        <a-menu-item key="addNeighbor" v-if="!isRoot">
+            <a-icon type="plus" />{{ $t('msg.design.create.brother') }}
+        </a-menu-item>
+        <a-menu-item key="addChild" v-if="type=='def'|| ((type=='ranges' || type=='instances') && isRoot)">
+            <a-icon type="plus" />{{ $t('msg.design.create.child') }}
+        </a-menu-item>
+        <a-menu-item key="remove" v-if="!isRoot">
+            <a-icon type="delete" />{{ $t('msg.design.remove.node') }}
+        </a-menu-item>
+        </a-menu>
+    </div>
+    </div>
 
-      <div class="right" :style="styl">
-        <div v-if="rightVisible">
+    <div class="right" :style="styl">
+    <div v-if="rightVisible">
 
-          <div v-if="type=='def' || type=='instances'">
-            <a-tabs :activeKey="tabKey" @change="onTabChange" type="card">
-              <a-tab-pane key="info" :tab="$t('msg.info')">
-                <div>
-                  <field-info-component
-                      ref="infoComp"
-                      :type="type"
-                      :model="modelData"
-                      @save="onModelSave">
-                  </field-info-component>
-                </div>
-              </a-tab-pane>
-
-              <a-tab-pane key="range" :tab="$t('msg.range')" force-render>
-                <div>
-                  <field-range-component
-                      ref="rangeComp"
-                      :type="type"
-                      :model="modelData"
-                      :time2="time2">
-                  </field-range-component>
-                </div>
-              </a-tab-pane>
-
-              <a-tab-pane key="refer" :tab="$t('msg.reference')" force-render>
-                <div>
-                  <field-refer-component
-                      ref="referComp"
-                      :type="type"
-                      :model="modelData"
-                      :time2="time2">
-                  </field-refer-component>
-                </div>
-              </a-tab-pane>
-
-              <a-tab-pane key="preview" :tab="$t('msg.preview')" force-render>
-                <pre class="preview-data" v-html="previewData" style="margina: 0"></pre>
-              </a-tab-pane>
-            </a-tabs>
-          </div>
-
-          <div v-if="type=='ranges'">
-            <res-ranges-item-component
-                ref="rangesItem"
-                :model="modelData"
-                :time="time2"
-                @save="onModelSave">
-            </res-ranges-item-component>
-          </div>
-
-          <div v-if="type=='config'"> <!-- no item object, show sections page -->
-            <div class="head">
-              <div class="title">
-                字段编辑
-              </div>
-              <div class="buttons"></div>
+        <div v-if="type=='def' || type=='instances'">
+        <a-tabs :activeKey="tabKey" @change="onTabChange" type="card">
+            <a-tab-pane key="info" :tab="$t('msg.info')">
+            <div>
+                <field-info-component
+                    ref="infoComp"
+                    :type="type"
+                    :model="modelData"
+                    @save="onModelSave">
+                </field-info-component>
             </div>
+            </a-tab-pane>
 
-            <a-row>
-              <a-col :offset="2">
+            <a-tab-pane key="range" :tab="$t('msg.range')" force-render>
+            <div>
                 <field-range-component
                     ref="rangeComp"
-                    :type="'config'"
+                    :type="type"
                     :model="modelData"
                     :time2="time2">
                 </field-range-component>
-              </a-col>
-            </a-row>
-          </div>
+            </div>
+            </a-tab-pane>
 
+            <a-tab-pane key="refer" :tab="$t('msg.reference')" force-render>
+            <div>
+                <field-refer-component
+                    ref="referComp"
+                    :type="type"
+                    :model="modelData"
+                    :time2="time2">
+                </field-refer-component>
+            </div>
+            </a-tab-pane>
+
+            <a-tab-pane key="preview" :tab="$t('msg.preview')" force-render>
+            <pre class="preview-data" v-html="previewData" style="margina: 0"></pre>
+            </a-tab-pane>
+        </a-tabs>
         </div>
-      </div>
+
+        <div v-if="type=='ranges'">
+        <res-ranges-item-component
+            ref="rangesItem"
+            :model="modelData"
+            :time="time2"
+            @save="onModelSave">
+        </res-ranges-item-component>
+        </div>
+
+        <div v-if="type=='config'"> <!-- no item object, show sections page -->
+        <div class="head">
+            <div class="title">
+            字段编辑
+            </div>
+            <div class="buttons"></div>
+        </div>
+
+        <a-row>
+            <a-col :offset="2">
+            <field-range-component
+                ref="rangeComp"
+                :type="'config'"
+                :model="modelData"
+                :time2="time2">
+            </field-range-component>
+            </a-col>
+        </a-row>
+        </div>
+
     </div>
-    </a-modal>
+    </div>
+</div>
 
     <a-modal
         title="确认删除"
@@ -178,10 +168,6 @@ export default {
       type: String,
       required: true
     },
-    visible: {
-      type: Boolean,
-      required: true
-    },
     modelProp: {
       type: Object,
       default: () => null
@@ -205,14 +191,6 @@ export default {
       console.log('time changed', this.time)
       this.loadTree()
     })
-    this.$watch('visible', () => {
-      console.log('visible changed', this.visible)
-      if (this.visible) {
-        document.addEventListener("click", this.clearMenu)
-      } else {
-        document.removeEventListener('click', this.clearMenu);
-      }
-    })
   },
   mounted: function () {
     console.log('mounted')
@@ -220,9 +198,19 @@ export default {
   beforeDestroy() {
     console.log('beforeDestroy')
   },
+
+  watch: {
+    modelProp(val) {
+      console.log("watch modelProp :", val)
+      this.type = ResTypeDef;
+      this.loadTree('')
+    },
+  },
+
   methods: {
     onModelSave() {
       console.log('onModelSave')
+      this.$emit('save')
       this.loadTree(this.selectedKeys[0])
     },
     cancel() {

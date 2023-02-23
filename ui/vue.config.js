@@ -6,6 +6,7 @@ function resolve(dir) {
 
 module.exports = {
     // productionSourceMap: false,
+    publicPath: process.env.NODE_ENV === 'production' && !process.env.UI_IN_CLIENT ? 'ui': '',
 
     chainWebpack: (config) => {
         config.resolve.alias

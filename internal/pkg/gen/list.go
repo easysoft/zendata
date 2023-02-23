@@ -1,24 +1,26 @@
 package gen
 
 import (
+	"fmt"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
 	"math"
 	"strconv"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
-func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValues) {
+func CreateListField(field *domain.DefField, fieldWithValue *domain.FieldWithValues) {
 	fieldWithValue.Field = field.Field
 	fieldWithValue.Precision = field.Precision
 
 	if len(field.Fields) > 0 {
 		for _, child := range field.Fields {
-			childFieldWithValue := model.FieldWithValues{}
+			childFieldWithValue := domain.FieldWithValues{}
 			CreateListField(&child, &childFieldWithValue)
 		}
 	} else {
@@ -26,7 +28,7 @@ func CreateListField(field *model.DefField, fieldWithValue *model.FieldWithValue
 	}
 }
 
-func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateListFieldValues(field *domain.DefField, fieldValue *domain.FieldWithValues) {
 	if strings.Index(field.Range, ".txt") > -1 {
 		CreateFieldValuesFromText(field, fieldValue)
 	} else {
@@ -34,10 +36,10 @@ func CreateListFieldValues(field *model.DefField, fieldValue *model.FieldWithVal
 	}
 }
 
-func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWithValues) {
+func CreateFieldValuesFromList(field *domain.DefField, fieldValue *domain.FieldWithValues) {
 	rang := field.Range
 	if rang == "" {
-		for i := 0; i < vari.Total; i++ {
+		for i := 0; i < vari.GlobalVars.Total; i++ {
 			fieldValue.Values = append(fieldValue.Values, "")
 
 			if strings.Index(field.Format, "uuid") == -1 {
@@ -52,7 +54,7 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 
 	index := 0
 	for _, rangeSection := range rangeSections {
-		if index >= constant.MaxNumb {
+		if index >= consts.MaxNumb {
 			break
 		}
 		if rangeSection == "" {
@@ -85,8 +87,8 @@ func CreateFieldValuesFromList(field *model.DefField, fieldValue *model.FieldWit
 	}
 }
 
-func CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *model.Range) {
-	rang = &model.Range{}
+func CreateFieldFixValuesFromList(strRang string, field *domain.DefField) (rang *domain.Range) {
+	rang = &domain.Range{}
 
 	if strRang == "" {
 		return
@@ -96,7 +98,7 @@ func CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *
 
 	index := 0
 	for _, rangeSection := range rangeSections {
-		if index >= constant.MaxNumb {
+		if index >= consts.MaxNumb {
 			break
 		}
 		if rangeSection == "" {
@@ -133,11 +135,11 @@ func CreateFieldFixValuesFromList(strRang string, field *model.DefField) (rang *
 
 func CheckRangeType(startStr string, endStr string, stepStr string) (dataType string, step interface{}, precision int,
 	rand bool, count int) {
-	step = 1
 
 	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
 
 	if start, end, stepi, ok := checkRangeTypeIsInt(startStr, endStr, stepStr); ok { // is int
+		step = 1
 		if stepStr == "r" {
 			rand = true
 		}
@@ -151,14 +153,14 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 		step = int(stepi)
 		return
 	} else if start, end, stepf, ok := checkRangeTypeIsFloat(startStr, endStr, stepStr); ok { // is float
+		step = stepf
+
 		if stepStr == "r" {
 			rand = true
 		}
 
-		step = stepf
-
-		precision1, step1 := GetPrecision(start, step)
-		precision2, step2 := GetPrecision(end, step)
+		precision1, step1 := valueGen.GetPrecision(start, step)
+		precision2, step2 := valueGen.GetPrecision(end, step)
 		if precision1 < precision2 {
 			precision = precision2
 			step = step2
@@ -176,6 +178,8 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 		return
 
 	} else if len(startStr) == 1 && len(endStr) == 1 { // is char
+		step = 1
+
 		if stepStr != "r" {
 			stepChar, errChar3 := strconv.Atoi(stepStr)
 			if errChar3 == nil {
@@ -214,7 +218,7 @@ func CheckRangeType(startStr string, endStr string, stepStr string) (dataType st
 	return
 }
 
-func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func CreateValuesFromLiteral(field *domain.DefField, desc string, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	elemArr := ParseDesc(desc)
 	step, _ := strconv.Atoi(stepStr)
 	if step == 0 {
@@ -223,11 +227,15 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	total := 0
 
 	if field.Path != "" && stepStr == "r" {
-		items = append(items, Placeholder(field.Path))
-		mp := placeholderMapForRandValues("list", elemArr, "", "", "", "",
+		pth := field.Path
+		key := genHelper.GetRandFieldSection(pth)
+
+		items = append(items, Placeholder(key))
+		mp := PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
 			field.Format, repeat, repeatTag)
 
-		vari.RandFieldNameToValuesMap[field.Path] = mp
+		vari.GlobalVars.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.GlobalVars.RandFieldSectionPathToValuesMap[key] = mp
 		return
 	}
 
@@ -239,9 +247,9 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 			}
 
 			val := elemArr[idx]
-			total = appendValues(&items, val, repeat, total)
+			total = AppendValues(&items, val, repeat, total)
 
-			if total >= constant.MaxNumb {
+			if total >= consts.MaxNumb {
 				break
 			}
 			i += step
@@ -249,9 +257,9 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	} else if repeatTag == "!" {
 		isRand := field.Path == "" && stepStr == "r"
 		for i := 0; i < repeat; {
-			total = appendArrItems(&items, elemArr, total, isRand)
+			total = AppendArrItems(&items, elemArr, total, isRand)
 
-			if total >= constant.MaxNumb {
+			if total >= consts.MaxNumb {
 				break
 			}
 			i += step
@@ -259,13 +267,13 @@ func CreateValuesFromLiteral(field *model.DefField, desc string, stepStr string,
 	}
 
 	if field.Path == "" && stepStr == "r" { // for ranges and instances, random
-		items = randomInterfaces(items)
+		items = RandomInterfaces(items)
 	}
 
 	return
 }
 
-func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func CreateValuesFromInterval(field *domain.DefField, desc, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	elemArr := strings.Split(desc, "-")
 	startStr := elemArr[0]
 	endStr := startStr
@@ -273,20 +281,27 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		endStr = elemArr[1]
 	}
 
-	dataType, step, precision, rand, count := CheckRangeType(startStr, endStr, stepStr)
+	dataType, step, precision, rand, _ := CheckRangeType(startStr, endStr, stepStr)
+	field.Precision = precision
 
 	// 1. random replacement
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
-		val := Placeholder(field.Path + "->" + desc)
-		strItems := make([]string, 0)
-		for i := 0; i < repeat*count; i++ {
-			items = append(items, val)
-			strItems = append(strItems, val)
-		}
+		pth := field.Path + "->" + desc
+		key := genHelper.GetRandFieldSection(pth)
 
-		mp := placeholderMapForRandValues(dataType, strItems, startStr, endStr, stepStr,
+		val := Placeholder(key)
+		strItems := make([]string, 0)
+
+		//for i := 0; i < repeat*count; i++ { // chang to add only one placeholder item
+		items = append(items, val)
+		strItems = append(strItems, val)
+		//}
+
+		mp := PlaceholderMapForRandValues(dataType, strItems, startStr, endStr, fmt.Sprintf("%v", step),
 			strconv.Itoa(precision), field.Format, repeat, repeatTag)
-		vari.RandFieldNameToValuesMap[field.Path+"->"+desc] = mp
+
+		vari.GlobalVars.RandFieldSectionShortKeysToPathMap[key] = pth
+		vari.GlobalVars.RandFieldSectionPathToValuesMap[key] = mp
 
 		return
 	}
@@ -295,17 +310,17 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = GenerateIntItems(startInt, endInt, step.(int), rand, repeat, repeatTag)
+		items = valueGen.GenerateItems(startInt, endInt, int64(step.(int)), 0, rand, repeat, repeatTag, 0)
+
+	} else if dataType == "char" {
+		items = valueGen.GenerateItems(startStr[0], endStr[0], int64(step.(int)), 0, rand, repeat, repeatTag, 0)
 
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = GenerateFloatItems(startFloat, endFloat, step, rand, precision, repeat, repeatTag)
-
-	} else if dataType == "char" {
-		items = GenerateByteItems(startStr[0], endStr[0], step.(int), rand, repeat, repeatTag)
+		items = valueGen.GenerateItems(startFloat, endFloat, step.(float64), field.Precision, rand, repeat, repeatTag, 0)
 
 	} else if dataType == "string" {
 		if repeat == 0 {
@@ -317,26 +332,26 @@ func CreateValuesFromInterval(field *model.DefField, desc, stepStr string, repea
 	}
 
 	if field.Path == "" && stepStr == "r" { // for ranges and instances, random again
-		items = randomInterfaces(items)
+		items = RandomInterfaces(items)
 	}
 
 	return
 }
 
-func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
+func CreateValuesFromYaml(field *domain.DefField, yamlFile, stepStr string, repeat int, repeatTag string) (items []interface{}) {
 	// keep root def, since vari.ZdDef will be overwrite by refer yaml file
-	rootDef := vari.Def
-	configDir := vari.ConfigFileDir
+	rootDef := vari.GlobalVars.DefData
+	configDir := vari.GlobalVars.ConfigFileDir
 	res := vari.Res
 
-	configFile := fileUtils.ComputerReferFilePath(yamlFile, field)
+	configFile := genHelper.ComputerReferFilePath(yamlFile, field)
 	fieldsToExport := make([]string, 0) // set to empty to use all fields
 	rows, colIsNumArr, _ := GenerateFromYaml([]string{configFile}, &fieldsToExport)
 	if field.Rand {
-		rows = randomValuesArr(rows)
+		rows = RandomValuesArr(rows)
 	}
 
-	items = Print(rows, constant.FormatData, "", colIsNumArr, fieldsToExport)
+	items = PrintLines(rows, consts.FormatData, "", colIsNumArr, fieldsToExport)
 
 	if repeat > 0 {
 		if repeat > len(items) {
@@ -346,18 +361,18 @@ func CreateValuesFromYaml(field *model.DefField, yamlFile, stepStr string, repea
 	}
 
 	// rollback root def when finish to deal with refer yaml file
-	vari.Def = rootDef
-	vari.ConfigFileDir = configDir
+	vari.GlobalVars.DefData = rootDef
+	vari.GlobalVars.ConfigFileDir = configDir
 	vari.Res = res
 
 	return
 }
 
-func Placeholder(str string) string {
-	return "${" + str + "}"
+func Placeholder(key int) string {
+	return fmt.Sprintf("${%d}", key)
 }
 
-func placeholderMapForRandValues(tp string, list []string, start, end, step, precision, format string,
+func PlaceholderMapForRandValues(tp string, list []string, start, end, step, precision, format string,
 	repeat int, repeatTag string) map[string]interface{} {
 	ret := map[string]interface{}{}
 
@@ -379,12 +394,12 @@ func placeholderMapForRandValues(tp string, list []string, start, end, step, pre
 	return ret
 }
 
-func appendValues(items *[]interface{}, val string, repeat int, total int) int {
+func AppendValues(items *[]interface{}, val string, repeat int, total int) int {
 	for round := 0; round < repeat; round++ {
 		*items = append(*items, val)
 
 		total++
-		if total > constant.MaxNumb {
+		if total > consts.MaxNumb {
 			break
 		}
 	}
@@ -392,7 +407,7 @@ func appendValues(items *[]interface{}, val string, repeat int, total int) int {
 	return total
 }
 
-func appendArrItems(items *[]interface{}, arr []string, total int, isRand bool) int {
+func AppendArrItems(items *[]interface{}, arr []string, total int, isRand bool) int {
 	for i := 0; i < len(arr); i++ {
 		idx := i
 		if isRand {
@@ -402,7 +417,7 @@ func appendArrItems(items *[]interface{}, arr []string, total int, isRand bool) 
 		*items = append(*items, arr[idx])
 
 		total++
-		if total > constant.MaxNumb {
+		if total > consts.MaxNumb {
 			break
 		}
 	}
@@ -439,7 +454,7 @@ func checkRangeTypeIsInt(startStr string, endStr string, stepStr string) (
 
 func checkRangeTypeIsFloat(startStr string, endStr string, stepStr string) (
 	start float64, end float64, step float64, ok bool) {
-	step = 1.0
+
 	stepStr = strings.ToLower(strings.TrimSpace(stepStr))
 
 	start, errFloat1 := strconv.ParseFloat(startStr, 64)
@@ -448,6 +463,8 @@ func checkRangeTypeIsFloat(startStr string, endStr string, stepStr string) (
 
 	if stepStr != "" && stepStr != "r" {
 		step, errFloat3 = strconv.ParseFloat(stepStr, 64)
+	} else {
+		step = 0
 	}
 
 	if errFloat1 == nil && errFloat2 == nil && errFloat3 == nil { // is float

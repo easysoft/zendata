@@ -1,17 +1,17 @@
 package serverService
 
 import (
-	"io/ioutil"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"os"
 	"strings"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
 	"gorm.io/gorm"
@@ -28,18 +28,18 @@ func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges,
 	return
 }
 
-func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirs []model.Dir) {
+func (s *RangesService) Get(id int) (ranges model.ZdRanges, dirs []domain.Dir) {
 	ranges, _ = s.RangesRepo.Get(uint(id))
 
-	serverUtils.GetDirs(constant.ResDirYaml, &dirs)
+	serverUtils.GetDirs(consts.ResDirYaml, &dirs)
 
 	return
 }
 
 func (s *RangesService) Save(ranges *model.ZdRanges) (err error) {
 	ranges.Folder = serverUtils.DealWithPathSepRight(ranges.Folder)
-	ranges.Path = vari.ZdPath + ranges.Folder + serverUtils.AddExt(ranges.FileName, ".yaml")
-	ranges.ReferName = helper.PathToName(ranges.Path, constant.ResDirYaml, constant.ResTypeRanges)
+	ranges.Path = vari.ZdDir + ranges.Folder + serverUtils.AddExt(ranges.FileName, ".yaml")
+	ranges.ReferName = helper.PathToName(ranges.Path, consts.ResDirYaml, consts.ResTypeRanges)
 
 	if ranges.ID == 0 {
 		err = s.Create(ranges)
@@ -82,7 +82,7 @@ func (s *RangesService) Remove(id int) (err error) {
 	return
 }
 
-func (s *RangesService) Sync(files []model.ResFile) (err error) {
+func (s *RangesService) Sync(files []domain.ResFile) (err error) {
 	list := s.RangesRepo.ListAll()
 
 	mp := map[string]*model.ZdRanges{}
@@ -103,9 +103,9 @@ func (s *RangesService) Sync(files []model.ResFile) (err error) {
 	return
 }
 
-func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
-	content, _ := ioutil.ReadFile(fi.Path)
-	yamlContent := stringUtils.ReplaceSpecialChars(content)
+func (s *RangesService) SyncToDB(fi domain.ResFile) (err error) {
+	content, _ := os.ReadFile(fi.Path)
+	yamlContent := helper.ReplaceSpecialChars(content)
 	po := model.ZdRanges{}
 	err = yaml.Unmarshal(yamlContent, &po)
 
@@ -113,10 +113,10 @@ func (s *RangesService) SyncToDB(fi model.ResFile) (err error) {
 	po.Desc = fi.Desc
 	po.Path = fi.Path
 	po.Folder = serverUtils.GetRelativePath(po.Path)
-	if strings.Index(po.Path, vari.ZdPath+constant.ResDirYaml) > -1 {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirYaml, constant.ResTypeRanges)
+	if strings.Index(po.Path, vari.ZdDir+consts.ResDirYaml) > -1 {
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirYaml, consts.ResTypeRanges)
 	} else {
-		po.ReferName = helper.PathToName(po.Path, constant.ResDirUsers, constant.ResTypeRanges)
+		po.ReferName = helper.PathToName(po.Path, consts.ResDirUsers, consts.ResTypeRanges)
 	}
 	po.FileName = fileUtils.GetFileName(po.Path)
 	po.Yaml = string(content)
@@ -160,7 +160,7 @@ func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
 		return
 	}
 
-	yamlObj := model.ResRanges{}
+	yamlObj := domain.ResRanges{}
 	yamlObj.Ranges = map[string]string{}
 	s.RangesRepo.GenRangesRes(*ranges, &yamlObj)
 
@@ -170,7 +170,7 @@ func (s *RangesService) genYaml(ranges *model.ZdRanges) (str string) {
 	}
 
 	bytes, err := yaml.Marshal(yamlObj)
-	ranges.Yaml = stringUtils.ConvertYamlStringToMapFormat(bytes)
+	ranges.Yaml = helper.ConvertYamlStringToMapFormat(bytes)
 
 	return
 }

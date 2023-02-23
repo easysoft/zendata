@@ -30,3 +30,14 @@
 /runtime/protobuf/out/
 /users/common/
 *.exe
+/tmp/cache/.data.db
+/ui/package-lock.json
+/demo/mock/output/
+/upload/
+
+/client/node_modules
+/client/out
+/client/ui
+/client/.webpack
+
+/zendata

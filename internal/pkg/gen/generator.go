@@ -3,123 +3,31 @@ package gen
 import (
 	"errors"
 	"fmt"
-	"regexp"
-	"strconv"
-	"strings"
-	"time"
-
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen/helper"
-	"github.com/easysoft/zendata/internal/pkg/model"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/fatih/color"
-	"github.com/mattn/go-runewidth"
 )
 
 func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.Def = LoadDataContentDef(fileContents, fieldsToExport)
+	vari.GlobalVars.DefData = LoadDataContentDef(fileContents, fieldsToExport)
 
-	if len(vari.Def.Fields) == 0 {
-		err = errors.New("")
-		return
-	} else if vari.Def.Type == constant.ConfigTypeArticle && vari.Out == "" {
-		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
-		logUtils.PrintErrMsg(errMsg)
-		err = errors.New(errMsg)
+	if err = CheckParams(); err != nil {
 		return
 	}
 
-	if vari.Total < 0 {
-		if vari.Def.Type == constant.ConfigTypeArticle {
-			vari.Total = 1
-		} else {
-			vari.Total = constant.DefaultNumber
-		}
-	}
+	FixTotalNum()
+	genResData(fieldsToExport)
 
-	// 为被引用的资源生成数据
-	vari.ResLoading = true // not to use placeholder when loading res
-	vari.Res = LoadResDef(*fieldsToExport)
-	vari.ResLoading = false
-
-	// 迭代fields生成值列表
-	topLevelFieldNameToValuesMap := map[string][]string{}
-	for index, field := range vari.Def.Fields {
-		if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
-			continue
-		}
-
-		if field.Use != "" && field.From == "" {
-			field.From = vari.Def.From
-		}
-		values := GenerateForFieldRecursive(&field, true)
-
-		vari.Def.Fields[index].Precision = field.Precision
-
-		topLevelFieldNameToValuesMap[field.Field] = values
-		colIsNumArr = append(colIsNumArr, field.IsNumb)
-	}
-
-	// 处理数据
-	arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
-	for _, child := range vari.Def.Fields {
-		if !stringUtils.StrInArr(child.Field, *fieldsToExport) {
-			continue
-		}
-
-		childValues := topLevelFieldNameToValuesMap[child.Field]
-
-		// is value expression
-		if child.Value != "" {
-			childValues = helper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.TopFieldMap)
-		}
-
-		// select from excel with expr
-		if helper.SelectExcelWithExpr(child) {
-			selects := helper.ReplaceVariableValues(child.Select, topLevelFieldNameToValuesMap)
-			wheres := helper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
-
-			childValues = make([]string, 0)
-			childMapValues := make([][]string, 0)
-			for index, slct := range selects {
-				temp := child
-				temp.Select = slct
-				temp.Where = wheres[index%len(wheres)]
-
-				resFile, _, sheet := fileUtils.GetResProp(temp.From, temp.FileDir)
-
-				//	问题描述：
-				//	原代码为：`selectCount := vari.Toal / len(selects)`
-				//	因为整除的向下取整，如果`len(selects)`为3，`vari.Total`为8，则`selectCount`为2
-				//	对于每一个`selects`的元素来说，都只会查两个元素，这样加起来一共只有6个结果，
-				//	导致另外两个结果只能通过重复查到的数据的方式补充。
-				//	解决方案：
-				//  将代码改为: `selectCount := vari.Total / len(selects) + 1`,以达到使用人员的真正想要的
-				//	即查到足够的数量，而不是通过重复补齐
-				selectCount := vari.Total/len(selects) + 1
-				mp := generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
-				for _, items := range mp {
-					childMapValues = append(childMapValues, items)
-				}
-			}
-			for index := 0; len(childValues) < vari.Total; {
-				for i, _ := range selects {
-					childValues = append(childValues, childMapValues[i][index%len(childMapValues[i])])
-				}
-				index++
-			}
-		}
-
-		arrOfArr = append(arrOfArr, childValues)
-	}
-	rows = putChildrenToArr(arrOfArr, vari.Recursive)
+	topLevelFieldNameToValuesMap := genFieldsData(fieldsToExport, &colIsNumArr, vari.GlobalVars.Total)
+	twoDimArr := genDataTwoDimArr(topLevelFieldNameToValuesMap, fieldsToExport, vari.GlobalVars.Total)
+	rows = populateRowsFromTwoDimArr(twoDimArr, vari.GlobalVars.Recursive, true, vari.GlobalVars.Total)
 
 	return
 }
@@ -127,7 +35,7 @@ func GenerateFromContent(fileContents [][]byte, fieldsToExport *[]string) (
 func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	rows [][]string, colIsNumArr []bool, err error) {
 
-	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
 	contents := LoadFilesContents(files)
 	rows, colIsNumArr, err = GenerateFromContent(contents, fieldsToExport)
@@ -135,116 +43,33 @@ func GenerateFromYaml(files []string, fieldsToExport *[]string) (
 	return
 }
 
-func GenerateForFieldRecursive(field *model.DefField, withFix bool) (values []string) {
-	field.PrefixRange = CreateFieldFixValuesFromList(field.Prefix, field)
-	field.PostfixRange = CreateFieldFixValuesFromList(field.Postfix, field)
+func GenerateForFieldRecursive(field *domain.DefField, withFix bool, total int) (values []string) {
+	DealwithFixRange(field)
 
-	if len(field.Fields) > 0 { // has sub fields
-		fieldNameToValuesMap := map[string][]string{} // refer field name to values
-		fieldMap := map[string]model.DefField{}
+	if len(field.Fields) > 0 { // has child fields
+		values = genValuesForChildFields(field, withFix, total)
 
-		// 1. generate values for sub fields
-		for _, child := range field.Fields {
-			if child.From == "" {
-				child.From = field.From
-			}
+	} else if len(field.Froms) > 0 { // refer to multi res
+		values = GenValuesForMultiRes(field, withFix, total)
 
-			child.FileDir = field.FileDir
-			childValues := GenerateForFieldRecursive(&child, withFix)
-			fieldNameToValuesMap[child.Field] = childValues
-			fieldMap[child.Field] = child
-		}
-
-		// 2. deal with expression
-		arrOfArr := make([][]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
-		for _, child := range field.Fields {
-			childValues := fieldNameToValuesMap[child.Field]
-
-			if child.Value != "" {
-				childValues = helper.GenExpressionValues(child, fieldNameToValuesMap, fieldMap)
-			}
-			arrOfArr = append(arrOfArr, childValues)
-		}
-
-		// 3. get combined values for parent field
-		count := vari.Total
-		count = getRecordCount(arrOfArr)
-		if count > vari.Total {
-			count = vari.Total
-		}
-
-		recursive := vari.Recursive
-		if stringUtils.InArray(field.Mode, constant.Modes) { // set on field level
-			recursive = field.Mode == constant.ModeRecursive || field.Mode == constant.ModeRecursiveShort
-		}
-
-		values = combineChildrenValues(arrOfArr, recursive)
-		values = loopFieldValues(field, values, count, true)
-
-	} else if len(field.Froms) > 0 { // from muti items
-		unionValues := make([]string, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
-		for _, child := range field.Froms {
-			if child.From == "" {
-				child.From = field.From
-			}
-
-			child.FileDir = field.FileDir
-			childValues := GenerateForFieldRecursive(&child, withFix)
-			unionValues = append(unionValues, childValues...)
-		}
-
-		count := len(unionValues)
-		if count > vari.Total {
-			count = vari.Total
-		}
-		values = loopFieldValues(field, unionValues, count, true)
-
-	} else if field.From != "" && field.Type != constant.FieldTypeArticle { // refer to res
-		if field.Use != "" { // refer to ranges or instance
-			groupValues := vari.Res[field.From]
-
-			uses := strings.TrimSpace(field.Use) // like group{limit:repeat}
-			use, numLimit, repeat := getNum(uses)
-			if strings.Index(use, "all") == 0 {
-				valuesForAdd := getRepeatValuesFromAll(groupValues, numLimit, repeat)
-				values = append(values, valuesForAdd...)
-			} else {
-				infos := parseUse(uses)
-				valuesForAdd := getRepeatValuesFromGroups(groupValues, infos)
-				values = append(values, valuesForAdd...)
-			}
-		} else if field.Select != "" { // refer to excel
-			groupValues := vari.Res[field.From]
-			resKey := field.Select
-
-			// deal with the key
-			if vari.Def.Type == constant.ConfigTypeArticle {
-				resKey = resKey + "_" + field.Field
-			}
-
-			values = append(values, groupValues[resKey]...)
-		}
-
-		values = loopFieldValues(field, values, vari.Total, true)
+	} else if field.From != "" && field.Type != consts.FieldTypeArticle { // refer to res
+		values = GenValuesForSingleRes(field, total)
 
 	} else if field.Config != "" { // refer to config
-		groupValues := vari.Res[field.Config]
-		values = append(values, groupValues["all"]...)
-
-		values = loopFieldValues(field, values, vari.Total, true)
+		values = GenValuesForConfig(field, total)
 
 	} else { // leaf field
-		values = GenerateValuesForField(field)
+		values = GenerateValuesForField(field, total)
 	}
 
-	if field.Rand && field.Type != constant.FieldTypeArticle {
-		values = randomValues(values)
+	if field.Rand && field.Type != consts.FieldTypeArticle {
+		values = RandomStrValues(values)
 	}
 
 	return values
 }
 
-func GenerateValuesForField(field *model.DefField) []string {
+func GenerateValuesForField(field *domain.DefField, total int) []string {
 	values := make([]string, 0)
 
 	fieldWithValues := CreateField(field)
@@ -268,7 +93,7 @@ func GenerateValuesForField(field *model.DefField) []string {
 			!(*field).ReferToAnotherYaml &&
 			(*field).IsRand && (*field).LoopIndex > (*field).LoopEnd
 		// isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldWithValues.Values)
-		if count >= vari.Total || count >= uniqueTotal || isRandomAndLoopEnd {
+		if count >= total || count >= uniqueTotal || isRandomAndLoopEnd {
 			for _, v := range fieldWithValues.Values {
 				str := fmt.Sprintf("%v", v)
 				str = addFix(str, field, count, true)
@@ -283,7 +108,7 @@ func GenerateValuesForField(field *model.DefField) []string {
 
 		count++
 
-		if count >= vari.Total || count >= uniqueTotal {
+		if count >= total || count >= uniqueTotal {
 			break
 		}
 
@@ -296,416 +121,114 @@ func GenerateValuesForField(field *model.DefField) []string {
 	return values
 }
 
-func GetFieldValStr(field model.DefField, val interface{}) string {
-	str := "n/a"
-	success := false
-
-	format := strings.TrimSpace(field.Format)
-
-	if field.Type == constant.FieldTypeTimestamp && field.Format != "" {
-		str = time.Unix(val.(int64), 0).Format(field.Format)
-		return str
+func CheckParams() (err error) {
+	if len(vari.GlobalVars.DefData.Fields) == 0 {
+		err = errors.New("")
+	} else if vari.GlobalVars.DefData.Type == consts.DefTypeArticle && vari.GlobalVars.Output == "" { // gen article
+		errMsg := i118Utils.I118Prt.Sprintf("gen_article_must_has_out_param")
+		logUtils.PrintErrMsg(errMsg)
+		err = errors.New(errMsg)
 	}
 
-	switch val.(type) {
-	case int64:
-		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(int64), 0)
-		}
-		if !success {
-			str = strconv.FormatInt(val.(int64), 10)
-		}
-	case float64:
-		precision := 0
-		if field.Precision > 0 {
-			precision = field.Precision
-		}
-		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(float64), precision)
-		}
-		if !success {
-			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
-		}
-	case byte:
-		str = string(val.(byte))
-		if format != "" {
-			str, success = stringUtils.FormatStr(format, str, 0)
-		}
-		if !success {
-			str = string(val.(byte))
-		}
-	case string:
-		str = val.(string)
+	return
+}
 
-		match, _ := regexp.MatchString("%[0-9]*d", format)
-		if match {
-			valInt, err := strconv.Atoi(str)
-			if err == nil {
-				str, success = stringUtils.FormatStr(format, valInt, 0)
-			}
+func FixTotalNum() {
+	if vari.GlobalVars.Total < 0 {
+		if vari.GlobalVars.DefData.Type == consts.DefTypeArticle {
+			vari.GlobalVars.Total = 1
 		} else {
-			str, success = stringUtils.FormatStr(format, str, 0)
+			vari.GlobalVars.Total = consts.DefaultNumber
 		}
-	default:
 	}
-
-	return str
 }
 
-func loopFieldValues(field *model.DefField, oldValues []string, total int, withFix bool) (values []string) {
-	fieldValue := model.FieldWithValues{}
+func genResData(fieldsToExport *[]string) {
+	// 为被引用的资源生成数据
+	vari.ResLoading = true // not to use placeholder when loading res
+	vari.Res = LoadResDef(*fieldsToExport)
+	vari.ResLoading = false
+}
 
-	for _, val := range oldValues {
-		fieldValue.Values = append(fieldValue.Values, val)
-	}
+func genFieldsData(fieldsToExport *[]string, colIsNumArr *[]bool, total int) (topLevelFieldNameToValuesMap map[string][]string) {
+	topLevelFieldNameToValuesMap = map[string][]string{}
 
-	computerLoop(field)
-	indexOfRow := 0
-	count := 0
-	for {
-		// 处理格式、前后缀、loop等
-		str := loopFieldValWithFix(field, fieldValue, &indexOfRow, count, withFix)
-		values = append(values, str)
-
-		count++
-		isRandomAndLoopEnd := (*field).IsRand && (*field).LoopIndex == (*field).LoopEnd
-		isNotRandomAndValOver := !(*field).IsRand && indexOfRow >= len(fieldValue.Values)
-		if count >= total || isRandomAndLoopEnd || isNotRandomAndValOver {
-			break
+	for index, field := range vari.GlobalVars.DefData.Fields {
+		if !stringUtils.StrInArr(field.Field, *fieldsToExport) {
+			continue
 		}
 
-		(*field).LoopIndex = (*field).LoopIndex + 1
-		if (*field).LoopIndex > (*field).LoopEnd {
-			(*field).LoopIndex = (*field).LoopStart
+		if field.Use != "" && field.From == "" {
+			field.From = vari.GlobalVars.DefData.From
 		}
+		values := GenerateForFieldRecursive(&field, true, total)
+
+		if index > len(vari.GlobalVars.DefData.Fields)-1 {
+			logUtils.PrintLine("")
+		}
+
+		vari.GlobalVars.DefData.Fields[index].Precision = field.Precision
+
+		topLevelFieldNameToValuesMap[field.Field] = values
+		*colIsNumArr = append(*colIsNumArr, field.IsNumb)
 	}
 
 	return
 }
 
-func loopFieldValWithFix(field *model.DefField, fieldValue model.FieldWithValues,
-	indexOfRow *int, count int, withFix bool) (loopStr string) {
+func genDataTwoDimArr(topLevelFieldNameToValuesMap map[string][]string, fieldsToExport *[]string, total int) (
+	arrOfArr [][]string) { // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
 
-	for j := 0; j < (*field).LoopIndex; j++ {
-		if loopStr != "" {
-			loopStr = loopStr + field.Loopfix
+	for _, child := range vari.GlobalVars.DefData.Fields {
+		if !stringUtils.StrInArr(child.Field, *fieldsToExport) {
+			continue
 		}
 
-		str, err := GenerateFieldVal(*field, fieldValue, indexOfRow)
-		if err != nil {
-			str = "N/A"
-		}
-		loopStr = loopStr + str
+		childValues := topLevelFieldNameToValuesMap[child.Field]
 
-		*indexOfRow++
-	}
-
-	loopStr = addFix(loopStr, field, count, withFix)
-
-	return
-}
-
-func addFix(str string, field *model.DefField, count int, withFix bool) (ret string) {
-	prefix := GetStrValueFromRange(field.PrefixRange, count)
-	postfix := GetStrValueFromRange(field.PostfixRange, count)
-	divider := field.Divider
-
-	if field.Length > runewidth.StringWidth(str) {
-		str = stringUtils.AddPad(str, *field)
-	}
-	if withFix && !vari.Trim {
-		str = prefix + str + postfix
-	}
-	if vari.Format == constant.FormatText && !vari.Trim {
-		str += divider
-	}
-
-	ret = str
-	return
-}
-
-func GetStrValueFromRange(rang *model.Range, index int) string {
-	if len(rang.Values) == 0 {
-		return ""
-	}
-
-	idx := index % len(rang.Values)
-	x := rang.Values[idx]
-	return convPrefixVal2Str(x, "")
-}
-
-func convPrefixVal2Str(val interface{}, format string) string {
-	str := "n/a"
-	success := false
-
-	switch val.(type) {
-	case int64:
-		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(int64), 0)
-		}
-		if !success {
-			str = strconv.FormatInt(val.(int64), 10)
-		}
-	case float64:
-		precision := 0
-		if format != "" {
-			str, success = stringUtils.FormatStr(format, val.(float64), precision)
-		}
-		if !success {
-			str = strconv.FormatFloat(val.(float64), 'f', precision, 64)
-		}
-	case byte:
-		str = string(val.(byte))
-		if format != "" {
-			str, success = stringUtils.FormatStr(format, str, 0)
-		}
-		if !success {
-			str = string(val.(byte))
-		}
-	case string:
-		str = val.(string)
-
-		match, _ := regexp.MatchString("%[0-9]*d", format)
-		if match {
-			valInt, err := strconv.Atoi(str)
-			if err == nil {
-				str, success = stringUtils.FormatStr(format, valInt, 0)
-			}
-		} else {
-			str, success = stringUtils.FormatStr(format, str, 0)
-		}
-	default:
-	}
-
-	return str
-}
-
-func GenerateFieldVal(field model.DefField, fieldValue model.FieldWithValues, index *int) (val string, err error) {
-	// 叶节点
-	if len(fieldValue.Values) == 0 {
-		if helper.SelectExcelWithExpr(field) {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
-			err = errors.New("")
-		}
-		return
-	}
-
-	idx := *index % len(fieldValue.Values)
-	str := fieldValue.Values[idx]
-	val = GetFieldValStr(field, str)
-
-	return
-}
-
-func computerLoop(field *model.DefField) {
-	if (*field).LoopIndex != 0 {
-		return
-	}
-
-	arr := strings.Split(field.Loop, "-")
-	(*field).LoopStart, _ = strconv.Atoi(arr[0])
-	if len(arr) > 1 {
-		field.LoopEnd, _ = strconv.Atoi(arr[1])
-	}
-
-	if (*field).LoopStart == 0 {
-		(*field).LoopStart = 1
-	}
-	if (*field).LoopEnd == 0 {
-		(*field).LoopEnd = 1
-	}
-
-	(*field).LoopIndex = (*field).LoopStart
-}
-
-func putChildrenToArr(arrOfArr [][]string, recursive bool) (values [][]string) {
-	indexArr := make([]int, 0)
-	if recursive {
-		indexArr = getModArr(arrOfArr)
-	}
-
-	for i := 0; i < vari.Total; i++ {
-		strArr := make([]string, 0)
-		for j := 0; j < len(arrOfArr); j++ {
-			child := arrOfArr[j]
-
-			var index int
-			if recursive {
-				mod := indexArr[j]
-				index = i / mod % len(child)
-			} else {
-				index = i % len(child)
-			}
-
-			val := child[index]
-			strArr = append(strArr, val)
+		// is value expression
+		if child.Value != "" {
+			childValues = genHelper.GenExpressionValues(child, topLevelFieldNameToValuesMap, vari.GlobalVars.TopFieldMap)
 		}
 
-		values = append(values, strArr)
-	}
+		// select from excel with expr
+		if genHelper.IsSelectExcelWithExpr(child) {
+			selects := genHelper.ReplaceVariableValues(child.Select, topLevelFieldNameToValuesMap)
+			wheres := genHelper.ReplaceVariableValues(child.Where, topLevelFieldNameToValuesMap)
 
-	return
-}
+			childValues = make([]string, 0)
+			childMapValues := make([][]string, 0)
+			for index, slct := range selects {
+				temp := child
+				temp.Select = slct
+				temp.Where = wheres[index%len(wheres)]
 
-func randomValuesArr(values [][]string) (ret [][]string) {
-	length := len(values)
-	for i := 0; i < length; i++ {
-		val := commonUtils.RandNum(length)
-		ret = append(ret, values[val])
-	}
+				resFile, _, sheet := fileUtils.GetResProp(temp.From, temp.FileDir)
 
-	return
-}
-func randomInterfaces(values []interface{}) (ret []interface{}) {
-	length := len(values)
-	for i := 0; i < length; i++ {
-		val := commonUtils.RandNum(length)
-		ret = append(ret, values[val])
-	}
-
-	return
-}
-func randomValues(values []string) (ret []string) {
-	length := len(values)
-	for i := 0; i < length; i++ {
-		val := commonUtils.RandNum(length)
-		ret = append(ret, values[val])
-	}
-
-	return
-}
-
-func combineChildrenValues(arrOfArr [][]string, recursive bool) (ret []string) {
-	valueArr := putChildrenToArr(arrOfArr, recursive)
-
-	for _, arr := range valueArr {
-		ret = append(ret, strings.Join(arr, ""))
-	}
-	return
-}
-
-func getRecordCount(arrOfArr [][]string) int {
-	count := 1
-	for i := 0; i < len(arrOfArr); i++ {
-		arr := arrOfArr[i]
-		count = len(arr) * count
-	}
-	return count
-}
-
-func getModArr(arrOfArr [][]string) []int {
-	indexArr := make([]int, 0)
-	for _, _ = range arrOfArr {
-		indexArr = append(indexArr, 0)
-	}
-
-	for i := 0; i < len(arrOfArr); i++ {
-		loop := 1
-		for j := i + 1; j < len(arrOfArr); j++ {
-			loop = loop * len(arrOfArr[j])
-		}
-
-		indexArr[i] = loop
-	}
-
-	return indexArr
-}
-
-func getNum(group string) (ret string, numLimit, repeat int) {
-	regx := regexp.MustCompile(`\{([^:]*):?([^:]*)\}`)
-	arr := regx.FindStringSubmatch(group)
-	if len(arr) >= 2 {
-		numLimit, _ = strconv.Atoi(arr[1])
-	}
-	if len(arr) >= 3 {
-		repeat, _ = strconv.Atoi(arr[2])
-	}
-
-	ret = regx.ReplaceAllString(group, "")
-
-	return
-}
-
-// pars Uses
-type retsInfo struct {
-	ret      string
-	numLimit int
-	repeat   int
-}
-
-func parseUse(groups string) (results []retsInfo) {
-	rets := strings.Split(groups, ",")
-	results = make([]retsInfo, len(rets))
-	regx := regexp.MustCompile(`\{([^:]*):?([^:]*)\}`)
-	for k, v := range rets {
-		results[k].ret = regx.ReplaceAllString(v, "")
-		arr := regx.FindStringSubmatch(v)
-		if len(arr) >= 2 {
-			results[k].numLimit, _ = strconv.Atoi(arr[1])
-		}
-		if len(arr) >= 3 {
-			results[k].repeat, _ = strconv.Atoi(arr[2])
-			if results[k].repeat == 0 {
-				results[k].repeat = 1
-			}
-		}
-	}
-	return
-}
-
-func getRepeatValuesFromAll(groupValues map[string][]string, numLimit, repeat int) (ret []string) {
-	if repeat == 0 {
-		repeat = 1
-	}
-
-	count := 0
-exit:
-	for _, arr := range groupValues {
-		for _, item := range arr {
-			for i := 0; i < repeat; i++ {
-				ret = append(ret, item)
-				count++
-
-				if numLimit > 0 && count >= numLimit {
-					break exit
+				//	问题描述：
+				//	原代码为：`selectCount := vari.Toal / len(selects)`
+				//	因为整除的向下取整，如果`len(selects)`为3，`total`为8，则`selectCount`为2
+				//	对于每一个`selects`的元素来说，都只会查两个元素，这样加起来一共只有6个结果，
+				//	导致另外两个结果只能通过重复查到的数据的方式补充。
+				//	解决方案：
+				//  将代码改为: `selectCount := total / len(selects) + 1`,以达到使用人员的真正想要的
+				//	即查到足够的数量，而不是通过重复补齐
+				selectCount := total/len(selects) + 1
+				mp := generateFieldValuesFromExcel(resFile, sheet, &temp, selectCount) // re-generate values
+				for _, items := range mp {
+					childMapValues = append(childMapValues, items)
 				}
 			}
-		}
-	}
-
-	return
-}
-
-func getRepeatValuesFromGroups(groupValues map[string][]string, info []retsInfo) (ret []string) {
-	count := 0
-
-exit:
-	for _, v := range info {
-		if v.repeat == 0 {
-			v.repeat = 1
-		}
-
-		arr := groupValues[v.ret]
-		if len(arr) == 0 {
-			break exit
-		}
-		if v.numLimit != 0 { // privateB{n}
-			for i := 0; (v.numLimit > 0 && i < v.numLimit) && i < vari.Total; i++ {
-				index := i / v.repeat
-				ret = append(ret, arr[index])
-				count++
-			}
-		} else { // privateA
-			for i := 0; i < vari.Total; i++ {
-				index := i / v.repeat % len(arr)
-				ret = append(ret, arr[index])
-				count++
+			for index := 0; len(childValues) < total; {
+				for i, _ := range selects {
+					childValues = append(childValues, childMapValues[i][index%len(childMapValues[i])])
+				}
+				index++
 			}
 		}
-		if count >= vari.Total {
-			break exit
-		}
 
+		arrOfArr = append(arrOfArr, childValues)
 	}
+
 	return
 }

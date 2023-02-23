@@ -1,7 +1,7 @@
 package serverService
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 )
 
@@ -21,7 +21,7 @@ func (s *InstancesService) CreateItem(domainId, targetId int, mode string) (item
 	item.Ord = s.InstancesRepo.GetMaxOrder(domainId)
 
 	err = s.InstancesRepo.SaveItem(item)
-	s.ReferRepo.CreateDefault(item.ID, constant.ResTypeInstances)
+	s.ReferRepo.CreateDefault(item.ID, consts.ResTypeInstances)
 
 	return
 }

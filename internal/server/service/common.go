@@ -2,14 +2,15 @@ package serverService
 
 import (
 	"fmt"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
 )
 
-func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *model.DefField) {
+func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *domain.DefField) {
 	field.Field = treeNode.Field
 	field.Note = treeNode.Note
 
@@ -24,10 +25,10 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 
 	field.Type = treeNode.Type
 	field.Mode = treeNode.Mode
-	if field.Type == constant.FieldTypeList {
+	if field.Type == consts.FieldTypeList {
 		field.Type = ""
 	}
-	if field.Mode == constant.ModeParallel {
+	if field.Mode == consts.ModeParallel {
 		field.Mode = ""
 	}
 
@@ -52,7 +53,7 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 			field.Select = refer.ColName
 			field.Where = refer.Condition
 
-		} else if refer.Type == constant.ResTypeRanges || refer.Type == constant.ResTypeInstances { // medium{2}
+		} else if refer.Type == consts.ResTypeRanges || refer.Type == consts.ResTypeInstances { // medium{2}
 			arr := strings.Split(refer.ColName, ",")
 			arrNew := make([]string, 0)
 
@@ -67,7 +68,7 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 			field.From = refer.File
 			field.Use = strings.Join(arrNew, ",")
 
-		} else if refer.Type == constant.ResTypeYaml { // dir/content.yaml{3}
+		} else if refer.Type == consts.ResTypeYaml { // dir/content.yaml{3}
 			arr := strings.Split(refer.File, ",")
 			arrNew := make([]string, 0)
 			for _, item := range arr {
@@ -79,7 +80,7 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 			}
 			field.Range = strings.Join(arrNew, ",")
 
-		} else if refer.Type == constant.ResTypeText { // dir/users.txt:2,dir/file.txt:3
+		} else if refer.Type == consts.ResTypeText { // dir/users.txt:2,dir/file.txt:3
 			arr := strings.Split(refer.File, ",")
 			arrNew := make([]string, 0)
 			for _, item := range arr {
@@ -93,10 +94,10 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 			}
 			field.Range = strings.Join(arrNew, ",")
 
-		} else if refer.Type == constant.ResTypeConfig { // dir/users.txt:2
+		} else if refer.Type == consts.ResTypeConfig { // dir/users.txt:2
 			field.Config = fmt.Sprintf("%s", refer.File)
 
-		} else if refer.Type == constant.ResTypeValue { //
+		} else if refer.Type == consts.ResTypeValue { //
 			field.Value = fmt.Sprintf("%s", refer.Value)
 
 		}
@@ -104,10 +105,10 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *mod
 }
 
 func GetRelatedPathWithResDir(p string) (ret string) {
-	rpl := vari.ZdPath + constant.ResDirYaml + constant.PthSep
+	rpl := vari.ZdDir + consts.ResDirYaml + consts.PthSep
 	ret = strings.Replace(p, rpl, "", 1)
 
-	rpl = vari.ZdPath + constant.ResDirUsers + constant.PthSep
+	rpl = vari.ZdDir + consts.ResDirUsers + consts.PthSep
 	ret = strings.Replace(ret, rpl, "", 1)
 
 	return
@@ -166,7 +167,7 @@ func GetRelatedPathWithResDir(p string) (ret string) {
 //	field.Loop = item.Loop
 //	field.Loopfix = item.Loopfix
 //	field.Format = item.Format
-//	field.Type = item.Type
+//	field.DefType = item.DefType
 //	field.Mode = item.Mode
 //	field.Length = item.Length
 //	field.LeftPad = item.LeftPad

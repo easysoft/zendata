@@ -127,7 +127,7 @@
     },
     {
       "id": "start_server",
-      "translation": "Start ZenData HTTP service, press CTRL+C to exist.\nTo design test data pls access http://%s:%s. \nTo generate data you may call  http://%s:%s/data, for example curl http://%s:%s/data?config=demo/default.yaml&lines=10."
+      "translation": "Start ZenData HTTP service, press CTRL+C to exist.\nTo design test data pls access http://%s:%s/ui. \nTo generate data you may call  http://%s:%s/data/generate, for example curl http://%s:%s/data/generate?config=demo/default.yaml&lines=3."
     },
     {
       "id": "start_server_fail",
@@ -229,7 +229,7 @@
     },
     {
       "id": "root_invalid",
-      "translation": "ZenData Dir %s not right."
+      "translation": "%s is not a valid ZenData dir."
     },
     {
       "id": "print_common_yaml_file",
@@ -247,6 +247,17 @@
     {
       "id": "dsn_param_parsing_error",
       "translation": "the -dsn parameter parsing error"
+    },    {
+      "id" : "success_to_clear_cache",
+      "translation": "Success to clear cache '%s'."
+    },
+    {
+      "id" : "success_to_clear_all_cache",
+      "translation": "Success to clear all cache."
+    },
+    {
+      "id" : "miss_cache_param",
+      "translation": "Please provide -cache parameter if record number is larger than %d."
     }
   ]
 }

@@ -9,35 +9,35 @@ instances:
     note: 所有人名
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         postfix: " "
       - field: part2
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
   - instance: male_common
     note: 男性人名
     prefix:
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         where: "sex='male'"
         postfix: " "
       - field: part2
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
   - instance: female_common
     note: 女性人名
     prefix:
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         where: "sex='female'"
         postfix: " "
       - field: part2
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
 
   - instance: with_middle
@@ -45,15 +45,15 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         postfix: " "
       - field: part2
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         postfix: " "
       - field: part3
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
 
   - instance: male_with_middle
@@ -61,32 +61,32 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         where: "sex='male'"
         postfix: " "
       - field: part2
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         where: "sex='male'"
         postfix: " "
       - field: part3
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name
   - instance: female_with_middle
     note: 带中间名女性名
     prefix:
     fields:
       - field: part1
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         where: "sex='female'"
         postfix: " "
       - field: part2
-        from: name.en.given.v1
+        from: name.en.given.v2
         select: name
         where: "sex='female'"
         postfix: " "
       - field: part3
-        from: name.en.family.v1
+        from: name.en.family.v2
         select: name

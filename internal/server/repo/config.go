@@ -1,7 +1,8 @@
 package serverRepo
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 )
@@ -21,7 +22,7 @@ func (r *ConfigRepo) List(keywords string, page int) (models []*model.ZdConfig, 
 		query = query.Where("title LIKE ?", "%"+keywords+"%")
 	}
 	if page > 0 {
-		query = query.Offset((page - 1) * constant.PageSize).Limit(constant.PageSize)
+		query = query.Offset((page - 1) * consts.PageSize).Limit(consts.PageSize)
 	}
 
 	err = query.Find(&models).Error
@@ -60,7 +61,7 @@ func (r *ConfigRepo) UpdateYaml(po model.ZdConfig) (err error) {
 	return
 }
 
-func (r *ConfigRepo) GenConfigRes(config model.ZdConfig, res *model.ResConfig) {
+func (r *ConfigRepo) GenConfigRes(config model.ZdConfig, res *domain.ResConfig) {
 	res.Title = config.Title
 	res.Desc = config.Desc
 	res.Prefix = config.Prefix

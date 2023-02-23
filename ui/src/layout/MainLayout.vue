@@ -6,6 +6,9 @@
     <div class="content-container">
       <router-view></router-view>
     </div>
+
+    <Update></Update>
+
     <!-- <div class="footer-container">
       <Footer></Footer>
     </div> -->
@@ -14,13 +17,12 @@
 
 <script>
 import Header from "./Header";
-// import Footer from "./Footer";
+import Update from "./Update.vue";
 
 export default {
   name: 'MainLayout',
   components: {
-    Header,
-    // Footer,
+    Header, Update,
   },
   data () {
     return {

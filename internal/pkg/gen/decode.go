@@ -2,7 +2,7 @@ package gen
 
 import (
 	"encoding/json"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -14,30 +14,25 @@ import (
 
 const ()
 
-func Decode(files []string, fieldsToExportStr, input string) {
-	if vari.Out != "" {
-		fileUtils.MkDirIfNeeded(filepath.Dir(vari.Out))
-		fileUtils.RemoveExist(vari.Out)
-		logUtils.FileWriter, _ = os.OpenFile(vari.Out, os.O_RDWR|os.O_CREATE, 0777)
-		defer logUtils.FileWriter.Close()
+func Decode(files []string, input string) {
+	if vari.GlobalVars.Output != "" {
+		fileUtils.MkDirIfNeeded(filepath.Dir(vari.GlobalVars.Output))
+		fileUtils.RemoveExist(vari.GlobalVars.Output)
+		logUtils.OutputFileWriter, _ = os.OpenFile(vari.GlobalVars.Output, os.O_RDWR|os.O_CREATE, 0777)
+		defer logUtils.OutputFileWriter.Close()
 	}
 
-	vari.ConfigFileDir = fileUtils.GetAbsDir(files[0])
+	vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(files[0])
 
-	vari.Total = 10
+	vari.GlobalVars.Total = 10
 
-	fieldsToExport := make([]string, 0)
-	if fieldsToExportStr != "" {
-		fieldsToExport = strings.Split(fieldsToExportStr, ",")
-	}
-
-	vari.Def = LoadDataDef(files, &fieldsToExport)
-	vari.Res = LoadResDef(fieldsToExport)
+	vari.GlobalVars.DefData = LoadDataDef(files, &vari.GlobalVars.ExportFields)
+	vari.Res = LoadResDef(vari.GlobalVars.ExportFields)
 
 	data := fileUtils.ReadFile(input)
 
 	var ret []map[string]interface{}
-	linesToMap(data, fieldsToExport, &ret)
+	linesToMap(data, vari.GlobalVars.ExportFields, &ret)
 	jsonObj, _ := json.Marshal(ret)
 	vari.JsonResp = string(jsonObj)
 
@@ -47,7 +42,7 @@ func Decode(files []string, fieldsToExportStr, input string) {
 
 func linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface{}) {
 	start := 0
-	if vari.WithHead {
+	if vari.GlobalVars.Human {
 		start = 1
 	}
 
@@ -57,13 +52,13 @@ func linesToMap(str string, fieldsToExport []string, ret *[]map[string]interface
 		}
 
 		rowMap := map[string]interface{}{}
-		decodeOneLevel(line, vari.Def.Fields, &rowMap)
+		decodeOneLevel(line, vari.GlobalVars.DefData.Fields, &rowMap)
 		*ret = append(*ret, rowMap)
 	}
 	return
 }
 
-func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]interface{}) {
+func decodeOneLevel(line string, fields []domain.DefField, rowMap *map[string]interface{}) {
 	left := []rune(line)
 
 	for j, field := range fields {
@@ -95,7 +90,7 @@ func decodeOneLevel(line string, fields []model.DefField, rowMap *map[string]int
 			}
 		}
 
-		if vari.Trim {
+		if vari.GlobalVars.Trim {
 			col = strings.TrimLeft(col, field.Prefix)
 			col = strings.TrimRight(col, field.Postfix)
 		}

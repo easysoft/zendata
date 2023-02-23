@@ -1,4 +1,5 @@
 import {config} from '../utils/vari'
+import moment from 'moment';
 
 const PageSize = 15
 const ResTypeDef = "def"
@@ -24,7 +25,7 @@ export function checkLoop (rule, value, callback){
 export function checkDirIsYaml (rule, value, callback){
   console.log('checkDirIsYaml', value)
 
-  if (value.indexOf('yaml/') != 0) {
+  if (value.indexOf('yaml/') != 0 && value.indexOf('yaml\\') != 0) {
     callback(i18nRender('valid.folder.yaml'))
   }
 
@@ -33,7 +34,7 @@ export function checkDirIsYaml (rule, value, callback){
 export function checkDirIsData (rule, value, callback){
   console.log('checkDirIsData', value)
 
-  if (value.indexOf('data/') != 0) {
+  if (value.indexOf('data/') != 0 && value.indexOf('data\\') != 0) {
     callback(i18nRender('valid.folder.data'))
   }
 
@@ -66,6 +67,10 @@ export function sectionStrToArr (str){
   let arr = str.split(',')
   str = arr.join('\n')
   return str
+}
+
+export function formatTime (value){
+  return moment(value).format('YYYY-MM-DD HH:mm:ss');
 }
 
 export function trimChar (str, ch){

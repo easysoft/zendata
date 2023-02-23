@@ -9,32 +9,32 @@ instances:
     note: 中文账号
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: pinyin
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: pinyin
   - instance: common_underline
     note: 划线分隔中文账号
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: pinyin
         postfix: "_"
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: pinyin
   - instance: common_dot
     note: 点分隔中文账号
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: pinyin
         postfix: "."
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: pinyin
 
   - instance: reverse
@@ -42,11 +42,11 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: pinyin
         postfix: ""
       - field: part2
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: pinyin
 
   - instance: family
@@ -54,7 +54,7 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: pinyin
 
   - instance: given
@@ -62,5 +62,5 @@ instances:
     prefix:
     fields:
       - field: part1
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: pinyin

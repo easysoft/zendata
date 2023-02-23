@@ -123,9 +123,9 @@ fields:
     postfix: "\t"
 
   - field: field_use_excel              # Read the data from the data source of excel.
-    from: address.cn.v1.china           # Read the sheet named 'china' in data/address/cn.v1.xlsx.
-    select: city                        # Query the field city.
-    where: cityCode = 852               # Query condition.
+    from: city.v1.city                  # Read the sheet named 'china' in data/address/cn.v1.xlsx.
+    select: name                        # Query the field city.
+    where: code = 532                   # Query condition.
     rand: true                          # Random for query
     postfix: "\t"
 

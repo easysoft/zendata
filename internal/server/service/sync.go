@@ -1,8 +1,8 @@
 package serverService
 
 import (
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 )
 
 type SyncService struct {
@@ -17,25 +17,25 @@ type SyncService struct {
 	ResService       *ResService       `inject:""`
 }
 
-func (s *SyncService) SyncData(mode string) { // TODO: overwrite or not
+func (s *SyncService) SyncData() {
 	files := s.ResService.LoadRes("")
 
-	fileMap := map[string][]model.ResFile{}
+	fileMap := map[string][]domain.ResFile{}
 	for _, fi := range files {
 		if fileMap[fi.ResType] == nil {
-			fileMap[fi.ResType] = make([]model.ResFile, 0)
+			fileMap[fi.ResType] = make([]domain.ResFile, 0)
 		}
 
 		fileMap[fi.ResType] = append(fileMap[fi.ResType], fi)
 	}
 
-	s.DefService.Sync(fileMap[constant.ResTypeYaml])
-	s.RangesService.Sync(fileMap[constant.ResTypeRanges])
-	s.InstancesService.Sync(fileMap[constant.ResTypeInstances])
-	s.ConfigService.Sync(fileMap[constant.ResTypeConfig])
+	s.DefService.Sync(fileMap[consts.ResTypeYaml])
+	s.RangesService.Sync(fileMap[consts.ResTypeRanges])
+	s.InstancesService.Sync(fileMap[consts.ResTypeInstances])
+	s.ConfigService.Sync(fileMap[consts.ResTypeConfig])
 
-	s.ExcelService.Sync(fileMap[constant.ResTypeExcel])
-	s.TextService.Sync(fileMap[constant.ResTypeText])
+	s.ExcelService.Sync(fileMap[consts.ResTypeExcel])
+	s.TextService.Sync(fileMap[consts.ResTypeText])
 }
 
 func NewSyncService(

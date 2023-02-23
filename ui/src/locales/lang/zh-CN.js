@@ -24,6 +24,7 @@ const locale = {
   'menu.excel.edit': '表格编辑',
   'menu.text.list': '文本列表',
   'menu.text.edit': '文本编辑',
+  'menu.data.mock': 'Mock服务',
 
   'title.data.create': '数据创建',
   'title.config.create': '字段创建',
@@ -54,11 +55,16 @@ const locale = {
   'msg.text': '文本内容',
   'msg.exec': 'Yaml结果',
   'msg.file': '文件',
+  'msg.create.time': '创建时间',
 
   'msg.design.title': '测试数据设计',
   'msg.design.create.brother': '创建同级',
   'msg.design.create.child': '创建子级',
   'msg.design.remove.node': '删除节点',
+
+  'msg.mock.create': '新建Mock配置',
+  'msg.mock.edit': '编辑Mock配置',
+  'msg.mock.response': 'Mock数据预览',
 
   'action.list': '列表',
   'action.create': '创建',
@@ -68,6 +74,10 @@ const locale = {
   'action.design': '设计',
   'action.back': '返回',
   'action.import.from.file': '刷新数据',
+  'action.edit.mock': '修改Mock配置',
+  'action.edit.data': '修改数据配置',
+  'action.start.mock': '启动Mock服务',
+  'action.stop.mock': '关闭Mock服务',
 
   'tips.refer': '引用',
   'tips.pls.select': '请选择',
@@ -85,6 +95,12 @@ const locale = {
   'tips.range.and.refer': '注意：引用和区间之间是互斥的，以最后保存的为准。',
   'tips.pls.refresh.data': '第一次使用，请点击右上角"刷新数据"按钮。',
 
+  'upload.spec': '上传规格文件',
+  'upload.spec.failed': '上传规格文件失败。',
+  'msg.mock.mock': 'Mock配置',
+  'msg.mock.data': '数据配置',
+  'msg.mock.input.path': '输入唯一的访问路径前缀',
+
   'form.name': '名称',
   'form.file': '文件',
   'form.dir': '目录',
@@ -92,6 +108,7 @@ const locale = {
   'form.folder': '文件夹',
   'form.path': '路径',
   'form.file.name': '文件名',
+  'form.file.content': '文件内容',
   'form.desc': '描述',
   'form.content': '内容',
   'form.prefix': '前缀',
@@ -128,6 +145,7 @@ const locale = {
   'form.save': '保存',
   'form.reset': '重置',
   'form.cancel': '取消',
+  'form.close': '关闭',
 
   'valid.required': '该字段不能为空。',
   'valid.type.empty': '类型不能为空',
@@ -137,8 +155,14 @@ const locale = {
   'valid.loop.check': '需为整数或整数区间。',
   'valid.folder.users': '用户数据必须保存在users/目录下。',
   'valid.folder.yaml': '公用数据必须保存在/yaml目录下。',
-  'valid.folder.data': 'Excel数据必须保存在data/目录下。'
+  'valid.folder.data': 'Excel数据必须保存在data/目录下。',
 
+  'window.fullscreen': '全屏',
+  'window.exit_fullscreen': '退出全屏',
+  'window.maximize': '最大化',
+  'window.minimize': '最小化',
+  'window.restore': '还原',
+  'window.close': '关闭',
 }
 
 export default {

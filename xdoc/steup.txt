@@ -19,3 +19,25 @@ rsrc -manifest xdoc/main.exe.manifest -ico xdoc/fav.ico -o zd.syso
         调用：toGen -> Generate | CreateValuesFromYaml -> GenerateOnTopLevel
              -> GenerateFieldValuesForDef -> CreateField -> CreateListField
              -> CreateListFieldValues -> CreateFieldValuesFromList -> CreateValuesFromInterval
+
+http://localhost:8848/api/v1/data/generate?config=demo/default.yaml&lines=3
+
+curl -i -X POST -F default=@demo/default.yaml \
+    http://localhost:8848/api/v1/data/generate?trim=true\&format=json\&lines=3
+
+scp ~/work/zentao/qiniu/zd/2.3/linux/zd.zip 192.168.0.105:~
+
+http://localhost:8848/api/v1/m/petstore/users/1
+
+docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v6.2.1 generate \
+    -i https://gitee.com/aaronchen2k/zd/raw/3.0/xdoc/test.json \
+    -g php \
+    -o ~/out/php
+
+openapi-generator-cli generate --skip-validate-spec \
+ -i /Users/aaron/out/input.json \
+ -g php -o ~/out/php
+
+openapi-generator-cli generate --skip-validate-spec \
+ -i /Users/aaron/out/input.json \
+ -g python -o ~/out/python

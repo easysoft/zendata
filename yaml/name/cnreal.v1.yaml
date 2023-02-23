@@ -9,117 +9,115 @@ instances:
     note: 2字人名
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='false'"
         postfix:
         rand: true
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: name
-        where: "double='false'"
         rand: true
   - instance: male_two
     note: 男性2字人名
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='false'"
         postfix: ""
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: name
-        where: "sex='male' AND double='false'"
+        where: "sex='male'"
   - instance: female_two
     note: 女性2字人名
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='false'"
         postfix: ""
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: name
-        where: "sex='female' AND double='false'"
+        where: "sex='female'"
 
   - instance: three
     note: 3字人名
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='false'"
         postfix:
       - field: part2
-        from: name.cn.given.v1
-        where: "double='true'"
+        from: name.cn.given.v2
+        where: 1=1
         select: name
   - instance: male_three
     note: 男性3字人名
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='false'"
         postfix: ""
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: name
-        where: "sex='male' AND double='true'"
+        where: "sex='male'"
   - instance: female_three
     note: 女性3字人名
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='false'"
         postfix: ""
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: name
-        where: "sex='female' AND double='true'"
+        where: "sex='female'"
 
   - instance: four
     note: 4字人名
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='true'"
         postfix:
       - field: part2
-        from: name.cn.given.v1
-        where: "double='true'"
+        from: name.cn.given.v2
         select: name
   - instance: male_four
     note: 男性4字人名
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='true'"
         postfix: ""
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: name
-        where: "sex='male' AND double='true'"
+        where: "sex='male'"
   - instance: female_four
     note: 女性4字人名
     prefix:
     fields:
       - field: part1
-        from: name.cn.family.v1
+        from: name.cn.family.v2
         select: name
         where: "double='true'"
         postfix: ""
       - field: part2
-        from: name.cn.given.v1
+        from: name.cn.given.v2
         select: name
-        where: "sex='female' AND double='true'"
+        where: "sex='female'"
