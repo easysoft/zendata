@@ -2,7 +2,7 @@ module github.com/easysoft/zendata
 
 go 1.12
 
-require golang.org/x/text v0.3.7
+require golang.org/x/text v0.3.8
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize/v2 v2.3.2
