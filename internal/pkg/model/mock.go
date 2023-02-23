@@ -6,13 +6,15 @@ import (
 
 type ZdMock struct {
 	Model
-	Name string `json:"name"`
-	Path string `json:"path"`
-	Desc string `json:"desc"`
+	Name  string `json:"name"`
+	Path  string `json:"path"`
+	Desc  string `json:"desc"`
+	DefId uint   `json:"defId"`
 
 	SpecContent string `json:"specContent"`
 	MockContent string `json:"mockContent"`
 	DataContent string `json:"dataContent"`
+	DataPath    string `json:"dataPath"`
 }
 
 func (*ZdMock) TableName() string {

@@ -19,14 +19,15 @@ type ZdDef struct {
 	Type  string `gorm:"column:type" json:"type"`
 	Desc  string `gorm:"column:desc" json:"desc"`
 
-	Yaml      string `gorm:"yaml" json:"yaml"`
-	Path      string `gorm:"column:path" json:"path" yaml:"-"`
-	Folder    string `gorm:"column:folder" json:"folder" yaml:"-"`
-	FileName  string `gorm:"column:fileName" json:"fileName" yaml:"-"`
-	ReferName string `gorm:"column:referName" json:"referName" yaml:"-"`
+	Yaml     string `gorm:"yaml" json:"yaml"`
+	Path     string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder   string `gorm:"column:folder" json:"folder" yaml:"-"`
+	FileName string `gorm:"column:fileName" json:"fileName" yaml:"-"`
+	IsMock   bool   `gorm:"column:isMock" json:"isMock"`
 
-	From   string    `gorm:"-" json:"from"`
-	Fields []ZdField `gorm:"-" json:"fields"`
+	ReferName string    `gorm:"column:referName" json:"referName" yaml:"-"`
+	From      string    `gorm:"-" json:"from"`
+	Fields    []ZdField `gorm:"-" json:"fields"`
 }
 
 func (*ZdDef) TableName() string {

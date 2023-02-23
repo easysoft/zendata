@@ -41,8 +41,9 @@
           ref="editComp"
           :type="type"
           :visible="editVisible"
-          :model="editModel"
+          :mock="editModel"
           :time="time"
+          :current="currentTab"
           @ok="handleEditSave"
           @cancel="handleEditCancel" >
       </mock-edit-comp>
@@ -105,6 +106,7 @@ export default {
       designModel: {},
       type: ResTypeDef,
       time: 0,
+      currentTab:'mock',
 
       keywords: '',
       page: 1,
@@ -146,9 +148,16 @@ export default {
 
     modifyMockConfig(record) {
       this.setMockItem(record)
+      this.editVisible = true;
+      this.currentTab = 'mock';
     },
     modifyDataConfig(record) {
       this.setMockItem(record)
+      this.editVisible = true;
+      this.currentTab = 'data';
+    },
+    setMockItem(record) {
+        this.editModel = record;
     },
     startMockService(record) {
       console.log('startMockService')
@@ -160,10 +169,12 @@ export default {
     },
 
     handleEditSave() {
+      this.setMockItem({})
       this.editVisible = false;
       this.loadData();
     },
     handleEditCancel() {
+      this.setMockItem({})
       this.editVisible = false;
     },
     remove(record) {

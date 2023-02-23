@@ -4,6 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -12,9 +16,6 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/getkin/kin-openapi/openapi3"
 	"gopkg.in/yaml.v2"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 type MockService struct {
@@ -296,7 +297,10 @@ func (s *MockService) getRangeByTypeFormat(typ consts.OpenApiDataType,
 		field.Range = fmt.Sprintf("%d-%d", start, end)
 
 	} else if consts.OpenApiDataTypeLong == typ {
-		start, end := s.getStartEnd(9223372036854775801, 9223372036854775807, min, max, typ)
+		maxInt64 := ^uint64(0)
+		maxDefault := maxInt64
+		minDefault := maxInt64 - 10000
+		start, end := s.getStartEnd(minDefault, maxDefault, min, max, typ)
 		field.Range = fmt.Sprintf("%d-%d", start, end)
 
 	} else if consts.OpenApiDataTypeFloat == typ {

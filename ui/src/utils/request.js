@@ -1,5 +1,6 @@
 import notification from 'ant-design-vue/es/notification'
 import axios, {AxiosInstance} from 'axios'
+import { getElectron } from "./common";
 
 let serverUrl = ''
 let request = null
@@ -18,8 +19,11 @@ function initRequest(remoteUrl) {
 function getUrl() {
   let url = ''
   if (process.env.NODE_ENV === "development") {
-    url = 'http://127.0.0.1:8848'
+    url = 'http://localhost:8848'
     console.log('dev env, url is ' + url)
+    } else if(getElectron()){
+    url = 'http://localhost:55234'
+    console.log('product in client, url is ' + url)
   } else {
     const location = decodeURI(window.location.href);
     url = location.split('ui')[0];

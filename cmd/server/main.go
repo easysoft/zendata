@@ -42,6 +42,10 @@ func main() {
 	flagSet.StringVar(&root, "root", "", "")
 	flagSet.BoolVar(&vari.Verbose, "verbose", false, "")
 
+	flagSet.Parse(os.Args[1:])
+
+	vari.GlobalVars.RunMode = consts.RunModeServer
+
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
 

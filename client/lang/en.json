@@ -1,0 +1,20 @@
+{
+    "app.title": "ZenData",
+    "app.about": "About",
+    "app.exit": "Exit",
+    "app.edit": "Edit",
+    "app.undo": "Undo",
+    "app.redo": "Redo",
+    "app.cut": "Cut",
+    "app.copy": "Copy",
+    "app.paste": "Paste",
+    "app.select_all": "Select All",
+    "app.view": "View",
+    "app.switch_to_full_screen": "Switch To Full Screen",
+    "app.window": "Window",
+    "app.minimize": "Minimize",
+    "app.close": "Close",
+    "app.bring_all_to_front": "Bring All To Front",
+    "app.help": "Help",
+    "app.website": "Web Site"
+}

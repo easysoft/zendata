@@ -42,7 +42,7 @@ func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data 
 
 	ref := model.ZdRefer{}
 	if !field.IsRange {
-		ref, _ = s.ReferRepo.GetByOwnerId(field.ID)
+		ref, _ = s.ReferRepo.GetByOwnerIdAndType(field.ID, fieldType)
 	}
 
 	fld := domain.DefField{}

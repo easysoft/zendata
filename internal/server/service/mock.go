@@ -36,6 +36,7 @@ type MockService struct {
 	MainService   *service.MainService   `inject:""`
 	OutputService *service.OutputService `inject:""`
 	MockService   *service.MockService   `inject:""`
+	DefService    *DefService            `inject:""`
 	MockRepo      *serverRepo.MockRepo   `inject:""`
 }
 
@@ -51,6 +52,10 @@ func (s *MockService) Get(id int) (po model.ZdMock, err error) {
 }
 
 func (s *MockService) Save(po *model.ZdMock) (err error) {
+	if po.DefId == 0 {
+		fi := domain.ResFile{FileName: po.Name, Path: po.DataPath}
+		_, po.DefId = s.DefService.SyncToDB(fi, true)
+	}
 	err = s.MockRepo.Save(po)
 
 	return
@@ -209,7 +214,7 @@ func (s *MockService) getPathPatten(pth string) (ret string) {
 }
 
 func (s *MockService) Upload(ctx iris.Context, fh *multipart.FileHeader) (
-	name, content, mockConf, dataConf, pth string, err error) {
+	name, content, mockConf, dataConf, pth string, err error, dataPath string) {
 
 	filename, err := fileUtils.GetUploadFileName(fh.Filename)
 	if err != nil {

@@ -1,4 +1,5 @@
 import config from '../config/config'
+import { getElectron } from "./common";
 
 export const setDocumentTitle = function (title) {
   document.title = title
@@ -19,7 +20,7 @@ export const setDocumentTitle = function (title) {
 }
 
 export const getPath = function () {
-  return process.env.NODE_ENV === 'production' ? 'ui/': ''
+  return process.env.NODE_ENV === 'production' && !parseInt(process.env.UI_IN_CLIENT) && !getElectron() ? 'ui/': ''
 }
 
 export const domTitle = config.title

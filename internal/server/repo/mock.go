@@ -40,6 +40,12 @@ func (r *MockRepo) GetByPath(path string) (po model.ZdMock, err error) {
 	return
 }
 
+func (r *MockRepo) GetByDefID(defId uint) (po model.ZdMock) {
+	r.DB.Where("def_id=?", defId).First(&po)
+
+	return
+}
+
 func (r *MockRepo) Save(po *model.ZdMock) (err error) {
 	err = r.DB.Save(po).Error
 
