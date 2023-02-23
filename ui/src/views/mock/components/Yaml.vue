@@ -35,10 +35,13 @@ export default {
     }
   },
   watch: {
-    value(value) {
+    value(val) {
+      if(val == undefined){
+        val = '';
+      }
       const editorValue = this.yamlEditor.getValue()
-      if (value !== editorValue) {
-        this.yamlEditor.setValue(this.value)
+      if (val !== editorValue) {
+        this.yamlEditor.setValue(val)
       }
     }
   },
@@ -56,7 +59,11 @@ export default {
       smartIndent: true,
     })
 
-    this.yamlEditor.setValue(this.value)
+    let val = this.value;
+    if(this.value == undefined){
+        val = '';
+      }
+    this.yamlEditor.setValue(val)
     this.yamlEditor.on('change', (cm) => {
       this.$emit('changed', cm.getValue())
       this.$emit('input', cm.getValue())

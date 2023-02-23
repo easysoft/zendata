@@ -92,8 +92,7 @@ export default {
   },
   data() {
     return {
-      model: {},
-      dataModel: {},
+      model: {mockContent:''},
       resType: ResTypeDef,
       specReady: false,
       currentTab: this.current,
@@ -135,7 +134,10 @@ export default {
     },
     codemirror() {
       return this.$refs.cmEditor.codemirror
-    }
+    },
+    dataModel() {
+        return {id: this.model.defId}
+    },
   },
   created() {
     console.log('created')
@@ -148,8 +150,10 @@ export default {
   },
   watch: {
     mock(val) {
+      if(val == undefined){
+        val = {mockContent:''};
+      }
       this.model = val
-      this.dataModel = {id: val.defId}
       if(val.id !== undefined){
         this.specReady = true;
       }
@@ -166,7 +170,7 @@ export default {
       this.saveMockItem(this.model).then((json) => {
         console.log('saveMockItem', json)
         if (json.code === 0) {
-          // this.model = {}
+          this.model = {mockContent:''}
           this.specReady = false
           this.$emit('ok')
         } else {
@@ -179,7 +183,7 @@ export default {
     },
     cancel() {
       console.log('cancel')
-      // this.model = {}
+      this.model = {mockContent:''}
       this.specReady = false
       this.$emit('cancel')
     },

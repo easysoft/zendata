@@ -198,6 +198,15 @@ export default {
   beforeDestroy() {
     console.log('beforeDestroy')
   },
+
+  watch: {
+    modelProp(val) {
+      console.log("watch modelProp :", val)
+      this.type = ResTypeDef;
+      this.loadTree('')
+    },
+  },
+
   methods: {
     onModelSave() {
       console.log('onModelSave')
