@@ -1,0 +1,196 @@
+extensionprops: {}
+openapi: ""
+info:
+  extensionprops: {}
+  title: cne-api
+  version: last
+paths:
+  /app/install:
+    extensionprops: {}
+    post:
+      extensionprops: {}
+      tags:
+        - 应用管理
+      summary: 应用安装
+      description: |-
+        ### 自定义参数传递说明
+        
+        支持两种结构的传递，列表和字典
+        
+        #### settings
+        
+        为列表结构，列表元素为字典，参数项和参数值分别作为key 和 values 的值
+        
+        ``` javascript
+        [
+            {
+            	"key": "replicas", "value": "2"
+            },
+            {
+                "key": "mysql.resource.memory", "value": "1Gi"
+            }
+        ]
+        ```
+        
+        ### settings_map (已实现)
+        
+        为字典结构，字典第一层为组件名，内容为具体的参数 map 结构，以zentao为例
+        
+        ```
+        {
+            "zentao": {
+                "replicas": 1
+            },
+            "mysql": {
+                "resources": {
+                    "memory": "1Gi"
+                }
+            }
+        }
+        ```
+        
+        经 cne 处理过后，最终参数变为
+        
+        ``` yaml
+        replicas: 1
+        
+        mysql:
+          resources:
+            memory: 1Gi
+        ```
+      parameters:
+        - ref: ""
+          value:
+            extensionprops: {}
+            name: root
+            in: body
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                required:
+                  - namespace
+                  - name
+                  - chart
+                  - channel
+                properties:
+                  channel:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      title: 应用仓库标签
+                      description: cloud 渠成私有, test 测试, stable 用户可见
+                  chart:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      title: 被安装的应用名称
+                      description: helm应用名称，纯ying wen
+                  cluster:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      title: 集群标示
+                      description: 可为空，默认本地集群
+                  name:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      title: 应用实例化名称
+                      description: 唯一,应以chart名称打头加随机字符串
+                  namespace:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      title: 对应命名空间
+                  settings:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      title: 自定义参数
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: object
+                          properties:
+                            key:
+                              ref: ""
+                              value:
+                                extensionprops: {}
+                                type: string
+                                title: 参数名
+                                description: 对应helm values文件中的yaml路径
+                            value:
+                              ref: ""
+                              value:
+                                extensionprops: {}
+                                type: string
+                                title: 参数值
+                  settings_map:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: object
+                      title: map结构的自定义参数
+                  settings_snippets:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      title: 配置片段名称
+                      description: 目前由后端提供名称
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: string
+                  username:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      title: 创建者名称
+                      description: 非必填，为渠成平台业务层冗余数据
+                  version:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      title: 应用版本号
+                      description: 如为空，将默认选择最新版本
+      responses:
+        "200":
+          ref: ""
+          value:
+            extensionprops: {}
+            description: successful operation
+        "201":
+          ref: ""
+          value:
+            extensionprops: {}
+            description: successful operation
+tags:
+  - extensionprops: {}
+    name: 应用管理
+  - extensionprops: {}
+    name: 空间管理
+  - extensionprops: {}
+    name: 中间件管理
+  - extensionprops: {}
+    name: 数据统计
+  - extensionprops: {}
+    name: 备份还原
+  - extensionprops: {}
+    name: 组件管理
+  - extensionprops: {}
+    name: 系统管理
+  - extensionprops: {}
+    name: 配置片段
