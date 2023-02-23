@@ -57,6 +57,7 @@
                     :modelProp="dataModel"
                     :time="time"
                     :type="resType"
+                    @save="onModelDataSave">
                     :visible="true">
                 </design-in-component>
               </a-tab-pane>
@@ -82,6 +83,7 @@ import mockMixin from "@/store/mockMixin";
 import {DesignInComponent} from '../../../components'
 import {ResTypeDef} from "../../../api/utils";
 import YamlEditor from './Yaml.vue';
+import {getMock} from "@/api/mock";
 
 
 export default {
@@ -193,6 +195,12 @@ export default {
 
     getModel(id) {
       console.log('getModel', id)
+    },
+
+    onModelDataSave() {
+      getMock(this.model.id).then(json =>{
+          this.model.dataContent = json.data.dataContent;
+      })
     },
 
     beforeUpload(file) {

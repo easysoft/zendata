@@ -210,6 +210,7 @@ export default {
   methods: {
     onModelSave() {
       console.log('onModelSave')
+      this.$emit('save')
       this.loadTree(this.selectedKeys[0])
     },
     cancel() {
