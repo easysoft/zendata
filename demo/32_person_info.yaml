@@ -1,0 +1,46 @@
+title: test
+desc: 描述
+version: 1.0
+fields:
+  - field: telephone_china
+    from: phone.v1.yaml
+    use: telephone_china
+    postfix: "\t"
+
+  - field: telephone_china_with_city_code
+    from: phone.v1.yaml
+    use: telephone_china_with_city_code
+    postfix: "\t"
+
+  - field: telephone_china_with_country_code
+    from: phone.v1.yaml
+    use: telephone_china_with_country_code
+    postfix: "\t"
+
+  - field: telephone_400
+    from: phone.v1.yaml
+    use: telephone_400
+    postfix: "\t"
+
+  - field: telephone_service
+    from: phone.v1.yaml
+    use: telephone_service
+    postfix: "\t"
+
+  - field: cellphone
+    from: phone.v1.yaml
+    use: cellphone
+    postfix: "\t"
+
+  - field: qq
+    from: phone.v1.yaml
+    use: qq
+    postfix: "\t"
+
+  - field: field_creditcard
+    format: "credit_card('amex')"
+    postfix: "\t"
+
+  - field: field_idcard
+    format: "id_card()"
+    postfix: "\t"

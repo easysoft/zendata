@@ -1,0 +1,173 @@
+{
+  "basePath": "/api/cne",
+  "components": {},
+  "info": {
+    "title": "cne-api",
+    "version": "last"
+  },
+  "openapi": "",
+  "paths": {
+    "/app/install": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "### 自定义参数传递说明\n\n支持两种结构的传递，列表和字典\n\n#### settings\n\n为列表结构，列表元素为字典，参数项和参数值分别作为key 和 values 的值\n\n``` javascript\n[\n    {\n    \t\"key\": \"replicas\", \"value\": \"2\"\n    },\n    {\n        \"key\": \"mysql.resource.memory\", \"value\": \"1Gi\"\n    }\n]\n```\n\n### settings_map (已实现)\n\n为字典结构，字典第一层为组件名，内容为具体的参数 map 结构，以zentao为例\n\n```\n{\n    \"zentao\": {\n        \"replicas\": 1\n    },\n    \"mysql\": {\n        \"resources\": {\n            \"memory\": \"1Gi\"\n        }\n    }\n}\n```\n\n经 cne 处理过后，最终参数变为\n\n``` yaml\nreplicas: 1\n\nmysql:\n  resources:\n    memory: 1Gi\n```",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "root",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "properties": {
+                "channel": {
+                  "description": "cloud 渠成私有, test 测试, stable 用户可见",
+                  "mock": {
+                    "mock": "test"
+                  },
+                  "title": "应用仓库标签",
+                  "type": "string"
+                },
+                "chart": {
+                  "description": "helm应用名称，纯ying wen",
+                  "title": "被安装的应用名称",
+                  "type": "string"
+                },
+                "cluster": {
+                  "description": "可为空，默认本地集群",
+                  "title": "集群标示",
+                  "type": "string"
+                },
+                "name": {
+                  "description": "唯一,应以chart名称打头加随机字符串",
+                  "title": "应用实例化名称",
+                  "type": "string"
+                },
+                "namespace": {
+                  "mock": {
+                    "mock": "test"
+                  },
+                  "title": "对应命名空间",
+                  "type": "string"
+                },
+                "settings": {
+                  "items": {
+                    "properties": {
+                      "key": {
+                        "description": "对应helm values文件中的yaml路径",
+                        "title": "参数名",
+                        "type": "string"
+                      },
+                      "value": {
+                        "title": "参数值",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "title": "自定义参数",
+                  "type": "array"
+                },
+                "settings_map": {
+                  "title": "map结构的自定义参数",
+                  "type": "object"
+                },
+                "settings_snippets": {
+                  "description": "目前由后端提供名称",
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "配置片段名称",
+                  "type": "array"
+                },
+                "username": {
+                  "description": "非必填，为渠成平台业务层冗余数据",
+                  "mock": {
+                    "mock": "admin"
+                  },
+                  "title": "创建者名称",
+                  "type": "string"
+                },
+                "version": {
+                  "description": "如为空，将默认选择最新版本",
+                  "title": "应用版本号",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "namespace",
+                "name",
+                "chart",
+                "channel"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "properties": {
+                "code": {
+                  "type": "number"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "timestamp": {
+                  "type": "number"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Pet"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "应用安装",
+        "tags": [
+          "应用管理"
+        ]
+      }
+    }
+  },
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "tags": [
+    {
+      "name": "应用管理"
+    },
+    {
+      "name": "空间管理"
+    },
+    {
+      "name": "中间件管理"
+    },
+    {
+      "name": "数据统计"
+    },
+    {
+      "name": "备份还原"
+    },
+    {
+      "name": "组件管理"
+    },
+    {
+      "name": "系统管理"
+    },
+    {
+      "name": "配置片段"
+    }
+  ]
+}

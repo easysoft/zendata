@@ -1,0 +1,181 @@
+title: range
+desc:
+version: 1.0
+
+fields:
+#- field: field_text                   # 从一个文件中随机读取。
+#  range: res/user.txt:R                   # 相对当前文件路径。
+#  postfix: "\t"
+#- field: f1
+#  range: 1-9
+#  postfix: "ttt"
+#  loop:  1-3
+#
+#  - field: field_use_config
+#    config: number.yaml
+#    postfix: "\t"
+
+#  - field: field_text       # 从一个文件中随机读取。
+#    range: user.txt:R       # 相对当前文件路径。
+#    postfix: "\t"
+#  - field: f1     # 区间
+#    range: 1-3   # 1,2,3,10...
+#    postfix: "\t"
+#
+#  - field: field_use_ranges_medium
+#    from: zentao.number.v1.yaml
+#    use: medium{5}                    # 使用该文件中定义的medium分组。
+#    postfix: "\t"
+#
+#  - field: field_use_instance      # 引用其他的定义文件，该文件定义了多个实例。
+#    from: ip.v1.yaml               # yaml/ip/v1.yaml
+#    use: privateB{3},privateC{6:2} # 使用该文件中定义的2个实例，privateB取3行，privateC取6行（前3个值各重复2次）。
+#    postfix: "\t"
+#
+#  - field: part1
+#    from: name.cnreal.v1.yaml
+#    use: two
+
+#  - field: telephone_china
+#    from: phone.v1.yaml
+#    use: telephone_china
+#    postfix: "\t"
+#
+#  - field: telephone_china_with_city_code
+#    from: phone.v1.yaml
+#    use: telephone_china_with_city_code
+#    postfix: "\t"
+#
+#  - field: telephone_china_with_country_code
+#    from: phone.v1.yaml
+#    use: telephone_china_with_country_code
+#    postfix: "\t"
+#
+#  - field: telephone_400
+#    from: phone.v1.yaml
+#    use: telephone_400
+#    postfix: "\t"
+#
+#  - field: telephone_service
+#    from: phone.v1.yaml
+#    use: telephone_service
+#    postfix: "\t"
+
+#  - field: cellphone
+#    from: phone.v1.yaml
+#    use: cellphone
+#    postfix: "\t"
+#
+#  - field: qq
+#    from: phone.v1.yaml
+#    use: qq
+#    postfix: "\t"
+#
+#  - field: field_creditcard
+#    format: "credit_card('amex')"
+#    postfix: "\t"
+#
+#  - field: field_idcard
+#    format: "id_card()"
+#    postfix: "\t"
+
+#  - field: first
+#    range: tt.yaml{5}  # 注意此处{10}为取10条记录，非重复语法。
+#    rand: true
+#    prefix: "("
+#    postfix: ")"
+
+#  - field: field_use_excel
+#    from: areacode.v1.city
+#    select: code||'-'||city
+#    where: id > 1
+#    rand: true
+#    postfix: "\t"
+#
+#  - field: field_use_excel2
+#    from: areacode.v1.country
+#    select: code||'-'||chinese_name
+#    where: id > 1
+#    rand: true
+#    postfix: "\t"
+#
+#- field: f11
+#  range: 1-9
+
+- field: join_false
+  mode: r
+  postfix: "\t"
+  fields:
+    - field: child1
+      range: A-C
+      prefix: PART1_
+      postfix: ' | '
+
+    - field: child2
+      range: 0-9
+    - field: child3
+      range: 0-3,a-z
+
+#  - field: join_true
+#    mode: p
+#    join: true
+#    fields:
+#      - field: child1
+#        range: A-C
+#        prefix: PART1_
+#        postfix: ' | '
+#      - field: child2
+#        range: a-c
+#        prefix: part2_
+#      - field: child3
+#        fields:
+#          - field: child1
+#            range: A-F
+#            prefix: CHILD1_
+#            postfix: ' | '
+#          - field: child2
+#            range: a-c
+#            prefix: CHILD2_
+
+#  - field: f1
+#    range: 0-9
+#    postfix: "\t"
+#
+#  - field: f2
+#    range: 1-3{3} # 逐个重复，生成类似 a、a、a、b、b、b、c、c、c
+#    postfix: "\t"
+#  - field: f3
+#    range: 1-3{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+#    postfix: "\t"
+#
+#  - field: f4
+#    range: a-c{3} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+#    postfix: "\t"
+#  - field: f5
+#    range: a-c{3!} # 迭代重复，生成类似 a、b、c、a、b、c、a、b、c
+#    postfix: "\t"
+#
+#  - field: f6
+#    range: 0.01-9
+#    postfix: "\t"
+#
+#  - field: f7
+#    range: 0.01-0.03{3}
+#    postfix: "\t"
+#
+#  - field: f8
+#    range: 0.01-0.03{3!}
+#    postfix: "\t"
+#
+#  - field: f9
+#    range: 0-9:R
+#    postfix: "\t"
+#
+#  - field: f11
+#    range: 0.01-9
+#    postfix: "\t"
+#
+#  - field: field_format                 # 通过格式化字符串输出。
+#    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
+#    format: "passwd%02d"                # 用%02d补零，使密码整体保持8位。
+#    postfix: "\t"

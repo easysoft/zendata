@@ -1,0 +1,13 @@
+title: 天干
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: heavenly_stems
+    note:
+    fields:
+     - field: content
+       from: heavenly_stems.v1.heavenly_stems
+       select: content

@@ -1,0 +1,18 @@
+title: 公司
+desc:
+author: wwccss
+version: 1.0
+
+field: company
+instances:
+  - instance: name
+    fields:
+     - field: part1
+       from: company.v1.company
+       select: content
+
+  - instance: abbreviation
+    fields:
+      - field: part1
+        from: company_abbreviation.v1.company_abbreviation
+        select: content

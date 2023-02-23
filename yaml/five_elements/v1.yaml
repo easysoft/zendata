@@ -1,0 +1,13 @@
+title: 五行
+desc:
+author: wwccss
+version: 2.0
+
+field: field1
+instances:
+  - instance: five_elements
+    note:
+    fields:
+     - field: content
+       from: five_elements.v1.five_elements
+       select: content

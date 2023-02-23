@@ -1,0 +1,31 @@
+title: test
+desc: 描述
+version: 1.0
+fields:
+  - field: field1
+    range: 0-9
+
+  - field: field3
+#    join: true
+    mode: recursive
+    items: 3
+    fields:
+      - field: child1
+        range: A-Z
+        prefix: PART1_
+        postfix: ' | '
+
+      - field: child2
+        range: x-z
+        prefix: part2_
+
+#      - field: child3
+#        fields:
+#          - field: child1
+#            range: A-F
+#            prefix: CHILD1_
+#            postfix: ' | '
+#
+#          - field: child2
+#            range: a-c
+#            prefix: CHILD2_

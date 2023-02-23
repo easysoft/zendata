@@ -1,0 +1,20 @@
+{
+    "app.title": "ZenData",
+    "app.about": "关于",
+    "app.exit": "退出",
+    "app.edit": "编辑",
+    "app.undo": "撤销",
+    "app.redo": "重做",
+    "app.cut": "剪切",
+    "app.copy": "复制",
+    "app.paste": "黏贴",
+    "app.select_all": "选择所有",
+    "app.view": "查看",
+    "app.switch_to_full_screen": "切换全屏",
+    "app.window": "窗口",
+    "app.minimize": "最小化",
+    "app.close": "关闭",
+    "app.bring_all_to_front": "全部置于顶层",
+    "app.help": "帮助",
+    "app.website": "网站"
+}
