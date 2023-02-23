@@ -169,10 +169,12 @@ export default {
     },
 
     handleEditSave() {
+      this.setMockItem({})
       this.editVisible = false;
       this.loadData();
     },
     handleEditCancel() {
+      this.setMockItem({})
       this.editVisible = false;
     },
     remove(record) {
