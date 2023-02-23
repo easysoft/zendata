@@ -34,3 +34,8 @@
 /ui/package-lock.json
 /demo/mock/output/
 /upload/
+
+/client/node_modules
+/client/out
+/client/ui
+/client/.webpack
