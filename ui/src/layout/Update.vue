@@ -1,6 +1,6 @@
 <template>
   <div class="right-top-update-main">
-    <div></div>
+    <div v-if="version" class="version">V{{version}}</div>
 
     <a-modal title="升级提醒"
            :visible="isVisible"
@@ -43,6 +43,7 @@ export default {
     let downloadingPercent = 0
     let isElectron = false
     let ipcRenderer = undefined
+    let version = null
 
     return {
       isVisible,
@@ -52,11 +53,18 @@ export default {
       downloadingPercent,
       ipcRenderer,
       isElectron,
+      version,
     }
   },
 
   created() {
+    console.log('created')
     this.isElectron = !!window.require
+
+    if (this.isElectron) {
+      const remote = window.require('@electron/remote')
+      this.version = remote.getGlobal('sharedObj').version
+    }
 
     if (this.isElectron && !this.ipcRenderer) {
       this.ipcRenderer = window.require('electron').ipcRenderer
@@ -115,9 +123,15 @@ export default {
 </script>
 
 <style lang="less">
-.update-modal{
-  .ant-modal-footer {
-    text-align: center;
+.right-top-update-main {
+  position: absolute;
+  right: 5px;
+  bottom: 0;
+  .update-modal{
+    .ant-modal-footer {
+      text-align: center;
+    }
   }
 }
+
 </style>

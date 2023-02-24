@@ -61,6 +61,7 @@ export default {
     border-top: 1px solid #eff1f7;
   }
   .content-container {
+    flex: 1;
     padding: 0 15px 15px;
   }
 }
