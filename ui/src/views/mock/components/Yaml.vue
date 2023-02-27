@@ -79,8 +79,8 @@ export default {
 
 <style scoped>
 .yaml-editor {
-  height: 100%;
   position: relative;
+  height: 100%;
 }
 
 .yaml-editor >>> .CodeMirror {

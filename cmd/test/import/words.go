@@ -2,13 +2,8 @@ package main
 
 import (
 	"fmt"
-<<<<<<< HEAD:internal/test/import/import-words.go
-	"github.com/easysoft/zendata/cmd/test/import/comm"
-	"github.com/easysoft/zendata/cmd/test/import/model"
-=======
 	"github.com/easysoft/zendata/cmd/test/comm"
 	"github.com/easysoft/zendata/cmd/test/model"
->>>>>>> 3.0:cmd/test/import/words.go
 	"strings"
 
 	"gorm.io/gorm"
@@ -51,11 +46,7 @@ func main() {
 }
 
 func ImportWordsFromExcel(filePath string, db *gorm.DB) (sheetName string, count int) {
-<<<<<<< HEAD:internal/test/import/import-words.go
-	sheetName, rows := comm.GetExcel1stSheet(filePath)
-=======
 	sheetName, rows := comm.GetExcelFirstSheet(filePath)
->>>>>>> 3.0:cmd/test/import/words.go
 	fmt.Printf("importing ... : [%s] \n", sheetName)
 
 	if len(rows) == 0 {
