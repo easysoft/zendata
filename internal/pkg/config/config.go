@@ -25,7 +25,6 @@ import (
 func InitConfig(root string) {
 	var err error = nil
 	vari.ZdDir = fileUtils.GetExeDir()
-	vari.DevDir = fileUtils.GetDevDir()
 
 	vari.Config = getInst()
 

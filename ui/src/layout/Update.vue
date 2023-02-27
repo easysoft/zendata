@@ -103,7 +103,7 @@ export default {
     },
     defer() {
       console.log('defer')
-      setCache(skippedVersion, Date.now() + 24 * 3600);
+      setCache(ignoreUtil, Date.now() + 24 * 3600);
       this.isVisible = false
     },
     skip() {

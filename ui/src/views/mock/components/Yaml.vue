@@ -84,7 +84,7 @@ export default {
 }
 
 .yaml-editor >>> .CodeMirror {
-  height: auto;
+  height: 100%;
   min-height: 300px;
 }
 

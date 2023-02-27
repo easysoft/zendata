@@ -141,7 +141,7 @@ func GetExeDir() string { // where zd.exe file in
 			}
 		}
 	} else { // debug
-		dir = vari.ZdDir
+		dir = GetDevDir()
 	}
 
 	dir, _ = filepath.Abs(dir)

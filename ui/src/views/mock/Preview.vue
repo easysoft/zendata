@@ -32,7 +32,7 @@
                       <a-select v-if="samples && samples.length > 1"
                                 :defaultValue="mockSrcs[fullKey] || samples[0]"
                                 @change="selectSample"
-                                size="small">
+                                size="small" class="media-select">
                         <a-select-option v-for="(item, index) in samples" :value="item+'~~~'+fullKey" :key="index">
                           {{item}}
                         </a-select-option>
@@ -147,6 +147,10 @@ export default {
             float: left;
             margin-left: 16px;
             width: 100px;
+
+            .media-select {
+              width: 90px;
+            }
           }
         }
       }

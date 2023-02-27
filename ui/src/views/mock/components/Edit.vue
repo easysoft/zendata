@@ -267,6 +267,9 @@ export default {
 
         .content-col {
           height: 100%;
+          .yaml-editor {
+            height: 100%;
+          }
 
           pre {
             padding: 10px;
