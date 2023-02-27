@@ -22,12 +22,6 @@ PACKAGE=${PROJECT}-${VERSION}
 BIN_DIR=bin
 BIN_ZIP_DIR=${BIN_DIR}/zip/${PROJECT}/${VERSION}/
 BIN_OUT=${BIN_DIR}/${PROJECT}/${VERSION}/
-<<<<<<< HEAD
-BIN_WIN64=${BIN_OUT}win64/
-BIN_WIN32=${BIN_OUT}win32/
-BIN_LINUX=${BIN_OUT}linux/
-BIN_MAC=${BIN_OUT}darwin/
-=======
 CLIENT_OUT_DIR=client/out/
 
 CLIENT_BIN_DIR=client/bin/
@@ -51,7 +45,6 @@ BUILD_CMD_WIN=go build -ldflags "-s -w -X 'main.AppVersion=${VERSION}' -X 'main.
 prepare_build: update_version_in_config gen_version_file prepare_res
 
 default: build_ui build_client_ui prepare_build compile_all copy_files package package_upgrade
->>>>>>> 3.0
 
 win64: prepare_build compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64 copy_files package package_upgrade
 win32: prepare_build compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32 copy_files package package_upgrade
@@ -157,9 +150,9 @@ package_gui_mac_client:
 	@cp -rf ${BIN_DIR}/darwin/server ${CLIENT_BIN_DIR}darwin/${PROJECT}
 
 	@cd client && npm run package-mac && cd ..
-	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin && mkdir ${CLIENT_OUT_DIR_EXECUTABLE}darwin && \
+	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}darwin && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-darwin-x64 ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui && \
-		mv ${CLIENT_OUT_DIR}darwin/gui/zd.app ${CLIENT_OUT_DIR_EXECUTABLE}darwin/zd.app && rm -rf ${CLIENT_OUT_DIR}darwin/gui
+		mv ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui/zd.app ${CLIENT_OUT_DIR_EXECUTABLE}darwin/zd.app && rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui
 
 
 # launcher
@@ -182,29 +175,18 @@ compile_launcher_win32:
 # command line
 compile_command_win64:
 	@echo 'start compile win64'
-<<<<<<< HEAD
-	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -ldflags "-s -w" -o ${BIN_WIN64}${BINARY}.exe cmd/command/main.go
-=======
 	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
 		${BUILD_CMD_WIN} -x -v \
  		-o ${BIN_DIR}/win64/${PROJECT}.exe ${COMMAND_MAIN_FILE}
->>>>>>> 3.0
 
 compile_command_win32:
 	@echo 'start compile win32'
-<<<<<<< HEAD
-	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 go build -x -v -ldflags "-s -w" -o ${BIN_WIN32}${BINARY}.exe cmd/command/main.go
-=======
 	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 \
 		${BUILD_CMD_WIN} -x -v \
  		-o ${BIN_DIR}/win32/${PROJECT}.exe ${COMMAND_MAIN_FILE}
->>>>>>> 3.0
 
 compile_command_linux:
 	@echo 'start compile linux'
-<<<<<<< HEAD
-	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ go build -o ${BIN_LINUX}${BINARY} cmd/command/main.go
-=======
 	@rm -rf ${BIN_DIR}/linux/${PROJECT}
 ifeq ($(OS),"Mac")
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ \
@@ -215,18 +197,13 @@ else
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/linux/${PROJECT} ${COMMAND_MAIN_FILE}
 endif
->>>>>>> 3.0
 
 compile_command_mac:
 	@echo 'start compile mac'
-<<<<<<< HEAD
-	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -o ${BIN_MAC}${BINARY} cmd/command/main.go
-=======
 	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/darwin/${PROJECT} ${COMMAND_MAIN_FILE}
 
->>>>>>> 3.0
 
 copy_files:
 	@echo 'start copy files to ${BIN_DIR}'
@@ -241,9 +218,6 @@ copy_files:
 	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
 	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
 
-<<<<<<< HEAD
-	@for platform in `ls ${BIN_OUT}`; do cp -r {.zd.conf,bin/data,bin/runtime,bin/yaml,bin/users,bin/demo,bin/tmp} "${BIN_OUT}$${platform}"; done
-=======
 	@for platform in `ls ${CLIENT_OUT_DIR_EXECUTABLE}`;do \
 		cp -r .zd.conf "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
 		cp -r bin/data "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
@@ -255,7 +229,6 @@ copy_files:
 		cp ${BIN_DIR}/$${platform}/${PROJECT} "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}" || true; \
 		cp ${BIN_DIR}/$${platform}/${PROJECT}-gui.exe "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}" || true; \
 	done
->>>>>>> 3.0
 
 	@rm -rf ${BIN_OUT}linux/runtime/php \
 		${BIN_OUT}linux/runtime/protobuf/bin/mac \
@@ -293,18 +266,11 @@ package_upgrade:
 	@cd ${CLIENT_OUT_DIR_UPGRADE} && \
 		for platform in `ls ./`; \
 			do  cd $${platform} && \
-<<<<<<< HEAD
-				zip -r ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip ./* && \
-				md5sum ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip | awk '{print $$1}' | \
-					xargs echo > ${QINIU_DIST_DIR}$${platform}/${BINARY}.zip.md5 && \
-				cd ..; \
-=======
 				cp -r ../../../ui ./; \
 				zip -ry ${QINIU_DIST_DIR}$${platform}/${PROJECT}-upgrade.zip ./* && \
 				md5sum ${QINIU_DIST_DIR}$${platform}/${PROJECT}-upgrade.zip | awk '{print $$1}' | \
 					xargs echo > ${QINIU_DIST_DIR}$${platform}/${PROJECT}-upgrade.zip.md5 && \
 				cd ../; \
->>>>>>> 3.0
 			done
 
 update_version_in_config:
@@ -323,8 +289,4 @@ upload_to:
 	@echo 'upload...'
 	@find ${QINIU_DIR} -name ".DS_Store" -type f -delete
 	@qshell qupload2 --src-dir=${QINIU_DIR} --bucket=download --thread-count=10 --log-file=qshell.log \
-<<<<<<< HEAD
-                     --skip-path-prefixes=ztf,zv,zmanager,driver --rescan-local --overwrite --check-hash
-=======
                      --skip-path-prefixes=ztf,zv,zmanager,driver,deeptest --rescan-local --overwrite --check-hash
->>>>>>> 3.0
