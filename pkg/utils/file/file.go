@@ -125,7 +125,7 @@ func GetExeDir() string { // where zd.exe file in
 	arg1 := strings.ToLower(os.Args[0])
 
 	name := filepath.Base(arg1)
-	if strings.Index(name, "zd") == 0 && strings.Index(arg1, "go-build") < 0 {
+	if strings.Index(name, "zd") == 0 && strings.Index(arg1, "go-build") < 0 { // release
 		p, _ := exec.LookPath(os.Args[0])
 		if strings.Index(p, string(os.PathSeparator)) > -1 {
 			name := "gui"
