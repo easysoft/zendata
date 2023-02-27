@@ -79,7 +79,7 @@ compile_server_win64:
  		-o ${BIN_DIR}/win64/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win64" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win64" && \
-  		cp ${BIN_DIR}/win64/${PROJECT}-server.exe "${CLIENT_OUT_DIR_UPGRADE}win64/${PROJECT}.exe"
+  		cp ${BIN_DIR}/win64/${PROJECT}.exe "${CLIENT_OUT_DIR_UPGRADE}win64/${PROJECT}.exe"
 
 compile_server_win32:
 	@echo 'start compile server win32'
@@ -89,7 +89,7 @@ compile_server_win32:
 		-o ${BIN_DIR}/win32/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win32" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win32" && \
-  		cp ${BIN_DIR}/win32/${PROJECT}-server.exe "${CLIENT_OUT_DIR_UPGRADE}win32/${PROJECT}.exe"
+  		cp ${BIN_DIR}/win32/${PROJECT}.exe "${CLIENT_OUT_DIR_UPGRADE}win32/${PROJECT}.exe"
 
 compile_server_linux:
 	@echo 'start compile server linux'
@@ -105,7 +105,7 @@ else
 endif
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux" && \
-  		cp ${BIN_DIR}/linux/${PROJECT}-server "${CLIENT_OUT_DIR_UPGRADE}linux/${PROJECT}"
+  		cp ${BIN_DIR}/linux/${PROJECT} "${CLIENT_OUT_DIR_UPGRADE}linux/${PROJECT}"
 
 compile_server_mac:
 	@echo 'start compile server mac'
@@ -119,7 +119,7 @@ compile_server_mac:
 # gui
 package_gui_win64_client:
 	@echo 'start package gui win64'
-	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir ${CLIENT_BIN_DIR}win32
+	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}win32
 	@cp -rf ${BIN_DIR}/win64/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
 
 	@cd client  && npm run package-win64 && cd ..
@@ -150,7 +150,7 @@ package_gui_mac_client:
 	@cp -rf ${BIN_DIR}/darwin/server ${CLIENT_BIN_DIR}darwin/${PROJECT}
 
 	@cd client && npm run package-mac && cd ..
-	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin && mkdir ${CLIENT_OUT_DIR_EXECUTABLE}darwin && \
+	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}darwin && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-darwin-x64 ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui && \
 		mv ${CLIENT_OUT_DIR}darwin/gui/zd.app ${CLIENT_OUT_DIR_EXECUTABLE}darwin/zd.app && rm -rf ${CLIENT_OUT_DIR}darwin/gui
 
