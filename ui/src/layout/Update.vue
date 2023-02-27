@@ -54,6 +54,9 @@ export default {
     }
   },
 
+  created() {
+    console.log('created')
+    this.isElectron = !!window.require
 
     if (this.isElectron) {
       const remote = window.require('@electron/remote')
