@@ -1,10 +1,10 @@
 module.exports = {
     electronPackagerConfig: {
-        "name": "ztf",
+        "name": "zd",
         "icon": "./ui/favicon.ico"
     },
     packagerConfig: {
-        "name": "ztf",
+        "name": "zd",
         "icon": "./icon/favicon",
         extraResource: [
             './bin',
@@ -16,7 +16,7 @@ module.exports = {
         {
             name: '@electron-forge/maker-squirrel',
             config: {
-                name: 'ztf'
+                name: 'zd'
             }
         },
         {
