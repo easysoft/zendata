@@ -76,36 +76,36 @@ compile_server_win64:
 	@echo 'start compile win64'
 	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
 		${BUILD_CMD_WIN} -x -v \
- 		-o ${BIN_DIR}/win64/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
+ 		-o ${BIN_DIR}/win64/server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win64" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win64" && \
-  		cp ${BIN_DIR}/win64/${PROJECT}-server.exe "${CLIENT_OUT_DIR_UPGRADE}win64/server.exe"
+  		cp ${BIN_DIR}/win64/server.exe "${CLIENT_OUT_DIR_UPGRADE}win64/server.exe"
 
 compile_server_win32:
 	@echo 'start compile server win32'
-	@rm -rf ${BIN_DIR}/win32/${PROJECT}-server.exe
+	@rm -rf ${BIN_DIR}/win32/server.exe
 	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 \
 		${BUILD_CMD_WIN} -x -v \
-		-o ${BIN_DIR}/win32/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
+		-o ${BIN_DIR}/win32/server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win32" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win32" && \
-  		cp ${BIN_DIR}/win32/${PROJECT}-server.exe "${CLIENT_OUT_DIR_UPGRADE}win32/server.exe"
+  		cp ${BIN_DIR}/win32/server.exe "${CLIENT_OUT_DIR_UPGRADE}win32/server.exe"
 
 compile_server_linux:
 	@echo 'start compile server linux'
-	@rm -rf ${BIN_DIR}/linux/${PROJECT}-server
+	@rm -rf ${BIN_DIR}/linux/server
 ifeq ($(OS),"Mac")
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ \
 		${BUILD_CMD_UNIX} \
-		-o ${BIN_DIR}/linux/${PROJECT}-server ${SERVER_MAIN_FILE}
+		-o ${BIN_DIR}/linux/server ${SERVER_MAIN_FILE}
 else
 	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=gcc CXX=g++ \
 		${BUILD_CMD_UNIX} \
-		-o ${BIN_DIR}/linux/${PROJECT}-server ${SERVER_MAIN_FILE}
+		-o ${BIN_DIR}/linux/server ${SERVER_MAIN_FILE}
 endif
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux" && \
-  		cp ${BIN_DIR}/linux/${PROJECT}-server "${CLIENT_OUT_DIR_UPGRADE}linux/server"
+  		cp ${BIN_DIR}/linux/server "${CLIENT_OUT_DIR_UPGRADE}linux/server"
 
 compile_server_mac:
 	@echo 'start compile server mac'
@@ -120,7 +120,7 @@ compile_server_mac:
 package_gui_win64_client:
 	@echo 'start package gui win64'
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}win32
-	@cp -rf ${BIN_DIR}/win64/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
+	@cp -rf ${BIN_DIR}/win64/server.exe ${CLIENT_BIN_DIR}win32/server.exe
 
 	@cd client  && npm run package-win64 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}win64 && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}win64 && \
@@ -129,7 +129,7 @@ package_gui_win64_client:
 package_gui_win32_client:
 	@echo 'start package gui win32'
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}win32
-	@cp -rf ${BIN_DIR}/win32/${PROJECT}-server.exe ${CLIENT_BIN_DIR}win32/${PROJECT}.exe
+	@cp -rf ${BIN_DIR}/win32/server.exe ${CLIENT_BIN_DIR}win32/server.exe
 
 	@cd client && npm run package-win32 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}win32 && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}win32 && \
@@ -138,7 +138,7 @@ package_gui_win32_client:
 package_gui_linux_client:
 	@echo 'start package gui linux'
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}linux
-	@cp -rf ${BIN_DIR}/linux/${PROJECT}-server ${CLIENT_BIN_DIR}linux/${PROJECT}
+	@cp -rf ${BIN_DIR}/linux/server ${CLIENT_BIN_DIR}linux/server
 
 	@cd client && npm run package-linux && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}linux && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}linux && \
@@ -147,7 +147,7 @@ package_gui_linux_client:
 package_gui_mac_client:
 	@echo 'start package gui mac'
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}darwin
-	@cp -rf ${BIN_DIR}/darwin/server ${CLIENT_BIN_DIR}darwin/${PROJECT}
+	@cp -rf ${BIN_DIR}/darwin/server ${CLIENT_BIN_DIR}darwin/server
 
 	@cd client && npm run package-mac && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}darwin && \
