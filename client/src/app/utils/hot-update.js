@@ -96,10 +96,10 @@ const copyFiles = (downloadPath) => {
     logInfo(`uiPath=${uiPath}, serverPath=${serverPath}`)
 
     killZdServer();
-    fs.rmSync(serverPath)
     fs.rmSync(uiPath, { recursive:true })
+    fs.rmSync(serverPath)
 
-    const serverFile = `server${os.platform() === 'win32' ? '.exe' : ''}`
-    fse.copySync(path.resolve(downloadDir, 'extracted', 'ui'), path.resolve(path.dirname(uiPath), 'ui'), { recursive: true })
-    fse.copySync(path.resolve(downloadDir, 'extracted', serverFile), path.resolve(path.dirname(serverPath), serverFile))
+    // const serverFile = `server${os.platform() === 'win32' ? '.exe' : ''}`
+    // fse.copySync(path.resolve(downloadDir, 'extracted', 'ui'), path.resolve(path.dirname(uiPath), 'ui'), { recursive: true })
+    // fse.copySync(path.resolve(downloadDir, 'extracted', serverFile), path.resolve(path.dirname(serverPath), serverFile))
 }

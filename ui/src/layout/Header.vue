@@ -14,15 +14,18 @@
           <span>
             <Icon type="folder-open" /> {{ $t('msg.workdir') }} |
           </span>
-          <a-button @click="syncData" size="small" type="link" class="btn">
-            <Icon type="sync" :title="$t('msg.help')" />{{ $t('action.import.from.file') }}
+          <a-button @click="syncData" size="small" type="link" class="btn link">
+            <Icon type="sync" :title="$t('msg.help')" />
+            <span class="link">{{ $t('action.import.from.file') }}</span>
           </a-button>
         </div>
         <code>{{ workDir }}</code>
       </div>
       <select-lang :prefixCls="'select-lang'" />
-      <a href="https://www.zendata.cn/book/zendata/" target="_blank">
-        <Icon type="question-circle" :title="$t('msg.help')" :style="{ fontSize: '18px' }" />
+      <a href="https://www.zendata.cn/book/zendata/" target="_blank" class="link">
+        <span class="link">
+          <Icon type="question-circle" :title="$t('msg.help')" :style="{ fontSize: '18px' }" />
+        </span>
       </a>
       <div v-if="isElectron" id="windowBtn">
         <span v-if="!fullScreenDef" @click="fullScreen" :title="$t('window.fullscreen')" class="window-btn">
@@ -31,18 +34,18 @@
         <span v-if="fullScreenDef" @click="fullScreen" :title="$t('window.exit_fullscreen')" class="window-btn">
           <Icon type="fullscreen-exit" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>
-  
+
         <span :title="$t('window.minimize')" @click="minimize" class="window-btn">
           <Icon type="minus" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>
-  
+
         <span v-if="maximizeDef" :title="$t('window.restore')" @click="maximize" class="window-btn">
           <Icon type="block" :style="{ fontSize: '18px' }" />
         </span>
         <span v-if="!maximizeDef" :title="$t('window.maximize')" @click="maximize" class="window-btn">
           <Icon type="border" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>
-  
+
         <span :title="$t('window.close')" @click="exit" class="window-btn">
           <Icon type="close" class="window-btn" :style="{ fontSize: '18px' }" />
         </span>

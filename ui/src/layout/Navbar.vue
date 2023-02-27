@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="navbar">
     <a-menu
         :default-selected-keys="['mine']"
         :selected-keys="[selectedKey]"
@@ -7,13 +7,13 @@
         mode="horizontal"
         @click="handleClick"
     >
-      <a-menu-item key="/data/mine/list">
+      <a-menu-item key="/data/mine/list" class="link">
         <Icon type="database" :style="{fontSize: '16px'}" />{{$t('msg.mine')}}
       </a-menu-item>
-      <a-menu-item key="/data/buildin/config/list">
+      <a-menu-item key="/data/buildin/config/list" class="link">
         <Icon type="build" :style="{fontSize: '16px'}" />{{$t('msg.buildin')}}
       </a-menu-item>
-      <a-menu-item key="/mock/index">
+      <a-menu-item key="/mock/index" class="link">
         <Icon type="cloud-server" :style="{fontSize: '16px'}" />{{$t('menu.data.mock')}}
       </a-menu-item>
     </a-menu>
@@ -68,4 +68,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.navbar {
+  link {
+    cursor: pointer;
+  }
+}
 </style>

@@ -51,5 +51,12 @@ module.exports = {
                 }
             }
         ],
+        [
+            "@timfish/forge-externals-plugin",
+            {
+                "externals": ["@electron/remote"],
+                "includeDeps": true
+            }
+        ]
     ]
 }
