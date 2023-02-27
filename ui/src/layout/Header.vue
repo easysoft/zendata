@@ -179,6 +179,7 @@ export default {
 
     .window-btn {
       margin-left: 8px;
+      cursor: pointer;
     }
   }
 
