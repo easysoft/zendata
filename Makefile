@@ -79,7 +79,7 @@ compile_server_win64:
  		-o ${BIN_DIR}/win64/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win64" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win64" && \
-  		cp ${BIN_DIR}/win64/${PROJECT}.exe "${CLIENT_OUT_DIR_UPGRADE}win64/${PROJECT}.exe"
+  		cp ${BIN_DIR}/win64/${PROJECT}-server.exe "${CLIENT_OUT_DIR_UPGRADE}win64/server.exe"
 
 compile_server_win32:
 	@echo 'start compile server win32'
@@ -89,7 +89,7 @@ compile_server_win32:
 		-o ${BIN_DIR}/win32/${PROJECT}-server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win32" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win32" && \
-  		cp ${BIN_DIR}/win32/${PROJECT}.exe "${CLIENT_OUT_DIR_UPGRADE}win32/${PROJECT}.exe"
+  		cp ${BIN_DIR}/win32/${PROJECT}-server.exe "${CLIENT_OUT_DIR_UPGRADE}win32/server.exe"
 
 compile_server_linux:
 	@echo 'start compile server linux'
@@ -105,16 +105,16 @@ else
 endif
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux" && \
-  		cp ${BIN_DIR}/linux/${PROJECT} "${CLIENT_OUT_DIR_UPGRADE}linux/${PROJECT}"
+  		cp ${BIN_DIR}/linux/${PROJECT}-server "${CLIENT_OUT_DIR_UPGRADE}linux/server"
 
 compile_server_mac:
 	@echo 'start compile server mac'
 	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 CC=gcc CXX=g++ \
 		${BUILD_CMD_UNIX} \
-		-o ${BIN_DIR}/darwin/server ${SERVER_MAIN_FILE}
+		-o ${BIN_DIR}/darwin/${PROJECT}-server ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}darwin" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}darwin" && \
-  		cp ${BIN_DIR}/darwin/server "${CLIENT_OUT_DIR_UPGRADE}darwin"
+  		cp ${BIN_DIR}/darwin/${PROJECT}-server "${CLIENT_OUT_DIR_UPGRADE}darwin/server"
 
 # gui
 package_gui_win64_client:
@@ -222,6 +222,7 @@ copy_files:
 		cp -r .zd.conf "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
 		cp -r bin/data "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
 		cp -r bin/runtime "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
+		cp -r bin/yaml "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
 		cp -r bin/users "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
 		cp -r bin/demo "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
 		cp -r bin/tmp "${CLIENT_OUT_DIR_EXECUTABLE}$${platform}"; \
