@@ -3,10 +3,10 @@
     <div v-if="version" class="version">V{{version}}</div>
 
     <a-modal title="升级提醒"
-           :visible="isVisible"
-           @cancel="onCancel"
-           :maskClosable="false"
-           class="update-modal">
+             :visible="isVisible"
+             @cancel="onCancel"
+             :maskClosable="false"
+             class="update-modal">
       <div>
         发现新的版本<b>{{newVersion}}</b>，请确定是否升级。
       </div>
@@ -29,7 +29,7 @@ import {
   electronMsgDownloading,
   skippedVersion, ignoreUtil,
 } from "../config/settings.js";
-  import {getCache, setCache} from "../utils/localCache.js";
+import {getCache, setCache} from "../utils/localCache.js";
 
 export default {
   name: 'Update',
@@ -44,7 +44,10 @@ export default {
     let isElectron = false
     let ipcRenderer = undefined
     let version = null
+
     return {
+      isVisible,
+      currVersion,
       newVersion,
       forceUpdate,
       downloadingPercent,
@@ -111,7 +114,11 @@ export default {
 
     onCancel() {
       console.log('onCancel')
+      this.isVisible = false
     },
+  }
+}
+
 
 </script>
 
@@ -127,3 +134,4 @@ export default {
   }
 }
 
+</style>
