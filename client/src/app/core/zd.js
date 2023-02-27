@@ -21,7 +21,7 @@ export async function startZdServer() {
     let {SERVER_EXE_PATH: serverExePath} = process.env;
     if (!serverExePath && !DEBUG) {
         const platform = os.platform(); // 'darwin', 'linux', 'win32'
-        const exePath = `bin/${platform}/zd${platform === 'win32' ? '.exe' : ''}`;
+        const exePath = `bin/${platform}/server${platform === 'win32' ? '.exe' : ''}`;
         serverExePath = path.join(process.resourcesPath, exePath);
     }
     if (serverExePath) {

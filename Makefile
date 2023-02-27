@@ -44,7 +44,7 @@ BUILD_CMD_WIN=go build -ldflags "-s -w -X 'main.AppVersion=${VERSION}' -X 'main.
 
 prepare_build: update_version_in_config gen_version_file prepare_res
 
-default: build_ui build_client_ui prepare_build compile_all copy_files package package_upgrade
+default: build_ui prepare_build compile_all copy_files package package_upgrade
 
 win64: prepare_build compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64 copy_files package package_upgrade
 win32: prepare_build compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32 copy_files package package_upgrade
@@ -69,9 +69,6 @@ build_ui:
 	@echo 'compile ui'
 	@cd ui && yarn build && cd ..
 
-build_client_ui:
-	@cd ui && UI_IN_CLIENT=1 yarn build --dest ../client/ui && cd ..
-
 compile_server_win64:
 	@echo 'start compile win64'
 	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
@@ -79,7 +76,7 @@ compile_server_win64:
  		-o ${BIN_DIR}/win64/server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win64" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win64" && \
-  		cp ${BIN_DIR}/win64/server.exe "${CLIENT_OUT_DIR_UPGRADE}win64/server.exe"
+  		cp ${BIN_DIR}/win64/server.exe "${CLIENT_OUT_DIR_UPGRADE}win64/"
 
 compile_server_win32:
 	@echo 'start compile server win32'
@@ -89,7 +86,7 @@ compile_server_win32:
 		-o ${BIN_DIR}/win32/server.exe ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}win32" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}win32" && \
-  		cp ${BIN_DIR}/win32/server.exe "${CLIENT_OUT_DIR_UPGRADE}win32/server.exe"
+  		cp ${BIN_DIR}/win32/server.exe "${CLIENT_OUT_DIR_UPGRADE}win32/"
 
 compile_server_linux:
 	@echo 'start compile server linux'
@@ -105,7 +102,7 @@ else
 endif
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux" && \
-  		cp ${BIN_DIR}/linux/server "${CLIENT_OUT_DIR_UPGRADE}linux/server"
+  		cp ${BIN_DIR}/linux/server "${CLIENT_OUT_DIR_UPGRADE}linux/"
 
 compile_server_mac:
 	@echo 'start compile server mac'
@@ -114,7 +111,7 @@ compile_server_mac:
 		-o ${BIN_DIR}/darwin/server ${SERVER_MAIN_FILE}
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}darwin" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}darwin" && \
-  		cp ${BIN_DIR}/darwin/server "${CLIENT_OUT_DIR_UPGRADE}darwin"
+  		cp ${BIN_DIR}/darwin/server "${CLIENT_OUT_DIR_UPGRADE}darwin/"
 
 # gui
 package_gui_win64_client:
@@ -215,6 +212,7 @@ copy_files:
 	@cp -r runtime ${BIN_DIR}
 	@rm -rf ${BIN_DIR}/demo/out ${BIN_DIR}/yaml/article/chinese/slang/out ${BIN_DIR}/runtime/protobuf/out
 
+	@rm -rf ${BIN_DIR}/tmp
 	@mkdir -p ${BIN_DIR}/tmp/cache && sqlite3 tmp/cache/.data.db ".backup '${BIN_DIR}/tmp/cache/.data.db'"
 	@sqlite3 '${BIN_DIR}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
 
