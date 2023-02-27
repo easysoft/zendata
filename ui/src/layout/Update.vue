@@ -44,10 +44,7 @@ export default {
     let isElectron = false
     let ipcRenderer = undefined
     let version = null
-
     return {
-      isVisible,
-      currVersion,
       newVersion,
       forceUpdate,
       downloadingPercent,
@@ -57,9 +54,6 @@ export default {
     }
   },
 
-  created() {
-    console.log('created')
-    this.isElectron = !!window.require
 
     if (this.isElectron) {
       const remote = window.require('@electron/remote')
@@ -114,11 +108,7 @@ export default {
 
     onCancel() {
       console.log('onCancel')
-      this.isVisible = false
     },
-  }
-}
-
 
 </script>
 
@@ -134,4 +124,3 @@ export default {
   }
 }
 
-</style>

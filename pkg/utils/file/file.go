@@ -3,6 +3,14 @@ package fileUtils
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"math/rand"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
+
 	constant "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -11,13 +19,6 @@ import (
 	"github.com/fatih/color"
 	"github.com/oklog/ulid/v2"
 	"github.com/snowlyg/helper/str"
-	"io/ioutil"
-	"math/rand"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
-	"time"
 )
 
 func ReadFile(filePath string) string {
