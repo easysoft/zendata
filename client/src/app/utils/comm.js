@@ -103,8 +103,8 @@ export function computerFileMd5(pth) {
     const buffer = fs.readFileSync(pth);
     const hash = crypto.createHash('md5');
     hash.update(buffer, 'utf8');
-    const md5 = hash.digest('hex');
-    return md5
+    const md5 = hash.digest('hex') + '';
+    return md5.trim()
 }
 
 export function getVersionUrl() {
@@ -121,11 +121,14 @@ export function getAppUrl(version) {
 
 export async function checkMd5(version, file) {
     const platform = os.platform(); // 'darwin', 'linux', 'win32'
-    const url = new URL(`${App}/${version}/${platform}/${App}-upgrade.zip.md5`, downloadUrl);
+    const url = new URL(`${App}/${version}/${platform}/${App}-upgrade.zip.md5`, downloadUrl) + '?ts=' + Date.now();
 
-    const md5Remote = await got.get(url).text();
+    logInfo(`md5Url=${url}, file=${file}`)
+
+    const md5Remote = (await got.get(url).text() + '').trim();
     const md5File = computerFileMd5(file)
     const pass = md5Remote === md5File
+
     logInfo(`md5Remote=${md5Remote}, md5File=${md5File}, pass=${pass}`)
 
     return pass

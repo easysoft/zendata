@@ -70,10 +70,10 @@ const downLoadApp = (version, mainWin, cb) => {
         mainWin.webContents.send(electronMsgDownloading, {percent})
     });
 
-    pipeline(downloadStream, fileWriterStream).then(() => {
+    pipeline(downloadStream, fileWriterStream).then(async () => {
         logInfo(`success to downloaded to ${downloadPath}`)
 
-        const md5Pass = checkMd5(version, downloadPath)
+        const md5Pass = await checkMd5(version, downloadPath)
         if (md5Pass) {
             cb(downloadPath, version)
         } else {
