@@ -62,7 +62,8 @@ export async function getRemoteVersion() {
 }
 
 export function changeVersion(newVersion) {
-    const pth = path.resolve(ResDir, 'version.json');
+    const pth = path.join(ResDir, 'version.json');
+    logInfo(`ResDir=${ResDir}, pth=${pth}`)
 
     let json = {}
     if (fs.existsSync(pth)) {
