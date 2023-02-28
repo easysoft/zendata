@@ -127,13 +127,11 @@ func GetWorkDir() string {
 	isRelease := commonUtils.IsRelease()
 	isRunAsBackendProcess := commonUtils.IsRunAsBackendProcess()
 
-	if !commonUtils.IsRelease() { // debug
+	if !isRelease { // debug
 		dir, _ = os.Getwd()
 
 	} else {
-		var dir string
 		p, _ := exec.LookPath(os.Args[0])
-		logUtils.PrintTo(p)
 
 		if isRunAsBackendProcess {
 			name := "gui"
@@ -141,13 +139,9 @@ func GetWorkDir() string {
 				name = "zd.app"
 			}
 
-			logUtils.PrintTo(name)
-
 			if strings.Index(p, name) > -1 {
 				guiDir := p[:strings.LastIndex(p, name)]
 				dir = guiDir[:strings.LastIndex(guiDir, string(os.PathSeparator))]
-
-				logUtils.PrintTo(fmt.Sprintf("launch process in %s \n", dir))
 			} else {
 				dir = filepath.Dir(p)
 			}
