@@ -3,6 +3,7 @@ package fileUtils
 import (
 	"errors"
 	"fmt"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -11,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	constant "github.com/easysoft/zendata/internal/pkg/const"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -121,38 +122,38 @@ func AddSepIfNeeded(pth string) string {
 	return pth
 }
 
-func GetExeDir() string { // where zd.exe file in
+func GetExecFileDir() string { // where run exe file in
 	var dir string
-	arg1 := strings.ToLower(os.Args[0])
 
-	name := filepath.Base(arg1)
-	if strings.Index(name, "zd") == 0 && strings.Index(arg1, "go-build") < 0 { // release
-		p, _ := exec.LookPath(os.Args[0])
-		if strings.Index(p, string(os.PathSeparator)) > -1 {
-			name := "gui"
-			if commonUtils.GetOs() == "mac" {
-				name = "zd.app"
-			}
+	p, _ := exec.LookPath(os.Args[0])
 
-			if strings.Index(p, name) > -1 {
-				guiDir := p[:strings.LastIndex(p, name)]
-				dir = guiDir[:strings.LastIndex(guiDir, string(os.PathSeparator))]
-			} else {
-				dir = p[:strings.LastIndex(p, string(os.PathSeparator))]
-			}
+	isRunAsBackendProcess := commonUtils.IsRunAsBackendProcess()
+
+	if !isRunAsBackendProcess {
+		dir = filepath.Dir(p)
+	} else {
+		name := "gui"
+		if commonUtils.GetOs() == "mac" {
+			name = "zd.app"
 		}
-	} else { // debug
-		dir = GetDevDir()
+
+		if strings.Index(p, name) > -1 {
+			guiDir := p[:strings.LastIndex(p, name)]
+			dir = guiDir[:strings.LastIndex(guiDir, string(os.PathSeparator))]
+
+			logUtils.PrintTo(fmt.Sprintf("launch process in %s \n", dir))
+		} else {
+			dir = filepath.Dir(p)
+		}
 	}
 
 	dir, _ = filepath.Abs(dir)
 	dir = AddSepIfNeeded(dir)
 
-	//fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
 	return dir
 }
 
-func GetDevDir() string { // where we run file in
+func GetDirWhereRunIn() string { // where we run file in
 	dir, _ := os.Getwd()
 
 	dir, _ = filepath.Abs(dir)
@@ -244,20 +245,20 @@ func ConvertResYamlPath(from, workDir string) (ret string) {
 	for i := 0; i < len(arr); i++ {
 		dir := ""
 		if i > 0 {
-			dir = strings.Join(arr[:i], constant.PthSep)
+			dir = strings.Join(arr[:i], consts.PthSep)
 		}
 		file := strings.Join(arr[i:], ".")
 
 		relatPath := ""
 		if dir != "" {
-			relatPath = dir + constant.PthSep + file
+			relatPath = dir + consts.PthSep + file
 		} else {
 			relatPath = file
 		}
 
 		realPth0 := filepath.Join(workDir, relatPath)
-		realPth1 := vari.ZdDir + constant.ResDirYaml + constant.PthSep + relatPath
-		realPth2 := vari.ZdDir + constant.ResDirUsers + constant.PthSep + relatPath
+		realPth1 := vari.ZdDir + consts.ResDirYaml + consts.PthSep + relatPath
+		realPth2 := vari.ZdDir + consts.ResDirUsers + consts.PthSep + relatPath
 		if FileExist(realPth0) {
 			ret = realPth0
 			break
@@ -291,19 +292,19 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 		for i := 0; i < len(arr); i++ {
 			dir := ""
 			if i > 0 {
-				dir = strings.Join(arr[:i], constant.PthSep)
+				dir = strings.Join(arr[:i], consts.PthSep)
 			}
 
 			tagFile := strings.Join(arr[i:], ".") + ".xlsx"
 
 			relatPath := ""
 			if dir != "" {
-				relatPath = dir + constant.PthSep + tagFile
+				relatPath = dir + consts.PthSep + tagFile
 			} else {
 				relatPath = tagFile
 			}
 
-			realPth := vari.ZdDir + constant.ResDirData + constant.PthSep + relatPath
+			realPth := vari.ZdDir + consts.ResDirData + consts.PthSep + relatPath
 			if FileExist(realPth) {
 				if index == 1 {
 					sheet = from[strings.LastIndex(from, ".")+1:]
@@ -315,8 +316,8 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	}
 
 	if ret == "" { // try excel dir
-		realPth := vari.ZdDir + constant.ResDirData + constant.PthSep +
-			strings.Replace(from, ".", constant.PthSep, -1)
+		realPth := vari.ZdDir + consts.ResDirData + consts.PthSep +
+			strings.Replace(from, ".", consts.PthSep, -1)
 		if IsDir(realPth) {
 			ret = realPth
 			return
@@ -405,14 +406,14 @@ func ChangeFileExt(filePath, ext string) string {
 }
 
 func AddPathSepRightIfNeeded(pth string) string {
-	if pth[len(pth)-1:] != constant.PthSep {
-		pth += constant.PthSep
+	if pth[len(pth)-1:] != consts.PthSep {
+		pth += consts.PthSep
 	}
 
 	return pth
 }
 func RemovePathSepLeftIfNeeded(pth string) string {
-	if strings.Index(pth, constant.PthSep) == 0 {
+	if strings.Index(pth, consts.PthSep) == 0 {
 		pth = pth[1:]
 	}
 

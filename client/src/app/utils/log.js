@@ -1,7 +1,9 @@
 const logger = require('electron-log');
+const path = require("path")
 import {DEBUG} from './consts';
-logger.transports.file.resolvePath = () =>
-    require("path").join(require("os").homedir(), 'zd', 'log', 'electron.log');
+
+export const logDir = path.join(require("os").homedir(), 'zd', 'log')
+logger.transports.file.resolvePath = () => path.join(logDir, 'electron.log');
 
 export function logDebug(str) {
     if (DEBUG) {

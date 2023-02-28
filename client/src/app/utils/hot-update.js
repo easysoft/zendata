@@ -24,7 +24,6 @@ export async function checkUpdate(mainWin) {
         if (forceUpdate) {
             // logInfo('forceUpdate')
         } else {
-            logInfo(11)
             mainWin.webContents.send(electronMsgUpdate, {
                 currVersionStr, newVersionStr, forceUpdate
             })

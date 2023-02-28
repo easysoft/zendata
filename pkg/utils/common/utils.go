@@ -235,3 +235,8 @@ func GetType(i interface{}) string {
 
 	return "string"
 }
+
+func IsRunAsBackendProcess() (found bool) {
+	found, _ = stringUtils.FindInArr("-uuid", os.Args)
+	return
+}

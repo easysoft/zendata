@@ -1,7 +1,7 @@
 import path from "path";
 import os from "os";
 
-export const DEBUG = process.env.NODE_ENV === 'development';
+export const DEBUG = true; // process.env.NODE_ENV === 'development';
 export const WORK_DIR = process.cwd()
 
 export const portClient = 55233

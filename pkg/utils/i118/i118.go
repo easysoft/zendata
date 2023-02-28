@@ -31,7 +31,7 @@ func InitI118(lang string) {
 		data, _ := zd.ReadResData(langRes)
 		InitResFromAsset(data)
 	} else {
-		InitRes(filepath.Join(vari.ZdDir, langRes))
+		InitRes(filepath.Join(vari.ResBinDir, langRes))
 	}
 
 	if lang == "zh" {

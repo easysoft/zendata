@@ -53,6 +53,7 @@ export async function startZdServer() {
                     if (DEBUG) {
                         logInfo('\t' + line);
                     }
+
                     if (line.includes('Now listening on: http')) {
                         resolve(line.split('Now listening on:')[1].trim());
                         if (!DEBUG) {

@@ -24,7 +24,13 @@ import (
 
 func InitConfig(root string) {
 	var err error = nil
-	vari.ZdDir = fileUtils.GetExeDir()
+	if !commonUtils.IsRelease() {
+		vari.ZdDir = fileUtils.GetDirWhereRunIn()
+	} else {
+		vari.ZdDir = fileUtils.GetExecFileDir()
+	}
+
+	vari.ResBinDir = fileUtils.GetDirWhereRunIn()
 
 	vari.Config = getInst()
 
