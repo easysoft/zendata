@@ -35,7 +35,7 @@ func (s *TextService) Get(id int) (text model.ZdText, dirs []domain.Dir) {
 
 func (s *TextService) Save(text *model.ZdText) (err error) {
 	text.Folder = serverUtils.DealWithPathSepRight(text.Folder)
-	text.Path = vari.ZdDir + text.Folder + serverUtils.AddExt(text.FileName, ".txt")
+	text.Path = vari.WorkDir + text.Folder + serverUtils.AddExt(text.FileName, ".txt")
 	text.ReferName = helper.PathToName(text.Path, consts.ResDirYaml, consts.ResTypeText)
 
 	if text.ID == 0 {

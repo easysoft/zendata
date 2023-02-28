@@ -42,7 +42,7 @@ func (s *InstancesService) Get(id int) (instances model.ZdInstances, dirs []doma
 
 func (s *InstancesService) Save(instances *model.ZdInstances) (err error) {
 	instances.Folder = serverUtils.DealWithPathSepRight(instances.Folder)
-	instances.Path = vari.ZdDir + instances.Folder + serverUtils.AddExt(instances.FileName, ".yaml")
+	instances.Path = vari.WorkDir + instances.Folder + serverUtils.AddExt(instances.FileName, ".yaml")
 	instances.ReferName = helper.PathToName(instances.Path, consts.ResDirYaml, consts.ResTypeInstances)
 
 	if instances.ID == 0 {

@@ -31,16 +31,16 @@ func (s *FileService) ComputerReferFilePath(file string, field *domain.DefField)
 		return
 	}
 
-	resPath = vari.ZdDir + consts.ResDirUsers + consts.PthSep + file
+	resPath = vari.WorkDir + consts.ResDirUsers + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}
-	resPath = vari.ZdDir + consts.ResDirYaml + consts.PthSep + file
+	resPath = vari.WorkDir + consts.ResDirYaml + consts.PthSep + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}
 
-	resPath = vari.ZdDir + file
+	resPath = vari.WorkDir + file
 	if fileUtils.FileExist(resPath) {
 		return
 	}

@@ -34,7 +34,7 @@ func (s *ExcelService) Get(id int) (excel model.ZdExcel, dirs []domain.Dir) {
 
 func (s *ExcelService) Save(excel *model.ZdExcel) (err error) {
 	excel.Folder = serverUtils.DealWithPathSepRight(excel.Folder)
-	excel.Path = vari.ZdDir + excel.Folder + serverUtils.AddExt(excel.FileName, ".xlsx")
+	excel.Path = vari.WorkDir + excel.Folder + serverUtils.AddExt(excel.FileName, ".xlsx")
 	excel.ReferName = helper.PathToName(excel.Path, consts.ResDirData, consts.ResTypeExcel)
 
 	if excel.ID == 0 {

@@ -24,13 +24,7 @@ import (
 
 func InitConfig(root string) {
 	var err error = nil
-	if !commonUtils.IsRelease() {
-		vari.ZdDir = fileUtils.GetDirWhereRunIn()
-	} else {
-		vari.ZdDir = fileUtils.GetExecFileDir()
-	}
-
-	vari.ResBinDir = fileUtils.GetDirWhereRunIn()
+	vari.WorkDir = fileUtils.GetWorkDir()
 
 	vari.Config = getInst()
 
@@ -44,16 +38,16 @@ func InitConfig(root string) {
 				os.Exit(1)
 			}
 		}
-		vari.ZdDir = fileUtils.AddSepIfNeeded(root)
+		vari.WorkDir = fileUtils.AddSepIfNeeded(root)
 	}
 
-	temp := filepath.Join(vari.ZdDir, "tmp", "cache")
+	temp := filepath.Join(vari.WorkDir, "tmp", "cache")
 	if !fileUtils.FileExist(temp) {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
 		os.Exit(1)
 	}
 
-	vari.CfgFile = vari.ZdDir + ".zd.conf"
+	vari.CfgFile = vari.WorkDir + ".zd.conf"
 
 	CheckConfigPermission()
 
@@ -62,27 +56,9 @@ func InitConfig(root string) {
 	}
 
 	//logUtils.PrintToWithColor("workdir = "+vari.ZdPath, color.FgCyan)
-	consts.SqliteFile = strings.Replace(consts.SqliteFile, "file:", "file:"+vari.ZdDir, 1)
+	consts.SqliteFile = strings.Replace(consts.SqliteFile, "file:", "file:"+vari.WorkDir, 1)
 	//logUtils.PrintToWithColor("dbfile = "+consts.SqliteFile, color.FgCyan)
 }
-
-//func UpdateRootDir(root string) (pass bool) {
-//	if !fileUtils.FileExist(root) {
-//		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
-//		return
-//	}
-//
-//	if !fileUtils.FileExist(filepath.Join(root, "tmp", "cache")) {
-//		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
-//		return
-//	}
-//
-//	root, _ = filepath.Abs(root)
-//	vari.ZdPath = fileUtils.AddSepIfNeeded(root)
-//	vari.ZdDir = vari.ZdPath
-//
-//	return
-//}
 
 func SaveConfig(conf model.Config) error {
 	fileUtils.MkDirIfNeeded(filepath.Dir(vari.CfgFile))
@@ -156,7 +132,7 @@ func CheckConfigPermission() {
 	err := fileUtils.MkDirIfNeeded(filepath.Dir(vari.CfgFile))
 	if err != nil {
 		logUtils.PrintToWithColor(
-			fmt.Sprintf("Permission denied, please change the dir %s.", vari.ZdDir), color.FgRed)
+			fmt.Sprintf("Permission denied, please change the dir %s.", vari.WorkDir), color.FgRed)
 		os.Exit(0)
 	}
 }
@@ -228,11 +204,11 @@ func AddZdToPath() {
 
 func addZdToPathEnvVarWin(home string) {
 	pathVar := os.Getenv("PATH")
-	if strings.Contains(pathVar, vari.ZdDir) {
+	if strings.Contains(pathVar, vari.WorkDir) {
 		return
 	}
 
-	cmd := `setx Path "%%Path%%;` + vari.ZdDir + `"`
+	cmd := `setx Path "%%Path%%;` + vari.WorkDir + `"`
 	logUtils.PrintToWithColor("\n"+i118Utils.I118Prt.Sprintf("add_to_path_tips_win", cmd), color.FgRed)
 
 	// TODO: fix the space issue
@@ -251,11 +227,11 @@ func addZdToPathEnvVarForLinux(home string) {
 	path := fmt.Sprintf("%s%s%s", home, consts.PthSep, ".bash_profile")
 
 	content := fileUtils.ReadFile(path)
-	if strings.Contains(content, vari.ZdDir) {
+	if strings.Contains(content, vari.WorkDir) {
 		return
 	}
 
-	cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.ZdDir, path)
+	cmd := fmt.Sprintf("echo 'export PATH=$PATH:%s' >> %s", vari.WorkDir, path)
 	out, err := shellUtils.Exec(cmd)
 
 	if err == nil {

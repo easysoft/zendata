@@ -49,7 +49,7 @@ func main() {
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
 
-	vari.AgentLogDir = vari.ZdDir + serverConst.AgentLogDir + consts.PthSep
+	vari.AgentLogDir = vari.WorkDir + serverConst.AgentLogDir + consts.PthSep
 	err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)

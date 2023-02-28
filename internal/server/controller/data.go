@@ -41,10 +41,10 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	//}
 
 	if defaultFile != "" {
-		defaultFile = filepath.Join(vari.ZdDir, defaultFile)
+		defaultFile = filepath.Join(vari.WorkDir, defaultFile)
 	}
 	if configFile != "" {
-		configFile = filepath.Join(vari.ZdDir, configFile)
+		configFile = filepath.Join(vari.WorkDir, configFile)
 	}
 
 	vari.GlobalVars.DefData = domain.DefData{}

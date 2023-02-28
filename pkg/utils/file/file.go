@@ -122,42 +122,60 @@ func AddSepIfNeeded(pth string) string {
 	return pth
 }
 
-func GetExecFileDir() string { // where run exe file in
-	var dir string
-
-	p, _ := exec.LookPath(os.Args[0])
-
+func GetWorkDir() string {
+	dir := ""
+	isRelease := commonUtils.IsRelease()
 	isRunAsBackendProcess := commonUtils.IsRunAsBackendProcess()
 
-	if !isRunAsBackendProcess {
-		dir = filepath.Dir(p)
+	if !commonUtils.IsRelease() { // debug
+		dir, _ = os.Getwd()
+
 	} else {
-		name := "gui"
-		if commonUtils.GetOs() == "mac" {
-			name = "zd.app"
-		}
+		var dir string
+		p, _ := exec.LookPath(os.Args[0])
+		logUtils.PrintTo(p)
 
-		if strings.Index(p, name) > -1 {
-			guiDir := p[:strings.LastIndex(p, name)]
-			dir = guiDir[:strings.LastIndex(guiDir, string(os.PathSeparator))]
+		if isRunAsBackendProcess {
+			name := "gui"
+			if commonUtils.GetOs() == "mac" {
+				name = "zd.app"
+			}
 
-			logUtils.PrintTo(fmt.Sprintf("launch process in %s \n", dir))
+			logUtils.PrintTo(name)
+
+			if strings.Index(p, name) > -1 {
+				guiDir := p[:strings.LastIndex(p, name)]
+				dir = guiDir[:strings.LastIndex(guiDir, string(os.PathSeparator))]
+
+				logUtils.PrintTo(fmt.Sprintf("launch process in %s \n", dir))
+			} else {
+				dir = filepath.Dir(p)
+			}
+
 		} else {
 			dir = filepath.Dir(p)
+			if FileExist(filepath.Join(dir, "tmp/cache/.data.db")) {
+				dir, _ = filepath.Abs(dir)
+			} else {
+				dir, _ = os.Getwd()
+			}
+
 		}
 	}
 
 	dir, _ = filepath.Abs(dir)
 	dir = AddSepIfNeeded(dir)
 
+	if vari.Verbose {
+		logUtils.PrintTo(fmt.Sprintf("isRelease = %t, isRunAsBackendProcess = %t, workDir = %s \n",
+			isRelease, isRunAsBackendProcess, dir))
+	}
+
 	return dir
 }
 
 func GetDirWhereRunIn() string { // where we run file in
 	dir, _ := os.Getwd()
-
-	dir, _ = filepath.Abs(dir)
-	dir = AddSepIfNeeded(dir)
 
 	//fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
 	return dir
@@ -197,7 +215,7 @@ func GetResProp(from, currFileDir string) (resFile, resType, sheet string) { // 
 	if resFile == "" {
 		resPath := vari.GlobalVars.ConfigFileDir + from
 		if !FileExist(resPath) { // in same folder with passed config file, like dir/name.yaml
-			resPath = vari.ZdDir + from
+			resPath = vari.WorkDir + from
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -223,7 +241,7 @@ func ConvertReferRangeToPath(file, currFile string) (path string) {
 	if path == "" {
 		resPath := GetAbsDir(currFile) + file
 		if !FileExist(resPath) { // in same folder
-			resPath = vari.ZdDir + file
+			resPath = vari.WorkDir + file
 			if !FileExist(resPath) { // in res file
 				resPath = ""
 			}
@@ -257,8 +275,8 @@ func ConvertResYamlPath(from, workDir string) (ret string) {
 		}
 
 		realPth0 := filepath.Join(workDir, relatPath)
-		realPth1 := vari.ZdDir + consts.ResDirYaml + consts.PthSep + relatPath
-		realPth2 := vari.ZdDir + consts.ResDirUsers + consts.PthSep + relatPath
+		realPth1 := vari.WorkDir + consts.ResDirYaml + consts.PthSep + relatPath
+		realPth2 := vari.WorkDir + consts.ResDirUsers + consts.PthSep + relatPath
 		if FileExist(realPth0) {
 			ret = realPth0
 			break
@@ -304,7 +322,7 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 				relatPath = tagFile
 			}
 
-			realPth := vari.ZdDir + consts.ResDirData + consts.PthSep + relatPath
+			realPth := vari.WorkDir + consts.ResDirData + consts.PthSep + relatPath
 			if FileExist(realPth) {
 				if index == 1 {
 					sheet = from[strings.LastIndex(from, ".")+1:]
@@ -316,7 +334,7 @@ func ConvertResExcelPath(from, dir string) (ret, sheet string) {
 	}
 
 	if ret == "" { // try excel dir
-		realPth := vari.ZdDir + consts.ResDirData + consts.PthSep +
+		realPth := vari.WorkDir + consts.ResDirData + consts.PthSep +
 			strings.Replace(from, ".", consts.PthSep, -1)
 		if IsDir(realPth) {
 			ret = realPth

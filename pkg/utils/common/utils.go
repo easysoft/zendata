@@ -61,15 +61,8 @@ func IsMac() bool {
 }
 
 func IsRelease() bool {
-	arg1 := strings.ToLower(os.Args[0])
-	name := filepath.Base(arg1)
-	return strings.Index(name, consts.AppName) == 0 && strings.Index(arg1, "go-build") < 0
-
-	//if _, err := os.Stat("res"); os.IsNotExist(err) {
-	//	return true
-	//}
-	//
-	//return false
+	a := os.Getenv("DEBUG")
+	return a != "true"
 }
 
 func UpdateUrl(url string) string {

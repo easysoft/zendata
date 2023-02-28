@@ -144,6 +144,7 @@ func main() {
 	flagSet.IntVar(&vari.Port, "port", 0, "")
 
 	flagSet.Parse(os.Args[1:])
+
 	if isStartServer {
 		vari.GlobalVars.RunMode = consts.RunModeServer
 		startServer()
@@ -179,7 +180,7 @@ func startServer() {
 	configUtils.InitConfig(root)
 	vari.DB, _ = serverConfig.NewGormDB()
 
-	vari.AgentLogDir = vari.ZdDir + serverConst.AgentLogDir + consts.PthSep
+	vari.AgentLogDir = vari.WorkDir + serverConst.AgentLogDir + consts.PthSep
 	err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
 	if err != nil {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)

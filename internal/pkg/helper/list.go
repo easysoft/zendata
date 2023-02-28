@@ -23,7 +23,7 @@ import (
 
 func ListData() {
 	res := map[string][]domain.ResFile{}
-	GetFilesAndDirs(vari.ZdDir, consts.ResDirUsers, &res)
+	GetFilesAndDirs(vari.WorkDir, consts.ResDirUsers, &res)
 
 	res, nameWidth, titleWidth := LoadRes(res)
 	PrintRes(res, nameWidth, titleWidth)
@@ -153,7 +153,7 @@ func PrintRes(res map[string][]domain.ResFile, nameWidth, titleWidth int) {
 
 func GetFilesAndDirs(pth, typ string, res *map[string][]domain.ResFile) {
 	if !fileUtils.IsAbsPath(pth) {
-		pth = vari.ZdDir + pth
+		pth = vari.WorkDir + pth
 	}
 
 	dir, err := ioutil.ReadDir(pth)
@@ -228,9 +228,9 @@ func ReadTextInfo(path, key string) (title, desc, resType string) {
 }
 
 func PathToName(path, key, tp string) string {
-	isWorkData := strings.Index(path, vari.ZdDir) > -1
+	isWorkData := strings.Index(path, vari.WorkDir) > -1
 	if isWorkData { // user data in workdir
-		path = strings.Replace(path, vari.ZdDir, "", 1)
+		path = strings.Replace(path, vari.WorkDir, "", 1)
 	}
 
 	nameSep := consts.PthSep

@@ -60,8 +60,7 @@ var (
 	Config = model.Config{Version: 1, Language: "en"}
 	DB     *gorm.DB
 
-	ZdDir        string
-	ResBinDir    string
+	WorkDir      string
 	CurrFilePath string
 
 	CfgFile      string
