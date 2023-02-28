@@ -143,7 +143,7 @@ export function killZdServer() {
             logInfo(`<${line}>`)
             const cols = line.split(/\s/)
 
-            if (line.indexOf('zd') > -1 && cols.length > 3) {
+            if (line.indexOf('server') > -1 && cols.length > 3) {
                 const col3 = cols[3].trim()
                 console.log(`col3=${col3}`);
                 logInfo(`col3=${col3}`)

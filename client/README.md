@@ -25,7 +25,7 @@ npm run start
 在调试模式下可以通过制定环境变量来设置 ZD UI 服务访问地址和 ZD 可执行程序位置。
 
 * `UI_SERVER_URL`：ZD UI 服务访问地址或静态资源文件目录，如果不指定会自动进入 `../ui/` 目录执行 `npm run serve` 获取开发服务器地址；
-* `UI_SERVER_PORT`：ZD UI 服务端口，如果不指定则使用 `8000`；
+* `UI_SERVER_PORT`：ZD UI 服务端口，如果不指定则使用 `8080`；
 * `SERVER_EXE_PATH`：ZD 服务可执行文件位置（相对于 `/client` 目录），如果不指定则会自动进入 `../cmd/server/` 目录下执行 `go run main.go -p 8085` 启动 ZD 服务器。
 * `SERVER_CWD_PATH`：ZD 服务运行目录；
 * `SKIP_SERVER`：跳过启动 ZD 服务，适用于 ZD 服务已经在外部启动的情况。
@@ -35,13 +35,13 @@ npm run start
 **模式一：使用外部 UI 服务**
 
 ```
-SKIP_SERVER=1 UI_SERVER_URL=http://localhost:8000 npm run start
+SKIP_SERVER=1 UI_SERVER_URL=http://localhost:8080 npm run start
 ```
 
 **模式二：使用本地 UI 静态文件目录**
 
 ```
-UI_SERVER_URL=../ui/dist UI_SERVER_PORT=8000 npm run start
+UI_SERVER_URL=../ui/dist UI_SERVER_PORT=8080 npm run start
 ```
 
 **模式三：自定义 ZD 服务执行文件路径**
@@ -59,7 +59,7 @@ SKIP_SERVER=1 npm run start
 **模式五：综合使用外部 UI 服务和外部 ZD 服务**
 
 ```
-UI_SERVER_URL=http://localhost:8000 SKIP_SERVER=1 npm run start
+UI_SERVER_URL=http://localhost:8080 SKIP_SERVER=1 npm run start
 ```
 
 ## 代码检查

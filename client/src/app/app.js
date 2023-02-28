@@ -52,14 +52,22 @@ export class ZdApp {
     async createWindow() {
         process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
+        const frame = IS_MAC_OSX ? true: false;
         const mainWin = new BrowserWindow({
             show: false,
-            frame: false,
+            frame: frame,
+            // titleBarStyle: "hidden",
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
             }
         })
+        // if (IS_MAC_OSX) {
+        //     mainWin.setTrafficLightPosition && mainWin.setTrafficLightPosition({
+        //         x: 10,
+        //         y: 125
+        //     })
+        // }
 
         require('@electron/remote/main').initialize()
         require('@electron/remote/main').enable(mainWin.webContents)
@@ -233,7 +241,6 @@ export class ZdApp {
     }
 
     get windows() {
-
         return this._windows;
     }
 

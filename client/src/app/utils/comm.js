@@ -113,14 +113,25 @@ export function getVersionUrl() {
     return url
 }
 export function getAppUrl(version) {
-    const platform = os.platform(); // 'darwin', 'linux', 'win32'
+    const platform = getPlatform(); // 'darwin', 'linux', 'win32', 'win64'
+    logInfo(`platform=${platform}`)
     const url = new URL(`${App}/${version}/${platform}/${App}-upgrade.zip`, downloadUrl) + '?ts=' + Date.now();
     logInfo(`appUrl=${url}`)
     return url
 }
 
+export function getPlatform() {
+    let platform = os.platform(); // 'darwin', 'linux', 'win32'
+
+    if (platform === 'win32' && ['arm64', 'ppc64', 'x64', 's390x'].includes(os.arch())) {
+        platform = 'win64'
+    }
+
+    return platform
+}
+
 export async function checkMd5(version, file) {
-    const platform = os.platform(); // 'darwin', 'linux', 'win32'
+    const platform = getPlatform(); // 'darwin', 'linux', 'win32'
     const url = new URL(`${App}/${version}/${platform}/${App}-upgrade.zip.md5`, downloadUrl) + '?ts=' + Date.now();
 
     logInfo(`md5Url=${url}, file=${file}`)
