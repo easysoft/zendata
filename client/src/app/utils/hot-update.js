@@ -9,6 +9,8 @@ import {
 } from "./comm";
 import {electronMsgDownloading, electronMsgUpdate, WorkDir} from "./consts";
 import path from "path";
+import {execSync} from 'child_process';
+import {IS_WINDOWS_OS} from "../utils/env";
 import fse from 'fs-extra'
 import {logErr, logInfo} from "./log";
 
@@ -35,9 +37,10 @@ export const updateApp = (version, mainWin) => {
     downLoadApp(version, mainWin, doUpdate)
 }
 
-const doUpdate = (downloadPath, version)=>{
-    copyFiles(downloadPath);
+const doUpdate = async (downloadPath, version) => {
+    await copyFiles(downloadPath);
     changeVersion(version);
+
     restart();
 }
 
@@ -82,23 +85,35 @@ const downLoadApp = (version, mainWin, cb) => {
     });
 }
 
-const copyFiles = (downloadPath) => {
+const copyFiles = async (downloadPath) => {
     const downloadDir = path.dirname(downloadPath)
 
     const extractedPath = path.resolve(downloadDir, 'extracted')
     logInfo(`downloadPath=${downloadPath}, extractedPath=${extractedPath}`)
 
-    const unzip = new admZip(downloadPath);
-    unzip.extractAllTo(extractedPath, true);
+    const unzip = new admZip(downloadPath, {});
+    let pass = ''
+    await unzip.extractAllTo(extractedPath, true, true, pass);
+    logInfo(pass)
 
     const {uiPath, serverPath} = getResPath()
     logInfo(`uiPath=${uiPath}, serverPath=${serverPath}`)
 
     killZdServer();
-    fs.rmSync(uiPath, { recursive:true })
+    fs.rmSync(uiPath, {recursive: true})
     fs.rmSync(serverPath)
 
     const serverFile = `server${os.platform() === 'win32' ? '.exe' : ''}`
-    fse.copySync(path.resolve(downloadDir, 'extracted', 'ui'), path.resolve(path.dirname(uiPath), 'ui'), { recursive: true })
-    fse.copySync(path.resolve(downloadDir, 'extracted', serverFile), path.resolve(path.dirname(serverPath), serverFile))
+    const serverDir = path.dirname(serverPath)
+    logInfo(`serverDir=${serverDir}`)
+    const serverDist = path.join(serverDir, serverFile)
+    logInfo(`serverFile=${serverFile}, serverDist=${serverDist}`)
+
+    fse.copySync(path.resolve(downloadDir, 'extracted', 'ui'), path.resolve(path.dirname(uiPath), 'ui'), {recursive: true})
+    fse.copySync(path.resolve(downloadDir, 'extracted', serverFile), serverDist)
+
+    if (!IS_WINDOWS_OS) {
+        const cmd = `chmod +x ${serverDist}`
+        execSync(cmd, {windowsHide: true})
+    }
 }
