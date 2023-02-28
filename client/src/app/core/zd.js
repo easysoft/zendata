@@ -50,7 +50,7 @@ export async function startZdServer() {
                 const dataString = String(data);
                 const lines = dataString.split('\n');
                 for (let line of lines) {
-                    if (DEBUG) {
+                    if (true) {
                         logInfo('\t' + line);
                     }
                     if (line.includes('Now listening on: http')) {
