@@ -67,19 +67,12 @@ export function changeVersion(newVersion) {
 
     let json = {}
     if (fs.existsSync(pth)) {
-        const content = fs.readFileSync(pth)
+        const content = fs.readFileSync(pth).toString()
         json = JSON.parse(content);
     }
 
     json.version = newVersion;
     fs.writeFileSync(pth, JSON.stringify(json));
-}
-
-export function restart() {
-    app.relaunch({
-        args: process.argv.slice(1)
-    });
-    app.exit(0);
 }
 
 export function getResPath() {

@@ -7,12 +7,28 @@ import {
     getResPath, mkdir,
     restart
 } from "./comm";
-import {electronMsgDownloading, electronMsgUpdate, WorkDir} from "./consts";
+import {
+    electronMsgDownloading,
+    electronMsgDownloadSuccess,
+    electronMsgUpdate,
+    electronMsgUpdateFail,
+} from "./consts";
 import path from "path";
 import {execSync} from 'child_process';
 import {IS_WINDOWS_OS} from "../utils/env";
 import fse from 'fs-extra'
 import {logErr, logInfo} from "./log";
+
+const admZip = require('adm-zip');
+import {promisify} from 'node:util';
+import stream from 'node:stream';
+import fs from 'node:fs';
+import got from 'got';
+import os from "os";
+import {killZdServer} from "../core/zd";
+const pipeline = promisify(stream.pipeline);
+
+mkdir(path.join('tmp', 'download'))
 
 export async function checkUpdate(mainWin) {
     logInfo('checkUpdate ...')
@@ -33,31 +49,7 @@ export async function checkUpdate(mainWin) {
     }
 }
 
-export const updateApp = (version, mainWin) => {
-    downLoadApp(version, mainWin, doUpdate)
-}
-
-const doUpdate = async (downloadPath, version) => {
-    await copyFiles(downloadPath);
-    changeVersion(version);
-
-    restart();
-}
-
-const admZip = require('adm-zip');
-
-import {promisify} from 'node:util';
-import stream from 'node:stream';
-import fs from 'node:fs';
-import got from 'got';
-import {cpSync} from "fs";
-import os from "os";
-import {killZdServer} from "../core/zd";
-const pipeline = promisify(stream.pipeline);
-
-mkdir(path.join('tmp', 'download'))
-
-const downLoadApp = (version, mainWin, cb) => {
+export const downLoadAndUpdateApp = (version, mainWin) => {
     const downloadUrl = getAppUrl(version)
     const downloadPath = getDownloadPath(version)
 
@@ -75,13 +67,17 @@ const downLoadApp = (version, mainWin, cb) => {
 
         const md5Pass = await checkMd5(version, downloadPath)
         if (md5Pass) {
-            cb(downloadPath, version)
+            await copyFiles(downloadPath);
+            changeVersion(version);
+
+            mainWin.webContents.send(electronMsgDownloadSuccess, {})
         } else {
-            logInfo('check md5 failed')
+            throw new Error('check md5 failed')
         }
 
     }).catch((err) => {
-        logErr(`update failed: ${err}`)
+        logErr(`upgrade app failed: ${err}`)
+        mainWin.webContents.send(electronMsgUpdateFail, {err: err.message})
     });
 }
 
@@ -116,4 +112,11 @@ const copyFiles = async (downloadPath) => {
         const cmd = `chmod +x ${serverDist}`
         execSync(cmd, {windowsHide: true})
     }
+}
+
+export function reboot() {
+    app.relaunch({
+        args: process.argv.slice(1)
+    });
+    app.exit(0);
 }

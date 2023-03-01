@@ -1,8 +1,10 @@
 export const electronMsg = 'electronMsg'
 export const electronMsgReplay = 'electronMsgReplay'
 export const electronMsgUpdate = 'electronMsgUpdate'
+export const electronMsgReboot = 'electronMsgReboot'
 export const electronMsgDownloading = 'electronMsgDownloading'
-
+export const electronMsgDownloadSuccess = 'electronMsgDownloadSuccess'
+export const electronMsgUpdateFail = 'electronMsgUpdateFail'
 
 export const skippedVersion = 'skippedVersion'
 export const ignoreUtil = 'ignoreUtil'

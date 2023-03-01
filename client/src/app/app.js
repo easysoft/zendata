@@ -2,7 +2,7 @@ import {app, BrowserWindow, ipcMain, Menu, shell, dialog, globalShortcut} from '
 
 import {
     DEBUG,
-    electronMsg,
+    electronMsg, electronMsgReboot,
     electronMsgReplay,
     electronMsgUpdate,
     minimumSizeHeight,
@@ -15,7 +15,7 @@ import Lang, {initLang} from './core/lang';
 import {startUIService} from "./core/ui";
 import {startZdServer, killZdServer} from "./core/zd";
 import {getCurrVersion} from "./utils/comm";
-import {checkUpdate, updateApp} from "./utils/hot-update";
+import {checkUpdate, downLoadAndUpdateApp, reboot} from "./utils/hot-update";
 
 const cp = require('child_process');
 const fs = require('fs');
@@ -160,7 +160,12 @@ export class ZdApp {
              logInfo('update confirm from renderer', arg)
 
              const mainWin = this._windows.get('main');
-             updateApp(arg.newVersion, mainWin)
+             downLoadAndUpdateApp(arg.newVersion, mainWin)
+         });
+
+         ipcMain.on(electronMsgReboot, (event, arg) => {
+             logInfo('reboot from renderer', arg)
+             reboot()
          });
 
          setInterval(async () => {

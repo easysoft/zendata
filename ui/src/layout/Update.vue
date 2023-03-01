@@ -15,9 +15,15 @@
       </div>
 
       <template #footer>
-        <a-button @click="update" type="primary">立即升级</a-button>
-        <a-button @click="defer">明天提醒我</a-button>
-        <a-button @click="skip">跳过这个版本</a-button>
+        <div v-if="!updateSuccess">
+          <a-button @click="update" type="primary">立即升级</a-button>
+          <a-button @click="defer">明天提醒我</a-button>
+          <a-button @click="skip">跳过这个版本</a-button>
+        </div>
+
+        <div v-if="updateSuccess">
+          <a-button @click="reboot" type="primary">立即重启</a-button>
+        </div>
       </template>
     </a-modal>
   </div>
@@ -27,7 +33,7 @@
 import {
   electronMsgUpdate,
   electronMsgDownloading,
-  skippedVersion, ignoreUtil,
+  skippedVersion, ignoreUtil, electronMsgDownloadSuccess, electronMsgUpdateFail, electronMsgReboot,
 } from "../config/settings.js";
 import {getCache, setCache} from "../utils/localCache.js";
 
@@ -44,6 +50,7 @@ export default {
     let isElectron = false
     let ipcRenderer = undefined
     let version = null
+    let updateSuccess = false
 
     return {
       isVisible,
@@ -54,6 +61,7 @@ export default {
       ipcRenderer,
       isElectron,
       version,
+      updateSuccess,
     }
   },
 
@@ -87,6 +95,12 @@ export default {
         console.log('downloading msg from electron', data);
         this.downloadingPercent = Math.round(data.percent * 100);
       })
+      this.ipcRenderer.on(electronMsgDownloadSuccess, async (event, data) => {
+        console.log('md5 checking success msg from electron', data);
+      })
+      this.ipcRenderer.on(electronMsgUpdateFail, async (event, data) => {
+        console.log('downloading fail msg from electron', data);
+      })
     }
   },
   mounted() {
@@ -100,6 +114,10 @@ export default {
         newVersion: this.newVersion,
         forceUpdate: this.forceUpdate
       })
+    },
+    reboot() {
+      console.log('reboot')
+      this.ipcRenderer.send(electronMsgReboot, {})
     },
     defer() {
       console.log('defer')
