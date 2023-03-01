@@ -42,12 +42,12 @@ GIT_HASH=`git show -s --format=%H`
 BUILD_CMD_UNIX=go build -ldflags "-X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
 BUILD_CMD_WIN=go build -ldflags "-s -w -X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
 
-prepare_build: clear update_version_in_config gen_version_file prepare_res
+default: clear build_ui prepare_build compile_all copy_files package package_upgrade
 clear:
 	@rm -rf ${BIN_DIR}
 	@rm -rf ${CLIENT_OUT_DIR}
 
-default: clear build_ui prepare_build compile_all copy_files package package_upgrade
+prepare_build: clear update_version_in_config gen_version_file prepare_res
 
 win64: prepare_build compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64 copy_files package package_upgrade
 win32: prepare_build compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32 copy_files package package_upgrade
