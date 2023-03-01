@@ -8,11 +8,7 @@ import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	serverConfig "github.com/easysoft/zendata/internal/server/config"
-	"github.com/easysoft/zendata/internal/server/core/web"
-	serverConst "github.com/easysoft/zendata/internal/server/utils/const"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
@@ -136,21 +132,9 @@ func main() {
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")
 
-	// for server
-	flagSet.BoolVar(&isStartServer, "s", false, "启动服务")
-	flagSet.StringVar(&uuid, "uuid", "", "区分服务进程的唯一ID")
-
-	flagSet.IntVar(&vari.Port, "p", 8848, "")
-	flagSet.IntVar(&vari.Port, "port", 0, "")
-
 	flagSet.Parse(os.Args[1:])
 
-	if isStartServer {
-		vari.GlobalVars.RunMode = consts.RunModeServer
-		startServer()
-	} else {
-		execCommand()
-	}
+	execCommand()
 }
 
 func execCommand() {
@@ -174,29 +158,6 @@ func execCommand() {
 	} else {
 		logUtils.PrintUsage()
 	}
-}
-
-func startServer() {
-	configUtils.InitConfig(root)
-	vari.DB, _ = serverConfig.NewGormDB()
-
-	vari.AgentLogDir = vari.WorkDir + serverConst.AgentLogDir + consts.PthSep
-	err := fileUtils.MkDirIfNeeded(vari.AgentLogDir)
-	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("perm_deny", vari.AgentLogDir), color.FgRed)
-		os.Exit(1)
-	}
-
-	if vari.Port == 0 {
-		vari.Port = consts.DefaultDataServicePort
-	}
-
-	webServer := web.Init()
-	if webServer == nil {
-		return
-	}
-
-	webServer.Run()
 }
 
 func opts(files []string) {

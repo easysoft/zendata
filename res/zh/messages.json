@@ -118,7 +118,7 @@
     },
     {
       "id": "start_server",
-      "translation": "正在启动ZenData HTTP服务，按CTRL+C键退出。\n数据设计请访问http://%s:%s/ui。\n数据生成请调用http://%s:%s/data/generate，如curl http://%s:%s/data/generate?config=demo/default.yaml&lines=3。"
+      "translation": "正在启动ZenData HTTP服务，按CTRL+C键退出。\n数据生成请调用http://%s:%s/data/generate，如curl http://%s:%s/data/generate?config=demo/default.yaml&lines=3。"
     },
     {
       "id": "start_server_fail",
