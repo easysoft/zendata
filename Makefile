@@ -42,14 +42,19 @@ GIT_HASH=`git show -s --format=%H`
 BUILD_CMD_UNIX=go build -ldflags "-X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
 BUILD_CMD_WIN=go build -ldflags "-s -w -X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
 
-prepare_build: update_version_in_config gen_version_file prepare_res
+prepare_build: clear update_version_in_config gen_version_file prepare_res
+clear:
+	@rm -rf ${BIN_DIR}
+	@rm -rf ${CLIENT_OUT_DIR}
 
-default: build_ui prepare_build compile_all copy_files package package_upgrade
+default: clear build_ui prepare_build compile_all copy_files package package_upgrade
 
 win64: prepare_build compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64 copy_files package package_upgrade
 win32: prepare_build compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32 copy_files package package_upgrade
 linux: prepare_build                        compile_server_linux package_gui_linux_client compile_command_linux copy_files package package_upgrade
 mac: prepare_build                          compile_server_mac   package_gui_mac_client   compile_command_mac   copy_files package package_upgrade
+
+compile_all: compile_win64 compile_win32 compile_linux compile_mac
 
 compile_win64: compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64
 compile_win32: compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32
@@ -63,11 +68,10 @@ prepare_res:
 	@cp res/zh/sample.yaml demo/default.yaml
 	@rm -rf ${BIN_DIR}
 
-compile_all: compile_win64 compile_win32 compile_linux compile_mac
 
 build_ui:
 	@echo 'compile ui'
-	@cd ui && yarn build && cd ..
+	@cd ui && yarn build --dest ../client/ui && cd ..
 
 compile_server_win64:
 	@echo 'start compile win64'

@@ -66,11 +66,15 @@ export const downLoadAndUpdateApp = (version, mainWin) => {
         logInfo(`success to downloaded to ${downloadPath}`)
 
         const md5Pass = await checkMd5(version, downloadPath)
+        logInfo(`md5Pass ${md5Pass}`)
         if (md5Pass) {
             await copyFiles(downloadPath);
+            logInfo(`1 ${md5Pass}`)
             changeVersion(version);
+            logInfo(`2 ${md5Pass}`)
 
-            mainWin.webContents.send(electronMsgDownloadSuccess, {})
+            mainWin.webContents.send(electronMsgDownloadSuccess, {success: true})
+            logInfo(`3 ${md5Pass}`)
         } else {
             throw new Error('check md5 failed')
         }
