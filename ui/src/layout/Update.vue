@@ -2,13 +2,13 @@
   <div class="right-top-update-main">
     <div v-if="version" class="version">V{{version}}</div>
 
-    <a-modal title="升级提醒"
+    <a-modal title="{{ $t('update.title') }}"
              :visible="isVisible"
              @cancel="onCancel"
              :maskClosable="false"
              class="update-modal">
       <div>
-        发现新的版本<b>{{newVersion}}</b>，请确定是否升级。
+        {{ $t('update.new.pre') }}<b>{{newVersion}}</b>{{ $t('update.new.suf') }}
       </div>
 
       <div v-if="downloadingPercent > 0">
@@ -16,19 +16,19 @@
       </div>
 
       <div v-if="errMsg" class="errors">
-        <div class="border">升级错误，请联系管理员。</div>
+        <div class="border">{{ $t('update.failed') }}</div>
         <div>{{errMsg}}</div>
       </div>
 
       <template #footer>
         <div v-if="!updateSuccess">
-          <a-button @click="update" type="primary">立即升级</a-button>
-          <a-button @click="defer">明天提醒我</a-button>
-          <a-button @click="skip">跳过这个版本</a-button>
+          <a-button @click="update" type="primary">{{ $t('update.update') }}</a-button>
+          <a-button @click="defer">{{ $t('update.notice.tomorrow') }}</a-button>
+          <a-button @click="skip">{{ $t('update.notice.skip') }}</a-button>
         </div>
 
         <div v-if="updateSuccess">
-          <a-button @click="reboot" type="primary">立即重启</a-button>
+          <a-button @click="reboot" type="primary">{{ $t('update.reboot') }}</a-button>
         </div>
       </template>
     </a-modal>

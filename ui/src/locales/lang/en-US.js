@@ -157,6 +157,21 @@ const locale = {
   'valid.folder.yaml': 'YAML must be saved in /yaml',
   'valid.folder.data': 'Excel must be saved in data/ dir',
 
+  'window.fullscreen': 'fullscreen',
+  'window.exit_fullscreen': 'Exit Fullscreen',
+  'window.maximize': 'Maximize',
+  'window.minimize': 'Minimize',
+  'window.restore': 'Restore',
+  'window.close': 'Close',
+
+  'update.title': 'Upgrade Reminder',
+  'update.new.pre': 'Discover a new version',
+  'update.new.suf': ',Determine whether to upgrade。',
+  'update.update': 'Upgrade Now',
+  'update.notice.tomorrow': 'Remind Tomorrow',
+  'update.notice.skip': 'Skip This Version',
+  'update.reboot': 'Reboot',
+  'update.failed': 'Upgrade error. Please contact the administrator.',
 }
 
 export default {

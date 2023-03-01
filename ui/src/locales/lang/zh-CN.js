@@ -163,6 +163,15 @@ const locale = {
   'window.minimize': '最小化',
   'window.restore': '还原',
   'window.close': '关闭',
+
+  'update.title': '升级提醒',
+  'update.new.pre': '发现新的版本',
+  'update.new.suf': '，请确定是否升级。',
+  'update.update': '立即升级',
+  'update.notice.tomorrow': '明天提醒我',
+  'update.notice.skip': '跳过这个版本',
+  'update.reboot': '立即重启',
+  'update.failed': '升级错误，请联系管理员。',
 }
 
 export default {
