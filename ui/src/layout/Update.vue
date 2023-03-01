@@ -2,7 +2,7 @@
   <div class="right-top-update-main">
     <div v-if="version" class="version">V{{version}}</div>
 
-    <a-modal title="{{ $t('update.title') }}"
+    <a-modal :title="$t('update.title')"
              :visible="isVisible"
              @cancel="onCancel"
              :maskClosable="false"

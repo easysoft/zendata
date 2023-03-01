@@ -42,3 +42,4 @@
 /client/.webpack
 
 /zendata
+client/yarn-error.log
