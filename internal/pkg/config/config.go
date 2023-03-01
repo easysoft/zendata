@@ -25,6 +25,7 @@ import (
 func InitConfig(root string) {
 	var err error = nil
 	vari.WorkDir = fileUtils.GetWorkDir()
+	vari.CfgFile = vari.WorkDir + ".zd.conf"
 
 	vari.Config = getInst()
 
@@ -46,8 +47,6 @@ func InitConfig(root string) {
 		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
 		os.Exit(1)
 	}
-
-	vari.CfgFile = vari.WorkDir + ".zd.conf"
 
 	CheckConfigPermission()
 
