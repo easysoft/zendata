@@ -116,7 +116,7 @@ func (webServer *WebServer) Run() {
 
 	port := strconv.Itoa(vari.Port)
 	logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("start_server",
-		consts.Localhost, port, consts.Localhost, port, consts.Localhost, port), color.FgCyan)
+		consts.Localhost, port, consts.Localhost, port), color.FgCyan)
 
 	webServer.app.Listen(
 		webServer.addr,
