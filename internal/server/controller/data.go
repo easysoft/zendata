@@ -27,6 +27,11 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	defaultFile := ctx.URLParam("default")
 	configFile := ctx.URLParam("config")
 
+	vari.GlobalVars.OutputFormat = ctx.URLParam("format")
+	if vari.GlobalVars.OutputFormat == "text" {
+		vari.GlobalVars.OutputFormat = "txt"
+	}
+
 	//root := ctx.URLParam("root")
 	//if root != "" {
 	//	configUtils.UpdateRootDir(root)
