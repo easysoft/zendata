@@ -10,8 +10,14 @@
       <div>
         发现新的版本<b>{{newVersion}}</b>，请确定是否升级。
       </div>
+
       <div v-if="downloadingPercent > 0">
         <a-progress :percent="downloadingPercent" />
+      </div>
+
+      <div v-if="errMsg" class="errors">
+        <div class="border">升级错误，请联系管理员。</div>
+        <div>{{errMsg}}</div>
       </div>
 
       <template #footer>
@@ -51,6 +57,7 @@ export default {
     let ipcRenderer = undefined
     let version = null
     let updateSuccess = false
+    let errMsg = ''
 
     return {
       isVisible,
@@ -62,6 +69,7 @@ export default {
       isElectron,
       version,
       updateSuccess,
+      errMsg,
     }
   },
 
@@ -97,9 +105,11 @@ export default {
       })
       this.ipcRenderer.on(electronMsgDownloadSuccess, async (event, data) => {
         console.log('md5 checking success msg from electron', data);
+        this.updateSuccess = true
       })
       this.ipcRenderer.on(electronMsgUpdateFail, async (event, data) => {
         console.log('downloading fail msg from electron', data);
+        this.errMsg = data.err
       })
     }
   },
@@ -145,11 +155,19 @@ export default {
   position: absolute;
   right: 5px;
   bottom: 0;
-  .update-modal{
-    .ant-modal-footer {
-      text-align: center;
+}
+
+.update-modal{
+  .ant-modal-footer {
+    text-align: center;
+  }
+
+  .errors {
+    margin-top: 12px;
+    .border {
+      margin-bottom: 3px;
+      font-weight: bolder;
     }
   }
 }
-
 </style>
