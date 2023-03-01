@@ -170,7 +170,8 @@ const locale = {
   'update.update': 'Upgrade Now',
   'update.notice.tomorrow': 'Remind Tomorrow',
   'update.notice.skip': 'Skip This Version',
-  'update.reboot': 'Reboot',
+  'update.reboot': 'Reboot Now',
+  'update.pending': 'Reboot Later',
   'update.failed': 'Upgrade error. Please contact the administrator.',
 }
 

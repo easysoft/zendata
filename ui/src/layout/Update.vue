@@ -28,7 +28,8 @@
         </div>
 
         <div v-if="updateSuccess">
-          <a-button @click="reboot" type="primary">{{ $t('update.reboot') }}</a-button>
+          <a-button @click="rebootNow" type="primary">{{ $t('update.reboot') }}</a-button>
+          <a-button @click="rebootLater">{{ $t('update.pending') }}</a-button>
         </div>
       </template>
     </a-modal>
@@ -125,9 +126,13 @@ export default {
         forceUpdate: this.forceUpdate
       })
     },
-    reboot() {
-      console.log('reboot')
+    rebootNow() {
+      console.log('rebootNow')
       this.ipcRenderer.send(electronMsgReboot, {})
+    },
+    rebootLater() {
+      console.log('rebootLater')
+      this.onCancel()
     },
     defer() {
       console.log('defer')

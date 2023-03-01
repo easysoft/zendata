@@ -171,6 +171,7 @@ const locale = {
   'update.notice.tomorrow': '明天提醒我',
   'update.notice.skip': '跳过这个版本',
   'update.reboot': '立即重启',
+  'update.pending': '稍后重启',
   'update.failed': '升级错误，请联系管理员。',
 }
 
