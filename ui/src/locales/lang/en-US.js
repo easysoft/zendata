@@ -173,6 +173,11 @@ const locale = {
   'update.reboot': 'Reboot Now',
   'update.pending': 'Reboot Later',
   'update.failed': 'Upgrade error. Please contact the administrator.',
+
+  'copy.success': 'Copy Success',
+  'copy.title': 'Copy Link',
+  
+  'preview.title': 'Refresh Data',
 }
 
 export default {

@@ -80,6 +80,9 @@ import notification from "ant-design-vue/lib/notification";
 import 'ant-design-vue/lib/notification/style';
 import message from "ant-design-vue/lib/message";
 import 'ant-design-vue/lib/message/style';
+
+import VueClipboard from 'vue-clipboard2'
+
 Vue.prototype.$message = message;
 Vue.prototype.$notification = notification;
 
@@ -117,6 +120,7 @@ Vue.use(Card)
 Vue.use(Upload)
 Vue.use(Drawer)
 Vue.use(Progress)
+Vue.use(VueClipboard)
 
 new Vue({
   router,

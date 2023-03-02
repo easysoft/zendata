@@ -173,6 +173,11 @@ const locale = {
   'update.reboot': '立即重启',
   'update.pending': '稍后重启',
   'update.failed': '升级错误，请联系管理员。',
+
+  'copy.success': '复制成功',
+  'copy.title': '复制链接',
+  
+  'preview.title': '刷新数据',
 }
 
 export default {
