@@ -7,8 +7,9 @@ import (
 var (
 	CommonPrefix = "zd_"
 	Models       = []interface{}{
+		&ZdExcel{},
 		&ZdDef{}, &ZdField{}, &ZdSection{}, &ZdRefer{},
-		&ZdRanges{}, &ZdRangesItem{}, &ZdText{}, &ZdConfig{}, &ZdInstances{}, &ZdInstancesItem{}, &ZdExcel{},
+		&ZdRanges{}, &ZdRangesItem{}, &ZdText{}, &ZdConfig{}, &ZdInstances{}, &ZdInstancesItem{},
 		&ZdMock{}, &ZdMockSampleSrc{},
 	}
 )
@@ -293,11 +294,12 @@ type ZdExcel struct {
 	Title string `gorm:"column:title" json:"title"`
 	Sheet string `gorm:"column:sheet" json:"sheet"`
 
-	Yaml      string `gorm:"yaml" json:"yaml"`
-	Path      string `gorm:"column:path" json:"path" yaml:"-"`
-	Folder    string `gorm:"folder" json:"folder" yaml:"-"`
-	FileName  string `gorm:"column:fileName" json:"fileName" yaml:"-"`
-	ReferName string `gorm:"column:referName" json:"referName" yaml:"-"`
+	ChangeTime string `gorm:"column:changeTime" json:"changeTime"`
+	Yaml       string `gorm:"yaml" json:"yaml"`
+	Path       string `gorm:"column:path" json:"path" yaml:"-"`
+	Folder     string `gorm:"folder" json:"folder" yaml:"-"`
+	FileName   string `gorm:"column:fileName" json:"fileName" yaml:"-"`
+	ReferName  string `gorm:"column:referName" json:"referName" yaml:"-"`
 }
 
 func (*ZdExcel) TableName() string {

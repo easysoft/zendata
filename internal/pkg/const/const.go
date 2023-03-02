@@ -94,7 +94,7 @@ var (
 	SqliteDriver = "sqlite3"
 	SqliteFile   = "file:" + TmpDir + "cache/.data.db"
 
-	SqliteTrackTable = "excel_update"
+	SqliteTrackTable = "zd_excel"
 
 	ExcelBorder = `{"border": [{"type":"left","color":"999999","style":1}, {"type":"top","color":"999999","style":1},
 		                              {"type":"bottom","color":"999999","style":1}, {"type":"right","color":"999999","style":1}]}`

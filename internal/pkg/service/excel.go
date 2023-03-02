@@ -405,8 +405,8 @@ func (s *ExcelService) isExcelChanged(path string) (changed bool, sqlBeforeCompl
 		fileChangeTime = s.getDirModTime(path).Unix()
 	}
 
-	sqlStr := fmt.Sprintf("SELECT id, name, changeTime FROM %s "+
-		"WHERE name = '%s' "+
+	sqlStr := fmt.Sprintf("SELECT id, path, changeTime FROM %s "+
+		"WHERE path = '%s' "+
 		"ORDER BY changeTime DESC "+
 		"LIMIT 1;",
 		consts.SqliteTrackTable, path)
@@ -435,10 +435,10 @@ func (s *ExcelService) isExcelChanged(path string) (changed bool, sqlBeforeCompl
 
 	if changed {
 		if !found {
-			sqlBeforeCompleted = fmt.Sprintf("INSERT INTO %s(name, changeTime) VALUES('%s', %d)",
+			sqlBeforeCompleted = fmt.Sprintf("INSERT INTO %s(path, changeTime) VALUES('%s', %d)",
 				consts.SqliteTrackTable, path, fileChangeTime)
 		} else {
-			sqlBeforeCompleted = fmt.Sprintf("UPDATE %s SET changeTime = %d WHERE name = '%s'",
+			sqlBeforeCompleted = fmt.Sprintf("UPDATE %s SET changeTime = %d WHERE path = '%s'",
 				consts.SqliteTrackTable, fileChangeTime, path)
 		}
 	}
