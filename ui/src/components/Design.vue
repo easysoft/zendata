@@ -464,9 +464,9 @@ export default {
       this.tabKey = activeKey
 
       if (this.tabKey === 'preview') {
-        previewFieldData(this.modelData.id, this.type).then(json => {
-          console.log('previewFieldData', json)
-          this.previewData = json.data
+        previewFieldData({config: this.modelProp.referName.replace(/\\/g, "/"), field: this.modelData.field, format: 'txt'}).then(data => {
+          console.log('previewFieldData', data)
+          this.previewData = data
         })
       }
     }

@@ -32,6 +32,12 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 		vari.GlobalVars.OutputFormat = "txt"
 	}
 
+	vari.GlobalVars.ExportFields = nil
+	field := ctx.URLParamDefault("field", "")
+	if field != "" {
+		vari.GlobalVars.ExportFields = strings.Split(field, ",")
+	}
+
 	//root := ctx.URLParam("root")
 	//if root != "" {
 	//	configUtils.UpdateRootDir(root)
@@ -53,7 +59,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	}
 
 	vari.GlobalVars.DefData = domain.DefData{}
-	vari.GlobalVars.ExportFields = nil
+
 	if defaultFile != "" {
 		vari.GlobalVars.ConfigFileDir = fileUtils.GetAbsDir(defaultFile)
 	} else {

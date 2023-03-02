@@ -124,12 +124,11 @@ export function previewDefData (params) {
   })
 }
 
-export function previewFieldData (fieldId, type) {
-  const data = {'action': 'previewFieldData', id: fieldId, mode: type}
+export function previewFieldData (params) {
   return request({
-    url: api.admin,
-    method: 'post',
-    data: data
+    url: `/data/generate`,
+    method: 'get',
+    params: params
   })
 }
 
