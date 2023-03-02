@@ -27,7 +27,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	defaultFile := ctx.URLParam("default")
 	configFile := ctx.URLParam("config")
 
-	vari.GlobalVars.OutputFormat = ctx.URLParam("format")
+	vari.GlobalVars.OutputFormat = ctx.URLParamDefault("format", "json")
 	if vari.GlobalVars.OutputFormat == "text" {
 		vari.GlobalVars.OutputFormat = "txt"
 	}

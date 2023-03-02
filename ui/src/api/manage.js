@@ -116,11 +116,9 @@ export function moveDefField (src, dist, mode) {
   })
 }
 
-export function previewDefData (defId) {
-  const params = {defId: defId}
-
+export function previewDefData (params) {
   return request({
-    url: `/defs/previewData`,
+    url: `/data/generate`,
     method: 'get',
     params
   })
