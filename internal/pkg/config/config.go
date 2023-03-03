@@ -25,6 +25,7 @@ import (
 func InitConfig(root string) {
 	var err error = nil
 	vari.WorkDir = fileUtils.GetWorkDir()
+	logUtils.PrintTo(fmt.Sprintf("WorkDir=%s", vari.WorkDir))
 	vari.CfgFile = vari.WorkDir + ".zd.conf"
 
 	vari.Config = getInst()
@@ -44,7 +45,7 @@ func InitConfig(root string) {
 
 	temp := filepath.Join(vari.WorkDir, "tmp", "cache")
 	if !fileUtils.FileExist(temp) {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", vari.WorkDir), color.FgRed)
 		os.Exit(1)
 	}
 

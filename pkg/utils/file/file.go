@@ -125,13 +125,17 @@ func AddSepIfNeeded(pth string) string {
 func GetWorkDir() string {
 	dir := ""
 	isRelease := commonUtils.IsRelease()
+	logUtils.PrintTo(fmt.Sprintf("isRelease=%v", isRelease))
 	isRunAsBackendProcess := commonUtils.IsRunAsBackendProcess()
+	logUtils.PrintTo(fmt.Sprintf("isRunAsBackendProcess=%v", isRunAsBackendProcess))
 
 	if !isRelease { // debug
 		dir, _ = os.Getwd()
+		logUtils.PrintTo(fmt.Sprintf("dir=%v", dir))
 
 	} else {
 		p, _ := exec.LookPath(os.Args[0])
+		logUtils.PrintTo(fmt.Sprintf("p=%v", p))
 
 		if isRunAsBackendProcess {
 			name := "gui"
