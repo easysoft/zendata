@@ -6,7 +6,6 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"log"
 )
 
 type OutputService struct {
@@ -61,10 +60,6 @@ func (s *OutputService) GenRecordField(field *domain.DefField, mp *map[string]in
 					mod := indexArr[k]
 					index = i / mod % len(child.Values)
 				} else {
-					if len(child.Values) < 1 {
-						log.Print(0)
-					}
-
 					divisor := len(child.Values)
 					if divisor == 0 {
 						divisor = 1

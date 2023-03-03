@@ -286,7 +286,7 @@ endif
 gen_version_file:
 	@echo 'gen version'
 	@mkdir -p ${QINIU_DIR}/${PROJECT}/
-	@echo ${VERSION} > ${QINIU_DIR}/${PROJECT}/version.txt
+	@echo '{"version": "${VERSION}"}' > ${QINIU_DIR}/${PROJECT}/version.json
 
 upload_to:
 	@echo 'upload...'
