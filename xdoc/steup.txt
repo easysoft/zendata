@@ -1,6 +1,7 @@
 go run src/zd.go -y demo/article.yaml -c 3 -head -s
 
 ~/go/bin/rsrc -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
+~/go/bin/rsrc -arch 386 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
 ~/go/bin/rsrc -arch amd64 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
 
 生成数据的地方：
@@ -41,3 +42,8 @@ openapi-generator-cli generate --skip-validate-spec \
 openapi-generator-cli generate --skip-validate-spec \
  -i /Users/aaron/out/input.json \
  -g python -o ~/out/python
+
+https://dl.cnezsoft.com/zd/3.1.0/win64/zd.zip
+https://dl.cnezsoft.com/zd/3.1.0/win32/zd.zip
+https://dl.cnezsoft.com/zd/3.1.0/linux/zd.zip
+https://dl.cnezsoft.com/zd/3.1.0/darwin/zd.zip

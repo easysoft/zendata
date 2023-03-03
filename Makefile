@@ -159,6 +159,7 @@ package_gui_mac_client:
 # launcher
 compile_launcher_win64:
 	@echo 'start compile win64 launcher'
+	@~/go/bin/rsrc -arch amd64 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
 	@cd cmd/launcher && \
         CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
 		${BUILD_CMD_WIN} -x -v \
@@ -167,6 +168,7 @@ compile_launcher_win64:
 
 compile_launcher_win32:
 	@echo 'start compile win32 launcher'
+	@~/go/bin/rsrc -arch 386 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
 	@cd cmd/launcher && \
         CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 \
 		${BUILD_CMD_WIN} -x -v \

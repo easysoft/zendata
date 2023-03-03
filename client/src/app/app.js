@@ -60,8 +60,12 @@ export class ZdApp {
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
-            }
+            },
+            // icon: 'favicon.png'
         })
+        // logInfo(`__dirname=${__dirname}`)
+        // mainWin.setIcon(pth.join(__dirname, 'favicon.png'));
+
         // if (IS_MAC_OSX) {
         //     mainWin.setTrafficLightPosition && mainWin.setTrafficLightPosition({
         //         x: 10,

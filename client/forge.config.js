@@ -16,7 +16,28 @@ module.exports = {
         {
             name: '@electron-forge/maker-squirrel',
             config: {
-                name: 'zd'
+                name: 'zd',
+                options: {
+                    icon: "./ui/favicon.png"
+                }
+            }
+        },
+        {
+            name: '@electron-forge/maker-deb',
+            config: {
+                name: 'zd',
+                options: {
+                    icon: "./ui/favicon.png"
+                }
+            }
+        },
+        {
+            name: '@electron-forge/maker-rpm',
+            config: {
+                name: 'zd',
+                options: {
+                    icon: "./ui/favicon.png"
+                }
             }
         },
         {
@@ -24,14 +45,6 @@ module.exports = {
             platforms: [
                 'darwin'
             ]
-        },
-        {
-            name: '@electron-forge/maker-deb',
-            config: {}
-        },
-        {
-            name: '@electron-forge/maker-rpm',
-            config: {}
         }
     ],
     plugins: [

@@ -121,7 +121,7 @@ export function killZdServer() {
     if (!IS_WINDOWS_OS) {
         logInfo(`>> not windows`);
 
-        const cmd = `ps -ef | grep ${uuid} | grep -v "grep" | awk '{print $2}' | xargs kill -9`
+        const cmd = `ps -ef | grep ${uuid} | grep -v "grep" | awk '{print $2}' | xargs -r kill -9`
         logInfo(`>> exit cmd: ${cmd}`);
 
         const cp = require('child_process');
