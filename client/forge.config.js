@@ -1,10 +1,10 @@
 module.exports = {
     electronPackagerConfig: {
-        "name": "zd1",
+        "name": "zd",
         "icon": "./ui/favicon.ico"
     },
     packagerConfig: {
-        "name": "zd1",
+        "name": "zd",
         "icon": "./icon/favicon.icns",
         extraResource: [
             './bin',
