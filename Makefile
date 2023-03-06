@@ -141,7 +141,7 @@ package_gui_linux_client:
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}linux
 	@cp -rf ${BIN_DIR}/linux/server ${CLIENT_BIN_DIR}linux/server
 
-	@cd client && npm run package-linux && cd ..
+	@cd client && npm run package-linux && cp -r icon out/${PROJECT}-linux-x64 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}linux && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}linux && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-linux-x64 ${CLIENT_OUT_DIR_EXECUTABLE}linux/gui
 

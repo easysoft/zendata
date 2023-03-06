@@ -33,6 +33,7 @@
     "@electron-forge/plugin-webpack": "6.0.0-beta.61",
     "@timfish/forge-externals-plugin": "0.2.0",
     "@vercel/webpack-asset-relocator-loader": "1.7.0",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "6.5.1",
     "electron": "16.0.6",
     "electron-packager": "15.4.0",
