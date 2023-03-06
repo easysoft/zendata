@@ -56,22 +56,14 @@ export class ZdApp {
         const mainWin = new BrowserWindow({
             show: false,
             frame: frame,
-            // titleBarStyle: "hidden",
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
             },
-            icon: pth.join(__dirname, "icon/favicon.png"),
         })
-        logInfo(pth.join(__dirname, "icon/favicon.png"))
-        mainWin.setIcon(pth.join(__dirname, 'icon/favicon.png'));
-
-        // if (IS_MAC_OSX) {
-        //     mainWin.setTrafficLightPosition && mainWin.setTrafficLightPosition({
-        //         x: 10,
-        //         y: 125
-        //     })
-        // }
+        if (IS_LINUX) {
+            mainWin.setIcon(pth.join(__dirname, 'icon/favicon.png'));
+        }
 
         require('@electron/remote/main').initialize()
         require('@electron/remote/main').enable(mainWin.webContents)
