@@ -27,6 +27,7 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	defaultFile := ctx.URLParam("default")
 	configFile := ctx.URLParam("config")
 
+	vari.GlobalVars.ExportChildField = ""
 	vari.GlobalVars.OutputFormat = ctx.URLParamDefault("format", "json")
 	if vari.GlobalVars.OutputFormat == "text" {
 		vari.GlobalVars.OutputFormat = "txt"
@@ -35,7 +36,11 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	vari.GlobalVars.ExportFields = nil
 	field := ctx.URLParamDefault("field", "")
 	if field != "" {
-		vari.GlobalVars.ExportFields = strings.Split(field, ",")
+		if strings.Contains(field, "~~") {
+			vari.GlobalVars.ExportChildField = field
+		} else {
+			vari.GlobalVars.ExportFields = strings.Split(field, ",")
+		}
 	}
 
 	//root := ctx.URLParam("root")
