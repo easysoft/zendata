@@ -1,29 +1,5 @@
 package consts
 
-type FieldType int
-
-const (
-	LIST FieldType = iota
-	TIMESTAMP
-	IP
-	SESSION_ID
-)
-
-func (c FieldType) String() string {
-	switch c {
-	case LIST:
-		return "list"
-	case TIMESTAMP:
-		return "timestamp"
-	case IP:
-		return "ip"
-	case SESSION_ID:
-		return "session"
-	}
-
-	return "n/a"
-}
-
 type RunMode int
 
 const (
@@ -118,3 +94,76 @@ const (
 	SchemaTypeArray   OpenApiSchemaType = "array"
 	SchemaTypeObject  OpenApiSchemaType = "object"
 )
+
+type ColumnType string
+
+const (
+	// number
+	Bit       ColumnType = "bit"
+	Tinyint   ColumnType = "tinyint"
+	Smallint  ColumnType = "smallint"
+	Mediumint ColumnType = "mediumint"
+	Int       ColumnType = "int"
+	Bigint    ColumnType = "bigint"
+	Float     ColumnType = "float"
+	Double    ColumnType = "double"
+
+	// fixed-point
+	Decimal ColumnType = "decimal"
+
+	// character string
+	Char       ColumnType = "char"
+	Varchar    ColumnType = "varchar"
+	Tinytext   ColumnType = "tinytext"
+	Text       ColumnType = "text"
+	Mediumtext ColumnType = "mediumtext"
+	Longtext   ColumnType = "longtext"
+
+	// binary data
+	Tinyblob   ColumnType = "tinyblob"
+	Blob       ColumnType = "blob"
+	Mediumblob ColumnType = "mediumblob"
+	Longblob   ColumnType = "longblob"
+	Binary     ColumnType = "binary"
+	Varbinary  ColumnType = "varbinary"
+
+	// date and time type
+	Date      ColumnType = "date"
+	Time      ColumnType = "time"
+	Year      ColumnType = "year"
+	Datetime  ColumnType = "datetime"
+	Timestamp ColumnType = "timestamp"
+
+	// other type
+	Enum               ColumnType = "enum"
+	Set                ColumnType = "set"
+	Geometry           ColumnType = "geometry"
+	Point              ColumnType = "point"
+	Linestring         ColumnType = "linestring"
+	Polygon            ColumnType = "polygon"
+	Multipoint         ColumnType = "multipoint"
+	Multilinestring    ColumnType = "multilinestring"
+	Multipolygon       ColumnType = "multipolygon"
+	Geometrycollection ColumnType = "geometrycollection"
+	Json               ColumnType = "json"
+)
+
+func (e ColumnType) String() string {
+	return string(e)
+}
+
+type VarcharType string
+
+const (
+	Email      VarcharType = "email"
+	Url        VarcharType = "url"
+	Ip         VarcharType = "ip"
+	CreditCard VarcharType = "creditcard"
+	IdCard     VarcharType = "idcard"
+	CellNumber VarcharType = "cellnumber"
+	Token      VarcharType = "token"
+)
+
+func (e VarcharType) String() string {
+	return string(e)
+}

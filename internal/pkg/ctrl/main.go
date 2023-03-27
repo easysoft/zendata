@@ -13,6 +13,8 @@ type MainCtrl struct {
 	FileService       *service.FileService       `inject:""`
 	TableParseService *service.TableParseService `inject:""`
 	MockService       *service.MockService       `inject:""`
+
+	SqlParseService *service.SqlParseService `inject:""`
 }
 
 func (c *MainCtrl) Generate(files []string) {
@@ -39,7 +41,7 @@ func (c *MainCtrl) GenYaml(input string) {
 
 	ext := filepath.Ext(input)
 	if ext == ".sql" { // from sql
-		action.GenYamlFromSql(input)
+		c.SqlParseService.GenYamlFromSql(input)
 	} else if ext == ".txt" { // from article
 		action.GenYamlFromArticle(input)
 	}
