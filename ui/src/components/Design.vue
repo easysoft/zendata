@@ -464,11 +464,24 @@ export default {
       this.tabKey = activeKey
 
       if (this.tabKey === 'preview') {
-        previewFieldData({config: this.modelProp.referName.replace(/\\/g, "/"), field: this.modelData.field, format: 'txt'}).then(data => {
+        console.log(111, this.getFieldTreeName(this.modelData))
+        previewFieldData({config: this.modelProp.referName.replace(/\\/g, "/"), field: this.getFieldTreeName(this.modelData), format: 'txt'}).then(data => {
           console.log('previewFieldData', data)
           this.previewData = data
         })
       }
+    },
+    getFieldTreeName(node, name = ''){
+      if(node.parentID == 0){
+        return name;
+      }
+      if(this.nodeMap[node.parentID] == undefined){
+        return name == '' ? node.field : node.field + '~~' + name;
+      }
+
+      name = name == '' ? node.field : node.field + '~~' + name;
+
+      return this.getFieldTreeName(this.nodeMap[node.parentID], name)
     }
   }
 }

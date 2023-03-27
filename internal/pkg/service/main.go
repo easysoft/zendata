@@ -65,7 +65,7 @@ func (s *MainService) GenerateDataByContents(contents [][]byte) (count int, err 
 	}
 
 	join := false
-	if vari.GlobalVars.OutputFormat != consts.FormatJson {
+	if vari.GlobalVars.OutputFormat != consts.FormatJson && vari.GlobalVars.ExportChildField == "" {
 		join = true
 	}
 

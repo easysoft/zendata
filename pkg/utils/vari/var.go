@@ -12,11 +12,12 @@ type GenVarType struct {
 	RunMode consts.RunMode
 	Total   int
 
-	Output       string
-	OutputFormat string
-	TopFieldMap  map[string]domain.DefField
-	ExportFields []string
-	ColIsNumArr  []bool
+	Output           string
+	OutputFormat     string
+	TopFieldMap      map[string]domain.DefField
+	ExportFields     []string
+	ExportChildField string
+	ColIsNumArr      []bool
 
 	Table        string
 	DBType       string // database type

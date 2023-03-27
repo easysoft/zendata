@@ -105,6 +105,9 @@ func (s *CombineService) populateRowsFromTwoDimArr(arrOfArr [][]interface{}, isR
 		strArr := make([]interface{}, 0)
 		for j := 0; j < len(arrOfArr); j++ {
 			child := arrOfArr[j]
+			if len(child) == 0 {
+				continue
+			}
 
 			var index int
 			if isRecursive {
