@@ -177,11 +177,13 @@ func (s *SqlParseService) getFieldTypeAndName(item []string) (typ, name string) 
 	myExp := regexp.MustCompile(colName + `\s([A-Z]+)\(([^,]*),?([^,]*)\)`)
 	result := myExp.FindStringSubmatch(item[0])
 
-	if result != nil {
+	if result != nil { // int with (10)
 		typ = result[1]
 	} else {
 		typ = strings.Split(strings.Fields(item[0])[1], "(")[0]
 	}
+
+	typ = strings.TrimSuffix(typ, ",")
 
 	return
 }

@@ -4,7 +4,7 @@ CREATE TABLE `biz_project`   (
     `created_at` datetime(3) DEFAULT NULL,
     `updated_at` datetime(3) DEFAULT NULL,
     `deleted_at` datetime(3) DEFAULT NULL,
-    `name` longtext,
+    `name` varchar,
     `desc` longtext,
     `is_default` longtext,
     `disabled` tinyint(1) DEFAULT NULL,
