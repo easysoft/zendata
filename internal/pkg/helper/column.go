@@ -32,11 +32,11 @@ func GetColumnType(metaType string, name string, records []string) (
 	columnType = consts.ColumnType(metaType)
 
 	if columnType == consts.Varchar {
-		columnType = GetVarcharTypeByName(name)
+		varcharType = GetVarcharTypeByName(name)
 	}
 
 	if columnType == consts.Varchar {
-		columnType = GetVarcharTypeByRecords(records)
+		varcharType = GetVarcharTypeByRecords(records)
 	}
 
 	return
@@ -46,11 +46,13 @@ func GetColumnTypeByMetadata(metadata string) (typ consts.ColumnType) {
 	return
 }
 
-func GetVarcharTypeByName(name string) (typ consts.ColumnType) {
+func GetVarcharTypeByName(name string) (ret consts.VarcharType) {
+	ret = consts.Empty
 	return
 }
 
-func GetVarcharTypeByRecords(records []string) (typ consts.ColumnType) {
+func GetVarcharTypeByRecords(records []string) (ret consts.VarcharType) {
+	ret = consts.Empty
 	return
 }
 

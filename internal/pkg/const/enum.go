@@ -155,6 +155,7 @@ func (e ColumnType) String() string {
 type VarcharType string
 
 const (
+	Empty      VarcharType = ""
 	Email      VarcharType = "email"
 	Url        VarcharType = "url"
 	Ip         VarcharType = "ip"
