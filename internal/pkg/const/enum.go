@@ -155,14 +155,21 @@ func (e ColumnType) String() string {
 type VarcharType string
 
 const (
-	Empty      VarcharType = ""
-	Email      VarcharType = "email"
-	Url        VarcharType = "url"
-	Ip         VarcharType = "ip"
-	CreditCard VarcharType = "creditcard"
-	IdCard     VarcharType = "idcard"
-	CellNumber VarcharType = "cellnumber"
-	Token      VarcharType = "token"
+	Empty        VarcharType = ""
+	Username     VarcharType = "username"
+	Email        VarcharType = "email"
+	Url          VarcharType = "url"
+	Ip           VarcharType = "ip"
+	Mac          VarcharType = "mac"
+	CreditCard   VarcharType = "creditcard"
+	IdCard       VarcharType = "idcard"
+	MobileNumber VarcharType = "mobilenumber"
+	TelNumber    VarcharType = "telnumber"
+	Token        VarcharType = "token"
+	Uuid         VarcharType = "uuid"
+	JsonStr      VarcharType = "jsonstr"
+	UnixTime     VarcharType = "unixtime"
+	Md5          VarcharType = "md5"
 )
 
 func (e VarcharType) String() string {

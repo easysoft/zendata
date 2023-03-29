@@ -50,9 +50,9 @@ func (s *SqlParseService) GenYamlFromSql(file string) {
 
 	// gen table yaml files
 	for tableName, statement := range statementMap {
-		createStr := statement
+		createSql := statement
 
-		columns, types := s.getColumnsFromCreateStatement(createStr)
+		columns, types := s.getColumnsFromCreateStatement(createSql, nil)
 
 		def := domain.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
@@ -72,11 +72,11 @@ func (s *SqlParseService) GenYamlFromSql(file string) {
 				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 			} else {
 
-				if types[col].FieldType == "DATE" || types[col].FieldType == "TIME" || types[col].FieldType == "YEAR" || types[col].FieldType == "DATETIME" || types[col].FieldType == "TIMESTAMP" {
+				if types[col].ColumnType == "DATE" || types[col].ColumnType == "TIME" || types[col].ColumnType == "YEAR" || types[col].ColumnType == "DATETIME" || types[col].ColumnType == "TIMESTAMP" {
 					field.Range = strconv.Quote("20210821 000000:60")
 					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
 					field.Type = "timestamp"
-				} else if types[col].FieldType == "CHAR" || types[col].FieldType == "VARCHAR" || types[col].FieldType == "TINYTEXT" || types[col].FieldType == "TEXT" || types[col].FieldType == "MEDIUMTEXT" || types[col].FieldType == "LONGTEXT" {
+				} else if types[col].ColumnType == "CHAR" || types[col].ColumnType == "VARCHAR" || types[col].ColumnType == "TINYTEXT" || types[col].ColumnType == "TEXT" || types[col].ColumnType == "MEDIUMTEXT" || types[col].ColumnType == "LONGTEXT" {
 					field.Range = types[col].Rang
 					field.Loop = "'3'" // default value of loop
 					field.Loopfix = "_"
@@ -148,7 +148,8 @@ func (s *SqlParseService) getCreateStatement(content string) (statementMap map[s
 	return
 }
 
-func (s *SqlParseService) getColumnsFromCreateStatement(ddl string) (fieldLines []string, fieldInfo map[string]helper.FieldTypeInfo) {
+func (s *SqlParseService) getColumnsFromCreateStatement(ddl string, recordsMap map[string][]interface{}) (
+	fieldLines []string, fieldInfo map[string]helper.FieldTypeInfo) {
 	fieldInfo = map[string]helper.FieldTypeInfo{}
 
 	re := regexp.MustCompile("(?iU)\\s*(\\S+)\\s.*\n")
@@ -160,8 +161,8 @@ func (s *SqlParseService) getColumnsFromCreateStatement(ddl string) (fieldLines 
 			continue
 		}
 
-		typ, name := s.getFieldTypeAndName(items)
-		fieldInfo[name] = helper.GenFieldDefByMetadata(typ, name, nil)
+		typ, name, param := s.getFieldData(items)
+		fieldInfo[name] = helper.GenerateFieldDefByMetadata(typ, param, name, recordsMap[name])
 
 		fieldLines = append(fieldLines, name)
 
@@ -170,20 +171,24 @@ func (s *SqlParseService) getColumnsFromCreateStatement(ddl string) (fieldLines 
 	return fieldLines, fieldInfo
 }
 
-func (s *SqlParseService) getFieldTypeAndName(item []string) (typ, name string) {
+func (s *SqlParseService) getFieldData(item []string) (typ, name string, param string) {
 	colName := item[1]
 	name = strings.ReplaceAll(colName, "`", "")
 
-	myExp := regexp.MustCompile(colName + `\s([A-Z]+)\(([^,]*),?([^,]*)\)`)
+	myExp := regexp.MustCompile(colName + `\s([a-zA-Z]+)\((?U:(.*))\)`)
 	result := myExp.FindStringSubmatch(item[0])
 
-	if result != nil { // int with (10)
+	if result != nil { // type with length like int(10)
 		typ = result[1]
+		param = result[2]
 	} else {
 		typ = strings.Split(strings.Fields(item[0])[1], "(")[0]
 	}
 
 	typ = strings.TrimSuffix(typ, ",")
+
+	typ = strings.ToLower(typ)
+	name = strings.ToLower(name)
 
 	return
 }
@@ -214,11 +219,12 @@ func (s *SqlParseService) genKeysYaml(pkMap map[string]string) {
 	}
 }
 
-func (s *SqlParseService) genTablesYaml(statementMap map[string]string, pkMap map[string]string, fkMap map[string][2]string) {
+func (s *SqlParseService) genTablesYaml(statementMap map[string]string,
+	pkMap map[string]string, fkMap map[string][2]string, recordsMap map[string]map[string][]interface{}) {
 	for tableName, statement := range statementMap {
 		createStr := statement
 
-		columns, types := s.getColumnsFromCreateStatement(createStr)
+		columns, types := s.getColumnsFromCreateStatement(createStr, recordsMap[tableName])
 
 		def := domain.DefSimple{}
 		def.Init(tableName, "automated export", "", "1.0")
@@ -238,11 +244,11 @@ func (s *SqlParseService) genTablesYaml(statementMap map[string]string, pkMap ma
 				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 			} else {
 
-				if types[col].FieldType == "DATE" || types[col].FieldType == "TIME" || types[col].FieldType == "YEAR" || types[col].FieldType == "DATETIME" || types[col].FieldType == "TIMESTAMP" {
+				if types[col].ColumnType == "DATE" || types[col].ColumnType == "TIME" || types[col].ColumnType == "YEAR" || types[col].ColumnType == "DATETIME" || types[col].ColumnType == "TIMESTAMP" {
 					field.Range = strconv.Quote("20210821 000000:60")
 					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
 					field.Type = "timestamp"
-				} else if types[col].FieldType == "CHAR" || types[col].FieldType == "VARCHAR" || types[col].FieldType == "TINYTEXT" || types[col].FieldType == "TEXT" || types[col].FieldType == "MEDIUMTEXT" || types[col].FieldType == "LONGTEXT" {
+				} else if types[col].ColumnType == "CHAR" || types[col].ColumnType == "VARCHAR" || types[col].ColumnType == "TINYTEXT" || types[col].ColumnType == "TEXT" || types[col].ColumnType == "MEDIUMTEXT" || types[col].ColumnType == "LONGTEXT" {
 					field.Range = types[col].Rang
 					field.Loop = "'3'" // default value of loop
 					field.Loopfix = "_"

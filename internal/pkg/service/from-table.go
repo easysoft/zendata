@@ -26,13 +26,31 @@ func (s *TableParseService) GenYamlFromTable() {
 	var mp map[string]interface{}
 	db.Raw("SHOW CREATE TABLE " + vari.GlobalVars.Table).Scan(&mp)
 	sql := mp["Create Table"].(string) + ";"
-
 	statementMap, pkMap, fkMap := s.SqlParseService.getCreateStatement(sql)
 
-	s.SqlParseService.genKeysYaml(pkMap)
+	recordsMap := map[string]map[string][]interface{}{}
+	var records []map[string]interface{}
+	query := fmt.Sprintf("SELECT * FROM %s", vari.GlobalVars.Table)
+	db.Raw(query).Scan(&records)
+	recordsMap[vari.GlobalVars.Table] = s.GenColArr(records)
 
-	s.SqlParseService.genTablesYaml(statementMap, pkMap, fkMap)
+	s.SqlParseService.genKeysYaml(pkMap)
+	s.SqlParseService.genTablesYaml(statementMap, pkMap, fkMap, recordsMap)
 
 	entTime := time.Now().Unix()
 	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_yaml", len(statementMap), vari.GlobalVars.Output, entTime-startTime))
+}
+
+func (s *TableParseService) GenColArr(records []map[string]interface{}) (ret map[string][]interface{}) {
+	ret = map[string][]interface{}{}
+
+	for _, record := range records {
+		for key, val := range record {
+			if val != nil {
+				ret[key] = append(ret[key], val)
+			}
+		}
+	}
+
+	return
 }

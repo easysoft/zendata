@@ -76,13 +76,8 @@ func main() {
 	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "f", consts.FormatText, "")
 	flagSet.StringVar(&vari.GlobalVars.OutputFormat, "format", consts.FormatText, "")
 
-	flagSet.StringVar(&input, "i", "", "")
-	flagSet.StringVar(&input, "input", "", "")
-
 	flagSet.StringVar(&vari.GlobalVars.Output, "o", "", "")
 	flagSet.StringVar(&vari.GlobalVars.Output, "output", "", "")
-
-	flagSet.BoolVar(&parse, "parse", false, "")
 
 	flagSet.BoolVar(&listData, "l", false, "")
 	flagSet.BoolVar(&listData, "list", false, "")
@@ -116,6 +111,12 @@ func main() {
 
 	flagSet.BoolVar(&set, "S", false, "")
 	flagSet.BoolVar(&set, "set", false, "")
+
+	// gen yaml from sql or table
+	flagSet.BoolVar(&parse, "parse", false, "")
+
+	flagSet.StringVar(&input, "i", "", "")
+	flagSet.StringVar(&input, "input", "", "")
 
 	flagSet.StringVar(&vari.GlobalVars.Table, "t", "", "")
 	flagSet.StringVar(&vari.GlobalVars.Table, "table", "", "")

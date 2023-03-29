@@ -2,9 +2,9 @@
 CREATE TABLE `biz_project`   (
     `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
     `created_at` datetime(3) DEFAULT NULL,
-    `updated_at` datetime(3) DEFAULT NULL,
-    `deleted_at` datetime(3) DEFAULT NULL,
     `name` varchar,
+    `user-name` varchar,
+    `tel_phone` varchar,
     `desc` longtext,
     `is_default` longtext,
     `disabled` tinyint(1) DEFAULT NULL,
