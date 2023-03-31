@@ -18,13 +18,27 @@ func GenerateFieldDefByMetadata(metadata string, param string, name string, reco
 		generateDefByVarcharType(param, &info)
 		return
 	}
+	if info.ColumnType == consts.Json {
+		generateDefForJson(records, &info)
+		return
+	}
 
 	GenDefByColumnType(param, &info)
 
 	return
 }
 
-func generateDefByVarcharType(param string, ret *FieldTypeInfo) {
+func generateDefForJson(records []interface{}, info *FieldTypeInfo) {
+	rang := Json
+	if len(records) > 0 {
+		rang = fmt.Sprintf("%v", records[0])
+	}
+
+	info.Rang = rang
+	info.Format = "json"
+}
+
+func generateDefByVarcharType(param string, info *FieldTypeInfo) {
 
 	return
 }
@@ -123,6 +137,8 @@ func GetVarcharTypeByName(name string) (ret consts.VarcharType) {
 		ret = consts.Url
 	} else if regexp.MustCompile(`(ip)`).MatchString(name) {
 		ret = consts.Ip
+	} else if regexp.MustCompile(`(mac).*(address)`).MatchString(name) {
+		ret = consts.Mac
 	} else if regexp.MustCompile(`(creditcard)`).MatchString(name) {
 		ret = consts.CreditCard
 	} else if regexp.MustCompile(`(idcard)`).MatchString(name) {
@@ -153,6 +169,7 @@ func GetVarcharTypeByRecords(records []interface{}) (ret consts.VarcharType) {
 		ret = consts.Uuid
 	} else if govalidator.IsJSON(val) {
 		ret = consts.JsonStr
+
 		//} else if govalidator.IsUnixTime(val) {
 		//	ret = consts.UnixTime
 	} else if govalidator.IsMD5(val) {
@@ -179,115 +196,120 @@ type FieldTypeInfo struct {
 	Precision int
 	HasSign   bool
 
-	Note string
-	Rang string
+	Note   string
+	Rang   string
+	Type   string
+	Format string
+	From   string
+	Select string
 }
 
 func GenDefByColumnType(param string, ret *FieldTypeInfo) {
 	rang := ""
+	typ := ""
+	format := ""
+	from := ""
+	selectStr := ""
 	note := ""
 
 	switch ret.ColumnType {
-	// integer
+	// int
 	case "bit":
-		rang = "0,1"
+		rang, note = GenBit()
 	case "tinyint":
-		rang = "0-255"
+		rang, note = GenTinyint(ret.HasSign)
 	case "smallint":
-		rang = "0-65535"
+		rang, note = GenSmallint(ret.HasSign)
 	case "mediumint":
-		rang = "0-65535"
-		note = `"mediumint [0,2^24-1]"`
+		rang, note = GenMediumint(ret.HasSign)
 	case "int":
-		rang = "0-100000"
-		note = `"ini [0,2^32-1]"`
+		rang, note = GenInt(ret.HasSign)
 	case "bigint":
-		rang = "0-100000"
-		note = `"bigint [0,2^64-1]"`
-	// floating-point
+		rang, note = GenBigint(ret.HasSign)
+
+	// float
 	case "float":
-		rang = "1.01-99.99:0.01"
-		note = `"float"`
+		rang, note = GenFloat(ret.HasSign)
 	case "double":
-		rang = "1.01-99.99:0.01"
-		note = `"double"`
+		rang, note = GenDouble(ret.HasSign)
 	// fixed-point
 	case "decimal":
-		rang = "123.45"
-		note = `"decimal"`
-	// character string
+		rang, note = GenDecimal(ret.HasSign)
+
+	// string
 	case "char":
-		rang = genChar(param)
+		rang = GenChar(param)
 	case "tinytext":
-		rang = `"tinytext"`
+		from = "idiom.v1.idiom"
+		selectStr = "word"
 	case "text":
-		rang = `"text"`
+		from = "xiehouyu.v1.xiehouyu"
+		selectStr = "riddle"
 	case "mediumtext":
-		rang = `"mediumtext"`
+		from = "joke.v1.joke"
+		selectStr = "content"
 	case "longtext":
-		rang = `"longtext"`
+		from = `"song.v1.song"`
+		selectStr = "lyric"
+
 	// binary data
 	case "tinyblob":
-		rang = `"tinyblob"`
+		from, format = GenBin()
 	case "blob":
-		rang = `"blob"`
+		from, format = GenBin()
 	case "mediumblob":
-		rang = `"mediumblob"`
+		from, format = GenBin()
 	case "longblob":
-		rang = `"longblob"`
+		from, format = GenBin()
 	case "binary":
-		rang = "binary"
+		from, format = GenBin()
 	case "varbinary":
-		rang = "varbinary"
+		from, format = GenBin()
+
 	// date and time type
 	case "date":
-		rang = `"date"`
+		rang, typ, format = GenDate()
 	case "time":
-		rang = `"time"`
+		rang, typ, format = GenTime()
 	case "year":
-		rang = `"year"`
+		rang, typ, format = GenYear()
 	case "datetime":
-		rang = `"datetime"`
+		rang, typ, format = GenDatetime()
 	case "timestamp":
-		rang = `"timestamp"`
+		rang, typ, format = GenTimestamp()
+
 	// other type
-	case "geometry":
-		rang = `"geometry"`
-	case "point":
-		rang = `"point"`
-	case "linestring":
-		rang = `"linestring"`
-	case "polygon":
-		rang = `"polygon"`
-	case "multipoint":
-		rang = `"multipoint"`
-	case "multilinestring":
-		rang = `"multilinestring"`
-	case "multipolygon":
-		rang = `"multipolygon"`
-	case "geometrycollection":
-		rang = `"geometrycollection"`
 	case "enum":
 		rang = getEnumValue(param)
 	case "set":
 		rang = getSetValue(param)
+
+	//case "geometry":
+	//	rang = `"geometry"`
+	//case "point":
+	//	rang = `"point"`
+	//case "linestring":
+	//	rang = `"linestring"`
+	//case "polygon":
+	//	rang = `"polygon"`
+	//case "multipoint":
+	//	rang = `"multipoint"`
+	//case "multilinestring":
+	//	rang = `"multilinestring"`
+	//case "multipolygon":
+	//	rang = `"multipolygon"`
+	//case "geometrycollection":
+	//	rang = `"geometrycollection"`
+
 	default:
 	}
 
 	ret.Rang = rang
+	ret.Format = format
+	ret.Type = typ
+	ret.From = from
+	ret.Select = selectStr
 	ret.Note = note
-
-	return
-}
-
-func genChar(param string) (ret string) {
-	rang := `a-z`
-
-	paramInt, _ := strconv.Atoi(param)
-
-	if paramInt > 0 {
-		rang += fmt.Sprintf("{%d!}", paramInt)
-	}
 
 	return
 }

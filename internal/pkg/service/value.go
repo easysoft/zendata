@@ -3,7 +3,7 @@ package service
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
-	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/oklog/ulid/v2"
 	"math/rand"
@@ -15,14 +15,14 @@ type ValueService struct {
 }
 
 func (s *ValueService) CreateTimestampField(field *domain.DefField) {
-	valueGen.ConvertTmFormat(field)
+	helper.ConvertTmFormat(field)
 
 	rang := strings.Trim(strings.TrimSpace(field.Range), ",")
 	rangeSections := strings.Split(rang, ",")
 
 	values := make([]interface{}, 0)
 	for _, section := range rangeSections {
-		valueGen.CreateTimestampSectionValue(section, &values)
+		helper.CreateTimestampSectionValue(section, &values)
 	}
 
 	if len(values) == 0 {

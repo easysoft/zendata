@@ -6,7 +6,6 @@ import (
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -187,9 +186,6 @@ func opts(files []string) {
 	} else if md5 != "" {
 		helper.AddMd5(md5, salt)
 		return
-	} else if decode {
-		gen.Decode(files, input)
-		return
 	} else if parse {
 		genYaml(input)
 		return
@@ -217,10 +213,6 @@ func genMock(input string) {
 
 func genData(files []string) {
 	command.PrintStartInfo()
-
-	if command.ClearCache() {
-		return
-	}
 
 	err := command.SetOutFormat()
 	defer logUtils.OutputFileWriter.Close()

@@ -77,7 +77,7 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		pass = true
 		return
 	} else if strings.Index(format, "binary") > -1 {
-		ret = GenBinary()
+		ret = ImgBindata
 
 		pass = true
 		return
@@ -305,8 +305,4 @@ func RandPassword(length int) string {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	return string(b)
-}
-
-func GenBinary() string {
-	return ImgBindata
 }

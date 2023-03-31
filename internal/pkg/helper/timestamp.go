@@ -1,4 +1,4 @@
-package genValue
+package helper
 
 import (
 	"fmt"

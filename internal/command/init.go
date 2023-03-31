@@ -5,7 +5,6 @@ import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/ctrl"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -31,31 +30,6 @@ func InitCtrl() (defCtrl *ctrl.MainCtrl, err error) {
 	err = g.Populate()
 	if err != nil {
 		logUtils.PrintErrMsg(fmt.Sprintf("populate the incomplete Objects: %v", err))
-	}
-
-	return
-}
-
-func ClearCache() (ret bool) {
-	cacheKey, cacheOpt, _, hasCache, isBatch := gen.ParseCache()
-	if cacheOpt == "clear" {
-		if isBatch {
-			gen.ClearBatchCache(cacheKey)
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_cache", cacheKey))
-
-		} else if cacheKey == "all" {
-			gen.ClearAllCache()
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_all_cache"))
-
-		} else {
-			if hasCache {
-				gen.ClearCache(cacheKey)
-			}
-			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("success_to_clear_cache", cacheKey))
-
-		}
-
-		ret = true
 	}
 
 	return

@@ -1,7 +1,7 @@
 package ctrl
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/action"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -13,6 +13,7 @@ type MainCtrl struct {
 	FileService       *service.FileService       `inject:""`
 	TableParseService *service.TableParseService `inject:""`
 	MockService       *service.MockService       `inject:""`
+	ArticleService    *service.ArticleService    `inject:""`
 
 	SqlParseService *service.SqlParseService `inject:""`
 }
@@ -24,7 +25,7 @@ func (c *MainCtrl) Generate(files []string) {
 
 	files = c.FileService.HandleFiles(files)
 
-	if !action.IsFromProtobuf(files[0]) { // default gen from yaml
+	if !helper.IsFromProtobuf(files[0]) { // default gen from yaml
 		c.MainService.GenerateFromContents(files)
 
 	} else { // gen from protobuf
@@ -43,7 +44,7 @@ func (c *MainCtrl) GenYaml(input string) {
 	if ext == ".sql" { // from sql
 		c.SqlParseService.GenYamlFromSql(input)
 	} else if ext == ".txt" { // from article
-		action.GenYamlFromArticle(input)
+		c.ArticleService.GenYamlFromArticle(input)
 	}
 }
 

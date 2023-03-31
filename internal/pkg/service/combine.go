@@ -4,7 +4,7 @@ import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
-	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
@@ -49,7 +49,7 @@ func (s *CombineService) CombineChildrenIfNeeded(field *domain.DefField, isOnTop
 			}
 
 			// select from excel with expr
-			if genHelper.IsSelectExcelWithExpr(child) {
+			if helper.IsSelectExcelWithExpr(child) {
 				childValues = s.ExcelService.genExcelValuesWithExpr(&child, fieldNameToValuesMap)
 			}
 

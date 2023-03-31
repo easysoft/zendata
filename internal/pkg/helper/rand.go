@@ -1,9 +1,7 @@
-package genHelper
+package helper
 
 import (
 	"fmt"
-	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
-	"github.com/easysoft/zendata/internal/pkg/helper"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"strconv"
 	"strings"
@@ -41,7 +39,7 @@ func GetRandValuesFromRange(dataType, start, end, step string, repeat int, repea
 			stepInt = stepInt * -1
 		}
 
-		items = valueGen.GenerateItems(startInt, endInt, stepInt, 0, true, repeat, repeatTag, count)
+		items = GenerateItems(startInt, endInt, stepInt, 0, true, repeat, repeatTag, count)
 
 	} else if dataType == "char" {
 		startChar := start[0]
@@ -52,7 +50,7 @@ func GetRandValuesFromRange(dataType, start, end, step string, repeat int, repea
 			stepInt = stepInt * -1
 		}
 
-		items = valueGen.GenerateItems(startChar, endChar, stepInt, 0, true, repeat, repeatTag, count)
+		items = GenerateItems(startChar, endChar, stepInt, 0, true, repeat, repeatTag, count)
 
 	} else if dataType == "float" {
 
@@ -64,7 +62,7 @@ func GetRandValuesFromRange(dataType, start, end, step string, repeat int, repea
 			stepFloat = stepFloat * -1
 		}
 
-		items = valueGen.GenerateItems(startFloat, endFloat, stepFloat, precision, true, repeat, repeatTag, count)
+		items = GenerateItems(startFloat, endFloat, stepFloat, precision, true, repeat, repeatTag, count)
 
 	}
 
@@ -85,7 +83,7 @@ func GetRandValuesFromRange(dataType, start, end, step string, repeat int, repea
 }
 
 func getFormatStr(val interface{}, precision int, format string) (ret string) {
-	typ := valueGen.GetType(val)
+	typ := GetType(val)
 
 	if format == "" {
 		if typ == "int" {
@@ -97,7 +95,7 @@ func getFormatStr(val interface{}, precision int, format string) (ret string) {
 		}
 
 	} else {
-		formatVal, success := helper.FormatStr(format, val, 0)
+		formatVal, success := FormatStr(format, val, 0)
 		if success {
 			ret = formatVal
 		} else {

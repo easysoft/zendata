@@ -4,7 +4,7 @@ import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
-	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -66,7 +66,7 @@ func (s *TextService) CreateFieldValuesFromText(field *domain.DefField) {
 		}
 
 		// get index list for data retrieve
-		numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(step), 0, rand, 1, "", 0)
+		numbs := helper.GenerateItems(int64(0), int64(len(list)-1), int64(step), 0, rand, 1, "", 0)
 
 		// gen data by index
 		count := 0

@@ -6,12 +6,22 @@ import (
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
+	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"gopkg.in/yaml.v3"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
+)
+
+var (
+	MaxLen           = 10
+	IgnoreWords      = []string{"了", "的"}
+	IgnoreCategories = []string{"姓", "名字", "介词"}
 )
 
 type ArticleService struct {
@@ -213,6 +223,135 @@ func (s *ArticleService) genArticleFiles(pth string, index int) (ret string) {
 
 	ret = strings.TrimSuffix(pth, filepath.Ext(pth))
 	ret += "-" + pfix + filepath.Ext(pth)
+
+	return
+}
+
+func (s *ArticleService) GenYamlFromArticle(file string) {
+	startTime := time.Now().Unix()
+
+	content := fileUtils.ReadFile(file)
+	words := s.LoadAllWords()
+
+	templ := s.replaceWords(content, words)
+	yamlObj := domain.DefArticle{Type: "article", Content: templ, Author: "zendata",
+		From: "words.v1", Title: "Template", Version: "1.1"}
+	bytes, _ := yaml.Marshal(&yamlObj)
+	yamlStr := string(bytes)
+
+	outFile := ""
+	if vari.GlobalVars.Output != "" {
+		vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+		outFile = filepath.Join(vari.GlobalVars.Output, fileUtils.ChangeFileExt(filepath.Base(file), ".yaml"))
+		fileUtils.WriteFile(outFile, yamlStr)
+
+	} else {
+		logUtils.PrintTo(yamlStr)
+	}
+
+	entTime := time.Now().Unix()
+	logUtils.PrintTo(i118Utils.I118Prt.Sprintf("generate_article_templ", outFile, entTime-startTime))
+}
+
+func (s *ArticleService) replaceWords(content string, words map[string]string) (ret string) {
+	runeArr := []rune(content)
+	newRuneArr := make([]rune, 0)
+	lastUsedWordOfCategoryMap := map[string]string{}
+	for i := 0; i < len(runeArr); {
+		found := false
+		for j := MaxLen; j >= 0; j-- {
+			end := i + j
+			if end > len(runeArr) {
+				end = len(runeArr)
+			}
+
+			chars := runeArr[i:end]
+			str := ""
+			for _, char := range chars {
+				str += string(char)
+			}
+
+			val, ok := words[str]
+			if ok {
+				if str == "有" {
+					logUtils.PrintTo("")
+				}
+
+				lastOne, ok := lastUsedWordOfCategoryMap[val]
+
+				new := ""
+				if ok && lastOne == str {
+					new = "(" + val + ")"
+				} else {
+					new = "{" + val + "}"
+				}
+				itemArr := []rune(new)
+				newRuneArr = append(newRuneArr, itemArr...)
+
+				lastUsedWordOfCategoryMap[val] = str // update
+
+				i = end
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			newRuneArr = append(newRuneArr, runeArr[i])
+
+			i++
+		}
+	}
+
+	ret = string(newRuneArr)
+
+	return
+}
+
+func (s *ArticleService) LoadAllWords() (ret map[string]string) {
+	ret = map[string]string{}
+
+	rows, _ := vari.DB.Table("words_v1").Where("true").Select("*").Rows()
+	defer rows.Close()
+
+	columns, err := rows.Columns()
+	colNum := len(columns)
+
+	colIndexToCategoryName := map[int]string{}
+	for index, col := range columns {
+		colIndexToCategoryName[index] = col
+	}
+
+	// build an empty string array to retrieve row
+	var record = make([]interface{}, colNum)
+	for i, _ := range record {
+		var itf string
+		record[i] = &itf
+	}
+
+	for rows.Next() {
+		err = rows.Scan(record...)
+		if err != nil {
+			logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_parse_row", err.Error()))
+			return
+		}
+
+		for index := len(record) - 1; index >= 0; index-- {
+			word := record[1].(*string)
+			category := colIndexToCategoryName[index]
+			isBelowToCategory := record[index].(*string)
+
+			if *isBelowToCategory == "y" {
+				if !stringUtils.StrInArr(category, IgnoreCategories) &&
+					!stringUtils.StrInArr(*word, IgnoreWords) {
+
+					ret[*word] = category
+				}
+
+				break
+			}
+		}
+	}
 
 	return
 }

@@ -3,8 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/easysoft/zendata/internal/pkg/domain"
-	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
-	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	"log"
 	"os"
 	"strconv"
@@ -30,7 +29,7 @@ func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, fiel
 	values = map[string][]interface{}{}
 
 	// sql has variable expr
-	if filePath == "" || genHelper.IsSelectExcelWithExpr(*field) {
+	if filePath == "" || helper.IsSelectExcelWithExpr(*field) {
 		return
 	}
 
@@ -47,7 +46,7 @@ func (s *ExcelService) generateFieldValuesFromExcel(filePath, sheet string, fiel
 
 	list, fieldSelect := s.ReadDataFromSQLite(*field, dbName, sheet, total, filePath)
 	// get index list for data retrieve
-	numbs := valueGen.GenerateItems(int64(0), int64(len(list)-1), int64(1), 0, false, 1, "", 0)
+	numbs := helper.GenerateItems(int64(0), int64(len(list)-1), int64(1), 0, false, 1, "", 0)
 
 	// get data by index
 	index := 0

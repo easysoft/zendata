@@ -4,8 +4,7 @@ import (
 	"fmt"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
-	genHelper "github.com/easysoft/zendata/internal/pkg/gen/helper"
-	valueGen "github.com/easysoft/zendata/internal/pkg/gen/value"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
@@ -109,7 +108,7 @@ func (s *RangeService) CreateValuesFromLiteral(field *domain.DefField, desc stri
 
 	if field.Path != "" && stepStr == "r" {
 		pth := field.Path
-		key := genHelper.GetRandFieldSection(pth)
+		key := s.GetRandFieldSection(pth)
 
 		items = append(items, s.PlaceholderService.PlaceholderStr(key))
 		mp := s.PlaceholderService.PlaceholderMapForRandValues("list", elemArr, "", "", "", "",
@@ -169,7 +168,7 @@ func (s *RangeService) CreateValuesFromInterval(field *domain.DefField, desc, st
 	// 1. random replacement
 	if field.Path != "" && dataType != "string" && rand { // random. for res, field.Path == ""
 		pth := field.Path + "->" + desc
-		key := genHelper.GetRandFieldSection(pth)
+		key := s.GetRandFieldSection(pth)
 
 		val := s.PlaceholderService.PlaceholderStr(key)
 		strItems := make([]string, 0)
@@ -191,19 +190,19 @@ func (s *RangeService) CreateValuesFromInterval(field *domain.DefField, desc, st
 		startInt, _ := strconv.ParseInt(startStr, 0, 64)
 		endInt, _ := strconv.ParseInt(endStr, 0, 64)
 
-		items = valueGen.GenerateItems(startInt, endInt, int64(step.(int)), 0, rand, repeat, repeatTag, 0)
+		items = helper.GenerateItems(startInt, endInt, int64(step.(int)), 0, rand, repeat, repeatTag, 0)
 
 	} else if dataType == "float" {
 		startFloat, _ := strconv.ParseFloat(startStr, 64)
 		endFloat, _ := strconv.ParseFloat(endStr, 64)
 		field.Precision = precision
 
-		items = valueGen.GenerateItems(startFloat, endFloat, step.(float64), field.Precision, rand, repeat, repeatTag, 0)
+		items = helper.GenerateItems(startFloat, endFloat, step.(float64), field.Precision, rand, repeat, repeatTag, 0)
 
 	} else if dataType == "char" {
 		field.IsNumb = false
 
-		items = valueGen.GenerateItems(startStr[0], endStr[0], int64(step.(int)), 0, rand, repeat, repeatTag, 0)
+		items = helper.GenerateItems(startStr[0], endStr[0], int64(step.(int)), 0, rand, repeat, repeatTag, 0)
 
 	} else if dataType == "string" {
 		field.IsNumb = false
@@ -489,7 +488,7 @@ func (s *RangeService) ParseRangeSectionDesc(str string) (typ string, desc strin
 				values := s.CreateValuesFromInterval(&tempField, item, "", 1, "")
 
 				for _, val := range values {
-					temp += valueGen.InterfaceToStr(val) + ","
+					temp += helper.InterfaceToStr(val) + ","
 				}
 			} else {
 				temp += item + ","
@@ -619,8 +618,8 @@ func (s *RangeService) CheckRangeType(startStr string, endStr string, stepStr st
 			rand = true
 		}
 
-		precision1, step1 := valueGen.GetPrecision(start, step)
-		precision2, step2 := valueGen.GetPrecision(end, step)
+		precision1, step1 := helper.GetPrecision(start, step)
+		precision2, step2 := helper.GetPrecision(end, step)
 		if precision1 < precision2 {
 			precision = precision2
 			step = step2
@@ -727,6 +726,27 @@ func (s *RangeService) checkRangeTypeIsFloat(startStr string, endStr string, ste
 
 		ok = true
 		return
+	}
+
+	return
+}
+
+func (s *RangeService) GetRandFieldSection(pth string) (key int) {
+	max := 0
+
+	for k, v := range vari.GlobalVars.RandFieldSectionShortKeysToPathMap {
+		if pth == v {
+			key = k
+			return
+		}
+
+		if k > max {
+			max = k
+		}
+	}
+
+	if key == 0 {
+		key = max + 1
 	}
 
 	return

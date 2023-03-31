@@ -102,19 +102,19 @@ fields:
 #- field: f11
 #  range: 1-9
 
-- field: join_false
-  mode: r
-  postfix: "\t"
-  fields:
-    - field: child1
-      range: A-C
-      prefix: PART1_
-      postfix: ' | '
-
-    - field: child2
-      range: 0-9
-    - field: child3
-      range: 0-3,a-z
+#- field: join_false
+#  mode: r
+#  postfix: "\t"
+#  fields:
+#    - field: child1
+#      range: A-C
+#      prefix: PART1_
+#      postfix: ' | '
+#
+#    - field: child2
+#      range: 0-9
+#    - field: child3
+#      range: 0-3,a-z
 
 #  - field: join_true
 #    mode: p
@@ -178,4 +178,18 @@ fields:
 #  - field: field_format                 # 通过格式化字符串输出。
 #    range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
 #    format: "passwd%02d"                # 用%02d补零，使密码整体保持8位。
+#    postfix: "\t"
+
+  - field: time1     # 生成时间数据，以当前时间为准，从一月前到一周后。
+    range: "(-1M)-(+1w):60"        # 支持当前时间的运算，Y、M、D、W、h、m、s分别对应年、月、日、周、时、分、秒。
+    type: timestamp
+    format: "YY/MM/DD hh:mm:ss"
+    postfix: "\t"
+
+#  - field: test
+#    range: '{"a":1}'
+#    postfix: "\t"
+
+#  - field: test
+#    format: "binary"
 #    postfix: "\t"
