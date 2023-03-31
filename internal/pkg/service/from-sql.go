@@ -243,20 +243,26 @@ func (s *SqlParseService) genTablesYaml(statementMap map[string]string,
 				field.From = "keys.yaml"
 				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 			} else {
+				//if types[col].ColumnType == "DATE" || types[col].ColumnType == "TIME" || types[col].ColumnType == "YEAR" || types[col].ColumnType == "DATETIME" || types[col].ColumnType == "TIMESTAMP" {
+				//	field.Range = strconv.Quote("20210821 000000:60")
+				//	field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
+				//	field.Type = "timestamp"
+				//} else if types[col].ColumnType == "CHAR" || types[col].ColumnType == "VARCHAR" || types[col].ColumnType == "TINYTEXT" || types[col].ColumnType == "TEXT" || types[col].ColumnType == "MEDIUMTEXT" || types[col].ColumnType == "LONGTEXT" {
+				//	field.Range = types[col].Rang
+				//	field.Loop = "'3'" // default value of loop
+				//	field.Loopfix = "_"
+				//} else {
+				//
+				//}
 
-				if types[col].ColumnType == "DATE" || types[col].ColumnType == "TIME" || types[col].ColumnType == "YEAR" || types[col].ColumnType == "DATETIME" || types[col].ColumnType == "TIMESTAMP" {
-					field.Range = strconv.Quote("20210821 000000:60")
-					field.Format = strconv.Quote("YY/MM/DD hh:mm:ss")
-					field.Type = "timestamp"
-				} else if types[col].ColumnType == "CHAR" || types[col].ColumnType == "VARCHAR" || types[col].ColumnType == "TINYTEXT" || types[col].ColumnType == "TEXT" || types[col].ColumnType == "MEDIUMTEXT" || types[col].ColumnType == "LONGTEXT" {
-					field.Range = types[col].Rang
-					field.Loop = "'3'" // default value of loop
-					field.Loopfix = "_"
-				} else {
-					field.Range = types[col].Rang
-				}
+				field.Range = types[col].Rang
+
+				field.Type = types[col].Type
+				field.Format = types[col].Format
+				field.From = types[col].From
+				field.Select = types[col].From
+
 				field.Note = types[col].Note
-
 			}
 
 			def.Fields = append(def.Fields, field)

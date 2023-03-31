@@ -39,6 +39,37 @@ func generateDefForJson(records []interface{}, info *FieldTypeInfo) {
 }
 
 func generateDefByVarcharType(param string, info *FieldTypeInfo) {
+	if info.Rang != "" || info.VarcharType == "" {
+		return
+	}
+
+	if info.VarcharType == consts.Username {
+
+	} else if info.VarcharType == consts.Email {
+
+	} else if info.VarcharType == consts.Url {
+
+	} else if info.VarcharType == consts.Ip {
+
+	} else if info.VarcharType == consts.Mac {
+
+	} else if info.VarcharType == consts.CreditCard {
+
+	} else if info.VarcharType == consts.IdCard {
+
+	} else if info.VarcharType == consts.MobileNumber {
+
+	} else if info.VarcharType == consts.TelNumber {
+
+	} else if info.VarcharType == consts.Token {
+
+	} else if info.VarcharType == consts.Uuid {
+
+	} else if info.VarcharType == consts.JsonStr {
+
+	} else if info.VarcharType == consts.Md5 {
+
+	}
 
 	return
 }
@@ -249,7 +280,7 @@ func GenDefByColumnType(param string, ret *FieldTypeInfo) {
 		from = "joke.v1.joke"
 		selectStr = "content"
 	case "longtext":
-		from = `"song.v1.song"`
+		from = "song.v1.song"
 		selectStr = "lyric"
 
 	// binary data

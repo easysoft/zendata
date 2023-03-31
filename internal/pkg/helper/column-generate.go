@@ -25,7 +25,7 @@ func GenSmallint(hasSign bool) (ret, note string) {
 	} else {
 		ret = "0-65535:R"
 	}
-	note = `"smallint 2^16"`
+	note = "smallint 2^16"
 	return
 }
 func GenMediumint(hasSign bool) (ret, note string) {
@@ -109,38 +109,38 @@ func GenBin() (from, format string) {
 
 // date time
 func GenDate() (rang, typ, format string) {
-	rang = "(-1M)-(+1w):86400"
+	rang = `"(-1M)-(+1w):86400"`
 	typ = "timestamp"
-	format = "YY/MM/DD"
+	format = `"YY/MM/DD"`
 
 	return
 }
 func GenTime() (rang, typ, format string) {
-	rang = "(-1M)-(+1w):60"
+	rang = `"(-1M)-(+1w):60"`
 	typ = "timestamp"
-	format = "hh:mm:ss"
+	format = `"hh:mm:ss"`
 
 	return
 }
 func GenYear() (rang, typ, format string) {
-	rang = "(-6Y)-(+6Y):31536000"
+	rang = `"(-6Y)-(+6Y):31536000"`
 	typ = "timestamp"
-	format = "YYYY"
+	format = `"YYYY"`
 
 	return
 }
 
 func GenDatetime() (rang, typ, format string) {
-	rang = "(-1M)-(+1w):60"
+	rang = `"(-1M)-(+1w):60"`
 	typ = "timestamp"
-	format = "YY/MM/DD hh:mm:ss"
+	format = `"YY/MM/DD hh:mm:ss"`
 
 	return
 }
 func GenTimestamp() (rang, typ, format string) {
-	rang = "(-1M)-(+1w):60"
+	rang = `"(-1M)-(+1w):60"`
 	typ = "timestamp"
-	format = ""
+	format = `""`
 
 	return
 }

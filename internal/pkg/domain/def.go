@@ -111,8 +111,9 @@ type FieldSimple struct {
 	Items        int    `yaml:"records,omitempty"`
 	//ParentItems int    `yaml:"-"`
 	//ParentJoin  bool   `yaml:"-"`
-	From string `yaml:"from,omitempty"`
-	Use  string `yaml:"use,omitempty"`
+	From   string `yaml:"from,omitempty"`
+	Use    string `yaml:"use,omitempty"`
+	Select string `yaml:"select,omitempty"`
 
 	LoopStart          int  `yaml:"-"`
 	LoopEnd            int  `yaml:"-"`

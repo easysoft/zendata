@@ -168,8 +168,8 @@ const (
 	Token        VarcharType = "token"
 	Uuid         VarcharType = "uuid"
 	JsonStr      VarcharType = "jsonstr"
-	UnixTime     VarcharType = "unixtime"
 	Md5          VarcharType = "md5"
+	//UnixTime     VarcharType = "unixtime"
 )
 
 func (e VarcharType) String() string {
