@@ -9,7 +9,6 @@ import (
 	"github.com/Chain-Zhang/pinyin"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/mattn/go-runewidth"
-	uuid "github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
 	"math/rand"
 	"net/url"
@@ -49,15 +48,7 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		return
 
 	} else if strings.Index(format, "uuid") > -1 {
-		ret = uuid.NewV4().String()
-		sep := ""
-
-		regx := regexp.MustCompile(`uuid\(\s*(\S+)\s*\)`)
-		arr := regx.FindStringSubmatch(format)
-		if len(arr) > 1 {
-			sep = strings.Trim(arr[1], "'")
-		}
-		ret = strings.ReplaceAll(ret, "-", sep)
+		ret = GenerateUuid(format)
 
 		pass = true
 		return
@@ -96,6 +87,11 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		return
 	} else if strings.Index(format, "id_card") > -1 {
 		ret = GenerateIdCard()
+
+		pass = true
+		return
+	} else if strings.Index(format, "token") > -1 {
+		ret = GenerateToken(format)
 
 		pass = true
 		return

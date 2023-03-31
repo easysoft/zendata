@@ -44,31 +44,53 @@ func generateDefByVarcharType(param string, info *FieldTypeInfo) {
 	}
 
 	if info.VarcharType == consts.Username {
+		info.From = "name.enaccount.v1.yaml"
+		info.Use = "common_underline"
 
 	} else if info.VarcharType == consts.Email {
+		info.From = "email.v1.yaml"
+		info.Use = "western_with_esp"
 
 	} else if info.VarcharType == consts.Url {
+		info.From = "domain.domain.v1.yaml"
+		info.Use = "letters_at_cn"
+		info.Prefix = "https://"
 
 	} else if info.VarcharType == consts.Ip {
+		info.From = "ip.v1.yaml"
+		info.Use = "privateB"
 
 	} else if info.VarcharType == consts.Mac {
+		info.From = "ip.v1.yaml"
+		info.Use = "privateB"
 
 	} else if info.VarcharType == consts.CreditCard {
+		info.Format = "credit_card('amex')"
 
 	} else if info.VarcharType == consts.IdCard {
+		info.Format = "id_card()"
 
 	} else if info.VarcharType == consts.MobileNumber {
+		info.From = "phone.v1.yaml"
+		info.Use = "cellphone"
 
 	} else if info.VarcharType == consts.TelNumber {
+		info.From = "phone.v1.yaml"
+		info.Use = "telephone_china"
 
 	} else if info.VarcharType == consts.Token {
+		info.Format = "token()"
 
 	} else if info.VarcharType == consts.Uuid {
+		info.From = "uuid.v1.yaml"
+		info.Use = "length32_random"
 
 	} else if info.VarcharType == consts.JsonStr {
+		info.Format = "id_card()"
 
 	} else if info.VarcharType == consts.Md5 {
-
+		info.Rang = "1-100"
+		info.Format = "md5"
 	}
 
 	return
@@ -232,7 +254,9 @@ type FieldTypeInfo struct {
 	Type   string
 	Format string
 	From   string
+	Use    string
 	Select string
+	Prefix string
 }
 
 func GenDefByColumnType(param string, ret *FieldTypeInfo) {
