@@ -388,7 +388,7 @@ func (s *ExcelService) genExcelValuesWithExpr(field *domain.DefField, fieldNameT
 
 type ExcelChangedResult struct {
 	Id         uint
-	Name       string
+	Path       string
 	ChangeTime int64 `gorm:"column:changeTime"`
 }
 
@@ -425,7 +425,7 @@ func (s *ExcelService) isExcelChanged(path string) (changed bool, sqlBeforeCompl
 	if record.Id > 0 { // found
 		found = true
 
-		if path == record.Name && record.ChangeTime < fileChangeTime { // update exist record
+		if path == record.Path && record.ChangeTime < fileChangeTime { // update exist record
 			changed = true
 		}
 	} else { // not found, to add a record
