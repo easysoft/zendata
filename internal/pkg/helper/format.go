@@ -19,6 +19,7 @@ import (
 )
 
 func FormatStr(format string, val interface{}, precision int) (ret string, pass bool) {
+	format = strings.TrimSpace(format)
 	if format == "" {
 		return val.(string), true
 	}
@@ -47,12 +48,12 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		pass = true
 		return
 
-	} else if strings.Index(format, "uuid") > -1 {
+	} else if strings.Index(format, "uuid") == 0 {
 		ret = GenerateUuid(format)
 
 		pass = true
 		return
-	} else if strings.Index(format, "password") > -1 {
+	} else if strings.Index(format, "password") == 0 {
 		length := 8
 		regx := regexp.MustCompile(`password\(\s*(\d+)\s*\)`)
 		arr := regx.FindStringSubmatch(format)
@@ -67,12 +68,12 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 
 		pass = true
 		return
-	} else if strings.Index(format, "binary") > -1 {
+	} else if strings.Index(format, "binary") == 0 {
 		ret = ImgBindata
 
 		pass = true
 		return
-	} else if strings.Index(format, "credit_card") > -1 {
+	} else if strings.Index(format, "credit_card") == 0 {
 		cardType := ""
 
 		regx := regexp.MustCompile(`credit_card\(\s*(\S+)\s*\)`)
@@ -85,18 +86,23 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 
 		pass = true
 		return
-	} else if strings.Index(format, "id_card") > -1 {
+	} else if strings.Index(format, "id_card") == 0 {
 		ret = GenerateIdCard()
 
 		pass = true
 		return
-	} else if strings.Index(format, "mac") > -1 {
+	} else if strings.Index(format, "mac") == 0 {
 		ret = GenerateMac()
 
 		pass = true
 		return
-	} else if strings.Index(format, "token") > -1 {
+	} else if strings.Index(format, "token") == 0 {
 		ret = GenerateToken(format)
+
+		pass = true
+		return
+	} else if strings.Index(format, "json") == 0 {
+		ret = Json
 
 		pass = true
 		return

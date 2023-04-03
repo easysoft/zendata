@@ -191,5 +191,5 @@ fields:
 #    postfix: "\t"
 
 #  - field: test
-#    format: "binary"
+#    format: "binary()"
 #    postfix: "\t"

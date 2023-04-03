@@ -2,6 +2,7 @@ package helper
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -50,9 +51,9 @@ func GenInt(hasSign bool) (ret, note string) {
 }
 func GenBigint(hasSign bool) (ret, note string) {
 	if hasSign {
-		ret = "-9223372036854775808-9223372036854775807:R"
+		ret = fmt.Sprintf("%d-%d:R", math.MinInt64, math.MaxInt64)
 	} else {
-		ret = "0-18446744073709551615:R"
+		ret = fmt.Sprintf("0-%d:R", math.MaxInt64)
 	}
 
 	note = "bigint 2^64"
@@ -90,20 +91,19 @@ func GenDecimal(hasSign bool) (ret, note string) {
 	return
 }
 
-func GenChar(param string) (ret string) {
-	rang := `a-z`
+func GenChar(param string) (ret string, loop string) {
+	ret = `a-z`
 
-	paramInt, _ := strconv.Atoi(param)
-
-	if paramInt > 0 {
-		rang += fmt.Sprintf("{%d!}", paramInt)
+	loopInt, _ := strconv.Atoi(param)
+	if loopInt > 0 {
+		loop = fmt.Sprintf("%d", loopInt)
 	}
 
 	return
 }
 
 func GenBin() (from, format string) {
-	format = "binary"
+	format = "binary()"
 	return
 }
 

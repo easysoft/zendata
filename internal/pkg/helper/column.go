@@ -85,7 +85,7 @@ func generateDefByVarcharType(param string, info *FieldTypeInfo) {
 		info.Use = "length32_random"
 
 	} else if info.VarcharType == consts.JsonStr {
-		info.Format = "id_card()"
+		info.Format = "json()"
 
 	} else if info.VarcharType == consts.Md5 {
 		info.Rang = "1-100"
@@ -213,28 +213,33 @@ func GetVarcharTypeByRecords(records []interface{}) (ret consts.VarcharType) {
 
 	if govalidator.IsEmail(val) {
 		ret = consts.Email
+
 	} else if govalidator.IsCreditCard(val) {
 		ret = consts.CreditCard
+
 	} else if govalidator.IsMAC(val) {
 		ret = consts.Mac
+
 	} else if govalidator.IsUUID(val) {
 		ret = consts.Uuid
-	} else if govalidator.IsJSON(val) {
-		ret = consts.JsonStr
 
-		//} else if govalidator.IsUnixTime(val) {
-		//	ret = consts.UnixTime
 	} else if govalidator.IsMD5(val) {
 		ret = consts.Md5
 
 	} else if IsMobilePhone(val) {
 		ret = consts.MobileNumber
+
 	} else if IsTelPhone(val) {
 		ret = consts.TelNumber
+
 	} else if IsIDCard(val) {
 		ret = consts.IdCard
+
 	} else if govalidator.IsURL(val) {
 		ret = consts.Url
+
+	} else if govalidator.IsJSON(val) {
+		ret = consts.JsonStr
 	}
 
 	return
@@ -248,140 +253,131 @@ type FieldTypeInfo struct {
 	Precision int
 	HasSign   bool
 
-	Note   string
-	Rang   string
-	Type   string
-	Format string
-	From   string
-	Use    string
-	Select string
-	Prefix string
+	Note    string
+	Rang    string
+	Loop    string
+	Loopfix string
+	Type    string
+	Format  string
+	From    string
+	Use     string
+	Select  string
+	Prefix  string
 }
 
 func GenDefByColumnType(param string, ret *FieldTypeInfo) {
-	rang := ""
-	typ := ""
-	format := ""
-	from := ""
-	selectStr := ""
-	note := ""
-
 	switch ret.ColumnType {
 	// int
 	case "bit":
-		rang, note = GenBit()
+		ret.Rang, ret.Note = GenBit()
 	case "tinyint":
-		rang, note = GenTinyint(ret.HasSign)
+		ret.Rang, ret.Note = GenTinyint(ret.HasSign)
 	case "smallint":
-		rang, note = GenSmallint(ret.HasSign)
+		ret.Rang, ret.Note = GenSmallint(ret.HasSign)
 	case "mediumint":
-		rang, note = GenMediumint(ret.HasSign)
+		ret.Rang, ret.Note = GenMediumint(ret.HasSign)
 	case "int":
-		rang, note = GenInt(ret.HasSign)
+		ret.Rang, ret.Note = GenInt(ret.HasSign)
 	case "bigint":
-		rang, note = GenBigint(ret.HasSign)
+		ret.Rang, ret.Note = GenBigint(ret.HasSign)
 
 	// float
 	case "float":
-		rang, note = GenFloat(ret.HasSign)
+		ret.Rang, ret.Note = GenFloat(ret.HasSign)
 	case "double":
-		rang, note = GenDouble(ret.HasSign)
+		ret.Rang, ret.Note = GenDouble(ret.HasSign)
 	// fixed-point
 	case "decimal":
-		rang, note = GenDecimal(ret.HasSign)
+		ret.Rang, ret.Note = GenDecimal(ret.HasSign)
 
 	// string
 	case "char":
-		rang = GenChar(param)
+		ret.Rang, ret.Loop = GenChar(param)
+
 	case "tinytext":
-		from = "idiom.v1.idiom"
-		selectStr = "word"
+		ret.From = "idiom.v1.idiom"
+		ret.Select = "word"
 	case "text":
-		from = "xiehouyu.v1.xiehouyu"
-		selectStr = "riddle"
+		ret.From = "xiehouyu.v1.xiehouyu"
+		ret.Select = "riddle"
 	case "mediumtext":
-		from = "joke.v1.joke"
-		selectStr = "content"
+		ret.From = "joke.v1.joke"
+		ret.Select = "content"
 	case "longtext":
-		from = "song.v1.song"
-		selectStr = "lyric"
+		ret.From = "song.v1.song"
+		ret.Select = "lyric"
 
 	// binary data
 	case "tinyblob":
-		from, format = GenBin()
+		ret.From, ret.Format = GenBin()
 	case "blob":
-		from, format = GenBin()
+		ret.From, ret.Format = GenBin()
 	case "mediumblob":
-		from, format = GenBin()
+		ret.From, ret.Format = GenBin()
 	case "longblob":
-		from, format = GenBin()
+		ret.From, ret.Format = GenBin()
 	case "binary":
-		from, format = GenBin()
+		ret.From, ret.Format = GenBin()
 	case "varbinary":
-		from, format = GenBin()
+		ret.From, ret.Format = GenBin()
 
 	// date and time type
 	case "date":
-		rang, typ, format = GenDate()
+		ret.Rang, ret.Type, ret.Format = GenDate()
 	case "time":
-		rang, typ, format = GenTime()
+		ret.Rang, ret.Type, ret.Format = GenTime()
 	case "year":
-		rang, typ, format = GenYear()
+		ret.Rang, ret.Type, ret.Format = GenYear()
 	case "datetime":
-		rang, typ, format = GenDatetime()
+		ret.Rang, ret.Type, ret.Format = GenDatetime()
 	case "timestamp":
-		rang, typ, format = GenTimestamp()
+		ret.Rang, ret.Type, ret.Format = GenTimestamp()
 
 	// other type
 	case "enum":
-		rang = getEnumValue(param)
+		ret.Rang = getEnumValue(param)
 	case "set":
-		rang = getSetValue(param)
+		ret.Rang, ret.Loop, ret.Loopfix = getSetValue(param)
 
 	//case "geometry":
-	//	rang = `"geometry"`
+	//	ret.Rang = `"geometry"`
 	//case "point":
-	//	rang = `"point"`
+	//	ret.Rang = `"point"`
 	//case "linestring":
-	//	rang = `"linestring"`
+	//	ret.Rang = `"linestring"`
 	//case "polygon":
-	//	rang = `"polygon"`
+	//	ret.Rang = `"polygon"`
 	//case "multipoint":
-	//	rang = `"multipoint"`
+	//	ret.Rang = `"multipoint"`
 	//case "multilinestring":
-	//	rang = `"multilinestring"`
+	//	ret.Rang = `"multilinestring"`
 	//case "multipolygon":
-	//	rang = `"multipolygon"`
+	//	ret.Rang = `"multipolygon"`
 	//case "geometrycollection":
-	//	rang = `"geometrycollection"`
+	//	ret.Rang = `"geometrycollection"`
 
 	default:
 	}
-
-	ret.Rang = rang
-	ret.Format = format
-	ret.Type = typ
-	ret.From = from
-	ret.Select = selectStr
-	ret.Note = note
 
 	return
 }
 
 func getEnumValue(param string) (ret string) {
-	arr := strings.Split(param, ",")
-
-	num := getRandNum(len(arr))
-	ret = strings.Trim(arr[num], "'")
+	ret = strings.ReplaceAll(param, "'", "")
 
 	return
 }
 
-func getSetValue(param string) (ret string) {
-	//arr := strings.Split(param, ",")
-	//ret = strings.Join(arr, ",")
-
+func getSetValue(param string) (ret, loop, loopfix string) {
 	ret = strings.ReplaceAll(param, "'", "")
+
+	arr := strings.Split(param, ",")
+
+	start := 1
+	if len(arr) > 2 {
+		start = 2
+	}
+	loop = fmt.Sprintf("%d-%d", start, len(arr))
 
 	return
 }

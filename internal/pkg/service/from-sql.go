@@ -243,11 +243,12 @@ func (s *SqlParseService) genTablesYaml(statementMap map[string]string,
 				field.Range = types[col].Rang
 
 				field.Type = types[col].Type
+				field.Loop = types[col].Loop
 				field.Format = types[col].Format
 				field.From = types[col].From
 				field.Use = types[col].Use
 				field.From = types[col].From
-				field.Select = types[col].From
+				field.Select = types[col].Select
 				field.Prefix = types[col].Prefix
 
 				field.Note = types[col].Note
