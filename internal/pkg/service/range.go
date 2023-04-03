@@ -42,9 +42,13 @@ func (s *RangeService) CreateFieldValuesFromRange(field *domain.DefField) {
 
 	// gen empty values
 	if rang == "" {
+		regx := regexp.MustCompile(`.+\(.*\)`)
+		isFunc := regx.MatchString(field.Format)
+
 		for i := 0; i < vari.GlobalVars.Total; i++ {
 			field.Values = append(field.Values, "")
-			if strings.Index(field.Format, "uuid") == -1 {
+
+			if !isFunc { // gen multi records for format function
 				break
 			}
 		}
