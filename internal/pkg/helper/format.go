@@ -90,6 +90,11 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 
 		pass = true
 		return
+	} else if strings.Index(format, "mac") > -1 {
+		ret = GenerateMac()
+
+		pass = true
+		return
 	} else if strings.Index(format, "token") > -1 {
 		ret = GenerateToken(format)
 

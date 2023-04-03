@@ -61,8 +61,7 @@ func generateDefByVarcharType(param string, info *FieldTypeInfo) {
 		info.Use = "privateB"
 
 	} else if info.VarcharType == consts.Mac {
-		info.From = "ip.v1.yaml"
-		info.Use = "privateB"
+		info.Format = "mac()"
 
 	} else if info.VarcharType == consts.CreditCard {
 		info.Format = "credit_card('amex')"
