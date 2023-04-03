@@ -37,90 +37,90 @@ fields:
     from: company.v1.company
     select: content
     postfix: "\t"
-#
-#  - field: f8
-#    from: country.v1.country
-#    select: chinese_short
-#    postfix: "\t"
-#
-#  - field: f9
-#    from: earthly_branches.v1.earthly_branches
-#    select: content
-#    postfix: "\t"
-#
-#  - field: f10
-#    from: five_elements.v1.five_elements
-#    select: content
-#    postfix: "\t"
-#
-#  - field: f11
-#    from: food.v1.food
-#    select: name
-#    postfix: "\t"
-#
-#  - field: f12
-#    from: fruit.v1.fruit
-#    select: name
-#    postfix: "\t"
-#
-#  - field: f13
-#    from: heavenly_stems.v1.heavenly_stems
-#    select: content
-#    postfix: "\t"
-#
-#  - field: f14
-#    from: idiom.v1.idiom
-#    select: word
-#    postfix: "\t"
-#
-#  - field: f15
-#    from: joke.v1.joke
-#    select: content
-#    postfix: "\t"
 
-#  - field: f16
-#    from: cn.family.v2.chinese_family
-#    select: name
-#    postfix: "\t"
-#  - field: f17
-#    from: cn.given.v2.chinese_given
-#    select: name
-#    postfix: "\t"
-#  - field: f18
-#    from: en.family.v2.english_family
-#    select: name
-#    postfix: "\t"
-#  - field: f19
-#    from: en.family.v2.english_given
-#    select: name
-#    postfix: "\t"
-#
-#  - field: f20
-#    from: occupation.v1.occupation
-#    select: content
-#    postfix: "\t"
-#
-#  - field: f21
-#    from: planet.v1.planet
-#    select: content
-#    postfix: "\t"
-#
-#  - field: f22
-#    from: poetry_ancient.v1.poetry_ancient
-#    select: content
-#    postfix: "\t"
-#
-#  - field: f23
-#    from: season.v1.season
-#    select: content
-#    postfix: "\t"
-#
-#  - field: f24
-#    from: song.v1.song
-#    select: name
-#    postfix: "\t"
-#
-#  - field: f26
-#    from: xiehouyu.v1.xiehouyu
-#    select: riddle
-#    postfix: "\t"
+  - field: f8
+    from: country.v1.country
+    select: chinese_short
+    postfix: "\t"
+
+  - field: f9
+    from: earthly_branches.v1.earthly_branches
+    select: content
+    postfix: "\t"
+
+  - field: f10
+    from: five_elements.v1.five_elements
+    select: content
+    postfix: "\t"
+
+  - field: f11
+    from: food.v1.food
+    select: name
+    postfix: "\t"
+
+  - field: f12
+    from: fruit.v1.fruit
+    select: name
+    postfix: "\t"
+
+  - field: f13
+    from: heavenly_stems.v1.heavenly_stems
+    select: content
+    postfix: "\t"
+
+  - field: f14
+    from: idiom.v1.idiom
+    select: word
+    postfix: "\t"
+
+  - field: f15
+    from: joke.v1.joke
+    select: content
+    postfix: "\t"
+
+  - field: f16
+    from: name.cn.family.v2.chinese_family
+    select: name
+    postfix: "\t"
+  - field: f17
+    from: name.cn.given.v2.chinese_given
+    select: name
+    postfix: "\t"
+  - field: f18
+    from: name.en.family.v2.english_family
+    select: name
+    postfix: "\t"
+  - field: f19
+    from: name.en.given.v2.english_given
+    select: name
+    postfix: "\t"
+
+  - field: f20
+    from: occupation.v1.occupation
+    select: content
+    postfix: "\t"
+
+  - field: f21
+    from: planet.v1.planet
+    select: content
+    postfix: "\t"
+
+  - field: f22
+    from: poetry_ancient.v1.poetry_ancient
+    select: content
+    postfix: "\t"
+
+  - field: f23
+    from: season.v1.season
+    select: content
+    postfix: "\t"
+
+  - field: f24
+    from: song.v1.song
+    select: name
+    postfix: "\t"
+
+  - field: f26
+    from: xiehouyu.v1.xiehouyu
+    select: riddle
+    postfix: "\t"
