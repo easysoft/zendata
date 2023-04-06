@@ -23,25 +23,13 @@ import (
 )
 
 func InitConfig(root string) {
-	var err error = nil
-	vari.WorkDir = fileUtils.GetWorkDir()
+	vari.WorkDir, _ = fileUtils.GetWorkDir(root)
 	logUtils.PrintTo(fmt.Sprintf("WorkDir=%s", vari.WorkDir))
 	vari.CfgFile = vari.WorkDir + ".zd.conf"
 
 	vari.Config = getInst()
 
 	i118Utils.InitI118(vari.Config.Language)
-
-	if root != "" {
-		if !fileUtils.IsAbsPath(root) {
-			root, err = filepath.Abs(root)
-			if err != nil {
-				logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
-				os.Exit(1)
-			}
-		}
-		vari.WorkDir = fileUtils.AddSepIfNeeded(root)
-	}
 
 	temp := filepath.Join(vari.WorkDir, "tmp", "cache")
 	if !fileUtils.FileExist(temp) {

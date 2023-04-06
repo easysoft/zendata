@@ -122,7 +122,20 @@ func AddSepIfNeeded(pth string) string {
 	return pth
 }
 
-func GetWorkDir() string {
+func GetWorkDir(root string) (ret string, err error) {
+	if root != "" {
+		if !IsAbsPath(root) {
+			root, err = filepath.Abs(root)
+			if err != nil {
+				logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("root_invalid", root), color.FgRed)
+				os.Exit(1)
+			}
+		}
+		ret = AddSepIfNeeded(root)
+
+		return
+	}
+
 	dir := ""
 	isRelease := commonUtils.IsRelease()
 	logUtils.PrintTo(fmt.Sprintf("isRelease=%v", isRelease))
@@ -162,14 +175,14 @@ func GetWorkDir() string {
 	}
 
 	dir, _ = filepath.Abs(dir)
-	dir = AddSepIfNeeded(dir)
+	ret = AddSepIfNeeded(dir)
 
 	if vari.Verbose {
 		logUtils.PrintTo(fmt.Sprintf("isRelease = %t, isRunAsBackendProcess = %t, workDir = %s \n",
-			isRelease, isRunAsBackendProcess, dir))
+			isRelease, isRunAsBackendProcess, ret))
 	}
 
-	return dir
+	return
 }
 
 func GetDirWhereRunIn() string { // where we run file in
