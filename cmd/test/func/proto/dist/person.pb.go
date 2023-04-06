@@ -6,9 +6,11 @@
 Package dist is a generated protocol buffer package.
 
 It is generated from these files:
+
 	person.proto
 
 It has these top-level messages:
+
 	Person
 	Address
 	Obj
