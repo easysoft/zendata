@@ -226,14 +226,14 @@ func GetVarcharTypeByRecords(records []interface{}) (ret consts.VarcharType) {
 	} else if govalidator.IsMD5(val) {
 		ret = consts.Md5
 
+	} else if IsIDCard(val) {
+		ret = consts.IdCard
+
 	} else if IsMobilePhone(val) {
 		ret = consts.MobileNumber
 
 	} else if IsTelPhone(val) {
 		ret = consts.TelNumber
-
-	} else if IsIDCard(val) {
-		ret = consts.IdCard
 
 	} else if govalidator.IsURL(val) {
 		ret = consts.Url

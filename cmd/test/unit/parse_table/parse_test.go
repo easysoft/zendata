@@ -179,26 +179,27 @@ func checkByFieldRecords(t *testing.T) {
 
 	for _, field := range def.Fields {
 		pass := true
-		if field.Field == "username" {
-			pass = field.From == "name.enaccount.v1.yaml"
-		} else if field.Field == "telphone" {
-			pass = field.From == "phone.v1.yaml"
-		} else if field.Field == "mobilephone" {
-			pass = field.From == "phone.v1.yaml"
-		} else if field.Field == "email" {
+
+		if field.Field == "f1" {
 			pass = field.From == "email.v1.yaml"
-		} else if field.Field == "url" {
-			pass = field.From == "domain.domain.v1.yaml"
-		} else if field.Field == "ip" {
-			pass = field.From == "ip.v1.yaml"
-		} else if field.Field == "macaddress" {
-			pass = field.Format == "mac()"
-		} else if field.Field == "creditcard" {
+		} else if field.Field == "f2" {
 			pass = field.Format == "credit_card(amex)"
-		} else if field.Field == "idcard" {
+		} else if field.Field == "f3" {
+			pass = field.Format == "mac()"
+		} else if field.Field == "f4" {
+			pass = field.From == "uuid.v1.yaml"
+		} else if field.Field == "f5" {
+			pass = field.Format == "md5"
+		} else if field.Field == "f6" {
+			pass = field.From == "phone.v1.yaml" && field.Use == "cellphone"
+		} else if field.Field == "f7" {
+			pass = field.From == "phone.v1.yaml" && field.Use == "telephone_china"
+		} else if field.Field == "f8" {
 			pass = field.Format == "id_card()"
-		} else if field.Field == "token" {
-			pass = field.Format == "token()"
+		} else if field.Field == "f9" {
+			pass = field.From == "domain.domain.v1.yaml"
+		} else if field.Field == "f10" {
+			pass = field.Format == "json()"
 		}
 
 		if !pass {
