@@ -81,55 +81,6 @@ func (c *DataCtrl) GenerateByFile(ctx iris.Context) {
 	c.MainService.PrintOutput()
 }
 
-//func (c *DataCtrl) GenerateByContent(ctx iris.Context) {
-//	c.DealwithParams(ctx)
-//
-//	vari.GlobalVars.ConfigFileDir = vari.ZdPath + "test"
-//
-//	defaultContent := c.GetFormFileContent(ctx, "default")
-//	configContent := c.GetFormFileContent(ctx, "config")
-//
-//	contents := [][]byte{defaultContent, configContent}
-//	contents = c.MockService.HandleFileBuffers(contents)
-//
-//	_, err := c.MainService.GenerateDataByContents(contents)
-//	if err != nil {
-//		return
-//	}
-//
-//	c.MainService.PrintOutput()
-//}
-
-//func (c *DataCtrl) DecodeByFile(ctx iris.Context) {
-//	c.DealwithParams(ctx)
-//
-//	defaultFile := ctx.URLParam("defaultFile")
-//	configFile := ctx.URLParam("configFile")
-//	input := ctx.URLParam("input")
-//
-//	defaultContent := c.GetDistFileContent(defaultFile)
-//	configContent := c.GetDistFileContent(configFile)
-//
-//	contents := [][]byte{defaultContent, configContent}
-//	contents = c.MockService.HandleFileBuffers(contents)
-//
-//	c.DecodeService.Decode(contents, input)
-//}
-//
-//func (c *DataCtrl) DecodeByContent(ctx iris.Context) {
-//	c.DealwithParams(ctx)
-//
-//	defaultContent := c.GetFormFileContent(ctx, "default")
-//	configContent := c.GetFormFileContent(ctx, "config")
-//
-//	input := ctx.URLParam("input")
-//
-//	contents := [][]byte{defaultContent, configContent}
-//	contents = c.MockService.HandleFileBuffers(contents)
-//
-//	c.DecodeService.Decode(contents, input)
-//}
-
 func (c *DataCtrl) DealwithParams(ctx iris.Context) {
 	vari.GlobalVars.RunMode = consts.RunModeServerRequest
 	logUtils.OutputHttpWriter = ctx.ResponseWriter()
