@@ -2,6 +2,7 @@ package serverService
 
 import (
 	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/service"
 	"github.com/easysoft/zendata/internal/server/repo"
 )
 
@@ -14,8 +15,10 @@ type SectionService struct {
 	SectionRepo      *serverRepo.SectionRepo `inject:""`
 	DefService       *DefService             `inject:""`
 	ConfigService    *ConfigService          `inject:""`
-	RangesService    *RangesService          `inject:""`
 	InstancesService *InstancesService       `inject:""`
+	RangesService    *RangesService          `inject:""`
+
+	RangesService2 *service.RangeService `inject:""`
 }
 
 func (s *SectionService) List(ownerId uint, ownerType string) (sections []*model.ZdSection, err error) {
@@ -110,18 +113,10 @@ func (s *SectionService) updateFieldRangeProp(ownerId uint, ownerType string) (e
 	return
 }
 
-func NewSectionService(
-	fieldRepo *serverRepo.FieldRepo,
-	configRepo *serverRepo.ConfigRepo, rangesRepo *serverRepo.RangesRepo, instancesRepo *serverRepo.InstancesRepo,
+func (s *SectionService) SaveFieldSectionToDB(rangeSection string, ord int, fieldID uint, ownerType string) {
+	descStr, stepStr, count, countTag := s.RangesService2.ParseRangeSection(rangeSection)
+	typ, desc := s.RangesService2.ParseRangeSectionDesc(descStr)
 
-	sectionRepo *serverRepo.SectionRepo,
-
-	defService *DefService, instancesService *InstancesService,
-	rangesService *RangesService, configService *ConfigService) *SectionService {
-	return &SectionService{FieldRepo: fieldRepo, SectionRepo: sectionRepo,
-		ConfigRepo: configRepo, RangesRepo: rangesRepo,
-		DefService: defService, InstancesService: instancesService,
-
-		InstancesRepo: instancesRepo,
-		RangesService: rangesService, ConfigService: configService}
+	s.SectionRepo.SaveFieldSectionToDB(typ, desc, stepStr, count, countTag,
+		ord, fieldID, ownerType)
 }

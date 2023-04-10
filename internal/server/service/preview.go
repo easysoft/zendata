@@ -2,10 +2,10 @@ package serverService
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/action"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
+	"github.com/easysoft/zendata/internal/pkg/service"
 	"github.com/easysoft/zendata/internal/server/repo"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
@@ -18,13 +18,21 @@ type PreviewService struct {
 	FieldRepo     *serverRepo.FieldRepo     `inject:""`
 	ReferRepo     *serverRepo.ReferRepo     `inject:""`
 	InstancesRepo *serverRepo.InstancesRepo `inject:""`
+
+	MainService   *service.MainService   `inject:""`
+	OutputService *service.OutputService `inject:""`
+	RangeService  *service.RangeService  `inject:""`
 }
 
 func (s *PreviewService) PreviewDefData(defId uint) (data string) {
 	def, _ := s.DefRepo.Get(defId)
 
 	vari.GlobalVars.Total = 10
-	lines := action.Generate([]string{def.Path}, "", consts.FormatData, "")
+
+	//lines := action.Generate([]string{def.Path}, "", consts.FormatData, "")
+	s.MainService.GenerateDataByFile([]string{def.Path})
+	lines := s.OutputService.GenText(false)
+
 	data = s.linesToStr(lines)
 
 	return
@@ -55,7 +63,10 @@ func (s *PreviewService) PreviewFieldData(fieldId uint, fieldType string) (data 
 	configFile := vari.WorkDir + "tmp" + consts.PthSep + ".temp.yaml"
 	fileUtils.WriteFile(configFile, string(defContent))
 
-	lines := action.Generate([]string{configFile}, field.Field, consts.FormatData, "")
+	//lines := action.Generate([]string{configFile}, field.Field, consts.FormatData, "")
+	s.MainService.GenerateDataByFile([]string{configFile})
+	lines := s.OutputService.GenText(false)
+
 	data = s.linesToStr(lines)
 
 	return
@@ -69,8 +80,4 @@ func (s *PreviewService) linesToStr(lines []interface{}) (data string) {
 	}
 
 	return
-}
-
-func NewPreviewService(defRepo *serverRepo.DefRepo, fieldRepo *serverRepo.FieldRepo, referRepo *serverRepo.ReferRepo, instancesRepo *serverRepo.InstancesRepo) *PreviewService {
-	return &PreviewService{DefRepo: defRepo, FieldRepo: fieldRepo, ReferRepo: referRepo, InstancesRepo: instancesRepo}
 }

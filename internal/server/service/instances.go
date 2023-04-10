@@ -2,13 +2,13 @@ package serverService
 
 import (
 	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/service"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -25,6 +25,8 @@ type InstancesService struct {
 	ResService     *ResService               `inject:""`
 	SectionService *SectionService           `inject:""`
 	SectionRepo    *serverRepo.SectionRepo   `inject:""`
+
+	RangeService *service.RangeService `inject:""`
 }
 
 func (s *InstancesService) List(keywords string, page int) (list []*model.ZdInstances, total int) {
@@ -223,10 +225,10 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 		refer.Sheet = sheet
 
 	} else if item.Use != "" { // refer to ranges or instances, need to read yaml to get the type
-		rangeSections := gen.ParseRangeProperty(item.Use)
+		rangeSections := s.RangeService.ParseRangeProperty(item.Use)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
-			desc, _, count, countTag := gen.ParseRangeSection(rangeSection) // medium{2}
+			desc, _, count, countTag := s.RangeService.ParseRangeSection(rangeSection) // medium{2}
 			refer.ColName = desc
 			refer.Count = count
 			refer.CountTag = countTag
@@ -239,10 +241,10 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 	} else if item.Config != "" { // refer to config
 		refer.Type = consts.ResTypeConfig
 
-		rangeSections := gen.ParseRangeProperty(item.Config) // dir/config.yaml
-		if len(rangeSections) > 0 {                          // only get the first one
+		rangeSections := s.RangeService.ParseRangeProperty(item.Config) // dir/config.yaml
+		if len(rangeSections) > 0 {                                     // only get the first one
 			rangeSection := rangeSections[0]
-			desc, _, count, countTag := gen.ParseRangeSection(rangeSection)
+			desc, _, count, countTag := s.RangeService.ParseRangeSection(rangeSection)
 			refer.Count = count
 			refer.CountTag = countTag
 
@@ -252,10 +254,10 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 
 	} else if item.Range != "" { // deal with yaml and text refer using range prop
 
-		rangeSections := gen.ParseRangeProperty(item.Range)
+		rangeSections := s.RangeService.ParseRangeProperty(item.Range)
 		if len(rangeSections) > 0 { // only get the first one
 			rangeSection := rangeSections[0]
-			desc, step, count, countTag := gen.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
+			desc, step, count, countTag := s.RangeService.ParseRangeSection(rangeSection) // dir/users.txt:R{3}
 			if filepath.Ext(desc) == ".txt" || filepath.Ext(desc) == ".yaml" {
 				if filepath.Ext(desc) == ".txt" { // dir/users.txt:2
 					refer.Type = consts.ResTypeText
@@ -287,10 +289,10 @@ func (s *InstancesService) saveItemToDB(item *model.ZdInstancesItem, instances m
 
 	// gen sections if needed
 	if needToCreateSections {
-		rangeSections := gen.ParseRangeProperty(item.Range)
+		rangeSections := s.RangeService.ParseRangeProperty(item.Range)
 
 		for i, rangeSection := range rangeSections {
-			s.SectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "instances")
+			s.SectionService.SaveFieldSectionToDB(rangeSection, i, item.ID, "instances")
 		}
 	}
 

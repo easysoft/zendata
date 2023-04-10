@@ -2,11 +2,11 @@ package serverService
 
 import (
 	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/service"
 	"os"
 	"strings"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverRepo "github.com/easysoft/zendata/internal/server/repo"
@@ -21,6 +21,9 @@ type RangesService struct {
 	RangesRepo  *serverRepo.RangesRepo  `inject:""`
 	ResService  *ResService             `inject:""`
 	SectionRepo *serverRepo.SectionRepo `inject:""`
+
+	SectionService *SectionService       `inject:""`
+	RangeService   *service.RangeService `inject:""`
 }
 
 func (s *RangesService) List(keywords string, page int) (list []*model.ZdRanges, total int) {
@@ -131,9 +134,9 @@ func (s *RangesService) SyncToDB(fi domain.ResFile) (err error) {
 		s.RangesRepo.SaveItem(&item)
 		i += 1
 
-		rangeSections := gen.ParseRangeProperty(item.Value)
+		rangeSections := s.RangeService.ParseRangeProperty(item.Value)
 		for i, rangeSection := range rangeSections {
-			s.SectionRepo.SaveFieldSectionToDB(rangeSection, i, item.ID, "ranges")
+			s.SectionService.SaveFieldSectionToDB(rangeSection, i, item.ID, "ranges")
 		}
 	}
 

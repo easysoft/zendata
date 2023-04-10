@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/gen"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
 )
@@ -39,9 +38,8 @@ func (r *SectionRepo) Remove(id uint, ownerType string) (err error) {
 	return
 }
 
-func (r *SectionRepo) SaveFieldSectionToDB(rangeSection string, ord int, fieldID uint, ownerType string) {
-	descStr, stepStr, count, countTag := gen.ParseRangeSection(rangeSection)
-	typ, desc := gen.ParseRangeSectionDesc(descStr)
+func (r *SectionRepo) SaveFieldSectionToDB(typ, desc, stepStr string, count int, countTag string,
+	ord int, fieldID uint, ownerType string) {
 
 	if typ == "literal" && desc[:1] == string(consts.LeftBrackets) &&
 		desc[len(desc)-1:] == string(consts.RightBrackets) {
