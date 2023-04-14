@@ -60,15 +60,8 @@ export class ZdApp {
                 contextIsolation: false,
             },
         })
-        if (IS_LINUX) {
-            let resDir = ''
-            if (DEBUG) {
-                resDir = process.cwd()
-            } else {
-                resDir = process.resourcesPath
-            }
-            logInfo('=== resDir:', resDir);
-            const pth = path.join(__dirname, 'ui', 'favicon.png')
+        if (IS_LINUX && !DEBUG) {
+            const pth = path.join(__dirname, 'icon', 'favicon.png')
             mainWin.setIcon(pth);
         }
 
