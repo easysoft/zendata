@@ -1,5 +1,5 @@
 import {app, BrowserWindow, ipcMain, Menu, shell, dialog, globalShortcut} from 'electron';
-
+import path from "path";
 import {
     DEBUG,
     electronMsg, electronMsgReboot,
@@ -19,7 +19,6 @@ import {checkUpdate, downLoadAndUpdateApp, reboot} from "./utils/hot-update";
 
 const cp = require('child_process');
 const fs = require('fs');
-const pth = require('path');
 
 export class ZdApp {
     constructor() {
@@ -61,9 +60,17 @@ export class ZdApp {
                 contextIsolation: false,
             },
         })
-        // if (IS_LINUX) {
-        //     mainWin.setIcon(pth.join(__dirname, 'icon/favicon.png'));
-        // }
+        if (IS_LINUX) {
+            let resDir = ''
+            if (DEBUG) {
+                resDir = process.cwd()
+            } else {
+                resDir = process.resourcesPath
+            }
+            logInfo('=== resDir:', resDir);
+            const pth = path.join(__dirname, 'ui', 'favicon.png')
+            mainWin.setIcon(pth);
+        }
 
         require('@electron/remote/main').initialize()
         require('@electron/remote/main').enable(mainWin.webContents)
@@ -220,24 +227,24 @@ export class ZdApp {
         }
     }
 
-    openInExplore(path) {
-        shell.showItemInFolder(path);
+    openInExplore(pth) {
+        shell.showItemInFolder(pth);
     }
-    openInTerminal(path) {
+    openInTerminal(pth) {
         logInfo('openInTerminal')
 
-        const stats = fs.statSync(path);
+        const stats = fs.statSync(pth);
         if (stats.isFile()) {
-            path = pth.resolve(path, '..')
+            pth = path.resolve(pth, '..')
         }
 
         if (IS_WINDOWS_OS) {
-            cp.exec('start cmd.exe /K cd /D ' + path);
+            cp.exec('start cmd.exe /K cd /D ' + pth);
         } else if (IS_LINUX) {
             // support other terminal types
-            cp.spawn ('gnome-terminal', [], { cwd: path });
+            cp.spawn ('gnome-terminal', [], { cwd: pth });
         } else if (IS_MAC_OSX) {
-            cp.exec('open -a Terminal ' + path);
+            cp.exec('open -a Terminal ' + pth);
         }
     }
 
