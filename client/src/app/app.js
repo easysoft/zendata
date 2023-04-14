@@ -61,9 +61,9 @@ export class ZdApp {
                 contextIsolation: false,
             },
         })
-        if (IS_LINUX) {
-            mainWin.setIcon(pth.join(__dirname, 'icon/favicon.png'));
-        }
+        // if (IS_LINUX) {
+        //     mainWin.setIcon(pth.join(__dirname, 'icon/favicon.png'));
+        // }
 
         require('@electron/remote/main').initialize()
         require('@electron/remote/main').enable(mainWin.webContents)
