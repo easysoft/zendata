@@ -1,4 +1,4 @@
-VERSION=3.0
+VERSION=3.0.0
 PROJECT=zd
 
 ifeq ($(OS),Windows_NT)

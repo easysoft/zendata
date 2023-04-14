@@ -50,10 +50,13 @@ func GenInt(hasSign bool) (ret, note string) {
 	return
 }
 func GenBigint(hasSign bool) (ret, note string) {
+	//MaxInt64  = 1<<63 - 1           // 9223372036854775807
+	//MinInt64  = -1 << 63            // -9223372036854775808
+
 	if hasSign {
-		ret = fmt.Sprintf("%d-%d:R", math.MinInt64, math.MaxInt64)
+		ret = fmt.Sprintf("%d-%d:R", math.MinInt32, math.MaxInt32) // compatible for 32 bits system
 	} else {
-		ret = fmt.Sprintf("0-%d:R", math.MaxInt64)
+		ret = fmt.Sprintf("0-%d:R", math.MaxInt32) // compatible for 32 bits system
 	}
 
 	note = "bigint 2^64"

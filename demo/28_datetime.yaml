@@ -14,8 +14,8 @@ fields:
     use: time
     postfix: " "
 
-  - field: time1     # 生成时间数据，以当前时间为准，从一月前到一周后。
-    range: "(-1M)-(+1w):60"        # 支持当前时间的运算，Y、M、D、W、h、m、s分别对应年、月、日、周、时、分、秒。
+  - field: time1              # 生成时间数据，以当前时间为准，从一月前到一周后。
+    range: "(-1M)-(+1w):10"   # 支持当前时间的运算，Y、M、D、W、h、m、s分别对应年、月、日、周、时、分、秒。
     type: timestamp
     format: "YY/MM/DD hh:mm:ss"
     postfix: "\t"
