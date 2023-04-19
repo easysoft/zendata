@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/csv"
+	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -45,7 +46,7 @@ func (s *OutputService) GenExcel() {
 				f.SetCellValue(sheetName, colName, val)
 
 			} else if vari.GlobalVars.OutputFormat == consts.FormatCsv {
-				csvRow = append(csvRow, val.(string))
+				csvRow = append(csvRow, fmt.Sprintf("%v", val))
 			}
 
 			j++
