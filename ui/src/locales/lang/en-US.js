@@ -146,6 +146,7 @@ const locale = {
   'form.reset': 'Reset',
   'form.cancel': 'Cancel',
   'form.close': 'Close',
+  'form.where': 'Where',
 
   'valid.required': 'Can not be empty.',
   'valid.type.empty': 'Type cannot be empty.',
@@ -176,7 +177,7 @@ const locale = {
 
   'copy.success': 'Copy Success',
   'copy.title': 'Copy Link',
-  
+
   'preview.title': 'Refresh Data',
 }
 

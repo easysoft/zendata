@@ -1,9 +1,12 @@
 title: 测试
 desc: ""
 fields:
-- field: 新字段
+- field: 新字段222
   range: 1-9
   prefix: =
   postfix: '-'
-  from: color.v1.xlsx.color
-  select: english
+  from: city.v1.city
+  select: name
+  where: state like '%山东%'
+- field: 新字段333
+  range: 1-3

@@ -146,6 +146,7 @@ const locale = {
   'form.reset': '重置',
   'form.cancel': '取消',
   'form.close': '关闭',
+  'form.where': 'Where条件',
 
   'valid.required': '该字段不能为空。',
   'valid.type.empty': '类型不能为空',
@@ -176,7 +177,7 @@ const locale = {
 
   'copy.success': '复制成功',
   'copy.title': '复制链接',
-  
+
   'preview.title': '刷新数据',
 }
 

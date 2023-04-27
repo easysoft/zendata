@@ -54,13 +54,28 @@
         </a-form-model-item>
       </a-row>
 
+      <!-- column list -->
       <a-row v-if="showColSection" :gutter="colsFull">
         <a-form-model-item :label="$t('form.col')" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-           <a-select v-model="referColNames" :mode="fieldMultiple">
+           <a-select v-if="fileMultiple === 'multiple'" v-model="referColNames" :mode="fieldMultiple">
               <a-select-option v-for="f in fields" :key="f.name">
                 {{ f.name }}
               </a-select-option>
             </a-select>
+
+          <a-select v-if="fileMultiple !== 'multiple'" v-model="refer.colName">
+            <a-select-option v-for="f in fields" :key="f.name">
+              {{ f.name }}
+            </a-select-option>
+          </a-select>
+
+        </a-form-model-item>
+      </a-row>
+
+      <!-- sql where -->
+      <a-row v-if="refer.type==='excel'" :gutter="colsFull">
+        <a-form-model-item :label="$t('form.where')" prop="colName" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
+          <a-input v-model="refer.condition" />
         </a-form-model-item>
       </a-row>
 
@@ -211,7 +226,7 @@ export default {
           return col.split(':')[0]
         })
 
-        this.removeSheet()
+        this.convertExcelFileColToPath()
         this.listReferFileForSelection(this.refer.type, true)
       })
     },
@@ -224,7 +239,7 @@ export default {
       this.listReferFileForSelection(this.refer.type, false)
     },
     onReferFileChanged() {
-      console.log("onReferFileChanged", this.referFiles, this.refer.file)
+      console.log("onReferFileChanged")
 
       if (this.refer.type == 'excel') {
         this.listReferSheetForSelection(false)
@@ -258,24 +273,27 @@ export default {
           this.refer.file = this.referFiles
 
         } else if (this.refer.type === 'excel') {
-          console.log('use this.refer.file')
-          this.refer.colName = this.referColNames
+          if (this.refer.file.lastIndexOf('.xlsx') > 0) {
+            this.refer.file = this.refer.file.substring(0, this.refer.file.lastIndexOf('.xlsx'))
+          }
+
         } else {
           this.refer.file = this.referFiles
           this.refer.colName = this.referColNames
         }
-
-        console.log('###')
-        console.log(this.refer.file)
 
         let data = JSON.parse(JSON.stringify(this.refer))
         if (data.type === 'excel') data.file = data.file + '.' + data.sheet
 
         data.count = parseInt(data.count)
         data.step = parseInt(data.step)
+
+        console.log('###', data)
+
         updateRefer(data, this.type).then(json => {
           console.log('updateRefer', json)
           if (json.code == 1) {
+            this.loadData()
             this.$notification['success']({
               message: this.$i18n.t('tips.success.to.submit'),
               duration: 3,
@@ -356,9 +374,9 @@ export default {
         })
       }
     },
-    removeSheet() {
+    convertExcelFileColToPath() {
       if (this.refer.type == 'excel') {
-        this.refer.file = this.refer.file.substring(0, this.refer.file.lastIndexOf('.'))
+        this.refer.file = this.refer.file.substring(0, this.refer.file.lastIndexOf('.')) + '.xlsx'
       }
     }
   }

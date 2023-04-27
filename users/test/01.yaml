@@ -1,7 +1,7 @@
 title: 测试
 desc: ""
 fields:
-  - field: 新字段
-    range: 1-9
-    prefix: "="
-    postfix: "-"
+- field: 新字段1111
+  range: 1-9
+  prefix: =
+  postfix: '-'

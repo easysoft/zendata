@@ -44,11 +44,11 @@ fields:
   postfix: "\t"
   from: ip.v1.yaml
   use: privateC{1}
-- field: field_use_excel
+- field: field_use_excel666
   postfix: "\t"
   rand: true
-  from: city.v1.city
-  select: name
+  from: xiehouyu.v1.xiehouyu
+  select: riddle
   where: state like '%山东%'
 - field: field_with_children
   fields:
