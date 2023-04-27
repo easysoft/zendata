@@ -76,7 +76,10 @@ func (s *ResService) ListReferExcelColForSelection(referName string) (ret []doma
 	sheet := referName[index+1:]
 
 	res, _ := s.ExcelRepo.GetBySheet(file, sheet)
-	excel, _ := excelize.OpenFile(res.Path)
+	excel, err := excelize.OpenFile(res.Path)
+	if err != nil {
+		return
+	}
 
 	for _, sheet := range excel.GetSheetList() {
 		if res.Sheet != sheet {

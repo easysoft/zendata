@@ -3,5 +3,7 @@ desc: ""
 fields:
 - field: 新字段
   range: 1-9
-  prefix: "="
-  postfix: "-"
+  prefix: =
+  postfix: '-'
+  from: color.v1.xlsx.color
+  select: english

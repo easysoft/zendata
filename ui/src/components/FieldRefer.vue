@@ -21,17 +21,28 @@
         </a-form-model-item>
       </a-row>
 
+      <!-- file list -->
       <a-row v-if="refer.type && refer.type!='value'" :gutter="colsFull">
           <a-form-model-item :label="$t('form.file')" prop="file" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
-            <a-select v-model="referFiles" @change="onReferFileChanged" :mode="fileMultiple">
+
+            <a-select v-if="fileMultiple === 'multiple'" v-model="referFiles" @change="onReferFileChanged" :mode="fileMultiple">
               <a-select-option v-for="(f, i) in files" :value="f.referName" :key="i">
                 <span v-if="refer.type != 'excel'">{{ f.title }}</span>
                 <span v-if="refer.type == 'excel'">{{ f.referName }}</span>
               </a-select-option>
             </a-select>
+
+            <a-select v-if="fileMultiple !== 'multiple'" v-model="refer.file" @change="onReferFileChanged">
+              <a-select-option v-for="(f, i) in files" :value="f.referName" :key="i">
+                <span v-if="refer.type != 'excel'">{{ f.title }}</span>
+                <span v-if="refer.type == 'excel'">{{ f.referName }}</span>
+              </a-select-option>
+            </a-select>
+
           </a-form-model-item>
       </a-row>
 
+      <!-- sheet list -->
       <a-row v-if="refer.type==='excel'" :gutter="colsFull">
         <a-form-model-item :label="$t('msg.excel.sheet')" prop="sheet" :labelCol="labelColFull" :wrapperCol="wrapperColFull">
           <a-select v-model="refer.sheet" @change="onReferSheetChanged">
@@ -213,7 +224,7 @@ export default {
       this.listReferFileForSelection(this.refer.type, false)
     },
     onReferFileChanged() {
-      console.log("onReferFileChanged")
+      console.log("onReferFileChanged", this.referFiles, this.refer.file)
 
       if (this.refer.type == 'excel') {
         this.listReferSheetForSelection(false)
@@ -241,11 +252,14 @@ export default {
         if (this.refer.type == 'text' || this.refer.type == 'yaml') {
           this.refer.file = this.referFiles.join(',')
           this.refer.colName = this.referColNames
-          console.log(this.refer.file)
+
         } else if (this.refer.type == 'ranges' || this.refer.type == 'instances') {
           this.refer.colName = this.referColNames.join(',')
           this.refer.file = this.referFiles
-          console.log(this.refer.colName)
+
+        } else if (this.refer.type === 'excel') {
+          console.log('use this.refer.file')
+          this.refer.colName = this.referColNames
         } else {
           this.refer.file = this.referFiles
           this.refer.colName = this.referColNames
