@@ -9,4 +9,4 @@ fields:
   select: name
   where: state like '%山东%'
 - field: 新字段333
-  range: 1-3
+  range: users/test/dir/content.yaml

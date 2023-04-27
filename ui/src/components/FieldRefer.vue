@@ -268,9 +268,8 @@ export default {
           this.refer.file = this.referFiles.join(',')
           this.refer.colName = this.referColNames
 
-        } else if (this.refer.type == 'ranges' || this.refer.type == 'instances') {
-          this.refer.colName = this.referColNames.join(',')
-          this.refer.file = this.referFiles
+        } else if (this.refer.type == 'config' || this.refer.type == 'ranges' || this.refer.type == 'instances') {
+          console.log('')
 
         } else if (this.refer.type === 'excel') {
           if (this.refer.file.lastIndexOf('.xlsx') > 0) {
@@ -359,9 +358,10 @@ export default {
         })
 
       } else if (this.refer.type != 'value') {
-        console.log(this.files, this.referFiles)
+        console.log('***', this.files, this.referFiles)
+
         this.files.forEach((fi) => {
-          if (fi.referName === this.referFiles) id = fi.id
+          if (fi.referName === this.refer.file) id = fi.id
         })
 
         listReferResFieldForSelection(id, this.refer.type).then(json => {
@@ -375,6 +375,7 @@ export default {
       }
     },
     convertExcelFileColToPath() {
+      // excel refer has a sheet file after last "."
       if (this.refer.type == 'excel') {
         this.refer.file = this.refer.file.substring(0, this.refer.file.lastIndexOf('.')) + '.xlsx'
       }
