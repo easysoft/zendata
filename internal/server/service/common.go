@@ -44,6 +44,10 @@ func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *dom
 	field.Where = treeNode.Where
 	field.Limit = treeNode.Limit
 
+	if field.Range != "" {
+		return
+	}
+
 	// deal with refer
 	if refer.Type != "" {
 		logUtils.PrintTo(refer.Type)

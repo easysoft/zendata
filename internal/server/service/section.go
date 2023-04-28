@@ -29,8 +29,15 @@ func (s *SectionService) List(ownerId uint, ownerType string) (sections []*model
 func (s *SectionService) Create(ownerId, sectionsId uint, ownerType string) (err error) {
 	preSection, err := s.SectionRepo.Get(sectionsId, ownerType)
 
-	section := model.ZdSection{Value: "0-9", OwnerID: ownerId, OwnerType: ownerType, Ord: preSection.Ord + 1,
-		Start: "0", End: "9"}
+	section := model.ZdSection{
+		Value:     "0-9",
+		OwnerID:   ownerId,
+		OwnerType: ownerType,
+		Ord:       preSection.Ord + 1,
+		Start:     "0",
+		End:       "9",
+	}
+
 	err = s.SectionRepo.Create(&section)
 
 	if ownerType == "def" {

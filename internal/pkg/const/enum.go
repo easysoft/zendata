@@ -175,3 +175,14 @@ const (
 func (e VarcharType) String() string {
 	return string(e)
 }
+
+type GeneratedBy string
+
+const (
+	ByRange GeneratedBy = "range"
+	ByRefer GeneratedBy = "refer"
+)
+
+func (e GeneratedBy) String() string {
+	return string(e)
+}

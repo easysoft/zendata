@@ -21,13 +21,13 @@ instances:
     fields:
       - field: part1
         from: city.v1.city
-        select: name
+        select: zip_code
 
   - instance: state
     fields:
       - field: part1
         from: city.v1.city
-        select: zip_code
+        select: state
 
   - instance: state_short
     fields:

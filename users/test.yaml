@@ -5,8 +5,6 @@ fields:
   range: 1-9
   prefix: =
   postfix: '-'
-  from: city.v1.city
-  select: name
-  where: state like '%山东%'
 - field: 新字段333
-  range: users/test/dir/content.yaml
+  from: city.v1.yaml
+  use: zip_code
