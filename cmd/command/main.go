@@ -41,10 +41,16 @@ var (
 
 	example bool
 	help    bool
+	version bool
 	set     bool
 
 	isStartServer bool
 	uuid          = ""
+
+	AppVersion string
+	BuildTime  string
+	GoVersion  string
+	GitHash    string
 
 	flagSet *flag.FlagSet
 )
@@ -131,6 +137,7 @@ func main() {
 
 	flagSet.BoolVar(&help, "h", false, "")
 	flagSet.BoolVar(&help, "help", false, "")
+	flagSet.BoolVar(&version, "version", false, "")
 
 	flagSet.Parse(os.Args[1:])
 
@@ -165,7 +172,11 @@ func opts(files []string) {
 		vari.GlobalVars.ExportFields = strings.Split(exportFields, ",")
 	}
 
-	if example {
+	if version {
+		logUtils.PrintVersion(AppVersion, BuildTime, GoVersion, GitHash)
+		return
+
+	} else if example {
 		logUtils.PrintExample()
 		return
 	} else if help {

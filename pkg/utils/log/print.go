@@ -116,3 +116,10 @@ func PrintToHttp(line string) {
 func PrintToScreen(line string) {
 	fmt.Print(line)
 }
+
+func PrintVersion(appVersion, buildTime, goVersion, gitHash string) {
+	fmt.Printf("%s \n", appVersion)
+	fmt.Printf("Build TimeStamp: %s \n", buildTime)
+	fmt.Printf("GoLang Version: %s \n", goVersion)
+	fmt.Printf("Git Commit Hash: %s \n", gitHash)
+}
