@@ -1,4 +1,4 @@
-VERSION=3.0.0
+VERSION=`head -n 1 VERSION`
 PROJECT=zd
 
 ifeq ($(OS),Windows_NT)
