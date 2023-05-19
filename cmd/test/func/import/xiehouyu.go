@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/comm"
-	"github.com/easysoft/zendata/cmd/test/model"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"strings"
+
+	"github.com/easysoft/zendata/cmd/test/func/comm"
+	"github.com/easysoft/zendata/cmd/test/func/model"
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 )
 
 func main() {

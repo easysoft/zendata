@@ -4,19 +4,20 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/proto/defaults"
-	"github.com/easysoft/zendata/cmd/test/proto/dist"
+	"log"
+	"net/url"
+	"os"
+	"path"
+	"strings"
+
+	"github.com/easysoft/zendata/cmd/test/func/proto/defaults"
+	"github.com/easysoft/zendata/cmd/test/func/proto/dist"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	httpUtils "github.com/easysoft/zendata/pkg/utils/http"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
-	"log"
-	"net/url"
-	"os"
-	"path"
-	"strings"
 )
 
 var (

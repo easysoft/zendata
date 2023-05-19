@@ -2,8 +2,9 @@ package comm
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/model"
 	"reflect"
+
+	"github.com/easysoft/zendata/cmd/test/func/model"
 )
 
 func GetStructFields(interf interface{}) (fieldNames []string) {

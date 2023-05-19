@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/easysoft/zendata/cmd/test/comm"
-	"github.com/easysoft/zendata/cmd/test/model"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"path/filepath"
 	"reflect"
+
+	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"github.com/easysoft/zendata/cmd/test/func/comm"
+	"github.com/easysoft/zendata/cmd/test/func/model"
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 )
 
 func main() {

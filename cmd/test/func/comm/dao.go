@@ -2,13 +2,14 @@ package comm
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/model"
+	"time"
+
+	"github.com/easysoft/zendata/cmd/test/func/model"
 	"github.com/fatih/color"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
-	"time"
 )
 
 const (

@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/comm"
-	"github.com/easysoft/zendata/cmd/test/model"
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	"github.com/snowlyg/helper/dir"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/easysoft/zendata/cmd/test/func/comm"
+	"github.com/easysoft/zendata/cmd/test/func/model"
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	"github.com/snowlyg/helper/dir"
 )
 
 func main() {

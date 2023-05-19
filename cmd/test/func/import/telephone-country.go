@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/comm"
-	"github.com/easysoft/zendata/cmd/test/model"
+
+	"github.com/easysoft/zendata/cmd/test/func/comm"
+	"github.com/easysoft/zendata/cmd/test/func/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 )
 

@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/comm"
-	"github.com/easysoft/zendata/cmd/test/model"
 	"strings"
+
+	"github.com/easysoft/zendata/cmd/test/func/comm"
+	"github.com/easysoft/zendata/cmd/test/func/model"
 )
 
 func main() {

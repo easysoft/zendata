@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/easysoft/zendata/cmd/test/comm"
-	"github.com/easysoft/zendata/cmd/test/model"
+	"github.com/easysoft/zendata/cmd/test/func/comm"
+	"github.com/easysoft/zendata/cmd/test/func/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"gorm.io/gorm"
-	"path/filepath"
 )
 
 func main() {
