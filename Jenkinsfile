@@ -13,7 +13,7 @@ pipeline {
 
       steps {
         container('golang') {
-          sh "sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories"
+          sh "sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories"
           sh "apk --no-cache add make git gcc libc-dev"
           sh 'go mod download'
           sh 'go install -a -v github.com/go-bindata/go-bindata/...@latest'
@@ -24,22 +24,22 @@ pipeline {
 
     stage("Test") {
       parallel {
-        // stage("UnitTest") {
-        //   steps {
-        //     container('golang') {
-        //       sh 'CGO_ENABLED=0 go test ./...'
-        //     }
-        //   }
+        stage("UnitTest") {
+          steps {
+            container('golang') {
+              sh 'CGO_ENABLED=0 go test ./...'
+            }
+          }
 
-        //   post {
-        //     failure {
-        //       container('xuanimbot') {
-        //         sh 'git config --global --add safe.directory $(pwd)'
-        //         sh '/usr/local/bin/xuanimbot  --users "$(git show -s --format=%ce)" --title "zendata unit test failure" --url "${BUILD_URL}" --content "zendata unit test failure, please check it" --debug --custom'
-        //       }
-        //     }
-        //   }
-        // } // End UnitTest
+          post {
+            failure {
+              container('xuanimbot') {
+                sh 'git config --global --add safe.directory $(pwd)'
+                sh '/usr/local/bin/xuanimbot  --users "$(git show -s --format=%ce)" --title "zendata unit test failure" --url "${BUILD_URL}" --content "zendata unit test failure, please check it" --debug --custom'
+              }
+            }
+          }
+        } // End UnitTest
 
         stage("SonarScan") {
           steps {
