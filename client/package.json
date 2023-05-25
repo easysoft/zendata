@@ -9,6 +9,7 @@
     "package": "electron-forge package",
     "package-mac": "npm run package -- --platform=darwin",
     "package-linux": "npm run package -- --platform=linux",
+    "package-linux-arm64": "npm run package -- --platform=linux --arch=arm64",
     "package-win64": "npm run package -- --platform=win32 --arch=x64",
     "package-win32": "npm run package -- --platform=win32 --arch=ia32",
     "make": "electron-forge make",

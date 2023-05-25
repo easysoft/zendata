@@ -1,4 +1,4 @@
-VERSION=`head -n 1 VERSION`
+VERSION=$(head -n 1 VERSION)
 PROJECT=zd
 
 ifeq ($(OS),Windows_NT)
@@ -11,11 +11,7 @@ else
     endif
 endif
 
-ifeq ($(OS),"Mac")
-    QINIU_DIR=/Users/aaron/work/zentao/qiniu/
-else
-    QINIU_DIR=~/zentao/
-endif
+QINIU_DIR="${HOME}/work/zentao/qiniu/"
 
 QINIU_DIST_DIR=${QINIU_DIR}${PROJECT}/${VERSION}/
 PACKAGE=${PROJECT}-${VERSION}
@@ -49,16 +45,18 @@ clear:
 
 prepare_build: clear update_version_in_config gen_version_file prepare_res
 
-win64: prepare_build compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64 copy_files package package_upgrade
-win32: prepare_build compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32 copy_files package package_upgrade
-linux: prepare_build                        compile_server_linux package_gui_linux_client compile_command_linux copy_files package package_upgrade
-mac: prepare_build                          compile_server_mac   package_gui_mac_client   compile_command_mac   copy_files package package_upgrade
+win64:       prepare_build compile_launcher_win64 compile_server_win64       package_gui_win64_client       compile_command_win64   copy_files package package_upgrade
+win32:       prepare_build compile_launcher_win32 compile_server_win32       package_gui_win32_client       compile_command_win32   copy_files package package_upgrade
+linux:       prepare_build                        compile_server_linux       package_gui_linux_client       compile_command_linux   copy_files package package_upgrade
+linux_arm64: prepare_build                        compile_server_linux_arm64 package_gui_linux_client_arm64 compile_command_linux_arm64 copy_files package package_upgrade
+mac:         prepare_build                        compile_server_mac         package_gui_mac_client         compile_command_mac     copy_files package package_upgrade
 
 compile_all: compile_win64 compile_win32 compile_linux compile_mac
 
 compile_win64: compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64
 compile_win32: compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32
 compile_linux: compile_server_linux package_gui_linux_client compile_command_linux
+compile_linux_arm64: compile_server_linux_arm64 package_gui_linux_client_arm64 compile_command_linux_arm64
 compile_mac: compile_server_mac package_gui_mac_client compile_command_mac
 
 upload: upload_to
@@ -108,6 +106,16 @@ endif
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux" && \
   		cp ${BIN_DIR}/linux/server "${CLIENT_OUT_DIR_UPGRADE}linux/"
 
+compile_server_linux_arm64:
+	@echo 'start compile server linux for arm64'
+	@rm -rf ${BIN_DIR}/linux_arm64/server
+	@CGO_ENABLED=1 GOOS=linux GOARCH=arm64 GOARM=7 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar \
+		${BUILD_CMD_UNIX} \
+		-o ${BIN_DIR}/linux_arm64/server ${SERVER_MAIN_FILE}
+	
+	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux_arm64" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux_arm64" && \
+  		cp ${BIN_DIR}/linux_arm64/server "${CLIENT_OUT_DIR_UPGRADE}linux_arm64/"
+
 compile_server_mac:
 	@echo 'start compile server mac'
 	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 CC=gcc CXX=g++ \
@@ -144,6 +152,15 @@ package_gui_linux_client:
 	@cd client && npm run package-linux && cp -r icon out/${PROJECT}-linux-x64 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}linux && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}linux && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-linux-x64 ${CLIENT_OUT_DIR_EXECUTABLE}linux/gui
+
+package_gui_linux_client_arm64:
+	@echo 'start package gui linux for arm64'
+	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}linux
+	@cp -rf ${BIN_DIR}/linux_arm64/server ${CLIENT_BIN_DIR}linux/server
+
+	@cd client && npm run package-linux-arm64 && cp -r icon out/${PROJECT}-linux-arm64 && cd ..
+	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}linux_arm64 && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}linux_arm64 && \
+		mv ${CLIENT_OUT_DIR}${PROJECT}-linux-arm64 ${CLIENT_OUT_DIR_EXECUTABLE}linux_arm64/gui
 
 package_gui_mac_client:
 	@echo 'start package gui mac'
@@ -200,6 +217,13 @@ else
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/linux/${PROJECT} ${COMMAND_MAIN_FILE}
 endif
+
+compile_command_linux_arm64:
+	@echo 'start compile linux for arm64'
+	@rm -rf ${BIN_DIR}/linux_arm64/${PROJECT}
+	@CGO_ENABLED=1 GOOS=linux GOARCH=arm64 GOARM=7 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar \
+		${BUILD_CMD_UNIX} \
+		-o ${BIN_DIR}/linux_arm64/${PROJECT} ${COMMAND_MAIN_FILE}
 
 compile_command_mac:
 	@echo 'start compile mac'

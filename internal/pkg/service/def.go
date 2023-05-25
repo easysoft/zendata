@@ -1,6 +1,8 @@
 package service
 
 import (
+	"strings"
+
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
@@ -9,7 +11,6 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
 	"gopkg.in/yaml.v2"
-	"strings"
 )
 
 type DefService struct {
@@ -35,7 +36,7 @@ func (s *DefService) LoadContentDef(content []byte) (ret domain.DefData) {
 	content = helper.ReplaceSpecialChars(content)
 	err := yaml.Unmarshal(content, &ret)
 	if err != nil {
-		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file"), color.FgCyan)
+		logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_parse_file", ""), color.FgCyan)
 		return
 	}
 

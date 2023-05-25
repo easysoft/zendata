@@ -2,11 +2,12 @@ package service
 
 import (
 	"fmt"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"strings"
 )
 
 func (s *OutputService) GenSql() {
@@ -25,7 +26,7 @@ func (s *OutputService) GenSql() {
 		valuesForSql := make([]string, 0)
 
 		for j, colName := range vari.GlobalVars.ExportFields {
-			colVal := record[colName].(string)
+			colVal := fmt.Sprintf("%v", record[colName])
 
 			if !vari.GlobalVars.ColIsNumArr[j] {
 				switch vari.GlobalVars.DBType {
