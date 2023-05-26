@@ -16,12 +16,17 @@ import (
 type ExpressionService struct {
 }
 
-func (s *ExpressionService) GenExpressionValues(field domain.DefField, valuesMap map[string][]interface{},
-	fieldMap map[string]domain.DefField) (ret []interface{}) {
+func (s *ExpressionService) GenExpressionValues(field domain.DefField) (ret []interface{}) {
+	valuesMap := vari.GlobalVars.FieldNameToValuesMap
+	fieldMap := vari.GlobalVars.FieldNameToFieldMap
+
 	exp := field.Value
 
-	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]+)`)
+	reg := regexp.MustCompile(`\$([_,a-z,A-Z][_,a-z,A-Z,0-9]*)`)
 	arr := reg.FindAllStringSubmatch(exp, -1)
+	if arr == nil {
+		return field.Values
+	}
 
 	total := 1
 	typeGrade := map[string]int{
@@ -62,7 +67,7 @@ func (s *ExpressionService) GenExpressionValues(field domain.DefField, valuesMap
 			valStr := "N/A"
 			var val interface{}
 			if len(referValues) > 0 {
-				valStr = referValues[i%len(referValues)].(string)
+				valStr = fmt.Sprintf("%v", referValues[i%len(referValues)])
 				valStr = strings.TrimLeft(valStr, referField.Prefix)
 				valStr = strings.TrimRight(valStr, referField.Postfix)
 
@@ -148,7 +153,7 @@ func (s *ExpressionService) getValuesType(values []interface{}, prefix string, p
 	}
 	tp = "int"
 	for _, item := range values {
-		valStr := strings.TrimLeft(item.(string), prefix)
+		valStr := strings.TrimLeft(fmt.Sprintf("%v", item), prefix)
 		valStr = strings.TrimRight(valStr, postfix)
 		_, t := s.getType(valStr)
 		if tool[t] > tool[tp] {

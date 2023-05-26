@@ -1,10 +1,16 @@
 title: 测试
 desc: ""
 fields:
-- field: 新字段222
-  range: 1-9
-  prefix: =
-  postfix: '-'
-- field: 新字段333
-  from: city.v1.yaml
-  use: zip_code
+- field: f1
+  range: 1-3
+  postfix: ", "
+
+- field: f2
+  join: true
+  fields:
+    - field: f21
+      value: "$f1+100"
+      postfix: " - "
+
+    - field: f22
+      value: "$f21+10000"
