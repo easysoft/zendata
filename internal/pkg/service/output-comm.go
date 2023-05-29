@@ -12,11 +12,16 @@ type OutputService struct {
 	CombineService     *CombineService     `inject:""`
 	PlaceholderService *PlaceholderService `inject:""`
 
-	PrintService *PrintService `inject:""`
+	PrintService      *PrintService      `inject:""`
+	ExpressionService *ExpressionService `inject:""`
 }
 
 func (s *OutputService) GenRecords() (records []map[string]interface{}) {
 	records = make([]map[string]interface{}, 0)
+
+	for i, _ := range vari.GlobalVars.DefData.Fields {
+		s.genFieldVal(&vari.GlobalVars.DefData.Fields[i])
+	}
 
 	for i := 0; i < vari.GlobalVars.Total; i++ {
 		record := map[string]interface{}{}
@@ -31,9 +36,27 @@ func (s *OutputService) GenRecords() (records []map[string]interface{}) {
 	return
 }
 
+func (s *OutputService) genFieldVal(field *domain.DefField) {
+	field.Values = s.ExpressionService.GenExpressionValues(*field)
+
+	// for json only
+	vari.GlobalVars.FieldNameToValuesMap[field.Field] = field.Values
+	vari.GlobalVars.FieldNameToFieldMap[field.Field] = *field
+
+	for i, _ := range field.Fields {
+		s.genFieldVal(&field.Fields[i])
+	}
+}
+
 func (s *OutputService) GenRecordField(field *domain.DefField, mp *map[string]interface{}, i int) {
+	//log.Print(vari.GlobalVars.FieldNameToValuesMap)
+
 	if field.Join || len(field.Fields) == 0 { // set values
-		val := field.Values[i%len(field.Values)]
+		len := len(field.Values)
+		if len == 0 {
+			len = 1
+		}
+		val := field.Values[i%len]
 
 		switch val.(type) {
 		case string:

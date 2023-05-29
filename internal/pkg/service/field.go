@@ -68,6 +68,10 @@ func (s *FieldService) Generate(field *domain.DefField, parentJoin bool) {
 	if field.Use != "" && field.From == "" {
 		field.From = vari.GlobalVars.DefData.From
 	}
+
+	//
+	vari.GlobalVars.FieldNameToValuesMap[field.Field] = field.Values
+	vari.GlobalVars.FieldNameToFieldMap[field.Field] = *field
 }
 
 func (s *FieldService) GenerateValuesForNoReferField(field *domain.DefField) {

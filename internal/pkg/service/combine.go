@@ -23,54 +23,52 @@ func (s *CombineService) CombineChildrenIfNeeded(field *domain.DefField, isOnTop
 		return
 	}
 
-	if field.Join {
-		fieldNameToValuesMap := map[string][]interface{}{}
-		fieldNameToFieldMap := map[string]domain.DefField{}
-
-		// 1. get values for child fields
-		if len(field.Values) == 0 {
-			for index, child := range field.Fields {
-				if len(child.Fields) > 0 && len(child.Values) == 0 { // no need to do if already generated
-					s.CombineChildrenIfNeeded(&(field.Fields[index]), false)
-				}
-
-				fieldNameToValuesMap[field.Fields[index].Field] = field.Fields[index].Values
-				fieldNameToFieldMap[field.Fields[index].Field] = field.Fields[index]
-			}
-		}
-
-		// 2. deal with expression
-		arrByField := make([][]interface{}, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
-		for i, child := range field.Fields {
-			childValues := fieldNameToValuesMap[child.Field]
-
-			if child.Value != "" {
-				childValues = s.ExpressionService.GenExpressionValues(child, fieldNameToValuesMap, fieldNameToFieldMap)
+	// 1. get values for child fields
+	if len(field.Values) == 0 {
+		for index, child := range field.Fields {
+			if len(child.Fields) > 0 && len(child.Values) == 0 { // no need to do if already generated
+				s.CombineChildrenIfNeeded(&(field.Fields[index]), false)
 			}
 
-			// select from excel with expr
-			if helper.IsSelectExcelWithExpr(child) {
-				childValues = s.ExcelService.genExcelValuesWithExpr(&child, fieldNameToValuesMap)
-			}
-
-			arrByField = append(arrByField, childValues)
-
-			// clear child values after combined
-			field.Fields[i].Values = nil
+			// for text output only
+			vari.GlobalVars.FieldNameToValuesMap[field.Fields[index].Field] = field.Fields[index].Values
+			vari.GlobalVars.FieldNameToFieldMap[field.Fields[index].Field] = field.Fields[index]
 		}
-
-		// 3. get combined values for parent field
-		isRecursive := vari.GlobalVars.Recursive
-		if stringUtils.InArray(field.Mode, consts.Modes) { // set on field level
-			isRecursive = field.Mode == consts.ModeRecursive || field.Mode == consts.ModeRecursiveShort
-		}
-
-		if len(field.Values) == 0 && field.Fields != nil {
-			field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
-		}
-
-		s.LoopService.LoopAndFixFieldValues(field, true)
 	}
+
+	if !field.Join {
+		return
+	}
+
+	// 2. deal with expression
+	arrByField := make([][]interface{}, 0) // 2 dimension arr for child, [ [a,b,c], [1,2,3] ]
+	for i, child := range field.Fields {
+		if child.Value != "" {
+			vari.GlobalVars.FieldNameToValuesMap[child.Field] = s.ExpressionService.GenExpressionValues(child)
+		}
+
+		// select from excel with expr
+		if helper.IsSelectExcelWithExpr(child) {
+			vari.GlobalVars.FieldNameToValuesMap[child.Field] = s.ExcelService.genExcelValuesWithExpr(&child, vari.GlobalVars.FieldNameToValuesMap)
+		}
+
+		arrByField = append(arrByField, vari.GlobalVars.FieldNameToValuesMap[child.Field])
+
+		// clear child values after combined
+		field.Fields[i].Values = nil
+	}
+
+	// 3. get combined values for parent field
+	isRecursive := vari.GlobalVars.Recursive
+	if stringUtils.InArray(field.Mode, consts.Modes) { // set on field level
+		isRecursive = field.Mode == consts.ModeRecursive || field.Mode == consts.ModeRecursiveShort
+	}
+
+	if len(field.Values) == 0 && field.Fields != nil {
+		field.Values = s.combineChildrenValues(arrByField, isRecursive, isOnTopLevel)
+	}
+
+	s.LoopService.LoopAndFixFieldValues(field, true)
 }
 
 func (s *CombineService) combineChildrenValues(arrByField [][]interface{}, isRecursive, isOnTopLevel bool) (ret []interface{}) {

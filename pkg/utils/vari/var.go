@@ -39,6 +39,9 @@ type GenVarType struct {
 	RandFieldSectionPathToValuesMap    map[int]map[string]interface{}
 	RandFieldSectionShortKeysToPathMap map[int]string
 
+	FieldNameToValuesMap map[string][]interface{}
+	FieldNameToFieldMap  map[string]domain.DefField
+
 	StartTime time.Time
 	EndTime   time.Time
 }
@@ -52,6 +55,9 @@ var (
 		CacheResFileToMap:                  map[string]map[string][]interface{}{},
 		RandFieldSectionPathToValuesMap:    map[int]map[string]interface{}{},
 		RandFieldSectionShortKeysToPathMap: map[int]string{},
+
+		FieldNameToValuesMap: map[string][]interface{}{},
+		FieldNameToFieldMap:  map[string]domain.DefField{},
 
 		RunMode: consts.RunModeGen,
 	}
