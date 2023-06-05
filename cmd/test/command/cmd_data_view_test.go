@@ -26,27 +26,7 @@ func (s *DataViewCmdSuite) AfterEach(t provider.T) {
 	testHelper.PostCase()
 }
 
-//func (s *DataViewCmdSuite) TestDataList(t provider.T) {
-//	t.ID("0")
-//
-//	helper.ListData()
-//
-//	out := consts.Buf.String()
-//
-//	t.Require().Contains(out, "语法说明", "check list content")
-//}
-//
-//func (s *DataViewCmdSuite) TestResList(t provider.T) {
-//	t.ID("0")
-//
-//	helper.ListRes()
-//
-//	out := consts.Buf.String()
-//
-//	t.Require().Contains(out, "语法说明", "check list content")
-//}
-
-func (s *DataViewCmdSuite) TestViewBuildinExcel(t provider.T) {
+func (s *DataViewCmdSuite) TestViewDataBuildinExcel(t provider.T) {
 	t.ID("0")
 
 	consts.Buf.Reset()
@@ -55,7 +35,7 @@ func (s *DataViewCmdSuite) TestViewBuildinExcel(t provider.T) {
 	t.Require().Contains(out, "北京市", "check excel content")
 }
 
-func (s *DataViewCmdSuite) TestViewBuildinConfig(t provider.T) {
+func (s *DataViewCmdSuite) TestViewDataBuildinConfig(t provider.T) {
 	t.ID("0")
 
 	consts.Buf.Reset()
