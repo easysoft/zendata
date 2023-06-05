@@ -44,3 +44,4 @@
 /zendata
 client/yarn-error.log
 /cmd/test/command/allure-results/
+/allure-results/

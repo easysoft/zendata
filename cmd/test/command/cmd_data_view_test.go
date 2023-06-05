@@ -46,18 +46,26 @@ func (s *DataViewCmdSuite) AfterEach(t provider.T) {
 //	t.Require().Contains(out, "语法说明", "check list content")
 //}
 
-func (s *DataViewCmdSuite) TestViewDetail(t provider.T) {
+func (s *DataViewCmdSuite) TestViewBuildinExcel(t provider.T) {
 	t.ID("0")
 
+	consts.Buf.Reset()
 	helper.View("city.v1.city")
 	out := consts.Buf.String()
-
-	helper.View("color/v1.yaml")
-	out = consts.Buf.String()
 	t.Require().Contains(out, "北京市", "check excel content")
+}
 
+func (s *DataViewCmdSuite) TestViewBuildinConfig(t provider.T) {
+	t.ID("0")
+
+	consts.Buf.Reset()
+	helper.View("color/v1.yaml")
+	out := consts.Buf.String()
+	t.Require().Contains(out, "rgb", "check excel content")
+
+	consts.Buf.Reset()
 	helper.View("color.v1.yaml")
 	out = consts.Buf.String()
 
-	t.Require().Contains(out, "北京市", "check excel content")
+	t.Require().Contains(out, "rgb", "check excel content")
 }
