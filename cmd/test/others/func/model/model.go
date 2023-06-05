@@ -478,6 +478,7 @@ func (DataColor) TableName() string {
 
 type DataComm struct {
 	Id        uint       `gorm:"primary_key" sql:"type:INT(10) UNSIGNED NOT NULL" json:"id"`
+	Name      string     `json:"name,omitempty"`
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 	Deleted   bool       `json:"-" gorm:"default:false"`

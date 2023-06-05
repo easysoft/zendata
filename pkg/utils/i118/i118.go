@@ -90,3 +90,9 @@ func InitResFromAsset(bytes []byte) {
 		message.SetString(tag, e.Id, e.Translation)
 	}
 }
+
+func Sprintf(key string, args ...interface{}) (ret string) {
+	ret = I118Prt.Sprintf(key, args...)
+
+	return
+}

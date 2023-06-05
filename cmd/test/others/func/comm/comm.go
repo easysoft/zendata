@@ -2,7 +2,7 @@ package comm
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/cmd/test/model"
+	"github.com/easysoft/zendata/cmd/test/func/model"
 	"reflect"
 )
 

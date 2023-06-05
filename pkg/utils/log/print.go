@@ -1,6 +1,7 @@
 package logUtils
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/easysoft/zendata"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
@@ -58,6 +59,17 @@ func PrintUsage() {
 	fmt.Printf("%s\n", usage)
 }
 
+func Info(str string) {
+	PrintTo(str)
+}
+func Infof(str string, args ...interface{}) {
+	PrintTo(fmt.Sprintf(str, args))
+}
+func InfofIfVerbose(str string, args ...interface{}) {
+	if vari.Verbose {
+		PrintTo(fmt.Sprintf(str, args))
+	}
+}
 func PrintTo(str string) {
 	output := color.Output
 	fmt.Fprint(output, str+"\n")
@@ -122,4 +134,22 @@ func PrintVersion(appVersion, buildTime, goVersion, gitHash string) {
 	fmt.Printf("Build TimeStamp: %s \n", buildTime)
 	fmt.Printf("GoLang Version: %s \n", goVersion)
 	fmt.Printf("Git Commit Hash: %s \n", gitHash)
+}
+
+func ConvertUnicode(str []byte) string {
+	var a interface{}
+
+	temp := strings.Replace(string(str), "\\\\", "\\", -1)
+
+	err := json.Unmarshal([]byte(temp), &a)
+
+	var msg string
+	if err == nil {
+		bytes, _ := json.Marshal(a)
+		msg = string(bytes)
+	} else {
+		msg = temp
+	}
+
+	return msg
 }
