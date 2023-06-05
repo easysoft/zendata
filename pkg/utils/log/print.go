@@ -8,6 +8,7 @@ import (
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -30,7 +31,7 @@ func PrintExample() {
 	}
 
 	content, _ := zd.ReadResData(exampleFile)
-	fmt.Println(string(content))
+	log.Println(string(content))
 }
 
 func PrintUsage() {
@@ -57,7 +58,7 @@ func PrintUsage() {
 		usage = regx.ReplaceAllString(usage, "/home/user/zd/config")
 	}
 
-	fmt.Println(usage)
+	log.Println(usage)
 }
 
 func Info(str string) {
