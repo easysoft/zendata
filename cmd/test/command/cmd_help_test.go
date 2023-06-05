@@ -1,18 +1,12 @@
 package main
 
 import (
-	"bytes"
+	"github.com/easysoft/zendata/cmd/test/consts"
+	testHelper "github.com/easysoft/zendata/cmd/test/helper"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
-	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
-	"log"
-	"os"
 	"testing"
-)
-
-var (
-	buf bytes.Buffer
 )
 
 func TestHelpCmd(t *testing.T) {
@@ -24,14 +18,12 @@ type HelpCmdSuite struct {
 }
 
 func (s *HelpCmdSuite) BeforeEach(t provider.T) {
-	t.AddSubSuite("HelpCmd")
-	vari.Config.Language = "zh"
+	testHelper.PreCase()
 
-	log.SetOutput(&buf)
+	t.AddSubSuite("HelpCmd")
 }
 func (s *HelpCmdSuite) AfterEach(t provider.T) {
-	buf.Reset()
-	log.SetOutput(os.Stdout)
+	testHelper.PostCase()
 }
 
 func (s *HelpCmdSuite) TestPrintSample(t provider.T) {
@@ -39,7 +31,7 @@ func (s *HelpCmdSuite) TestPrintSample(t provider.T) {
 
 	logUtils.PrintExample()
 
-	out := buf.String()
+	out := consts.Buf.String()
 
 	t.Require().Contains(out, "语法说明", "check sample content")
 }
@@ -49,7 +41,7 @@ func (s *HelpCmdSuite) TestPrintUsage(t provider.T) {
 
 	logUtils.PrintUsage()
 
-	out := buf.String()
+	out := consts.Buf.String()
 
 	t.Require().Contains(out, "数据生成工具", "check usage content")
 }

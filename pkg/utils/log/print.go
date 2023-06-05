@@ -67,18 +67,10 @@ func Info(str string) {
 func Infof(str string, args ...interface{}) {
 	PrintTo(fmt.Sprintf(str, args))
 }
-func InfofIfVerbose(str string, args ...interface{}) {
-	if vari.Verbose {
-		PrintTo(fmt.Sprintf(str, args))
-	}
-}
+
 func PrintTo(str string) {
 	output := color.Output
 	fmt.Fprint(output, str+"\n")
-}
-func PrintToWithoutNewLine(str string) {
-	output := color.Output
-	fmt.Fprint(output, str)
 }
 
 func PrintToWithColor(msg string, attr color.Attribute) {
@@ -88,7 +80,6 @@ func PrintToWithColor(msg string, attr color.Attribute) {
 		fmt.Fprint(output, msg+"\n")
 	} else {
 		color.New(attr).Fprintf(output, msg+"\n")
-		//color.New(attr).Println(output, msg)
 	}
 }
 

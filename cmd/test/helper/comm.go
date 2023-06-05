@@ -1,16 +1,23 @@
-package helper
+package testHelper
 
 import (
-	"bytes"
+	"github.com/easysoft/zendata/cmd/test/consts"
+	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
+	"github.com/easysoft/zendata/pkg/utils/vari"
+	"github.com/fatih/color"
 	"log"
+	"os"
 )
 
-func CaptureOutput(f func()) string {
-	var buf bytes.Buffer
+func PreCase() {
+	log.SetOutput(&consts.Buf)
+	color.Output = &consts.Buf
 
-	log.SetOutput(&buf)
+	vari.Config.Language = "zh"
+	i118Utils.InitI118(vari.Config.Language)
+}
 
-	f()
-
-	return buf.String()
+func PostCase() {
+	consts.Buf.Reset()
+	log.SetOutput(os.Stdout)
 }
