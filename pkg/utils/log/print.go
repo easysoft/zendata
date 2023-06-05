@@ -30,7 +30,7 @@ func PrintExample() {
 	}
 
 	content, _ := zd.ReadResData(exampleFile)
-	fmt.Printf("%s\n", content)
+	fmt.Println(string(content))
 }
 
 func PrintUsage() {
@@ -56,7 +56,8 @@ func PrintUsage() {
 		regx, _ = regexp.Compile(`d:\\zd\\config        `)
 		usage = regx.ReplaceAllString(usage, "/home/user/zd/config")
 	}
-	fmt.Printf("%s\n", usage)
+
+	fmt.Println(usage)
 }
 
 func Info(str string) {

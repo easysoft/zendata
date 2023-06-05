@@ -141,10 +141,10 @@ func main() {
 
 	flagSet.Parse(os.Args[1:])
 
-	execCommand()
+	ExecCommand()
 }
 
-func execCommand() {
+func ExecCommand() {
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, "-help")
 	}
@@ -176,11 +176,11 @@ func opts(files []string) {
 		logUtils.PrintVersion(AppVersion, BuildTime, GoVersion, GitHash)
 		return
 
-	} else if example {
-		logUtils.PrintExample()
-		return
 	} else if help {
 		logUtils.PrintUsage()
+		return
+	} else if example {
+		logUtils.PrintExample()
 		return
 	} else if set {
 		helper.Set()
