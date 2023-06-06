@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/easysoft/zendata/cmd/command/action"
 	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
@@ -209,7 +210,7 @@ func opts(files []string) {
 		return
 	}
 
-	genData(files)
+	action.GenData(files)
 }
 
 func genYaml(input string) {
@@ -220,21 +221,6 @@ func genYaml(input string) {
 func genMock(input string) {
 	mainCtrl, _ := command.InitCtrl()
 	mainCtrl.GenMock(input)
-}
-
-func genData(files []string) {
-	command.PrintStartInfo()
-
-	err := command.SetOutFormat()
-	defer logUtils.OutputFileWriter.Close()
-	if err != nil {
-		return
-	}
-
-	mainCtrl, _ := command.InitCtrl()
-	mainCtrl.Generate(files)
-
-	command.PrintEndInfo()
 }
 
 func init() {

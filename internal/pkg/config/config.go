@@ -2,6 +2,7 @@ package configUtils
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -23,8 +24,9 @@ import (
 )
 
 func InitConfig(root string) {
+	log.SetFlags(0)
+
 	vari.WorkDir, _ = fileUtils.GetWorkDir(root)
-	logUtils.PrintTo(fmt.Sprintf("WorkDir=%s", vari.WorkDir))
 	vari.CfgFile = vari.WorkDir + ".zd.conf"
 
 	vari.Config = getInst()
@@ -43,9 +45,7 @@ func InitConfig(root string) {
 		shellUtils.Exec("chcp 65001")
 	}
 
-	//logUtils.PrintToWithColor("workdir = "+vari.ZdPath, color.FgCyan)
 	consts.SqliteFile = strings.Replace(consts.SqliteFile, "file:", "file:"+vari.WorkDir, 1)
-	//logUtils.PrintToWithColor("dbfile = "+consts.SqliteFile, color.FgCyan)
 }
 
 func SaveConfig(conf model.Config) error {

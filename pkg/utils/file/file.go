@@ -137,14 +137,12 @@ func GetWorkDir(root string) (ret string, err error) {
 	}
 
 	dir := ""
+
 	isRelease := commonUtils.IsRelease()
-	logUtils.PrintTo(fmt.Sprintf("isRelease=%v", isRelease))
 	isRunAsBackendProcess := commonUtils.IsRunAsBackendProcess()
-	logUtils.PrintTo(fmt.Sprintf("isRunAsBackendProcess=%v", isRunAsBackendProcess))
 
 	if !isRelease { // debug
 		dir, _ = os.Getwd()
-		logUtils.PrintTo(fmt.Sprintf("dir=%v", dir))
 
 	} else {
 		p, _ := exec.LookPath(os.Args[0])
@@ -177,19 +175,12 @@ func GetWorkDir(root string) (ret string, err error) {
 	dir, _ = filepath.Abs(dir)
 	ret = AddSepIfNeeded(dir)
 
-	if vari.Verbose {
-		logUtils.PrintTo(fmt.Sprintf("isRelease = %t, isRunAsBackendProcess = %t, workDir = %s \n",
+	if !isRelease || vari.Verbose {
+		logUtils.PrintTo(fmt.Sprintf("isRelease = %t, isRunAsBackendProcess = %t, workDir = %s",
 			isRelease, isRunAsBackendProcess, ret))
 	}
 
 	return
-}
-
-func GetDirWhereRunIn() string { // where we run file in
-	dir, _ := os.Getwd()
-
-	//fmt.Printf("Debug: Launch %s in %s \n", arg1, dir)
-	return dir
 }
 
 func GetAbsDir(path string) string {

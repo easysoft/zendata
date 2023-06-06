@@ -119,7 +119,7 @@ func PrintToHttp(line string) {
 	fmt.Fprint(OutputHttpWriter, line)
 }
 func PrintToScreen(line string) {
-	fmt.Print(line)
+	log.Print(line)
 }
 
 func PrintVersion(appVersion, buildTime, goVersion, gitHash string) {

@@ -2,7 +2,9 @@ package testHelper
 
 import (
 	"github.com/easysoft/zendata/cmd/test/consts"
+	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
+	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
 	"log"
 	"os"
@@ -10,9 +12,9 @@ import (
 
 func BeforeAll() {
 	configUtils.InitConfig("")
+	vari.DB, _ = commandConfig.NewGormDB()
 
-	//vari.Config.Language = "zh"
-	//i118Utils.InitI118(vari.Config.Language)
+	vari.GlobalVars.Total = 10
 }
 
 func PreCase() {
