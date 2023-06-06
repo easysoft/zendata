@@ -127,8 +127,7 @@ func CheckConfigPermission() {
 
 func CheckConfigReady() {
 	if !fileUtils.FileExist(vari.CfgFile) {
-		//logUtils.PrintTo(vari.CfgFile + "no exist")
-		if vari.GlobalVars.RunMode == consts.RunModeServer {
+		if !commonUtils.IsRelease() || vari.GlobalVars.RunMode == consts.RunModeServer {
 			conf := model.Config{Language: "zh", Version: 1}
 			SaveConfig(conf)
 		} else {

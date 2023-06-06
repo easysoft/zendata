@@ -376,7 +376,7 @@ func GetFilesByExtInDir(folder, ext string, files *[]string) {
 
 	for _, fi := range dir {
 		name := fi.Name()
-		if commonUtils.IngoreFile(name) {
+		if commonUtils.IgnoreFile(name) {
 			continue
 		}
 
@@ -414,7 +414,7 @@ func GetFilesInDir(folder, ext string, files *[]string) {
 
 	for _, fi := range dir {
 		name := fi.Name()
-		if commonUtils.IngoreFile(name) {
+		if commonUtils.IgnoreFile(name) {
 			continue
 		}
 

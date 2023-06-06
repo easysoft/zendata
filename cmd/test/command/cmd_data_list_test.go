@@ -17,6 +17,11 @@ type DataListCmdSuite struct {
 	suite.Suite
 }
 
+func (s *DataListCmdSuite) BeforeAll(t provider.T) {
+	testHelper.BeforeAll()
+
+	t.AddSubSuite("DataListCmd")
+}
 func (s *DataListCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
 
@@ -33,7 +38,7 @@ func (s *DataListCmdSuite) TestDataList(t provider.T) {
 
 	out := consts.Buf.String()
 
-	t.Require().Contains(out, "语法说明", "check list content")
+	t.Require().Contains(out, "test.v1.yaml", "check list content")
 }
 
 func (s *DataListCmdSuite) TestResList(t provider.T) {
@@ -43,5 +48,5 @@ func (s *DataListCmdSuite) TestResList(t provider.T) {
 
 	out := consts.Buf.String()
 
-	t.Require().Contains(out, "语法说明", "check list content")
+	t.Require().Contains(out, "city.v1.xlsx", "check list content")
 }

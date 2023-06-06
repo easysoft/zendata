@@ -23,7 +23,7 @@ import (
 
 func ListData() {
 	res := map[string][]domain.ResFile{}
-	GetFilesAndDirs(vari.WorkDir, consts.ResDirUsers, &res)
+	GetFilesAndDirs(consts.ResDirUsers, consts.ResDirUsers, &res)
 
 	res, nameWidth, titleWidth := LoadRes(res)
 	PrintRes(res, nameWidth, titleWidth)
@@ -114,6 +114,7 @@ func PrintRes(res map[string][]domain.ResFile, nameWidth, titleWidth int) {
 	yamlMsg := ""
 	usersMsg := ""
 	idx := 0
+
 	for _, key := range consts.ResKeys {
 		arr := res[key]
 
@@ -148,7 +149,15 @@ func PrintRes(res map[string][]domain.ResFile, nameWidth, titleWidth int) {
 		}
 	}
 
-	logUtils.PrintTo(dataMsg + "\n" + yamlMsg + "\n" + usersMsg)
+	if dataMsg != "" {
+		logUtils.PrintTo(strings.TrimSpace(dataMsg) + "\n")
+	}
+	if yamlMsg != "" {
+		logUtils.PrintTo(strings.TrimSpace(yamlMsg) + "\n")
+	}
+	if usersMsg != "" {
+		logUtils.PrintTo(strings.TrimSpace(usersMsg))
+	}
 }
 
 func GetFilesAndDirs(pth, typ string, res *map[string][]domain.ResFile) {
@@ -156,7 +165,7 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]domain.ResFile) {
 		pth = vari.WorkDir + pth
 	}
 
-	dir, err := ioutil.ReadDir(pth)
+	dir, err := os.ReadDir(pth)
 	if err != nil {
 		return
 	}
@@ -171,7 +180,8 @@ func GetFilesAndDirs(pth, typ string, res *map[string][]domain.ResFile) {
 				continue
 			}
 
-			file := domain.ResFile{Path: filepath.Join(pth, name), UpdatedAt: fi.ModTime()}
+			info, _ := fi.Info()
+			file := domain.ResFile{Path: filepath.Join(pth, name), UpdatedAt: info.ModTime()}
 			(*res)[typ] = append((*res)[typ], file)
 		}
 	}
