@@ -31,12 +31,26 @@ func (s *GenerateRecursiveCmdSuite) AfterEach(t provider.T) {
 	testHelper.PostCase()
 }
 
-func (s *GenerateRecursiveCmdSuite) TestGenerateRecursive(t provider.T) {
+func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveChildren(t provider.T) {
 	t.ID("0")
 
-	action.GenData([]string{"demo/17_nest_recursive.yaml"})
+	testHelper.SetFields("f3")
+	action.GenData([]string{consts.CommandTestFile})
 
 	out := consts.Buf.String()
 
 	t.Require().Contains(out, "3_C\t1_C\t", "check generation")
+}
+
+func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveRow(t provider.T) {
+	t.ID("0")
+
+	testHelper.SetTotal(5)
+	testHelper.SetFields("f1,f2")
+	testHelper.SetRecursive(true)
+	action.GenData([]string{consts.CommandTestFile})
+
+	out := consts.Buf.String()
+
+	t.Require().Contains(out, "[1]\t456", "check generation")
 }

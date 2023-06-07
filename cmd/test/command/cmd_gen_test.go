@@ -34,7 +34,8 @@ func (s *GenerateCmdSuite) AfterEach(t provider.T) {
 func (s *GenerateCmdSuite) TestGenerate(t provider.T) {
 	t.ID("0")
 
-	action.GenData([]string{"demo/01_range.yaml"})
+	testHelper.SetFields("f2")
+	action.GenData([]string{consts.CommandTestFile})
 
 	out := consts.Buf.String()
 

@@ -1,62 +1,68 @@
-欢迎使用ZTF自动化测试框架工具。
+ZenData是一款通用的数据生成工具，您可以使用yaml文件来定义您的数据格式，然后交由zendata生成。
 
-为了方便在任意目录中执行命令，建议您将ZTF加入环境变量中，具体方法参照以下地址：
-https://ztf.im/book/ztf/add-to-path-46.html
+参数：
 
-用法
-   ztf [功能] [命令] [参数]
+  -d  --default    默认的数据格式配置文件。
+  -c  --config     当前场景的数据格式配置文件，可以覆盖默认文件里面的设置。
+  -o  --output     生成的数据的文件名。可通过扩展名指定输出json|xml|sql|csv|xlsx格式的数据。默认输出原始格式的文本数据。
+                   注意：对于 SQL 文件，您可以使用 --db 指定Mysql、Oracle、SqlServer中具体的数据库类型。
+  -n  --lines      要生成的记录条数，默认为10条。
 
-功能
-   set             -s            交互式设置语言、禅道地址、登录账号等，用户需要对ZTF目录有写权限。
-   co              checkout      将禅道中的测试用例导出为脚本，已存在时将更新用例标题和步骤描述。可指定产品、套件、测试单编号。
-   run             -r            执行测试用例。可指定目录、套件、脚本、结果文件路径，以及套件和任务编号，多个文件间用空格隔开。
-   ci                            将脚本中的用例信息同步到禅道。
-   cr                            将用例执行结果提交到禅道。
-   cb                            提交测试结果中失败的用例作为禅道缺陷。
-   expect                        分析脚本以生成独立的期待结果.exp文件。
-   extract                       提取脚本中的注释，生成用例步骤和期待结果。
-   ls         -l                 查看测试用例列表，可指定目录和文件的列表，之间用空格隔开。
-   view            -v            查看测试用例详情，可指定目录和文件的列表，之间用空格隔开。
-   clean           -c            清除脚本执行日志。
-   version                       查看ZTF版本。
+  -F  --field      可通过该参数指定要输出的字段列表，用逗号分隔。 默认是所有的字段。
+  -T  --trim       输出的字段去除前后缀，通常用在生成SQL格式输出或解析测试数据时。
+  -H  --human      输出可读格式，打印字段名，并使用tab键进行分割。
+  -r  --recursive  递归模式。如不指定，默认为平行模式。平行模式下各个字段独立循环。
+                   递归模式下每个字段的取值依赖于前一字段。可增强数据的随机性。
 
-示例
-$>ztf set                                                             交互式设置语言、禅道地址、登录账号等，用户需要对ZTF目录有写权限。
+  -t  --table      输出格式为sql时，需通过该参数指定要插入数据的表名。
+      --dsn        指定MySQL、SqlServer或Oracle数据源，用于直接插入数据到数据库表。
+      --clear      插入数据前，删除已有数据。
 
-$>ztf run demo/lang/bat                                               执行演示目录bat下的脚本，支持多个目录和文件参数项。
-$>ztf run demo/autoit                                                 执行ZTF自带AutoIT脚本。
-$>ztf run demo/selenium/chrome.php --interp runtime/php/php7/php.exe  执行ZTF自带Selenium脚本，使用指定PHP解释器。
-$>ztf run demo/appium/android.php --interp runtime/php/php7/php.exe   执行ZTF自带Appium脚本，使用指定PHP解释器。
+  -s               运行数据管理和生成HTTP服务。
+  -p  --port       指定HTTP服务端口。
+  -R  --root       指定数据生成命令或运行HTTP服务的根目录。客户端可调用该根目录下面的配置文件。如果不指定，取zd可执行文件所在目录。
 
-$>ztf co -product 1 -language python                                  导出编号为1的产品的测试用例，使用python语言。-product参数缩写为-p；-language参数缩写为-l。
-$>ztf co -p 1 -m 15 -l python                                         导出产品编号为1、模块编号为15的测试用例。
-$>ztf co -s 1 -l python -i true                                       导出编号为1的套件下的测试用例，将期待结果保存在独立文件中。-suite参数缩写为-s。
-$>ztf co -t 1 -l python                                               导出编号为1的测试单下的测试用例。
+      --parse      指定一个数据库连接、Schema或文章文本文件，解析生成yaml配置文件。需通过-o参数指定一个输出的目录。
+  -i  --input      指定parse指令的的Schema（.sql）或文章（.txt）文件，用于转换成yaml配置文件。
 
-$>ztf run product01 product01/all.cs                                  执行product01目录下all.cs脚本中的测试用例。
-$>ztf run log/001/result.txt                                          执行log/001目录下result.txt结果文件中的失败用例。
-$>ztf run product01 -s 1                                              执行禅道中编号为1的套件下的测试用例，脚本位于product01目录。
-$>ztf run -task 1                                                     执行禅道中编号为1的任务，脚本位于当前目录。-task参数缩写为-t。
-$>ztf run product/product01 -C 2 -p 1 -t task1 -cr -cb                执行product/product01目录下的脚本，设置执行并发数为2，将测试结果提交到禅道，并将失败结果提交成禅道缺陷。-C指定并发数（默认为1；-p必填参数指定产品ID；-t可选参数指定任务ID；-cr提交结果，-cb提交缺陷;。
-$>ztf junit -p 1 mvn clean package test                               执行junit单元测试脚本，更多请参照手册https://ztf.im/book/ztf-doc/ztf-about-26.html。
+  -l  --list       列出当前目录下所有的用户数据定义。
+  -L               列出ZenData安装目录下所有数据定义。
+  -v  --view       查看数据定义的详细信息。
+  -h  --help       打印帮助。
+  -e  --example    打印示例的数据格式配置文件。
 
-$>ztf expect demo/sample/1_simple.php                                 在demo/sample目录下，生成对应1_simple.php脚本的.exp期待结果文件。
-$>ztf extract demo/sample/8_extract_desc.php                          提取脚本中的注释，生成用例步骤和期待结果。
-$>ztf ci product01/tc-1.py                                            将脚本里修改的测试用例信息同步到禅道。
-$>ztf cr log/001 -p 1                                                 提交测试结果到禅道，指定了编号为1的产品。
-$>ztf cr log/001 -p 1 -t 1 -y                                         提交测试结果到禅道。指定了编号为1的测试单。其中-t参数指定测试单ID，-y参数忽略确认。
-$>ztf cb log/001 -p 1                                                 提交测试结果中失败的用例作为禅道缺陷。
+命令行模式举例：
 
-$>ztf list demo/lang/bat                                              列出演示目录bat下的所有脚本文件，支持多个目录和文件参数项。
-$>ztf ls demo/lang/bat -k 0                                           列出demo/lang/bat目录下ID为0的脚本。
-$>ztf -l demo/lang/bat -k pattern                                     列出demo/lang/bat目录下标题包含'pattern'的脚本。
+$>zd.exe -d demo\default.yaml                                        # 根据-d参数指定的配置文件生成10条记录。
+$>zd.exe -c demo\default.yaml                                        # 根据-c参数指定的配置文件生成10条记录。
+$>zd.exe -c demo\default.yaml -r                                     # 根据-c参数指定的配置文件，采用递归的方式生成10条记录。
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100               # -c覆盖-d文件的配置，输出100条记录。
+$>zd.exe demo\default.yaml demo\test.yaml -n 100                     # 多配置文件示例，后面的文件会覆盖前面文件里的配置。
 
-$>ztf view demo/lang/shell/1_string_match.shell                       查看 demo/lang/shell目录下的脚本信息，支持多个参数项。
-$>ztf -v demo/lang/bat -k 0                                           查看 demo/lang/bat目录下ID为0的脚本信息。
-$>ztf -v demo/lang/bat -k word                                        查看 demo/lang/bat目录下标题包含'pattern'的脚本信息。
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.txt   # 输出原始格式的数据。
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.json  # 输出json格式的数据。
+$>zd.exe -d demo\default.yaml -c demo\test.yaml -n 100 -o test.xml   # 输出xml格式的数据。
+$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user             # 输出针对user表的insert语句。
+$>zd.exe -d demo\default.yaml -n 100 -o test.sql -t user --trim      # 输出针对user表的insert语句，去掉前缀和后缀。
+$>zd.exe -c test\test-sql.yaml -t zendata.table_a --trim -dsn mysql://root:P2ssw0rd@127.0.0.1:3306/zendata#utf8 --clear # 插入数据到MySQL数据表。
 
-$>ztf clean                                                           清除所有测试执行日志，缩写-c。
+$>zd.exe -parse -i demo\zentao.sql -o db                             # 根据sql的定义生成各表的yaml文件，存储到db目录里面。
+$>zd.exe -parse -i demo\article.txt -o demo                          # 转换文章为yaml配置，输出到demo目录下。
+$>zd.exe -parse -dsn root:P2ssw0rd@(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local -table table1 -o db
+                                                                     # 根据指定数据库表生成yaml文件，存储到db目录里面。
 
---verbose为全局调试参数，用于显示详细日志，如Http请求、响应、错误等信息。
-使用“ztf [功能] --help 或 -h”获取相关功能的更多信息。
+$>zd.exe -l                                                          # 列出所有內置数据。
+$>zd.exe -v address.cn.v1                                            # 查看內置Excel文件data/address/cn.v1.xlsx中的数据表。
+$>zd.exe -v address.cn.v1.china                                      # 查看內置Excel文件china数据表中的数据。
+$>zd.exe -v ip.v1.yaml                                               # 查看內置文件yaml/ip/v1.yaml定义的数据。
 
+服务模式举例：
+
+$zd.exe -p 80                                                        # 监听80端口，以zd.exe文件所在目录为根目录。
+$zd.exe -p 80 -R d:\zd\config                                        # 监听80端口，以d:\zd\config为根目录。
+
+客户端调用：
+
+$curl http://localhost:8848/data?d=demo/default.yaml&c=demo/config.yaml&n=100&T=true                # 通过GET方式指定服务器端配置文件。
+$curl http://localhost:8848/data?default=demo/default.yaml&output=test.sql&table=user               # 参数名可以用全拼。
+$curl -i -X POST "http://localhost:8848/data?lines=3&trim=true" -F default=@demo/default.yaml       # 可以通过POST方式上传配置文件。
