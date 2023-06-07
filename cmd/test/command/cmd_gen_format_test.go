@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/easysoft/zendata/cmd/command/action"
 	"github.com/easysoft/zendata/cmd/test/consts"
+	"github.com/easysoft/zendata/cmd/test/gen"
 	testHelper "github.com/easysoft/zendata/cmd/test/helper"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
@@ -34,10 +34,10 @@ func (s *GenerateFormatCmdSuite) AfterEach(t provider.T) {
 func (s *GenerateFormatCmdSuite) TestGenerateFormat(t provider.T) {
 	t.ID("0")
 
-	testHelper.SetFields("f4")
-	action.GenData([]string{consts.CommandTestFile})
-
-	out := consts.Buf.String()
+	out := gen.New().
+		SetConfigs([]string{consts.CommandTestFile}).
+		SetFields("f4").
+		Gen()
 
 	t.Require().Contains(out, "passwd02", "check generation")
 }
@@ -45,11 +45,11 @@ func (s *GenerateFormatCmdSuite) TestGenerateFormat(t provider.T) {
 func (s *GenerateFormatCmdSuite) TestGenerateTrim(t provider.T) {
 	t.ID("0")
 
-	testHelper.SetFields("f1")
-	testHelper.SetTrim(true)
-	action.GenData([]string{consts.CommandTestFile})
-
-	out := consts.Buf.String()
+	out := gen.New().
+		SetTrim(true).
+		SetConfigs([]string{consts.CommandTestFile}).
+		SetFields("f1").
+		Gen()
 
 	t.Require().Contains(out, "\n2\n", "check generation")
 }
@@ -57,11 +57,11 @@ func (s *GenerateFormatCmdSuite) TestGenerateTrim(t provider.T) {
 func (s *GenerateFormatCmdSuite) TestGenerateHuman(t provider.T) {
 	t.ID("0")
 
-	testHelper.SetFields("f1")
-	testHelper.SetHuman(true)
-	action.GenData([]string{consts.CommandTestFile})
-
-	out := consts.Buf.String()
+	out := gen.New().
+		SetHuman(true).
+		SetConfigs([]string{consts.CommandTestFile}).
+		SetFields("f1").
+		Gen()
 
 	t.Require().Contains(out, "[2]", "check generation")
 }

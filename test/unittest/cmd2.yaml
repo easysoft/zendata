@@ -1,0 +1,13 @@
+title: range
+desc: 描述
+version: 1.0
+fields:
+  - field: f0
+    range: 1-9
+    prefix: "!"
+    postfix: "!\t"
+
+  - field: f1
+    range: 1-3, 7,9
+    prefix: "!"
+    postfix: "!\t"

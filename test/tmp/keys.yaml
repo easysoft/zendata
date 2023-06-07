@@ -1,0 +1,6 @@
+title: keys
+desc: automated export
+from: ""
+instances:
+    - instance: op_report_sales_detail_day_id
+      range: 1-100000

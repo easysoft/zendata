@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/easysoft/zendata/cmd/command/action"
 	"github.com/easysoft/zendata/cmd/test/consts"
+	"github.com/easysoft/zendata/cmd/test/gen"
 	testHelper "github.com/easysoft/zendata/cmd/test/helper"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
@@ -34,10 +34,10 @@ func (s *GenerateCmdSuite) AfterEach(t provider.T) {
 func (s *GenerateCmdSuite) TestGenerate(t provider.T) {
 	t.ID("0")
 
-	testHelper.SetFields("f2")
-	action.GenData([]string{consts.CommandTestFile})
-
-	out := consts.Buf.String()
+	out := gen.New().
+		SetConfigs([]string{consts.CommandTestFile}).
+		SetFields("f2").
+		Gen()
 
 	t.Require().Contains(out, "123", "check generation")
 }

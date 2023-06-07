@@ -1,0 +1,92 @@
+title: range
+desc: 描述
+version: 1.0
+fields:
+  - field: f0
+    range: 1-9
+
+  - field: f1
+    range: 1-3, 7,9
+    prefix: "["
+    postfix: "]\t"
+
+  - field: f2
+    range: [`123`,`456`]
+    postfix: "\t"
+
+  - field: f3
+    fields:
+    - field: nesting
+      fields:
+        - field: child1
+          range: 1-3
+          postfix: '_'
+        - field:  child2
+          range: A-C
+          postfix: "\t"
+    - field: nesting_r
+      mode: r
+      fields:
+        - field: child1
+          range: 1-3
+          postfix: '_'
+        - field:  child2
+          range: A-C
+          postfix: "\t"
+
+  - field: f4
+    range: 1-10
+    format: "passwd%02d"
+    postfix: "\t"
+
+  - field: f5
+    range: 10-20
+    format: md5
+    postfix: "\t"
+
+  - field: f6
+    value: "$f0 * 2"
+    prefix: ' * 2 = '
+    postfix: '\t'
+
+  - field: f7
+    range: "(-10Y)-(+1w):10"
+    type: timestamp
+    format: "YYYY/MM/DD hh:mm:ss"
+    postfix: "\t"
+
+  - field: f8
+    config: number.yaml
+    postfix: "\t"
+
+  - field: f9
+    from: zentao.number.v1.yaml
+    use: small
+    postfix: "\t"
+
+  - field: f10
+    from: ip.v1.yaml
+    use: privateB{3},privateC{6:2}
+    postfix: "\t"
+
+  - field: f11
+    from: city.v1.city
+    select: name
+    where: state like '%山东%'
+    postfix: "\t"
+
+  - field: f12
+    range: user.txt
+    postfix: "\t"
+
+  - field: f13
+    range: result.yaml{6}
+    postfix: "\t"
+
+  - field: f14
+    froms:
+      - from: ip.v1.yaml
+        use: privateB{3}
+      - from: ip.v1.yaml
+        use: publicA{3}
+    postfix: "\t"

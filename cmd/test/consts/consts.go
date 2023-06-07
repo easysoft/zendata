@@ -3,7 +3,8 @@ package consts
 import "bytes"
 
 const (
-	CommandTestFile = "test/uinttest-command.yaml"
+	CommandTestFile  = "test/unittest/cmd.yaml"
+	CommandTestFile2 = "test/unittest/cmd2.yaml"
 )
 
 var (
