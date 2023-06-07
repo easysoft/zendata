@@ -19,7 +19,6 @@ type HelpCmdSuite struct {
 
 func (s *HelpCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("HelpCmd")
 }
 func (s *HelpCmdSuite) AfterEach(t provider.T) {

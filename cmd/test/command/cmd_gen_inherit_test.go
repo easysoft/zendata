@@ -19,12 +19,10 @@ type GenerateInheritCmdSuite struct {
 
 func (s *GenerateInheritCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-
 	t.AddSubSuite("GenerateInheritCmd")
 }
 func (s *GenerateInheritCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("GenerateInheritCmd")
 }
 func (s *GenerateInheritCmdSuite) AfterEach(t provider.T) {
@@ -40,5 +38,5 @@ func (s *GenerateInheritCmdSuite) TestGenerateInherit(t provider.T) {
 		SetFields("f0,f1").
 		Gen()
 
-	t.Require().Contains(out, "!3!\t!3!\t", "check generation")
+	t.Require().Contains(out, "!3!\t!3!\t", "check generated data")
 }

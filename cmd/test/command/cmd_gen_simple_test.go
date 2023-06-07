@@ -19,12 +19,10 @@ type GenerateCmdSuite struct {
 
 func (s *GenerateCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-
 	t.AddSubSuite("GenerateCmd")
 }
 func (s *GenerateCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("GenerateCmd")
 }
 func (s *GenerateCmdSuite) AfterEach(t provider.T) {
@@ -39,5 +37,5 @@ func (s *GenerateCmdSuite) TestGenerate(t provider.T) {
 		SetFields("f2").
 		Gen()
 
-	t.Require().Contains(out, "123", "check generation")
+	t.Require().Contains(out, "123", "check generated data")
 }

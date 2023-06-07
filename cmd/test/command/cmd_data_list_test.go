@@ -19,7 +19,6 @@ type DataListCmdSuite struct {
 
 func (s *DataListCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-
 	t.AddSubSuite("DataListCmd")
 }
 func (s *DataListCmdSuite) BeforeEach(t provider.T) {

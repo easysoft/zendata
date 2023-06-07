@@ -17,9 +17,12 @@ type DataViewCmdSuite struct {
 	suite.Suite
 }
 
+func (s *DataViewCmdSuite) BeforeAll(t provider.T) {
+	testHelper.BeforeAll()
+	t.AddSubSuite("DataListCmd")
+}
 func (s *DataViewCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("DataViewCmd")
 }
 func (s *DataViewCmdSuite) AfterEach(t provider.T) {

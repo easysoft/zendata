@@ -20,12 +20,10 @@ type GenerateFunctionCmdSuite struct {
 
 func (s *GenerateFunctionCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-
 	t.AddSubSuite("GenerateFunctionCmd")
 }
 func (s *GenerateFunctionCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("GenerateFunctionCmd")
 }
 func (s *GenerateFunctionCmdSuite) AfterEach(t provider.T) {
@@ -43,7 +41,7 @@ func (s *GenerateFunctionCmdSuite) TestGenerateFunction(t provider.T) {
 
 	arr := strings.Split(out, "\t\n")
 
-	t.Require().Equal(len(arr[0]), 32, "check generation")
+	t.Require().Equal(len(arr[0]), 32, "check generated data")
 }
 
 func (s *GenerateFunctionCmdSuite) TestGenerateExpr(t provider.T) {
@@ -55,7 +53,7 @@ func (s *GenerateFunctionCmdSuite) TestGenerateExpr(t provider.T) {
 		SetFields("f0,f6").
 		Gen()
 
-	t.Require().Contains(out, "3 * 2 = 6", "check generation")
+	t.Require().Contains(out, "3 * 2 = 6", "check generated data")
 }
 
 func (s *GenerateFunctionCmdSuite) TestGenerateDatetime(t provider.T) {
@@ -67,5 +65,5 @@ func (s *GenerateFunctionCmdSuite) TestGenerateDatetime(t provider.T) {
 		SetFields("f7").
 		Gen()
 
-	t.Require().Contains(out, "2013/", "check generation")
+	t.Require().Contains(out, "2013/", "check generated data")
 }

@@ -19,12 +19,10 @@ type GenerateFormatCmdSuite struct {
 
 func (s *GenerateFormatCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-
 	t.AddSubSuite("GenerateFormatCmd")
 }
 func (s *GenerateFormatCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("GenerateFormatCmd")
 }
 func (s *GenerateFormatCmdSuite) AfterEach(t provider.T) {
@@ -39,7 +37,7 @@ func (s *GenerateFormatCmdSuite) TestGenerateFormat(t provider.T) {
 		SetFields("f4").
 		Gen()
 
-	t.Require().Contains(out, "passwd02", "check generation")
+	t.Require().Contains(out, "passwd02", "check generated data")
 }
 
 func (s *GenerateFormatCmdSuite) TestGenerateTrim(t provider.T) {
@@ -51,7 +49,7 @@ func (s *GenerateFormatCmdSuite) TestGenerateTrim(t provider.T) {
 		SetFields("f1").
 		Gen()
 
-	t.Require().Contains(out, "\n2\n", "check generation")
+	t.Require().Contains(out, "\n2\n", "check generated data")
 }
 
 func (s *GenerateFormatCmdSuite) TestGenerateHuman(t provider.T) {
@@ -63,5 +61,5 @@ func (s *GenerateFormatCmdSuite) TestGenerateHuman(t provider.T) {
 		SetFields("f1").
 		Gen()
 
-	t.Require().Contains(out, "[2]", "check generation")
+	t.Require().Contains(out, "[2]", "check generated data")
 }

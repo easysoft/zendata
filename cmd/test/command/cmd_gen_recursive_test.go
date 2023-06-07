@@ -19,19 +19,17 @@ type GenerateRecursiveCmdSuite struct {
 
 func (s *GenerateRecursiveCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-
 	t.AddSubSuite("GenerateRecursiveCmd")
 }
 func (s *GenerateRecursiveCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("GenerateRecursiveCmd")
 }
 func (s *GenerateRecursiveCmdSuite) AfterEach(t provider.T) {
 	testHelper.PostCase()
 }
 
-func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveChildren(t provider.T) {
+func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveChildFields(t provider.T) {
 	t.ID("0")
 
 	out := gen.New().
@@ -39,10 +37,10 @@ func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveChildren(t provider.T) 
 		SetFields("f3").
 		Gen()
 
-	t.Require().Contains(out, "3_C\t1_C\t", "check generation")
+	t.Require().Contains(out, "3_C\t1_C\t", "check generated data")
 }
 
-func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveRow(t provider.T) {
+func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveRecordColumns(t provider.T) {
 	t.ID("0")
 
 	out := gen.New().
@@ -50,5 +48,5 @@ func (s *GenerateRecursiveCmdSuite) TestGenerateRecursiveRow(t provider.T) {
 		SetFields("f1,f2").
 		Gen()
 
-	t.Require().Contains(out, "[1]\t456", "check generation")
+	t.Require().Contains(out, "[1]\t456", "check generated data")
 }

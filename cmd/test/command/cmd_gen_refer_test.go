@@ -19,12 +19,10 @@ type GenerateReferCmdSuite struct {
 
 func (s *GenerateReferCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-
 	t.AddSubSuite("GenerateReferCmd")
 }
 func (s *GenerateReferCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-
 	t.AddSubSuite("GenerateReferCmd")
 }
 func (s *GenerateReferCmdSuite) AfterEach(t provider.T) {
@@ -39,7 +37,7 @@ func (s *GenerateReferCmdSuite) TestGenerateReferConfig(t provider.T) {
 		SetFields("f8").
 		Gen()
 
-	t.Require().Contains(out, "106", "check generation")
+	t.Require().Contains(out, "106", "check generated data")
 }
 
 func (s *GenerateReferCmdSuite) TestGenerateReferRange(t provider.T) {
@@ -50,7 +48,7 @@ func (s *GenerateReferCmdSuite) TestGenerateReferRange(t provider.T) {
 		SetFields("f9").
 		Gen()
 
-	t.Require().Contains(out, "\n2\t\n", "check generation")
+	t.Require().Contains(out, "\n2\t\n", "check generated data")
 }
 
 func (s *GenerateReferCmdSuite) TestGenerateReferInstance(t provider.T) {
@@ -61,7 +59,7 @@ func (s *GenerateReferCmdSuite) TestGenerateReferInstance(t provider.T) {
 		SetFields("f10").
 		Gen()
 
-	t.Require().Contains(out, "192.168.0.1", "check generation")
+	t.Require().Contains(out, "192.168.0.1", "check generated data")
 }
 
 func (s *GenerateReferCmdSuite) TestGenerateReferExecl(t provider.T) {
@@ -72,7 +70,7 @@ func (s *GenerateReferCmdSuite) TestGenerateReferExecl(t provider.T) {
 		SetFields("f11").
 		Gen()
 
-	t.Require().Contains(out, "青岛市", "check generation")
+	t.Require().Contains(out, "青岛市", "check generated data")
 }
 
 func (s *GenerateReferCmdSuite) TestGenerateReferText(t provider.T) {
@@ -83,7 +81,7 @@ func (s *GenerateReferCmdSuite) TestGenerateReferText(t provider.T) {
 		SetFields("f12").
 		Gen()
 
-	t.Require().Contains(out, "Jack", "check generation")
+	t.Require().Contains(out, "Jack", "check generated data")
 }
 
 func (s *GenerateReferCmdSuite) TestGenerateReferContent(t provider.T) {
@@ -94,7 +92,7 @@ func (s *GenerateReferCmdSuite) TestGenerateReferContent(t provider.T) {
 		SetFields("f13").
 		Gen()
 
-	t.Require().Contains(out, "c-3", "check generation")
+	t.Require().Contains(out, "c-3", "check generated data")
 }
 
 func (s *GenerateReferCmdSuite) TestGenerateReferMultiFrom(t provider.T) {
@@ -105,5 +103,5 @@ func (s *GenerateReferCmdSuite) TestGenerateReferMultiFrom(t provider.T) {
 		SetFields("f14").
 		Gen()
 
-	t.Require().Contains(out, "1.0.0.2", "check generation")
+	t.Require().Contains(out, "1.0.0.2", "check generated data")
 }
