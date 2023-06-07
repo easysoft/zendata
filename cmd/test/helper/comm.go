@@ -8,7 +8,6 @@ import (
 	"github.com/fatih/color"
 	"log"
 	"os"
-	"strings"
 )
 
 func BeforeAll() {
@@ -26,25 +25,4 @@ func PreCase() {
 func PostCase() {
 	consts.Buf.Reset()
 	log.SetOutput(os.Stdout)
-}
-
-func SetFields(fields string) {
-	arr := strings.Split(fields, ",")
-	vari.GlobalVars.ExportFields = arr
-}
-
-func SetTotal(total int) {
-	vari.GlobalVars.Total = total
-}
-
-func SetTrim(val bool) {
-	vari.GlobalVars.Trim = val
-}
-
-func SetHuman(val bool) {
-	vari.GlobalVars.Human = val
-}
-
-func SetRecursive(val bool) {
-	vari.GlobalVars.Recursive = val
 }
