@@ -34,14 +34,30 @@ fields:
           range: A-C
           postfix: "\t"
 
+  # format
   - field: f4
     range: 1-10
     format: "passwd%02d"
     postfix: "\t"
 
-  - field: f5
-    range: 10-20
-    format: md5
+  - field: f51
+    range: a-z
+    format: md5()
+    postfix: "\t"
+
+  - field: f52
+    range: password
+    format: sha1()
+    postfix: "\t"
+
+  - field: f53
+    range: "http://zendata.cn?&=word+"
+    format: base64()
+    postfix: "\t"
+
+  - field: f54
+    range: "http://zendata.cn?&=word+"
+    format: urlencode()
     postfix: "\t"
 
   - field: f6

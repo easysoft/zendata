@@ -10,27 +10,27 @@ import (
 	"testing"
 )
 
-func TestGenerateFunctionCmd(t *testing.T) {
-	suite.RunSuite(t, new(GenerateFunctionCmdSuite))
+func TestGenerateExpressionCmd(t *testing.T) {
+	suite.RunSuite(t, new(GenerateExpressionCmdSuite))
 }
 
-type GenerateFunctionCmdSuite struct {
+type GenerateExpressionCmdSuite struct {
 	suite.Suite
 }
 
-func (s *GenerateFunctionCmdSuite) BeforeAll(t provider.T) {
+func (s *GenerateExpressionCmdSuite) BeforeAll(t provider.T) {
 	testHelper.BeforeAll()
-	t.AddSubSuite("GenerateFunctionCmd")
+	t.AddSubSuite("GenerateExpressionCmd")
 }
-func (s *GenerateFunctionCmdSuite) BeforeEach(t provider.T) {
+func (s *GenerateExpressionCmdSuite) BeforeEach(t provider.T) {
 	testHelper.PreCase()
-	t.AddSubSuite("GenerateFunctionCmd")
+	t.AddSubSuite("GenerateExpressionCmd")
 }
-func (s *GenerateFunctionCmdSuite) AfterEach(t provider.T) {
+func (s *GenerateExpressionCmdSuite) AfterEach(t provider.T) {
 	testHelper.PostCase()
 }
 
-func (s *GenerateFunctionCmdSuite) TestGenerateFunction(t provider.T) {
+func (s *GenerateExpressionCmdSuite) TestGenerateExpression(t provider.T) {
 	t.ID("0")
 
 	out := gen.New().
@@ -44,7 +44,7 @@ func (s *GenerateFunctionCmdSuite) TestGenerateFunction(t provider.T) {
 	t.Require().Equal(len(arr[0]), 32, "check generated data")
 }
 
-func (s *GenerateFunctionCmdSuite) TestGenerateExpr(t provider.T) {
+func (s *GenerateExpressionCmdSuite) TestGenerateExpr(t provider.T) {
 	t.ID("0")
 
 	out := gen.New().
@@ -56,7 +56,7 @@ func (s *GenerateFunctionCmdSuite) TestGenerateExpr(t provider.T) {
 	t.Require().Contains(out, "3 * 2 = 6", "check generated data")
 }
 
-func (s *GenerateFunctionCmdSuite) TestGenerateDatetime(t provider.T) {
+func (s *GenerateExpressionCmdSuite) TestGenerateDatetime(t provider.T) {
 	t.ID("0")
 
 	out := gen.New().
