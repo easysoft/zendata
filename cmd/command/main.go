@@ -199,7 +199,7 @@ func opts(files []string) {
 		helper.AddMd5(md5, salt)
 		return
 	} else if parse {
-		genYaml(input)
+		action.GenYaml(input)
 		return
 	} else if mock {
 		if input == "" {
@@ -211,11 +211,6 @@ func opts(files []string) {
 	}
 
 	action.GenData(files)
-}
-
-func genYaml(input string) {
-	mainCtrl, _ := command.InitCtrl()
-	mainCtrl.GenYaml(input)
 }
 
 func genMock(input string) {
