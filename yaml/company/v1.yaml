@@ -10,9 +10,3 @@ instances:
      - field: part1
        from: company.v1.company
        select: content
-
-  - instance: abbreviation
-    fields:
-      - field: part1
-        from: company_abbreviation.v1.company_abbreviation
-        select: content

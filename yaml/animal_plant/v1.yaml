@@ -1,0 +1,9 @@
+title: 动植物
+
+field: field1
+instances:
+  - instance: animal
+    fields:
+    - field: f1
+      from: animal_plant.v1.animal_plant
+      select: name

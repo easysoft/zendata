@@ -1,0 +1,172 @@
+title: 测试
+
+fields:
+  - field: f1
+    from: animal_plant.v1.yaml
+    use: animal
+    postfix: ",\n"
+
+  - field: f2
+    from: areacode.v1.yaml
+    use: city
+    postfix: ",\n"
+
+  - field: f3
+    from: card.v1.yaml
+    use: credit_card_china
+    postfix: ",\n"
+
+  - field: f4
+    from: chronology.v1.yaml
+    use: chronology
+    postfix: ",\n"
+
+  - field: f5
+    from: city.v1.yaml
+    use: state
+    postfix: ",\n"
+
+  - field: f6
+    from: color.v1.yaml
+    use: rgb
+    postfix: ",\n"
+
+  - field: f7
+    from: company.v1.yaml
+    use: name
+    postfix: ",\n"
+
+  - field: f8
+    from: country.v1.yaml
+    use: chinese_short
+    postfix: ",\n"
+
+  - field: f81
+    from: domain.domain.v1.yaml
+    use: letters_at_cn
+    postfix: ",\n"
+
+  - field: f9
+    from: earthly_branches.v1.yaml
+    use: earthly_branches
+    postfix: ",\n"
+
+  - field: f91
+    from: email.v1.yaml
+    use: number_with_self
+    postfix: ",\n"
+
+  - field: f10
+    from: five_elements.v1.yaml
+    use: five_elements
+    postfix: ",\n"
+
+  - field: f11
+    from: food.v1.yaml
+    use: food
+    postfix: ",\n"
+
+  - field: f12
+    from: fruit.v1.yaml
+    use: fruit
+    postfix: ",\n"
+
+  - field: f13
+    from: heavenly_stems.v1.yaml
+    use: heavenly_stems
+    postfix: ",\n"
+
+  - field: f14
+    from: idiom.v1.yaml
+    use: idiom
+    postfix: ",\n"
+
+  - field: f141
+    from: ip.v2.yaml
+    use: ipB
+    postfix: ",\n"
+
+  - field: f15
+    from: joke.v1.yaml
+    use: joke
+    postfix: ",\n"
+
+  - field: f151
+    from: log.apache.access.v1.yaml
+    use: log
+    postfix: ",\n"
+
+  - field: f16
+    from: name.cnaccount.v1.yaml
+    use: common_underline
+    postfix: ",\n"
+  - field: f17
+    from: name.cnreal.v1.yaml
+    use: male_two
+    postfix: ",\n"
+  - field: f18
+    from: name.enaccount.v1.yaml
+    use: common_underline
+    postfix: ",\n"
+  - field: f19
+    from: name.enreal.v1.yaml
+    use: male_common
+    postfix: ",\n"
+
+  - field: f20
+    from: occupation.v1.yaml
+    use: occupation
+    postfix: ",\n"
+
+  - field: f201
+    from: phone.v1.yaml
+    use: telephone_china_with_city_code
+    postfix: ",\n"
+
+  - field: f21
+    from: planet.v1.yaml
+    use: planet
+    postfix: ",\n"
+
+  - field: f22
+    from: poetry_ancient.v1.yaml
+    use: poetry
+    postfix: ",\n"
+
+  - field: f23
+    from: season.v1.yaml
+    use: season
+    postfix: ",\n"
+
+  - field: f24
+    from: song.v1.yaml
+    use: song
+    postfix: ",\n"
+
+  - field: f24-1
+    from: time.date.v1.yaml
+    use: with_line
+    postfix: ",\n"
+  - field: f24-2
+    from: time.monthday.v1.yaml
+    use: with_line
+    postfix: ",\n"
+  - field: f24-3
+    from: time.time.v1.yaml
+    use: chinese
+    postfix: ",\n"
+
+  - field: f25
+    from: ulid.v1.yaml
+    use: ulid
+    postfix: ",\n"
+
+  - field: f26
+    from: uuid.v2.yaml
+    use: by_format
+    postfix: ",\n"
+
+  - field: f27
+    from: xiehouyu.v1.yaml
+    use: xiehouyu
+    postfix: ",\n"

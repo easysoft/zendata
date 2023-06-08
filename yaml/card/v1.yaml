@@ -1,12 +1,21 @@
-title: 电话号码
+title: 各种卡号
 desc:
 author: wwccss
 version: 2.0
 
 field: field1
 instances:
+  - instance: id_card
+    fields:
+    - field: f1
+      format: "id_card()"
+
+  - instance: credit_card
+    fields:
+    - field: f1
+      format: "credit_card('amex')"
+
   - instance: credit_card_china
-    note: 固话
     fields:
     - field: org_category
       range: 6
@@ -14,14 +23,3 @@ instances:
       range: 10000-99999
     - field: num
       range: 60000000-99999999:R
-
-  - instance: telephone_china_with_city_code
-    note: 固话带区号
-    fields:
-      - field: areacode_city
-        from: areacode.v1.city
-        select: code
-        where: id > 0
-        postfix: "-"
-      - field: num
-        range: 60000000-99999999:R

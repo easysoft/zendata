@@ -1,7 +1,0 @@
-title: 字段测试
-desc: 字段测试
-range: a-z,[user1,user-2],`user-3`,a-9
-prefix: "\t"
-postfix: "\t"
-loop: "2"
-loopfix: ','

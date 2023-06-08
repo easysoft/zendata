@@ -1,7 +1,0 @@
-title: 测试配置
-desc: ""
-fields:
-- field: 新字段1111
-  range: 1-9
-  prefix: =
-  postfix: '-'

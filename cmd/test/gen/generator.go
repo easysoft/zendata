@@ -76,6 +76,11 @@ func (s *Generator) SetTotal(total int) (r *Generator) {
 }
 
 func (s *Generator) SetFields(fields string) (r *Generator) {
+	if fields == "" {
+		r = s
+		return
+	}
+
 	arr := strings.Split(fields, ",")
 	s.ExportFields = arr
 

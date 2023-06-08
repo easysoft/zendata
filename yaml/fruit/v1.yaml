@@ -1,0 +1,9 @@
+title: 水果
+
+field: field1
+instances:
+  - instance: fruit
+    fields:
+    - field: f1
+      from: fruit.v1.fruit
+      select: name

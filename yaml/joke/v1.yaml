@@ -1,0 +1,9 @@
+title: 玩笑
+
+field: field1
+instances:
+  - instance: joke
+    fields:
+    - field: f1
+      from: joke.v1.joke
+      select: content

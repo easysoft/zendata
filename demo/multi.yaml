@@ -1,7 +1,0 @@
-title: number
-desc:
-author: wwccss
-version: 1.0
-fields:
- - field: number
-   range: 1-9
