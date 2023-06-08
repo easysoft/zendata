@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+// package domain;
+// option go_package = "domain";
+
+message Person {
+  string name = 1;
+  int32 age = 2;
+  Gender gender = 3;
+  Address address = 4;
+  repeated string hobbies = 5;
+
+  bool boolField = 6;
+  string stringField = 7;
+  float floatField = 8;
+  double doubleField = 9;
+  int32 int32Field = 10;
+  uint32 uint32Field = 11;
+  int64 int64Field = 12;
+  uint64 uint64Field = 13;
+}
+
+enum Gender {
+  M = 0;
+  F = 1;
+}
+
+message Address {
+  string city = 1;
+  repeated AddressItem AddressItems = 3;
+}
+
+message AddressItem {
+  string street = 1;
+  string building = 2;
+}

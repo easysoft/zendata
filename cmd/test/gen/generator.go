@@ -3,6 +3,7 @@ package gen
 import (
 	"github.com/easysoft/zendata/cmd/command/action"
 	"github.com/easysoft/zendata/cmd/test/consts"
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"strings"
 )
@@ -11,9 +12,14 @@ type Generator struct {
 	Total        int
 	Configs      []string
 	ExportFields []string
+	Output       string
 	Trim         bool
 	Human        bool
 	Recursive    bool
+
+	DBType   string
+	Table    string
+	ProtoCls string
 }
 
 func New() (g *Generator) {
@@ -29,13 +35,26 @@ func (s *Generator) Gen() (out string) {
 
 	vari.GlobalVars.Total = s.Total
 	vari.GlobalVars.ExportFields = s.ExportFields
+	vari.GlobalVars.Output = s.Output
 	vari.GlobalVars.Trim = s.Trim
 	vari.GlobalVars.Human = s.Human
 	vari.GlobalVars.Recursive = s.Recursive
 
+	vari.GlobalVars.DBType = s.DBType
+	vari.GlobalVars.Table = s.Table
+	vari.ProtoCls = s.ProtoCls
+
 	action.GenData(s.Configs)
 
-	out = consts.Buf.String()
+	if len(s.Configs) > 0 && strings.HasSuffix(s.Configs[0], "proto") {
+		out = fileUtils.ReadFile(consts.CommandTestFileProtoOut)
+
+	} else if vari.GlobalVars.Output != "" && !strings.HasSuffix(vari.GlobalVars.Output, "xlsx") {
+		out = fileUtils.ReadFile(vari.GlobalVars.Output)
+
+	} else {
+		out = consts.Buf.String()
+	}
 
 	vari.GlobalVars.Trim = false
 
@@ -59,6 +78,33 @@ func (s *Generator) SetTotal(total int) (r *Generator) {
 func (s *Generator) SetFields(fields string) (r *Generator) {
 	arr := strings.Split(fields, ",")
 	s.ExportFields = arr
+
+	r = s
+	return r
+}
+
+func (s *Generator) SetOutput(pth string) (r *Generator) {
+	s.Output = pth
+
+	r = s
+	return r
+}
+
+func (s *Generator) SetDBTable(tp string) (r *Generator) {
+	s.DBType = tp
+
+	r = s
+	return r
+}
+func (s *Generator) SetTable(tbl string) (r *Generator) {
+	s.Table = tbl
+
+	r = s
+	return r
+}
+
+func (s *Generator) SetProtoCls(cls string) (r *Generator) {
+	s.ProtoCls = cls
 
 	r = s
 	return r

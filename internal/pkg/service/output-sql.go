@@ -25,7 +25,7 @@ func (s *OutputService) GenSql() {
 		valuesForSql := make([]string, 0)
 
 		for j, colName := range vari.GlobalVars.ExportFields {
-			colVal := record[colName].(string)
+			colVal := fmt.Sprintf("%v", record[colName])
 
 			if !vari.GlobalVars.ColIsNumArr[j] {
 				switch vari.GlobalVars.DBType {
