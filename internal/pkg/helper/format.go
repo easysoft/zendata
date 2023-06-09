@@ -53,6 +53,11 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 
 		pass = true
 		return
+	} else if strings.Index(format, "ulid") == 0 {
+		ret = GenerateUlid(format)
+
+		pass = true
+		return
 	} else if strings.Index(format, "password") == 0 {
 		length := 8
 		regx := regexp.MustCompile(`password\(\s*(\d+)\s*\)`)
@@ -73,6 +78,11 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 
 		pass = true
 		return
+	} else if strings.Index(format, "id_card") == 0 {
+		ret = GenerateIdCard()
+
+		pass = true
+		return
 	} else if strings.Index(format, "credit_card") == 0 {
 		cardType := ""
 
@@ -83,11 +93,6 @@ func FormatStr(format string, val interface{}, precision int) (ret string, pass 
 		}
 
 		ret = GenerateCreditCard(cardType)
-
-		pass = true
-		return
-	} else if strings.Index(format, "id_card") == 0 {
-		ret = GenerateIdCard()
 
 		pass = true
 		return

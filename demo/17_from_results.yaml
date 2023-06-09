@@ -1,9 +1,9 @@
 fields:
   - field: first
-    range: 14_config.yaml{6}                                # 注意此处{10}为取10条记录，非重复语法。
-    prefix: "From 16.yaml\t"
+    range: 14_from_config.yaml{6}                                # 注意此处{6}为取10条记录，非重复语法。
+    prefix: "From 14\t"
     postfix: "\t|\t"
 
   - field: second
-    range: 15_from_range.yaml{3},16_from_instance.yaml{6}    # 注意此处{5}为取5条记录，非重复语法。
-    prefix: "From 17.yaml: \t"
+    range: 14_from_config.yaml{3},15_from_range.yaml{6}          # 注意此处{5}为取5条记录，非重复语法。
+    prefix: "From 14 & 15: \t"

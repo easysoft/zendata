@@ -13,13 +13,22 @@ import (
 func BeforeAll() {
 	configUtils.InitConfig("")
 	vari.DB, _ = commandConfig.NewGormDB()
-
-	vari.GlobalVars.Total = 10
 }
 
 func PreCase() {
 	log.SetOutput(&consts.Buf)
 	color.Output = &consts.Buf
+
+	vari.GlobalVars.Total = 10
+	vari.GlobalVars.ExportFields = []string{""}
+	vari.GlobalVars.Output = ""
+	vari.GlobalVars.Trim = false
+	vari.GlobalVars.Human = false
+	vari.GlobalVars.Recursive = false
+
+	vari.GlobalVars.DBType = ""
+	vari.GlobalVars.Table = ""
+	vari.ProtoCls = ""
 }
 
 func PostCase() {

@@ -9,9 +9,12 @@ instances:
     note: 来源于相对路径的文件
     fields:
       - field: from-insts
-        from: ../../ip.file.yaml
-        use: privateA
+        from: zentao.ip.private.yaml
+        use: all
         postfix: "\t"
+
       - field: from-ranges
         from: ../../../yaml/zentao/number/v1.yaml
         use: netmask
+        prefix: "mask is "
+        postfix: "\t"

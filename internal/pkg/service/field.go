@@ -139,8 +139,6 @@ func (s *FieldService) CreateField(field *domain.DefField) {
 
 	} else if field.Type == consts.FieldTypeTimestamp {
 		s.ValueService.CreateTimestampField(field)
-	} else if field.Type == consts.FieldTypeUlid {
-		s.ValueService.CreateUlidField(field)
 	}
 
 	return

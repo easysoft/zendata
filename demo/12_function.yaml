@@ -1,37 +1,34 @@
 fields:
-  - field: field_1    
+  - field: field_1
     range: 10-20
-    postfix: " "          
-
-  - field: field_1_md5 
-    range: 10-20
-    format: md5
-    prefix: "md5: "          
-    postfix: " "          
-
-  - field: field_2_sha1     
-    range: 10-20
-    format: sha1
-    prefix: "sha1: "          
     postfix: " "
 
-  - field: field_3_base64 
-    range: 10-20
-    format: base64
-    prefix: "base64: "
+  - field: field_2
+    range: 壹,贰,叁,肆,伍,陆,柒,捌,玖,拾
     postfix: "\t"
 
-  - field: field_4
-    range: 壹,贰,叁,肆,伍,陆,柒,捌,玖,拾 
-    postfix: "\t"
-
-  - field: field_4_urlencode 
-    range: 壹,贰,叁,肆,伍,陆,柒,捌,玖,拾 
+  - field: field_func_urlencode
+    range: 壹,贰,叁,肆,伍,陆,柒,捌,玖,拾
     format: urlencode
-    prefix: "urlencode: "          
+    prefix: "urlencode: "
     postfix: "\t"
 
-  - field: field_5_uuid
-    format: "uuid()"
-    prefix: "uuid: "
-    postfix: " "
+  - field: field_func_md5
+    range: a-z
+    format: md5()
+    postfix: "\t"
+
+  - field: field_func_sha1
+    range: password
+    format: sha1()
+    postfix: "\t"
+
+  - field: field_func_base64
+    range: "http://zendata.cn?&=word+"
+    format: base64()
+    postfix: "\t"
+
+  - field: field_func_urlencode
+    range: "http://zendata.cn?&=word+"
+    format: urlencode()
+    postfix: "\t"

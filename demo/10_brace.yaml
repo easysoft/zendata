@@ -1,5 +1,5 @@
 fields:
   - field: field_brace                  # 通过{}定义重复的元素。
-    range: a{3},[b,c]{3}                # a,a,a,b,b,b,c,c,c
+    range: a{3},[b,c]{2}                # a,a,a,b,b,b,c,c,c
     postfix: "\t"
 

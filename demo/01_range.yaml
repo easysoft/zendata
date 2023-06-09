@@ -29,8 +29,3 @@ fields:
     range: 9-1:-2           # 9,7,5,4...
     prefix: "["
     postfix: "]\t"
-
-  - field: f8               # 循环支持区间。
-    range: a-z              # a|b,c|d|e,f|g,h|i|j...
-    loop: 2-3
-    loopfix: "|"

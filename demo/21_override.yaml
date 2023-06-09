@@ -1,9 +1,0 @@
-fields:
-  - field: second
-    range: 100-200
-    prefix: " I override 18: "
-    postfix: "\t"
-
-  - field: third
-    range: A-Z
-    prefix: "I'm a new field: "

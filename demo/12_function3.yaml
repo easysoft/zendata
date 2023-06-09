@@ -1,0 +1,11 @@
+fields:
+
+  - field: field_func_binary
+    format: "binary()"
+    prefix: "binary: "
+    postfix: "\t"
+
+  - field: field_func_json
+    format: "json()"
+    prefix: "json: "
+    postfix: "\t"

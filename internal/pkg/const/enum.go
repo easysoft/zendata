@@ -168,6 +168,7 @@ const (
 	TelNumber    VarcharType = "telnumber"
 	Token        VarcharType = "token"
 	Uuid         VarcharType = "uuid"
+	Ulid         VarcharType = "ulid"
 	JsonStr      VarcharType = "jsonstr"
 	Md5          VarcharType = "md5"
 	//UnixTime     VarcharType = "unixtime"
