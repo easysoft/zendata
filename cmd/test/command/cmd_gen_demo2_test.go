@@ -28,38 +28,38 @@ func (s *GenerateDemo2CmdSuite) AfterEach(t provider.T) {
 	testHelper.PostCase()
 }
 
-//func (s *GenerateDemo2CmdSuite) TestGenerateDemo14(t provider.T) {
-//	t.ID("0")
-//
-//	out := gen.New().
-//		SetConfigs([]string{"demo/14_from_config.yaml"}).
-//		SetFields("").
-//		Gen()
-//
-//	t.Require().Contains(out, "'106,107'", "check generated data")
-//}
-//
-//func (s *GenerateDemo2CmdSuite) TestGenerateDemo15(t provider.T) {
-//	t.ID("0")
-//
-//	out := gen.New().
-//		SetConfigs([]string{"demo/15_from_range.yaml"}).
-//		SetFields("").
-//		Gen()
-//
-//	t.Require().Contains(out, "103\t101\t", "check generated data")
-//}
-//
-//func (s *GenerateDemo2CmdSuite) TestGenerateDemo16(t provider.T) {
-//	t.ID("0")
-//
-//	out := gen.New().
-//		SetConfigs([]string{"demo/16_from_instance.yaml"}).
-//		SetFields("").
-//		Gen()
-//
-//	t.Require().Contains(out, "172.18.2.3\t192.168.0.1", "check generated data")
-//}
+func (s *GenerateDemo2CmdSuite) TestGenerateDemo14(t provider.T) {
+	t.ID("0")
+
+	out := gen.New().
+		SetConfigs([]string{"demo/14_from_config.yaml"}).
+		SetFields("").
+		Gen()
+
+	t.Require().Contains(out, "'106,107'", "check generated data")
+}
+
+func (s *GenerateDemo2CmdSuite) TestGenerateDemo15(t provider.T) {
+	t.ID("0")
+
+	out := gen.New().
+		SetConfigs([]string{"demo/15_from_range.yaml"}).
+		SetFields("").
+		Gen()
+
+	t.Require().Contains(out, "103\t101\t", "check generated data")
+}
+
+func (s *GenerateDemo2CmdSuite) TestGenerateDemo16(t provider.T) {
+	t.ID("0")
+
+	out := gen.New().
+		SetConfigs([]string{"demo/16_from_instance.yaml"}).
+		SetFields("").
+		Gen()
+
+	t.Require().Contains(out, "172.18.2.3\t192.168.0.1", "check generated data")
+}
 
 func (s *GenerateDemo2CmdSuite) TestGenerateDemo17(t provider.T) {
 	t.ID("0")
