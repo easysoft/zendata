@@ -44,6 +44,6 @@ func (s *ResBuildinCmdSuite) TestResBuildin(t provider.T) {
 	length := len(strings.Split(strings.TrimSpace(out), "\n"))
 
 	t.Require().Contains(out, "框框套套", "check generated data")
-	t.Require().NotContains(out, "nil", "check generated data")
+	t.Require().NotContains(out, "nil", "check not contains nil")
 	t.Require().Equal(length, 35, "check generated data")
 }

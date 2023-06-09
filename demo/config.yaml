@@ -1,32 +1,9 @@
-title: 联合default.yaml使用，测试配置的复写特性
+title: 配合default.yaml使用，可复写同名属性配置
 desc:
 author: zentao
 version: 1.0
 
-from: zentao.ip.private.yaml     # 全局from配置
-
 fields:
-  - field: field_use_config
-    prefix: "{"
-    postfix: "}\t"
-
-  - field: field_use_ranges
-    prefix: "{"
-    postfix: "}\t"
-
-  - field: field_use_instance
-    prefix: ""                    # 修改前缀为空
-    postfix: "}\t"
-
-  - field: field_use_excel
-    prefix: "{"
-    postfix: "}\t"
-
-  - field: field_with_children
-    prefix: "{"
-    postfix: "}\t"
-
-  - field: chinese
-    range: [`测试`,实测]
-    prefix: "{"
+  - field: field_common
+    prefix: "{"             # 复写default.yaml中的前后缀配置
     postfix: "}\t"
