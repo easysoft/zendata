@@ -20,5 +20,5 @@ instances:
     note: 来源于相对路径的文件
     fields:
       - field: ip
-        from: sub/../sub/sub.yaml
+        from: sub/../sub/res.yaml
         use: sub

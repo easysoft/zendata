@@ -1,9 +1,0 @@
-title: 测试文件
-desc:
-author: zentao
-version: 1.0
-
-fields:
-  - field: test0  # 测试反引号括起来的字面常量同其他区间混合。
-    range: "`[a-b,X,1-2]`,[X,1-2],`0-1`,[1-3]:2{3}"
-    postfix: "\t"

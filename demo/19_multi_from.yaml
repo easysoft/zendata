@@ -1,0 +1,10 @@
+fields:
+  - field: use_multi_instances      # 使用多个use&from 引用用户自定义数据，结果为行合并。
+    prefix: "["
+    postfix: "]\t"
+    froms:
+      - from: ip.v1.yaml
+        use: privateB{3}
+
+      - from: ip.v1.yaml
+        use: publicA{6}

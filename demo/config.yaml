@@ -30,14 +30,3 @@ fields:
     range: [`测试`,实测]
     prefix: "{"
     postfix: "}\t"
-
-#  - field: test_excel1
-#    from: test.account01.20200101
-#    select: Address
-#    where: 1=1
-#    postfix: "\t"
-#  - field: test_excel2
-#    from: test.account01.20200101
-#    select: replace(InstReprIDCode,'.','')
-#    where: 1=1
-#    postfix: "\t"

@@ -1,0 +1,19 @@
+title: 私有IP地址
+desc:
+author: wwccss
+version: 1.0
+
+field: ip
+instances:
+  - instance: privateA
+    note: 私有A类IP地址
+    prefix: 10.
+    fields:
+      - field: part2
+        range: 0-254
+        postfix: .
+      - field: part3
+        range: 0-254
+        postfix: .
+      - field: part4
+        range: 1-254
