@@ -1,13 +1,13 @@
 fields:
-  - field: field_use_excel                # 从excel数据源里面取数据。
-    from: city.v1.city                    # 从data/address/v1.xlsx文件中读取名为china的工作簿。
-    select: name                          # 查询city字段。
-    where: state like '%山东%'             # 条件是省份包含山东。
-    rand: true                            # 随机取数据
-    postfix: "\t"
+#  - field: field_use_excel                # 从excel数据源里面取数据。
+#    from: city.v1.city                    # 从data/address/v1.xlsx文件中读取名为china的工作簿。
+#    select: name                          # 查询city字段。
+#    where: state like '%山东%'             # 条件是省份包含山东。
+#    rand: true                            # 随机取数据
+#    postfix: "\t"
 
   - field: columns                        # 变量，从excel中读取的列。如果命令指定-F参数，需要包含以避免忽略处理。
-    range: [name,state,state_short]
+    range: name
     postfix: "\t"
     length: 12
 

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/easysoft/zendata/cmd/test/comm"
-	"github.com/easysoft/zendata/cmd/test/model"
+	"github.com/easysoft/zendata/cmd/test/others/func/comm"
+	"github.com/easysoft/zendata/cmd/test/others/func/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"gorm.io/gorm"
 	"path/filepath"

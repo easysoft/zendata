@@ -11,59 +11,59 @@ instances:
     - field: num
       range: 60000000-99999999:R
 
-  - instance: telephone_china_with_city_code
-    note: 固话带区号
-    fields:
-      - field: areacode_city
-        from: areacode.v1.city
-        select: code
-        where: id > 0
-        postfix: "-"
-      - field: num
-        range: 60000000-99999999:R
-
-  - instance: telephone_china_with_country_code
-    note: 固话带国家区号
-    fields:
-      - field: areacode_country
-        from: areacode.v1.country
-        select: code
-        where: id > 0
-        postfix: "-"
-      - field: areacode_city
-        from: areacode.v1.city
-        select: code
-        where: id > 0
-        postfix: "-"
-      - field: num
-        range: 60000000-99999999:R
-
-  - instance: telephone_400
-    note: 400免费客服
-    fields:
-      - field: num
-        range: 6000000-9999999:R
-        prefix: 400
-
-  - instance: telephone_service
-    note: 服务电话
-    fields:
-      - field: num
-        range: 6000-9999:R
-        prefix: 9
-
-  - instance: cellphone
-    note: 手机号码
-    fields:
-      - field: prefix
-        range: zone.txt
-      - field: num
-        range: 60000000-99999999:R
-
-  - instance: qq
-    note: QQ号
-    fields:
-      - field: prefix
-        range: 6
-      - field: num
-        range: 00000-9999999999:R
+#  - instance: telephone_china_with_city_code
+#    note: 固话带区号
+#    fields:
+#      - field: areacode_city
+#        from: areacode.v1.city
+#        select: code
+#        where: id > 0
+#        postfix: "-"
+#      - field: num
+#        range: 60000000-99999999:R
+#
+#  - instance: telephone_china_with_country_code
+#    note: 固话带国家区号
+#    fields:
+#      - field: areacode_country
+#        from: areacode.v1.country
+#        select: code
+#        where: id > 0
+#        postfix: "-"
+#      - field: areacode_city
+#        from: areacode.v1.city
+#        select: code
+#        where: id > 0
+#        postfix: "-"
+#      - field: num
+#        range: 60000000-99999999:R
+#
+#  - instance: telephone_400
+#    note: 400免费客服
+#    fields:
+#      - field: num
+#        range: 6000000-9999999:R
+#        prefix: 400
+#
+#  - instance: telephone_service
+#    note: 服务电话
+#    fields:
+#      - field: num
+#        range: 6000-9999:R
+#        prefix: 9
+#
+#  - instance: cellphone
+#    note: 手机号码
+#    fields:
+#      - field: prefix
+#        range: zone.txt
+#      - field: num
+#        range: 60000000-99999999:R
+#
+#  - instance: qq
+#    note: QQ号
+#    fields:
+#      - field: prefix
+#        range: 6
+#      - field: num
+#        range: 00000-9999999999:R

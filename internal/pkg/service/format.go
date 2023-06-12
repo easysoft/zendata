@@ -4,6 +4,7 @@ import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -74,6 +75,10 @@ func (s *FormatService) GetFieldValStr(field domain.DefField, val interface{}) i
 			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
+	}
+
+	if str == "n/a" {
+		log.Println(str)
 	}
 
 	return str

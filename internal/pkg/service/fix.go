@@ -8,6 +8,7 @@ import (
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -99,6 +100,10 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
+	}
+
+	if str == "n/a" {
+		log.Println(str)
 	}
 
 	return str

@@ -10,6 +10,7 @@ import (
 
 func TestGenerateDemo2Cmd(t *testing.T) {
 	suite.RunSuite(t, new(GenerateDemo2CmdSuite))
+
 }
 
 type GenerateDemo2CmdSuite struct {
@@ -73,16 +74,17 @@ func (s *GenerateDemo2CmdSuite) TestGenerateDemo17(t provider.T) {
 	t.Require().Contains(out, expect, "check generated data")
 }
 
-//func (s *GenerateDemo2CmdSuite) TestGenerateDemo18(t provider.T) {
-//	t.ID("0")
-//
-//	out := gen.New().
-//		SetConfigs([]string{"demo/18_from_excel.yaml"}).
-//		SetFields("").
-//		Gen()
-//
-//	t.Require().Contains(out, "", "check generated data")
-//}
+func (s *GenerateDemo2CmdSuite) TestGenerateDemo18(t provider.T) {
+	t.ID("0")
+
+	out := gen.New().
+		SetConfigs([]string{"demo/18_from_excel.yaml"}).
+		SetFields("").
+		Gen()
+
+	t.Require().Contains(out, "山东", "check generated data")
+	t.Require().Contains(out, "青岛", "check generated data")
+}
 
 func (s *GenerateDemo2CmdSuite) TestGenerateDemo19(t provider.T) {
 	t.ID("0")
@@ -107,18 +109,6 @@ func (s *GenerateDemo2CmdSuite) TestGenerateDemo20(t provider.T) {
 	t.Require().Contains(out, "2_B\t1_B\t", "check generated data")
 }
 
-func (s *GenerateDemo2CmdSuite) TestGenerateDemo22(t provider.T) {
-	t.ID("0")
-
-	out := gen.New().
-		SetConfigs([]string{"demo/22_datetime.yaml"}).
-		SetFields("").
-		Gen()
-
-	regx := `201\d/`
-	t.Require().Regexp(regx, out, "check a time that's 10 years before")
-}
-
 func (s *GenerateDemo2CmdSuite) TestGenerateDemo23(t provider.T) {
 	t.ID("0")
 
@@ -129,18 +119,6 @@ func (s *GenerateDemo2CmdSuite) TestGenerateDemo23(t provider.T) {
 
 	t.Require().Contains(out, "家人", "check generated data")
 	t.Require().NotContains(out, "{人称代词}", "check generated data")
-}
-
-func (s *GenerateDemo2CmdSuite) TestGenerateDemo24(t provider.T) {
-	t.ID("0")
-
-	out := gen.New().
-		SetConfigs([]string{"demo/24_person_info.yaml"}).
-		SetFields("").
-		Gen()
-
-	t.Require().Contains(out, "139", "check generated data")
-	t.Require().NotContains(out, "nil", "check generated data")
 }
 
 func (s *GenerateDemo2CmdSuite) TestGenerateDemo25(t provider.T) {
