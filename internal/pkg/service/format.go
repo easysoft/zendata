@@ -15,7 +15,7 @@ type FormatService struct {
 }
 
 func (s *FormatService) GetFieldValStr(field domain.DefField, val interface{}) interface{} {
-	str := "n/a"
+	str := consts.Na
 	success := false
 
 	format := strings.TrimSpace(field.Format)
@@ -77,7 +77,7 @@ func (s *FormatService) GetFieldValStr(field domain.DefField, val interface{}) i
 	default:
 	}
 
-	if str == "n/a" {
+	if str == consts.Na {
 		log.Println(str)
 	}
 

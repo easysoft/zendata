@@ -60,7 +60,7 @@ func (s *FixService) getStrValueFromFixRange(rang *domain.Range, index int) stri
 }
 
 func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
-	str := "n/a"
+	str := consts.Na
 	success := false
 
 	switch val.(type) {
@@ -102,7 +102,7 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 	default:
 	}
 
-	if str == "n/a" {
+	if str == consts.Na {
 		log.Println(str)
 	}
 

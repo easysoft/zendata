@@ -1,0 +1,10 @@
+title: test
+
+instances:
+  - instance: field1
+    fields:
+      - field: part1
+        from: city.v1.city
+        select: name
+        prefix: "["
+        postfix: "]"

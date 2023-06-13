@@ -20,20 +20,21 @@ instances:
         from: zentao.number.v1.yaml
         use: netmask
         note: 掩码
-# TODO:
-#  - instance: privateB_union_privateC
-#    note: 多个use&from引用內置IP定义，结果为行合并
-#
-#    fields:
-#    - field: part1
-#      froms:
-#        - from: ip.v1.yaml
-#          use: privateB{2}
-#        - from: ip.v1.yaml
-#          use: privateC{3}
-#      postfix: "/"
-#
-#    - field: part2
-#      from: zentao.number.v1.yaml
-#      use: netmask
-#      note: 掩码
+
+  - instance: privateB_union_privateC
+    note: 多个use&from引用內置IP定义，结果为行合并
+
+    fields:
+    - field: part1
+      note: 多froms
+      froms:
+        - from: ip.v1.yaml
+          use: privateB{2}
+        - from: ip.v1.yaml
+          use: privateC{3}
+      postfix: "/"
+
+    - field: part2
+      from: zentao.number.v1.yaml
+      use: netmask
+      note: 掩码
