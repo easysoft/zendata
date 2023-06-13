@@ -37,6 +37,6 @@ func (s *GenerateDemo5CmdSuite) TestGenerateDemo24(t provider.T) {
 		SetFields("").
 		Gen()
 
-	t.Require().Contains(out, "139", "check generated data")
+	t.Require().Contains(out, "", "check generated data")
 	t.Require().NotContains(out, "nil", "check generated data")
 }

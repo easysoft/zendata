@@ -2,6 +2,10 @@ title: test
 desc: 描述
 version: 1.0
 fields:
+#  - field: test
+#    range: 60000000-99999999:R
+#    postfix: "\t"
+
   - field: telephone_china
     from: phone.v1.yaml
     use: telephone_china
@@ -16,7 +20,7 @@ fields:
 #    from: phone.v1.yaml
 #    use: telephone_china_with_country_code
 #    postfix: "\t"
-
+#
 #  - field: telephone_400
 #    from: phone.v1.yaml
 #    use: telephone_400
@@ -26,7 +30,7 @@ fields:
 #    from: phone.v1.yaml
 #    use: telephone_service
 #    postfix: "\t"
-
+#
 #  - field: cellphone
 #    from: phone.v1.yaml
 #    use: cellphone
@@ -36,7 +40,7 @@ fields:
 #    from: phone.v1.yaml
 #    use: qq
 #    postfix: "\t"
-
+#
 #  - field: field_creditcard
 #    format: "credit_card('amex')"
 #    postfix: "\t"
