@@ -1,22 +1,17 @@
 fields:
-#  - field: field_use_instance           # 引用其他的定义文件，该文件定义了多个实例。
-#    from: ip.v1.yaml                    # yaml/ip/v1.yaml
-#    use: privateB{3},privateC{6:2}      # 使用该文件中定义的2个实例，privateB取3行，privateC取6行（前3个值各重复2次）。
-#    postfix: "\t"
-#
-#  - field: field_union_instance
-#    from: zentao.ip.private.yaml        # 引用用户自定义数据，自定义数据使用了联合。
-#    use: privateB_union_privateC
-#    postfix: "\t"
+  - field: field_use_instance           # 引用其他的定义文件，该文件定义了多个实例。
+    from: ip.v1.yaml                    # yaml/ip/v1.yaml
+    use: privateB{3},privateC{6:2}      # 使用该文件中定义的2个实例，privateB取3行，privateC取6行（前3个值各重复2次）。
+    postfix: "\t"
 
   - field: field_instance_of_instance
     from: zentao.insts-of-insts.yaml
     use: field1
     postfix: "\t"
 
-#  - field: part1
-#    froms:
-#      - from: ip.v1.yaml
-#        use: privateB{2}
-#      - from: ip.v1.yaml
-#        use: privateC{3}
+  - field: part1
+    froms:
+      - from: ip.v1.yaml
+        use: privateB{2}
+      - from: ip.v1.yaml
+        use: privateC{3}
