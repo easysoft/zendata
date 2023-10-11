@@ -3,8 +3,9 @@ module github.com/easysoft/zendata
 go 1.19
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/getkin/kin-openapi v0.112.0
-	golang.org/x/text v0.5.0
+	golang.org/x/text v0.13.0
 )
 
 require (
@@ -13,15 +14,12 @@ require (
 	github.com/CloudyKit/jet/v6 v6.1.0 // indirect
 	github.com/Shopify/goreferrer v0.0.0-20210630161223-536fa16abd6f // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
-	github.com/denisenkom/go-mssqldb v0.12.0 // indirect
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
-	github.com/go-logfmt/logfmt v0.5.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
@@ -29,11 +27,7 @@ require (
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.1.0 // indirect
 	github.com/goccy/go-json v0.9.4 // indirect
-	github.com/godror/godror v0.20.0 // indirect
-	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
-	github.com/golang-sql/sqlexp v0.0.0-20170517235910-f1bb20e5a188 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/gonutz/rsrc v0.0.0-20180911104558-96f130112cb1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
@@ -70,15 +64,14 @@ require (
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
 	github.com/tdewolff/minify/v2 v2.10.0 // indirect
 	github.com/tdewolff/parse/v2 v2.5.27 // indirect
-	github.com/thoas/go-funk v0.7.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	github.com/yosssi/ace v0.0.5 // indirect
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
-	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
-	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/time v0.0.0-20220224211638-0e9765cccd65 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
@@ -89,7 +82,6 @@ require (
 	github.com/Chain-Zhang/pinyin v0.1.3
 	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/aymerick/raymond v2.0.3-0.20180322193309-b565731e1464+incompatible // indirect
-	github.com/dzwvip/oracle v1.2.1
 	github.com/emirpasic/gods v1.12.0
 	github.com/facebookgo/ensure v0.0.0-20200202191622-63f1cf65ac4c // indirect
 	github.com/facebookgo/inject v0.0.0-20180706035515-f23751cae28b
@@ -103,7 +95,7 @@ require (
 	github.com/kataras/iris/v12 v12.2.0-alpha9
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/mattn/go-runewidth v0.0.10
-	github.com/mattn/go-sqlite3 v1.14.15
+	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/mholt/archiver/v3 v3.5.0
 	github.com/oklog/ulid/v2 v2.0.2
 	github.com/pierrec/lz4/v4 v4.1.3 // indirect
@@ -119,7 +111,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.3.3
 	gorm.io/driver/sqlite v1.5.0
-	gorm.io/driver/sqlserver v1.3.2
 	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11
 	gorm.io/plugin/dbresolver v1.2.0
 )
