@@ -2,15 +2,16 @@ package service
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type FixService struct {

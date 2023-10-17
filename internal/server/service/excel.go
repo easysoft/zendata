@@ -1,8 +1,9 @@
 package serverService
 
 import (
-	"github.com/easysoft/zendata/internal/pkg/domain"
 	"strings"
+
+	"github.com/easysoft/zendata/internal/pkg/domain"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/helper"

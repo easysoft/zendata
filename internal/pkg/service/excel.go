@@ -2,13 +2,14 @@ package service
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/domain"
-	"github.com/easysoft/zendata/internal/pkg/helper"
 	"log"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
@@ -321,7 +322,7 @@ func (s *ExcelService) ReadDataFromSQLite(field domain.DefField, dbName string, 
 	}
 
 	var values = make([]interface{}, colNum)
-	for i, _ := range values {
+	for i := range values {
 		var itf string
 		values[i] = &itf
 	}
@@ -377,7 +378,7 @@ func (s *ExcelService) genExcelValuesWithExpr(field *domain.DefField, fieldNameT
 		}
 	}
 	for index := 0; len(values) < vari.GlobalVars.Total; {
-		for i, _ := range selects {
+		for i := range selects {
 			values = append(values, childMapValues[i][index%len(childMapValues[i])])
 		}
 		index++

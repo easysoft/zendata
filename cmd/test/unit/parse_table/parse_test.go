@@ -2,6 +2,12 @@ package parse_table
 
 import (
 	"flag"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+
 	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
@@ -11,11 +17,6 @@ import (
 	"gopkg.in/yaml.v3"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
-	"os"
-	"path/filepath"
-	"strings"
-	"testing"
 )
 
 var (

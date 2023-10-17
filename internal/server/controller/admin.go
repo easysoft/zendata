@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
@@ -8,7 +10,6 @@ import (
 	serverUtils "github.com/easysoft/zendata/internal/server/utils"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/kataras/iris/v12"
-	"strconv"
 )
 
 type AdminCtrl struct {

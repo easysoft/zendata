@@ -2,6 +2,12 @@ package main
 
 import (
 	"flag"
+	"io"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
+
 	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
@@ -11,27 +17,17 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
-	"io/ioutil"
-	"os"
-	"os/signal"
-	"strings"
-	"syscall"
 )
 
 var (
-	configs      []string
 	defaultFile  string
 	configFile   string
 	exportFields string
-
-	defaultDefContent []byte
-	configDefContent  []byte
 
 	root  string
 	input string
 
 	parse    bool
-	decode   bool
 	listData bool
 	listRes  bool
 	view     string
@@ -44,9 +40,6 @@ var (
 	version bool
 	set     bool
 
-	isStartServer bool
-	uuid          = ""
-
 	AppVersion string
 	BuildTime  string
 	GoVersion  string
@@ -56,7 +49,7 @@ var (
 )
 
 func main() {
-	channel := make(chan os.Signal)
+	channel := make(chan os.Signal, 1) // fix for sigchanyzer: misuse of unbuffered os.Signal channel as argument to signal.Notify
 	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-channel
@@ -159,7 +152,7 @@ func execCommand() {
 	vari.DB, _ = commandConfig.NewGormDB()
 	//defer vari.DB.Close()
 
-	flagSet.SetOutput(ioutil.Discard)
+	flagSet.SetOutput(io.Discard)
 	if err := flagSet.Parse(os.Args[1:]); err == nil {
 		opts(files)
 	} else {

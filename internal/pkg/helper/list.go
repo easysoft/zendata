@@ -184,7 +184,7 @@ func ReadYamlInfo(path string) (title, desc, resType string) {
 		logUtils.PrintTo("")
 	}
 
-	yamlContent, err := ioutil.ReadFile(path)
+	yamlContent, err := os.ReadFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return

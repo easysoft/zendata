@@ -2,9 +2,10 @@ package comm
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	"strings"
 )
 
 func GetExcelTable(filePath, sheetName string) (records []map[string]interface{}) {

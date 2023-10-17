@@ -2,12 +2,13 @@ package serverService
 
 import (
 	"fmt"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"strings"
 )
 
 func genFieldFromZdField(treeNode model.ZdField, refer model.ZdRefer, field *domain.DefField) {

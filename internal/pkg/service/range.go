@@ -2,6 +2,12 @@ package service
 
 import (
 	"fmt"
+	"math"
+	"regexp"
+	"strconv"
+	"strings"
+	"unicode"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
@@ -9,11 +15,6 @@ import (
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"math"
-	"regexp"
-	"strconv"
-	"strings"
-	"unicode"
 )
 
 type RangeService struct {

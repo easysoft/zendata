@@ -1,10 +1,11 @@
 package main
 
 import (
-	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
-	httpUtils "github.com/easysoft/zendata/pkg/utils/http"
 	"net/url"
 	"testing"
+
+	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
+	httpUtils "github.com/easysoft/zendata/pkg/utils/http"
 )
 
 func TestServer(t *testing.T) {

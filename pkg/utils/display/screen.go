@@ -1,13 +1,14 @@
 package display
 
 import (
-	"github.com/easysoft/zendata/pkg/utils/common"
-	"github.com/easysoft/zendata/pkg/utils/shell"
 	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
+
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
+	shellUtils "github.com/easysoft/zendata/pkg/utils/shell"
 )
 
 func GetScreenSize() (int, int) {

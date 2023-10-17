@@ -2,6 +2,10 @@ package main
 
 import (
 	"flag"
+	"os"
+	"os/signal"
+	"syscall"
+
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	serverConfig "github.com/easysoft/zendata/internal/server/config"
@@ -12,9 +16,6 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 var (

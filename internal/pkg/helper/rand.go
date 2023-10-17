@@ -2,9 +2,10 @@ package helper
 
 import (
 	"fmt"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"strconv"
 	"strings"
+
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 )
 
 func GetRandFromList(list []string, repeat, count int) (ret []interface{}) {

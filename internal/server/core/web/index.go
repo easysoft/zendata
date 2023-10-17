@@ -3,6 +3,10 @@ package web
 import (
 	stdContext "context"
 	"fmt"
+	"strconv"
+	"sync"
+	"time"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/server"
 	"github.com/easysoft/zendata/internal/server/core/module"
@@ -11,9 +15,6 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/facebookgo/inject"
 	"github.com/fatih/color"
-	"strconv"
-	"sync"
-	"time"
 
 	"github.com/kataras/iris/v12/context"
 

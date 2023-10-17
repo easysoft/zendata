@@ -2,10 +2,11 @@ package web
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/easysoft/zendata/internal/server/core/middleware"
 	"github.com/easysoft/zendata/internal/server/core/module"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"strings"
 
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"

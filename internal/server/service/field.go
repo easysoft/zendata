@@ -3,7 +3,7 @@ package serverService
 import (
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/model"
-	"github.com/easysoft/zendata/internal/server/repo"
+	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 )
 
 type FieldService struct {

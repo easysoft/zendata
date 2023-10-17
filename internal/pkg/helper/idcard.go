@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-const ()
-
 func GenerateIdCard() (ret string) {
 	areaCode := AreaCode[rand.Intn(len(AreaCode))] +
 		fmt.Sprintf("%0*d", 4, randInt(1, 9999))

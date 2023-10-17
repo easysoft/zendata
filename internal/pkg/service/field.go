@@ -1,12 +1,13 @@
 package service
 
 import (
-	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/domain"
-	"github.com/easysoft/zendata/pkg/utils/vari"
 	"regexp"
 	"strconv"
 	"strings"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
 type FieldService struct {
@@ -30,7 +31,7 @@ func (s *FieldService) Generate(field *domain.DefField, parentJoin bool) {
 
 	// iterate children
 	if len(field.Fields) > 0 {
-		for i, _ := range field.Fields {
+		for i := range field.Fields {
 			if field.Fields[i].From == "" {
 				field.Fields[i].From = field.From
 			}

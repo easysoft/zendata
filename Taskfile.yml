@@ -1,0 +1,26 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GOOS: $(go env GOOS)
+  GOARCH: $(go env GOARCH)
+
+tasks:
+  gofmt:
+    cmds:
+      - go install golang.org/x/tools/cmd/goimports@latest
+      - gofmt -s -w .
+      - goimports -w .
+
+  golint:
+    cmds:
+      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - golangci-lint run -v ./...
+
+  lint:
+    desc: lint code
+    cmds:
+      - task: gofmt
+      - task: golint
+

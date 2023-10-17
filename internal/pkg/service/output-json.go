@@ -2,8 +2,9 @@ package service
 
 import (
 	"encoding/json"
-	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"regexp"
+
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 )
 
 func (s *OutputService) GenJson() {

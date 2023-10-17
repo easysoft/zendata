@@ -3,14 +3,15 @@ package service
 import (
 	"errors"
 	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
-	"strconv"
-	"strings"
 )
 
 type LoopService struct {

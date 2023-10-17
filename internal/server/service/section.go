@@ -3,7 +3,7 @@ package serverService
 import (
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"github.com/easysoft/zendata/internal/pkg/service"
-	"github.com/easysoft/zendata/internal/server/repo"
+	serverRepo "github.com/easysoft/zendata/internal/server/repo"
 )
 
 type SectionService struct {

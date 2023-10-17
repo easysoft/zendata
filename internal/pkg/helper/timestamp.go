@@ -2,15 +2,16 @@ package helper
 
 import (
 	"fmt"
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/oklog/ulid/v2"
-	"math/rand"
-	"strconv"
-	"strings"
-	"time"
 )
 
 func CreateTimestampField(field *domain.DefField, fieldWithValue *domain.FieldWithValues) {

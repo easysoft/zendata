@@ -6,16 +6,17 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"github.com/Chain-Zhang/pinyin"
-	"github.com/easysoft/zendata/internal/pkg/domain"
-	"github.com/mattn/go-runewidth"
-	"gopkg.in/yaml.v2"
 	"math/rand"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Chain-Zhang/pinyin"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/mattn/go-runewidth"
+	"gopkg.in/yaml.v2"
 )
 
 func FormatStr(format string, val interface{}, precision int) (ret string, pass bool) {

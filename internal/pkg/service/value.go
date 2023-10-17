@@ -1,14 +1,15 @@
 package service
 
 import (
+	"math/rand"
+	"strings"
+	"time"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/oklog/ulid/v2"
-	"math/rand"
-	"strings"
-	"time"
 )
 
 type ValueService struct {

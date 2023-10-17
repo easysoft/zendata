@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
-	"github.com/Chain-Zhang/pinyin"
-	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
-	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"strconv"
 	"strings"
 	"testing"
 	"unicode"
+
+	"github.com/360EntSecGroup-Skylar/excelize/v2"
+	"github.com/Chain-Zhang/pinyin"
+	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 )
 
 func TestPinYin(t *testing.T) {

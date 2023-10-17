@@ -1,13 +1,14 @@
 package service
 
 import (
-	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/domain"
-	"github.com/easysoft/zendata/internal/pkg/helper"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 )
 
 type FormatService struct {

@@ -2,9 +2,10 @@ package zd
 
 import (
 	"embed"
-	"github.com/easysoft/zendata/pkg/utils/common"
 	"os"
 	"strings"
+
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 )
 
 //go:embed res

@@ -2,10 +2,6 @@ package commonUtils
 
 import (
 	"fmt"
-	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/model"
-	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
-	"github.com/emirpasic/gods/maps"
 	"math/rand"
 	"net"
 	"os"
@@ -16,6 +12,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/model"
+	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
+	"github.com/emirpasic/gods/maps"
 )
 
 func Base(pathStr string) string {

@@ -4,10 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"io"
 	"os/exec"
 	"strings"
+
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 )
 
 func Exec(cmdStr string) (ret string, err error) {

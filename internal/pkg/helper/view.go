@@ -2,6 +2,9 @@ package helper
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -10,8 +13,6 @@ import (
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
-	"strings"
 )
 
 func View(res string) {
@@ -32,7 +33,7 @@ func View(res string) {
 }
 
 func ReadYamlData(path string) (typ string, insts domain.ResInstances, ranges domain.ResRanges) {
-	yamlContent, err := ioutil.ReadFile(path)
+	yamlContent, err := os.ReadFile(path)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("fail_to_read_file", path))
 		return
@@ -77,7 +78,7 @@ func printRanges(ranges domain.ResRanges) {
 	msg = msg + ranges.Title + " " + ranges.Desc + "\n"
 
 	width := 0
-	for name, _ := range ranges.Ranges {
+	for name := range ranges.Ranges {
 		lent := runewidth.StringWidth(name)
 		if lent > width {
 			width = lent

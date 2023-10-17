@@ -1,10 +1,11 @@
 package serverUtils
 
 import (
-	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"net/http"
 	"strconv"
 	"strings"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 )
 
 func ParseGenParams(req *http.Request) (defaultFile, configFile, fields string, count int,

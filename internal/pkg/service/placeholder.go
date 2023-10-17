@@ -2,12 +2,13 @@ package service
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/helper"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	"github.com/easysoft/zendata/pkg/utils/vari"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/easysoft/zendata/internal/pkg/helper"
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
+	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
 type PlaceholderService struct {

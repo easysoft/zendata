@@ -1,10 +1,11 @@
 package helper
 
 import (
-	consts "github.com/easysoft/zendata/internal/pkg/const"
-	"github.com/easysoft/zendata/internal/pkg/domain"
 	"path/filepath"
 	"strings"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
 )
 
 func IsFromProtobuf(file string) bool {

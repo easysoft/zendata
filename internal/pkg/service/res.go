@@ -2,6 +2,8 @@ package service
 
 import (
 	"fmt"
+	"os"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
@@ -11,7 +13,6 @@ import (
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
-	"os"
 )
 
 type ResService struct {

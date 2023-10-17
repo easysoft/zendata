@@ -2,16 +2,17 @@ package service
 
 import (
 	"fmt"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
-	"os"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type TextService struct {

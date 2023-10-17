@@ -13,7 +13,7 @@ func TestMod(t *testing.T) {
 	arrOfArr[2] = []string{"X", "Y", "Z"}
 
 	indexArr := make([]int, 0)
-	for _, _ = range arrOfArr {
+	for range arrOfArr {
 		indexArr = append(indexArr, 0)
 	}
 

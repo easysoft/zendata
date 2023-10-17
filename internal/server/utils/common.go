@@ -2,14 +2,15 @@ package serverUtils
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"regexp"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"io/ioutil"
-	"regexp"
-	"strings"
 )
 
 func ConvertDef(data interface{}) (def model.ZdDef) {

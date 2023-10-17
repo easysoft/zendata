@@ -51,7 +51,7 @@ func (s *DefService) MergeDef(defaultDef domain.DefData, configDef domain.DefDat
 	s.mergerDefine(&defaultDef, &configDef, fieldsToExport)
 	s.orderFields(&defaultDef, *fieldsToExport)
 
-	for index, _ := range defaultDef.Fields {
+	for index := range defaultDef.Fields {
 		if vari.GlobalVars.Trim {
 			defaultDef.Fields[index].Prefix = ""
 			defaultDef.Fields[index].Postfix = ""

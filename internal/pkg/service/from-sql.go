@@ -2,6 +2,10 @@ package service
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/model"
@@ -10,9 +14,6 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v2"
-	"regexp"
-	"strings"
-	"time"
 )
 
 type SqlParseService struct {

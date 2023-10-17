@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/easysoft/zendata/internal/pkg/model"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/easysoft/zendata/internal/pkg/model"
 )
 
 func SetupCORS(w *http.ResponseWriter, req *http.Request) {

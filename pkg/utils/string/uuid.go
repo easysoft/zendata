@@ -1,10 +1,11 @@
 package stringUtils
 
 import (
-	"github.com/oklog/ulid/v2"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/oklog/ulid/v2"
 
 	uuid "github.com/satori/go.uuid"
 )

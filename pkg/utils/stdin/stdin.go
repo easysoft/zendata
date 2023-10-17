@@ -2,13 +2,14 @@ package stdinUtils
 
 import (
 	"bufio"
+	"os"
+	"regexp"
+	"strings"
+
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/fatih/color"
-	"os"
-	"regexp"
-	"strings"
 )
 
 func GetInput(regx string, defaultVal string, fmtStr string, params ...interface{}) string {

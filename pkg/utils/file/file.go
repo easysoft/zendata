@@ -3,7 +3,6 @@ package fileUtils
 import (
 	"errors"
 	"fmt"
-	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -11,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
@@ -33,7 +34,7 @@ func ReadFile(filePath string) string {
 }
 
 func ReadFileBuf(filePath string) []byte {
-	buf, err := ioutil.ReadFile(filePath)
+	buf, err := os.ReadFile(filePath)
 	if err != nil {
 		return []byte(err.Error())
 	}

@@ -2,13 +2,14 @@ package helper
 
 import (
 	"fmt"
-	"github.com/asaskevich/govalidator"
-	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"math/rand"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/asaskevich/govalidator"
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 )
 
 func GenerateFieldDefByMetadata(metadata string, param string, name string, records []interface{}) (info FieldTypeInfo) {

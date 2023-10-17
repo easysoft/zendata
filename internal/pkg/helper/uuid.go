@@ -1,9 +1,10 @@
 package helper
 
 import (
-	uuid "github.com/satori/go.uuid"
 	"regexp"
 	"strings"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 func GenerateUuid(format string) (ret string) {

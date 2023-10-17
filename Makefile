@@ -112,7 +112,7 @@ compile_server_linux_arm64:
 	@CGO_ENABLED=1 GOOS=linux GOARCH=arm64 GOARM=7 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/linux_arm64/server ${SERVER_MAIN_FILE}
-	
+
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux_arm64" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux_arm64" && \
   		cp ${BIN_DIR}/linux_arm64/server "${CLIENT_OUT_DIR_UPGRADE}linux_arm64/"
 
@@ -319,3 +319,6 @@ upload_to:
 	@find ${QINIU_DIR} -name ".DS_Store" -type f -delete
 	@qshell qupload2 --src-dir=${QINIU_DIR} --bucket=download --thread-count=10 --log-file=qshell.log \
                      --skip-path-prefixes=ztf,zv,zmanager,driver,deeptest --rescan-local --overwrite --check-hash
+
+help: ## this help
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {sub("\\\\n",sprintf("\n%22c"," "), $$2);printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

@@ -3,6 +3,10 @@ package command
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/ctrl"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -11,9 +15,6 @@ import (
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/facebookgo/inject"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 func InitCtrl() (defCtrl *ctrl.MainCtrl, err error) {

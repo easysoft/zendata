@@ -2,11 +2,12 @@ package httpUtils
 
 import (
 	"fmt"
-	"github.com/easysoft/zendata/pkg/utils/vari"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/easysoft/zendata/pkg/utils/vari"
 )
 
 func PostForm(urlStr string, data url.Values) (interface{}, bool) {
@@ -22,7 +23,7 @@ func PostForm(urlStr string, data url.Values) (interface{}, bool) {
 	}
 
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Print(err.Error())
 		return nil, false

@@ -1,6 +1,9 @@
 package service
 
 import (
+	"os"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -8,8 +11,6 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/fatih/color"
-	"os"
-	"strings"
 )
 
 type FileService struct {

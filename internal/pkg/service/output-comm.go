@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
@@ -19,7 +20,7 @@ type OutputService struct {
 func (s *OutputService) GenRecords() (records []map[string]interface{}) {
 	records = make([]map[string]interface{}, 0)
 
-	for i, _ := range vari.GlobalVars.DefData.Fields {
+	for i := range vari.GlobalVars.DefData.Fields {
 		s.genFieldVal(&vari.GlobalVars.DefData.Fields[i])
 	}
 
@@ -43,7 +44,7 @@ func (s *OutputService) genFieldVal(field *domain.DefField) {
 	vari.GlobalVars.FieldNameToValuesMap[field.Field] = field.Values
 	vari.GlobalVars.FieldNameToFieldMap[field.Field] = *field
 
-	for i, _ := range field.Fields {
+	for i := range field.Fields {
 		s.genFieldVal(&field.Fields[i])
 	}
 }
@@ -144,7 +145,7 @@ func (s *OutputService) PrintHumanHeaderIfNeeded() {
 
 func (s *OutputService) getModArrForChildrenRecursive(field *domain.DefField) []int {
 	indexArr := make([]int, 0)
-	for _, _ = range field.Fields {
+	for range field.Fields {
 		indexArr = append(indexArr, 0)
 	}
 

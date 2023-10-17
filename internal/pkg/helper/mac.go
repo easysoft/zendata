@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-const ()
-
 func GenerateMac() (ret string) {
 	buf := make([]byte, 6)
 

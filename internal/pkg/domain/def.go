@@ -1,8 +1,9 @@
 package domain
 
 import (
-	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"time"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
 )
 
 type ClsInfo struct {

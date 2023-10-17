@@ -1,6 +1,8 @@
 package service
 
 import (
+	"os"
+
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
@@ -8,7 +10,6 @@ import (
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
-	"os"
 )
 
 type ResYamlService struct {

@@ -2,9 +2,10 @@ package command
 
 import (
 	"fmt"
+	"time"
+
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"time"
 )
 
 func PrintStartInfo() {

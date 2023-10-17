@@ -2,6 +2,12 @@ package service
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"time"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
@@ -11,11 +17,6 @@ import (
 	stringUtils "github.com/easysoft/zendata/pkg/utils/string"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
-	"os"
-	"path/filepath"
-	"regexp"
-	"strings"
-	"time"
 )
 
 var (
@@ -122,7 +123,7 @@ func (s *ArticleService) getDataMap(numMap map[string]int, nameMap map[string]st
 	ret = map[string][]interface{}{}
 
 	field.Rand = false
-	for key, _ := range numMap {
+	for key := range numMap {
 		originTotal := vari.GlobalVars.Total
 		vari.GlobalVars.Total = consts.MaxNumb // load all words
 
@@ -324,7 +325,7 @@ func (s *ArticleService) LoadAllWords() (ret map[string]string) {
 
 	// build an empty string array to retrieve row
 	var record = make([]interface{}, colNum)
-	for i, _ := range record {
+	for i := range record {
 		var itf string
 		record[i] = &itf
 	}

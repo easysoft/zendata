@@ -1,10 +1,11 @@
 package service
 
 import (
+	"strings"
+
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"github.com/mattn/go-runewidth"
-	"strings"
 )
 
 type DecodeService struct {

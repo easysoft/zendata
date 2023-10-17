@@ -1,11 +1,12 @@
 package vari
 
 import (
+	"time"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/model"
 	"gorm.io/gorm"
-	"time"
 )
 
 type GenVarType struct {

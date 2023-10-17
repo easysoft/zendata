@@ -1,10 +1,11 @@
 package service
 
 import (
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	"strings"
 )
 
 type ListService struct {

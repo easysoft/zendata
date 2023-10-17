@@ -4,13 +4,15 @@ import (
 	"archive/zip"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+
 	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
 	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/mholt/archiver/v3"
-	"io/ioutil"
-	"net/http"
-	"strings"
-	"time"
 )
 
 func Download(uri string, dst string) error {
@@ -26,12 +28,12 @@ func Download(uri string, dst string) error {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("download_fail", uri, err.Error()))
 	}
 	defer res.Body.Close()
-	bytes, err := ioutil.ReadAll(res.Body)
+	bytes, err := io.ReadAll(res.Body)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("download_read_fail", uri, err.Error()))
 	}
 
-	err = ioutil.WriteFile(dst, bytes, 0666)
+	err = os.WriteFile(dst, bytes, 0666)
 	if err != nil {
 		logUtils.PrintTo(i118Utils.I118Prt.Sprintf("download_write_fail", dst, err.Error()))
 	} else {

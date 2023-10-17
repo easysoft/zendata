@@ -2,12 +2,13 @@ package helper
 
 import (
 	"fmt"
-	consts "github.com/easysoft/zendata/internal/pkg/const"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 	"math"
 	"reflect"
 	"strconv"
 	"strings"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
 )
 
 func GenerateItems[TV ValType, TS StepType](start, end TV, step TS,
