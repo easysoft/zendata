@@ -5,6 +5,13 @@ version: '3'
 vars:
   GOOS: $(go env GOOS)
   GOARCH: $(go env GOARCH)
+  VERSION:
+    sh: head -n 1 VERSION
+  PROJECT: zd
+  BUILD_TIME:
+    sh: git show -s --format=%cd
+  GIT_HASH:
+    sh: git show -s --format=%H
 
 tasks:
   gofmt:
@@ -24,3 +31,7 @@ tasks:
       - task: gofmt
       - task: golint
 
+  build_ui:
+    desc: build ui
+    cmds:
+      - cd ui && yarn install && yarn build --dest ../client/ui
