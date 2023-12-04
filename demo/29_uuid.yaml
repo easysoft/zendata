@@ -1,9 +1,0 @@
-fields:
-  - field: f1
-    from: uuid.v1.yaml
-    use: length32_random
-    postfix: "\t"
-
-  - field: f2
-    from: ulid.v1.yaml
-    use: ulid{3}

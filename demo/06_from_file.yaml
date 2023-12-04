@@ -1,4 +1,8 @@
 fields:
-  - field: field_text       # 从一个文件中随机读取。
-    range: user.txt:R       # 相对当前文件路径。
+  - field: field_text1      # 从一个文件中随机读取。
+    range: user.txt         # 相对当前文件路径。
+    postfix: "\t"
+
+  - field: field_text2      # 从一个文件中随机读取。
+    range: user.txt:R       # 随机
     postfix: "\t"

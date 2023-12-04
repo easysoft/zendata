@@ -1,0 +1,9 @@
+title: 城市
+
+field: field1
+instances:
+  - instance: city
+    fields:
+    - field: f1
+      from: areacode.v1.city
+      select: city

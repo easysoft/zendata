@@ -1,0 +1,11 @@
+title:
+desc:
+author:
+version: 1.0
+
+fields:
+
+  - field: part1
+    range: A,nested-range1.yaml{3}
+    prefix: ""
+    postfix: ""

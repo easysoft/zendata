@@ -62,8 +62,17 @@ func IsMac() bool {
 }
 
 func IsRelease() bool {
-	a := os.Getenv("DEBUG")
-	return a != "true"
+	if os.Getenv("DEBUG") == "true" {
+		return false
+	}
+
+	arg1 := strings.ToLower(os.Args[0])
+	name := filepath.Base(arg1)
+
+	ret := strings.Index(arg1, "go-build") < 0 &&
+		strings.Index(name, "___") != 0 && strings.Index(name, "go-build") != 0
+
+	return ret
 }
 
 func UpdateUrl(url string) string {
@@ -74,7 +83,7 @@ func UpdateUrl(url string) string {
 	return url
 }
 
-func IngoreFile(path string) bool {
+func IgnoreFile(path string) bool {
 	path = filepath.Base(path)
 
 	if strings.Index(path, ".") == 0 ||

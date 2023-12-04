@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"os"
+	"time"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
@@ -35,6 +38,7 @@ func (s *ResService) LoadResDef(fieldsToExport []string) (res map[string]map[str
 			field.From = vari.GlobalVars.DefData.From
 			vari.GlobalVars.DefData.Fields[index].From = vari.GlobalVars.DefData.From
 		}
+
 		s.loadResForFieldRecursive(&field)
 	}
 	return
@@ -64,7 +68,13 @@ func (s *ResService) loadResForFieldRecursive(field *domain.DefField) {
 	} else if field.From != "" && field.Type != consts.FieldTypeArticle { // from a res
 		var valueMap map[string][]interface{}
 		resFile, resType, sheet := fileUtils.GetResProp(field.From, field.FileDir) // relate to current file
+
+		start := time.Now().Unix()
+
 		valueMap, _ = s.GetResValueFromExcelOrYaml(resFile, resType, sheet, field)
+
+		end := time.Now().Unix()
+		fmt.Println(end - start)
 
 		if vari.GlobalVars.ResData[s.GetFromKey(field)] == nil {
 			vari.GlobalVars.ResData[s.GetFromKey(field)] = map[string][]interface{}{}

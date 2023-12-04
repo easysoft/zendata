@@ -1,0 +1,9 @@
+title: 古诗
+
+field: field1
+instances:
+  - instance: poetry
+    fields:
+    - field: f1
+      from: poetry_ancient.v1.poetry_ancient
+      select: content

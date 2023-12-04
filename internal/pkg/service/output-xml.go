@@ -34,7 +34,7 @@ func (s *OutputService) getXmlLine(index int, record map[string]interface{}) str
 	str := ""
 	j := 0
 	for key, val := range record {
-		str += fmt.Sprintf("    <%s>%s</%s>", key, val, key)
+		str += fmt.Sprintf("    <%s>%v</%s>", key, val, key)
 		if j != len(record)-1 {
 			str = str + "\n"
 		}

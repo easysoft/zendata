@@ -1,16 +1,7 @@
-title: 测试
-desc: ""
+title: InUsers
+
 fields:
-- field: f1
-  range: 1-3
-  postfix: ", "
-
-- field: f2
-  join: true
-  fields:
-    - field: f21
-      value: "$f1+100"
-      postfix: " - "
-
-    - field: f22
-      value: "$f21+10000"
+  - field: f1
+    from: test.number.v1.yaml
+    use: medium{3}
+    postfix: "\t"

@@ -1,0 +1,24 @@
+title: 邮件地址
+desc:
+author: zentao
+version: 1.0
+
+field: email
+instances:
+  - instance: pinyin_with_esp
+    note: 来源于ZD目录下的嵌套资源
+    fields:
+      - field: chinese_account
+        from: name.cnaccount.v1.yaml
+        use: common_underline
+        postfix: "@"
+      - field: esp_domain
+        from: domain.esp.v1.yaml
+        use: esp
+
+  - instance: ip_address
+    note: 来源于相对路径的文件
+    fields:
+      - field: ip
+        from: sub/../sub/res.yaml
+        use: sub

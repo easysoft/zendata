@@ -8,6 +8,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/easysoft/zendata/cmd/command/action"
 	"github.com/easysoft/zendata/internal/command"
 	commandConfig "github.com/easysoft/zendata/internal/command/config"
 	configUtils "github.com/easysoft/zendata/internal/pkg/config"
@@ -134,10 +135,10 @@ func main() {
 
 	flagSet.Parse(os.Args[1:])
 
-	execCommand()
+	ExecCommand()
 }
 
-func execCommand() {
+func ExecCommand() {
 	if len(os.Args) == 1 {
 		os.Args = append(os.Args, "-help")
 	}
@@ -169,11 +170,11 @@ func opts(files []string) {
 		logUtils.PrintVersion(AppVersion, BuildTime, GoVersion, GitHash)
 		return
 
-	} else if example {
-		logUtils.PrintExample()
-		return
 	} else if help {
 		logUtils.PrintUsage()
+		return
+	} else if example {
+		logUtils.PrintExample()
 		return
 	} else if set {
 		helper.Set()
@@ -191,7 +192,7 @@ func opts(files []string) {
 		helper.AddMd5(md5, salt)
 		return
 	} else if parse {
-		genYaml(input)
+		action.GenYaml(input)
 		return
 	} else if mock {
 		if input == "" {
@@ -202,32 +203,12 @@ func opts(files []string) {
 		return
 	}
 
-	genData(files)
-}
-
-func genYaml(input string) {
-	mainCtrl, _ := command.InitCtrl()
-	mainCtrl.GenYaml(input)
+	action.GenData(files)
 }
 
 func genMock(input string) {
 	mainCtrl, _ := command.InitCtrl()
 	mainCtrl.GenMock(input)
-}
-
-func genData(files []string) {
-	command.PrintStartInfo()
-
-	err := command.SetOutFormat()
-	defer logUtils.OutputFileWriter.Close()
-	if err != nil {
-		return
-	}
-
-	mainCtrl, _ := command.InitCtrl()
-	mainCtrl.Generate(files)
-
-	command.PrintEndInfo()
 }
 
 func init() {

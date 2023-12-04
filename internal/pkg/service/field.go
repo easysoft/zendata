@@ -140,8 +140,6 @@ func (s *FieldService) CreateField(field *domain.DefField) {
 
 	} else if field.Type == consts.FieldTypeTimestamp {
 		s.ValueService.CreateTimestampField(field)
-	} else if field.Type == consts.FieldTypeUlid {
-		s.ValueService.CreateUlidField(field)
 	}
 
 	return
@@ -194,6 +192,7 @@ func (s *FieldService) GenValuesForSingleRes(field *domain.DefField) {
 func (s *FieldService) GenValuesForMultiRes(field *domain.DefField, withFix bool) {
 	unionValues := make([]interface{}, 0) // 2 dimension arr for from, [ [a,b,c], [1,2,3] ]
 
+	// multi froms 1.
 	for _, from := range field.Froms {
 		if from.From == "" {
 			from.From = field.From

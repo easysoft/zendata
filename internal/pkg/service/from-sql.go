@@ -82,7 +82,6 @@ func (s *SqlParseService) GenYamlFromSql(file string) {
 				field.Prefix = types[col].Prefix
 
 				field.Note = types[col].Note
-
 			}
 
 			def.Fields = append(def.Fields, field)

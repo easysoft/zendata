@@ -43,9 +43,10 @@ type ResponseCode struct {
 }
 
 var (
-	Success  = ResponseCode{0, "Request Successfully"}
-	CommErr  = ResponseCode{100, "Common Error"}
-	ParamErr = ResponseCode{200, "Parameter Error"}
+	Success         = ResponseCode{0, "Request Successfully"}
+	CommErr         = ResponseCode{100, "Common Error"}
+	ParamErr        = ResponseCode{200, "Parameter Error"}
+	UnAuthorizedErr = ResponseCode{401, "UnAuthorized"}
 )
 
 type OpenApiDataType string
@@ -167,6 +168,7 @@ const (
 	TelNumber    VarcharType = "telnumber"
 	Token        VarcharType = "token"
 	Uuid         VarcharType = "uuid"
+	Ulid         VarcharType = "ulid"
 	JsonStr      VarcharType = "jsonstr"
 	Md5          VarcharType = "md5"
 	//UnixTime     VarcharType = "unixtime"

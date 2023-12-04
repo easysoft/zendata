@@ -20,7 +20,6 @@ instances:
       - field: second
         range: 0-60
         format: "%02d"
-        postfix: "\t"
 
   - instance: chinese
     note: 时间

@@ -1,0 +1,32 @@
+title:
+desc:
+author:
+version: 1.0
+
+fields:
+
+  - field: field_use_text
+    range: res/num.txt{2!}, ../demo/user.txt:R
+    postfix: "\t"
+
+  - field: field_use_config
+    config: ../number.yaml              # 引用/demo/number.yaml
+    postfix: "\t"
+
+  - field: field_use_instance
+    from: res.yaml                      # 当前目录下同名文件
+    use: privateA
+    postfix: "\t"
+
+    # 引用res/email.yaml文件，其嵌套引用了ZD dir下的资源
+  - field: field_use_nested1
+    from: res/res.yaml
+    use: pinyin_with_esp
+    prefix: "["
+    postfix: "]\t"
+
+  - field: field_use_nested2
+    from: res/res.yaml
+    use: ip_address
+    prefix: "["
+    postfix: "]\t"

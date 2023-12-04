@@ -1,0 +1,35 @@
+fields:
+  - field: field_func_uuid
+    format: "uuid()"
+    prefix: "uuid: "
+    postfix: "\t"
+
+  - field: field_func_ulid
+    format: "ulid()"
+    prefix: "ulid: "
+    postfix: "\t"
+
+  - field: field_func_password
+    format: "password()"
+    prefix: "password: "
+    postfix: "\t"
+
+  - field: field_func_token
+    format: "token()"
+    prefix: "token: "
+    postfix: "\t"
+
+  - field: field_func_mac_address
+    format: "mac()"
+    prefix: "mac: "
+    postfix: "\t"
+
+  - field: field_func_id_card
+    format: "id_card()"
+    prefix: "id_card: "
+    postfix: "\t"
+
+  - field: field_func_credit_card
+    format: "credit_card('amex')"
+    prefix: "credit_card: "
+    postfix: "\t"

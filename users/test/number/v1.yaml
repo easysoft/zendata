@@ -1,0 +1,9 @@
+title: 数字系列
+
+field: number
+note: 数值类型
+
+ranges:
+  small: 1-2
+  medium: 101-199
+  large: 10001-99999

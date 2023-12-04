@@ -3,29 +3,14 @@ desc: 描述
 version: 1.0
 
 fields:
-  - field: f1
-    range: 1-6
-    postfix: "\t"
-
-  - field: field_loop       # 自循环的字段。
-    range: a-z              # a|b|c ...
-    loop: 3                 # 循环三次
-    loopfix: _              # 每次循环的连接符。
-    postfix: "\t"
-
-  - field: f2
-    from: zentao.number.v1.yaml
-    use: small
-    postfix: "\t"
-
-  - field: nesting          # 字段多层嵌套
+  - field: nesting            # 字段嵌套
     mode: r
     fields:
       - field: child1
-        range: A-D
+        range: A-Z
         prefix: part1_
         postfix: ' | '
 
       - field:  child2
-        range: x-z
+        range: 1-6
         prefix: part2_

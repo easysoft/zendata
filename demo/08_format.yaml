@@ -1,5 +1,6 @@
 fields:
-  - field: field_format                 # 通过格式化字符串输出。
+  - field: field_format_exp             # 通过格式化字符串输出。
     range: 1-10                         # passwd 1,passwd 2,passwd 3 ... passwd10。
     format: "passwd%02d"                # 用%02d补零，使密码整体保持8位。
     postfix: "\t"
+

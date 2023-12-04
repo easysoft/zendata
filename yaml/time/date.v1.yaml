@@ -15,7 +15,6 @@ instances:
         from: time.monthday.v1.yaml
         use: common
         prefix: ""
-        postfix: "\t"
 
   - instance: with_line
     note: 下划线
@@ -28,7 +27,6 @@ instances:
         from: time.monthday.v1.yaml
         use: with_line
         prefix: ""
-        postfix: "\t"
 
   - instance: chinese
     note: 中文
@@ -41,4 +39,3 @@ instances:
         from: time.monthday.v1.yaml
         use: chinese
         prefix: ""
-        postfix: "\t"

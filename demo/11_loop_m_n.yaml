@@ -1,6 +1,0 @@
-fields:
-  - field: field_loop       # 自循环的字段。
-    range: a-z              # a|b|c ...
-    loop:  1-10             # 循环1次，2次……
-    loopfix: _              # 每次循环的连接符。
-    postfix: "\t"

@@ -1,0 +1,9 @@
+title: 食物
+
+field: field1
+instances:
+  - instance: food
+    fields:
+    - field: f1
+      from: food.v1.food
+      select: name

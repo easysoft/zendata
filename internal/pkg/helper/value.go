@@ -236,7 +236,7 @@ func ChangePrecision(flt float64, precision int) float64 {
 }
 
 func InterfaceToStr(val interface{}) string {
-	str := "n/a"
+	str := consts.Na
 
 	switch val.(type) {
 	case int64:

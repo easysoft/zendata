@@ -1,0 +1,7 @@
+title: test
+
+fields:
+  - field: f1
+    from: test.number.v1.yaml
+    use: medium{3}
+    postfix: "\t"

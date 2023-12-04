@@ -107,4 +107,6 @@ var (
 	DBTypeMysql     = "mysql"
 	DBTypeSqlServer = "sqlserver"
 	DBTypeOracle    = "oracle"
+
+	Na = "N/A"
 )

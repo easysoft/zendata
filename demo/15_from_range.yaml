@@ -1,12 +1,12 @@
 fields:
   - field: field_use_ranges_small     # 引用內置的定义文件，该文件定义了多个range
-    from: zentao.number.v1.yaml       # 引用yaml/zentao/number/v1.yaml文件里面的ranges定义。
-    use: small                        # 使用该文件中定义的small分组。
+    from: test.number.v1.yaml         # 引用users/zentao/number/v1.yaml文件里面的ranges定义。
+    use: medium                       # 使用该文件中定义的small分组。
     postfix: "\t"
 
-  - field: field_use_ranges_medium    
-    from: zentao.number.v1.yaml
-    use: medium{4}                    # 使用该文件中定义的medium分组。
+  - field: field_use_ranges_medium
+    from: test.number.v1.yaml
+    use: small{3},medium              # 使用该文件中定义的多个分组。
     postfix: "\t"
 
 

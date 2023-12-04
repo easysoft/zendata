@@ -1,0 +1,8 @@
+fields:
+  - field: first
+    range: 14_from_config.yaml{6}                                # 注意此处{6}为取10条记录，非重复语法。
+    postfix: " ~~~ "
+
+  - field: second
+    range: 14_from_config.yaml{3},15_from_range.yaml{6}          # 注意此处{5}为取5条记录，非重复语法。
+    prefix: ""

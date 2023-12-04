@@ -1,0 +1,20 @@
+title: 测试
+desc:
+author: zentao
+version: 1.0
+
+field: test
+instances:
+  - instance: sub
+    note: 来源于相对路径的文件
+    fields:
+      - field: from-insts
+        from: zentao.ip.private.yaml
+        use: all
+        postfix: "\t"
+
+      - field: from-ranges
+        from: ../../../yaml/zentao/number/v1.yaml
+        use: netmask
+        prefix: "mask is "
+        postfix: "\t"

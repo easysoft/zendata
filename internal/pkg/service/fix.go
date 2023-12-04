@@ -6,6 +6,11 @@ import (
 	"strconv"
 	"strings"
 
+	"log"
+	"regexp"
+	"strconv"
+	"strings"
+
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
@@ -60,7 +65,7 @@ func (s *FixService) getStrValueFromFixRange(rang *domain.Range, index int) stri
 }
 
 func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
-	str := "n/a"
+	str := consts.Na
 	success := false
 
 	switch val.(type) {
@@ -100,6 +105,10 @@ func (s *FixService) convPrefixVal2Str(val interface{}, format string) string {
 			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
+	}
+
+	if str == consts.Na {
+		log.Println(str)
 	}
 
 	return str

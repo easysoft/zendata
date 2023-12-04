@@ -6,12 +6,12 @@ import (
 	"strconv"
 	"strings"
 
+	"strconv"
+	"strings"
+
 	"github.com/easysoft/zendata/internal/pkg/domain"
 	"github.com/easysoft/zendata/internal/pkg/helper"
-	i118Utils "github.com/easysoft/zendata/pkg/utils/i118"
-	logUtils "github.com/easysoft/zendata/pkg/utils/log"
 	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/fatih/color"
 )
 
 type LoopService struct {
@@ -110,7 +110,7 @@ func (s *LoopService) getFieldValByIndex(field domain.DefField, index *int) (val
 	// 叶节点
 	if len(field.Values) == 0 {
 		if helper.IsSelectExcelWithExpr(field) {
-			logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
+			// logUtils.PrintToWithColor(i118Utils.I118Prt.Sprintf("fail_to_generate_field", field.Field), color.FgCyan)
 			err = errors.New("")
 		}
 		return

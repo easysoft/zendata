@@ -1,0 +1,9 @@
+title: 歌曲
+
+field: field1
+instances:
+  - instance: song
+    fields:
+    - field: f1
+      from: song.v1.song
+      select: name

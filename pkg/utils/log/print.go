@@ -1,11 +1,18 @@
 package logUtils
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+
+	constant "github.com/easysoft/zendata/internal/pkg/const"
+	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
+	"github.com/easysoft/zendata/pkg/utils/vari"
+	"github.com/fatih/color"
 
 	zd "github.com/easysoft/zendata"
 	constant "github.com/easysoft/zendata/internal/pkg/const"
@@ -30,7 +37,7 @@ func PrintExample() {
 	}
 
 	content, _ := zd.ReadResData(exampleFile)
-	fmt.Printf("%s\n", content)
+	log.Println(string(content))
 }
 
 func PrintUsage() {
@@ -56,16 +63,20 @@ func PrintUsage() {
 		regx, _ = regexp.Compile(`d:\\zd\\config        `)
 		usage = regx.ReplaceAllString(usage, "/home/user/zd/config")
 	}
-	fmt.Printf("%s\n", usage)
+
+	log.Println(usage)
+}
+
+func Info(str string) {
+	PrintTo(str)
+}
+func Infof(str string, args ...interface{}) {
+	PrintTo(fmt.Sprintf(str, args))
 }
 
 func PrintTo(str string) {
 	output := color.Output
 	fmt.Fprint(output, str+"\n")
-}
-func PrintToWithoutNewLine(str string) {
-	output := color.Output
-	fmt.Fprint(output, str)
 }
 
 func PrintToWithColor(msg string, attr color.Attribute) {
@@ -75,7 +86,6 @@ func PrintToWithColor(msg string, attr color.Attribute) {
 		fmt.Fprint(output, msg+"\n")
 	} else {
 		color.New(attr).Fprintf(output, msg+"\n")
-		//color.New(attr).Println(output, msg)
 	}
 }
 
@@ -115,7 +125,7 @@ func PrintToHttp(line string) {
 	fmt.Fprint(OutputHttpWriter, line)
 }
 func PrintToScreen(line string) {
-	fmt.Print(line)
+	log.Print(line)
 }
 
 func PrintVersion(appVersion, buildTime, goVersion, gitHash string) {
@@ -123,4 +133,22 @@ func PrintVersion(appVersion, buildTime, goVersion, gitHash string) {
 	fmt.Printf("Build TimeStamp: %s \n", buildTime)
 	fmt.Printf("GoLang Version: %s \n", goVersion)
 	fmt.Printf("Git Commit Hash: %s \n", gitHash)
+}
+
+func ConvertUnicode(str []byte) string {
+	var a interface{}
+
+	temp := strings.Replace(string(str), "\\\\", "\\", -1)
+
+	err := json.Unmarshal([]byte(temp), &a)
+
+	var msg string
+	if err == nil {
+		bytes, _ := json.Marshal(a)
+		msg = string(bytes)
+	} else {
+		msg = temp
+	}
+
+	return msg
 }

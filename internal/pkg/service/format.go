@@ -1,10 +1,15 @@
 package service
 
 import (
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	consts "github.com/easysoft/zendata/internal/pkg/const"
+	"github.com/easysoft/zendata/internal/pkg/domain"
+	"github.com/easysoft/zendata/internal/pkg/helper"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"
 	"github.com/easysoft/zendata/internal/pkg/domain"
@@ -15,7 +20,7 @@ type FormatService struct {
 }
 
 func (s *FormatService) GetFieldValStr(field domain.DefField, val interface{}) interface{} {
-	str := "n/a"
+	str := consts.Na
 	success := false
 
 	format := strings.TrimSpace(field.Format)
@@ -75,6 +80,10 @@ func (s *FormatService) GetFieldValStr(field domain.DefField, val interface{}) i
 			str, success = helper.FormatStr(format, str, 0)
 		}
 	default:
+	}
+
+	if str == consts.Na {
+		log.Println(str)
 	}
 
 	return str

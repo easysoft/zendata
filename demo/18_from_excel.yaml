@@ -1,0 +1,22 @@
+fields:
+#  - field: field_use_excel                # 从excel数据源里面取数据。
+#    from: city.v1.city                    # 从data/address/v1.xlsx文件中读取名为china的工作簿。
+#    select: name                          # 查询city字段。
+#    where: state like '%山东%'             # 条件是省份包含山东。
+#    rand: true                            # 随机取数据
+#    postfix: "\t"
+
+  - field: columns                        # 变量，从excel中读取的列。如果命令指定-F参数，需要包含以避免忽略处理。
+    range: name
+    postfix: "\t"
+    length: 12
+
+  - field: conditions                     # 变量，用于where条件里。如果命令指定-F参数，需要包含以避免忽略处理。
+    range: [山东,江苏]
+    postfix: "\t"
+
+  - field: field_use_excel_expr           # 基于变量表达式的excel查询。
+    from: city.v1.city
+    select: ${columns}                    # 选择不同的列，此处columns变量有两个值，各占返回记录的50%。
+    where: state like '%${conditions}%'   # 使用不同的变量值，此处conditions变量有两个值，各占返回记录的50%。
+    postfix: "\t"

@@ -36,6 +36,31 @@ func (s *ResInstancesService) GetResFromInstances(insts domain.ResInstances) (gr
 }
 
 func (s *ResInstancesService) prepareNestedInstanceRes(insts domain.ResInstances, inst domain.ResInstancesItem, instField domain.DefField) {
+	//if instField.Note == "多froms" {
+	//	instField.Note += ""
+	//}
+	//
+	//// multi froms 2.
+	//if len(instField.Froms) > 0 {
+	//	unionValues := make([]interface{}, 0)
+	//	for _, from := range instField.Froms {
+	//		if from.From == "" {
+	//			from.From = instField.From
+	//		}
+	//
+	//		from.FileDir = instField.FileDir
+	//
+	//		s.FieldService.Generate(&from, true)
+	//
+	//		unionValues = append(unionValues, from.Values...)
+	//	}
+	//
+	//	groupedValueReferenced := map[string][]interface{}{}
+	//	group := inst.Instance
+	//	groupedValueReferenced[group] = unionValues
+	//	vari.GlobalVars.ResData[s.ResService.GetFromKey(&instField)] = groupedValueReferenced
+	//}
+
 	// set "from" val from parent if needed
 	if instField.From == "" {
 		if insts.From != "" {
