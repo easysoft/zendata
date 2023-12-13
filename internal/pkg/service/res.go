@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"os"
 	"time"
 
 	consts "github.com/easysoft/zendata/internal/pkg/const"

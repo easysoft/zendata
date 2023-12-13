@@ -15,10 +15,6 @@ import (
 	"github.com/fatih/color"
 
 	zd "github.com/easysoft/zendata"
-	constant "github.com/easysoft/zendata/internal/pkg/const"
-	commonUtils "github.com/easysoft/zendata/pkg/utils/common"
-	"github.com/easysoft/zendata/pkg/utils/vari"
-	"github.com/fatih/color"
 )
 
 var (

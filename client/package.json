@@ -1,7 +1,7 @@
 {
   "name": "zd",
   "productName": "zd",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "zd",
   "main": ".webpack/main",
   "scripts": {
