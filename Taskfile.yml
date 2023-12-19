@@ -5,13 +5,24 @@ version: '3'
 vars:
   GOOS: $(go env GOOS)
   GOARCH: $(go env GOARCH)
+  BIN_DIR: bin
+  CLIENT_OUT_DIR: client/out
+  CLIENT_BIN_DIR: client/bin
+  QINIU_DIR: .release/qiniu
   VERSION:
     sh: head -n 1 VERSION
   PROJECT: zd
+  GO_VERSION:
+    sh: go version
   BUILD_TIME:
     sh: git show -s --format=%cd
   GIT_HASH:
     sh: git show -s --format=%H
+  LDFLAGS: "-w -s \
+    -X 'main.AppVersion={{.VERSION}}' \
+    -X 'main.BuildTime={{.BUILD_TIME}}' \
+    -X 'main.GoVersion={{.GO_VERSION}' \
+    -X 'main.GitHash={{.GIT_HASH}}'"
 
 tasks:
   gofmt:
@@ -35,3 +46,73 @@ tasks:
     desc: build ui
     cmds:
       - cd ui && yarn install && yarn build --dest ../client/ui
+
+  clear:
+    desc: clear
+    cmds:
+      - rm -rf {{.BIN_DIR}}
+      - rm -rf {{.CLIENT_OUT_DIR}}
+
+  update_version_in_config:
+    desc: update_version_in_config
+    cmds:
+      - sed -i "s/Version.*/Version = {{.VERSION}}/" .zd.conf
+
+  gen_version_file:
+    desc: gen_version_file
+    cmds:
+      - echo 'gen version'
+      - mkdir -p {{.QINIU_DIR}}/{{.PROJECT}}/
+      - echo '{"version":"{{.VERSION}}"}' > {{.QINIU_DIR}}/{{.PROJECT}}/version.json
+
+  prepare_res:
+    desc: prepare_res
+    cmds:
+      - echo 'start prepare res'
+      - cp res/zh/sample.yaml demo/default.yaml
+      - rm -rf {{.BIN_DIR}}
+
+  prepare_build:
+    desc: prepare_build
+    cmds:
+      - task: clear
+      - task: update_version_in_config
+      - task: gen_version_file
+      - task: prepare_res
+
+  compile_all:
+    desc: compile_all
+    cmds:
+      - task: compile_linux
+
+  compile_linux:
+    desc: compile_linux
+    cmds:
+      - task: compile_server_linux
+      - task: package_gui_linux_client
+      - task: compile_command_linux
+
+  compile_server_linux:
+    desc: compile_server_linux
+    cmds:
+      - echo 'start compile server linux'
+      - rm -rf {{.BIN_DIR}}/linux/server
+      - GOOS=linux GOARCH=amd64 go build -ldflags "{{.LDFLAGS}}" -o {{.BIN_DIR}}/linux/server cmd/server/main.go
+
+  package_gui_linux_client:
+    desc: package_gui_linux_client
+    cmds:
+      - echo 'start package gui linux'
+      - rm -rf {{.CLIENT_BIN_DIR}}/* && mkdir -p {{.CLIENT_BIN_DIR}}linux
+      - cp -rf {{.BIN_DIR}}/linux/server {{.CLIENT_BIN_DIR}}linux/server
+      - cd client && npm run package-linux && cp -r icon out/{{.PROJECT}}-linux-x64 && cd ..
+
+  default:
+    cmds:
+      - task: clear
+      - task: build_ui
+      - task: prepare_build
+      - task: compile_all
+      - task: copy_files
+      - task: package
+      - task: package_upgrade

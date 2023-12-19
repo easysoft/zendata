@@ -1,42 +1,26 @@
-VERSION=$(head -n 1 VERSION)
-PROJECT=zd
-
-ifeq ($(OS),Windows_NT)
-    OS="Windows"
-else
-    ifeq ($(shell uname),Darwin)
-        OS="Mac"
-    else
-        OS="Unix"
-    endif
-endif
-
-QINIU_DIR="${HOME}/work/zentao/qiniu/"
-
-QINIU_DIST_DIR=${QINIU_DIR}${PROJECT}/${VERSION}/
-PACKAGE=${PROJECT}-${VERSION}
-BIN_DIR=bin
-BIN_ZIP_DIR=${BIN_DIR}/zip/${PROJECT}/${VERSION}/
-BIN_OUT=${BIN_DIR}/${PROJECT}/${VERSION}/
-CLIENT_OUT_DIR=client/out/
-
-CLIENT_BIN_DIR=client/bin/
-CLIENT_OUT_DIR=client/out/
-CLIENT_OUT_DIR_EXECUTABLE=${CLIENT_OUT_DIR}executable/
-CLIENT_OUT_DIR_UPGRADE=${CLIENT_OUT_DIR}upgrade/
-
-CLIENT_UI_DIR=client/ui/
-
-COMMAND_MAIN_DIR=cmd/command/
-COMMAND_MAIN_FILE=${COMMAND_MAIN_DIR}main.go
-
-SERVER_MAIN_FILE=cmd/server/main.go
-
-BUILD_TIME=`git show -s --format=%cd`
-GO_VERSION=`go version`
-GIT_HASH=`git show -s --format=%H`
-BUILD_CMD_UNIX=go build -ldflags "-X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
-BUILD_CMD_WIN=go build -ldflags "-s -w -X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
+.EXPORT_ALL_VARIABLES:
+VERSION := $(shell head -n 1 VERSION)
+PROJECT := zd
+QINIU_DIR := "${HOME}/work/zentao/qiniu/"
+QINIU_DIST_DIR := ${QINIU_DIR}${PROJECT}/${VERSION}/
+PACKAGE := ${PROJECT}-${VERSION}
+BIN_DIR := bin
+BIN_ZIP_DIR := ${BIN_DIR}/zip/${PROJECT}/${VERSION}/
+BIN_OUT := ${BIN_DIR}/${PROJECT}/${VERSION}/
+CLIENT_OUT_DIR := client/out/
+CLIENT_BIN_DIR := client/bin/
+CLIENT_OUT_DIR := client/out/
+CLIENT_OUT_DIR_EXECUTABLE := ${CLIENT_OUT_DIR}executable/
+CLIENT_OUT_DIR_UPGRADE := ${CLIENT_OUT_DIR}upgrade/
+CLIENT_UI_DIR := client/ui/
+COMMAND_MAIN_DIR := cmd/command/
+COMMAND_MAIN_FILE := ${COMMAND_MAIN_DIR}main.go
+SERVER_MAIN_FILE := cmd/server/main.go
+BUILD_TIME := $(shell git show -s --format=%cd)
+GO_VERSION := $(go version)
+GIT_HASH := $(git show -s --format=%H)
+BUILD_CMD_UNIX := go build -ldflags "-X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
+BUILD_CMD_WIN := go build -ldflags "-s -w -X 'main.AppVersion=${VERSION}' -X 'main.BuildTime=${BUILD_TIME}' -X 'main.GoVersion=${GO_VERSION}' -X 'main.GitHash=${GIT_HASH}'"
 
 default: clear build_ui prepare_build compile_all copy_files package package_upgrade
 clear:
@@ -292,11 +276,9 @@ package_upgrade:
 			done
 
 update_version_in_config:
-ifeq ($(OS),"Mac")
-	@gsed -i "s/Version.*/Version = ${VERSION}/" .zd.conf
-else
+	@echo 'update version in config ${VERSION}'
+	@echo 'gen version'
 	@sed -i "s/Version.*/Version = ${VERSION}/" .zd.conf
-endif
 
 gen_version_file:
 	@echo 'gen version'

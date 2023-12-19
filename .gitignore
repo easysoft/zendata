@@ -31,7 +31,6 @@
 /ui/package-lock.json
 /demo/mock/output/
 /upload/
-/tmp/cache/.data.db
 /tmp/.temp.yaml
 /tmp/.default.yaml
 /tmp/.config.yaml
