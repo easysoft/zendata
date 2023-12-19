@@ -1,8 +1,8 @@
 go run src/zd.go -y demo/article.yaml -c 3 -head -s
 
-~/go/bin/rsrc -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
-~/go/bin/rsrc -arch 386 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
-~/go/bin/rsrc -arch amd64 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
+rsrc -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
+rsrc -arch 386 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
+rsrc -arch amd64 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
 
 生成数据的地方：
     随机数生成：

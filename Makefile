@@ -46,15 +46,15 @@ clear:
 prepare_build: clear update_version_in_config gen_version_file prepare_res
 
 win64:       prepare_build compile_launcher_win64 compile_server_win64       package_gui_win64_client       compile_command_win64   copy_files package package_upgrade
-win32:       prepare_build compile_launcher_win32 compile_server_win32       package_gui_win32_client       compile_command_win32   copy_files package package_upgrade
+# win32:       prepare_build compile_launcher_win32 compile_server_win32       package_gui_win32_client       compile_command_win32   copy_files package package_upgrade
 linux:       prepare_build                        compile_server_linux       package_gui_linux_client       compile_command_linux   copy_files package package_upgrade
 linux_arm64: prepare_build                        compile_server_linux_arm64 package_gui_linux_client_arm64 compile_command_linux_arm64 copy_files package package_upgrade
 mac:         prepare_build                        compile_server_mac         package_gui_mac_client         compile_command_mac     copy_files package package_upgrade
 
-compile_all: compile_win64 compile_win32 compile_linux compile_mac
+compile_all: compile_win64 compile_linux compile_mac
 
 compile_win64: compile_launcher_win64 compile_server_win64 package_gui_win64_client compile_command_win64
-compile_win32: compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32
+# compile_win32: compile_launcher_win32 compile_server_win32 package_gui_win32_client compile_command_win32
 compile_linux: compile_server_linux package_gui_linux_client compile_command_linux
 compile_linux_arm64: compile_server_linux_arm64 package_gui_linux_client_arm64 compile_command_linux_arm64
 compile_mac: compile_server_mac package_gui_mac_client compile_command_mac
@@ -69,11 +69,11 @@ prepare_res:
 
 build_ui:
 	@echo 'compile ui'
-	@cd ui && yarn build --dest ../client/ui && cd ..
+	@cd ui && yarn install && yarn build --dest ../client/ui && cd ..
 
 compile_server_win64:
 	@echo 'start compile win64'
-	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
+	@GOOS=windows GOARCH=amd64 \
 		${BUILD_CMD_WIN} -x -v \
  		-o ${BIN_DIR}/win64/server.exe ${SERVER_MAIN_FILE}
 
@@ -83,7 +83,7 @@ compile_server_win64:
 compile_server_win32:
 	@echo 'start compile server win32'
 	@rm -rf ${BIN_DIR}/win32/server.exe
-	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 \
+	@GOOS=windows GOARCH=386 \
 		${BUILD_CMD_WIN} -x -v \
 		-o ${BIN_DIR}/win32/server.exe ${SERVER_MAIN_FILE}
 
@@ -93,15 +93,9 @@ compile_server_win32:
 compile_server_linux:
 	@echo 'start compile server linux'
 	@rm -rf ${BIN_DIR}/linux/server
-ifeq ($(OS),"Mac")
-	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ \
+	@GOOS=linux GOARCH=amd64 \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/linux/server ${SERVER_MAIN_FILE}
-else
-	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=gcc CXX=g++ \
-		${BUILD_CMD_UNIX} \
-		-o ${BIN_DIR}/linux/server ${SERVER_MAIN_FILE}
-endif
 
 	@rm -rf "${CLIENT_OUT_DIR_UPGRADE}linux" && mkdir -p "${CLIENT_OUT_DIR_UPGRADE}linux" && \
   		cp ${BIN_DIR}/linux/server "${CLIENT_OUT_DIR_UPGRADE}linux/"
@@ -109,7 +103,7 @@ endif
 compile_server_linux_arm64:
 	@echo 'start compile server linux for arm64'
 	@rm -rf ${BIN_DIR}/linux_arm64/server
-	@CGO_ENABLED=1 GOOS=linux GOARCH=arm64 GOARM=7 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar \
+	@GOOS=linux GOARCH=arm64 GOARM=7 \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/linux_arm64/server ${SERVER_MAIN_FILE}
 
@@ -118,7 +112,7 @@ compile_server_linux_arm64:
 
 compile_server_mac:
 	@echo 'start compile server mac'
-	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 CC=gcc CXX=g++ \
+	@GOOS=darwin GOARCH=amd64 \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/darwin/server ${SERVER_MAIN_FILE}
 
@@ -131,7 +125,7 @@ package_gui_win64_client:
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}win32
 	@cp -rf ${BIN_DIR}/win64/server.exe ${CLIENT_BIN_DIR}win32/server.exe
 
-	@cd client  && npm run package-win64 && cd ..
+	@cd client && npm install && npm run package-win64 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}win64 && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}win64 && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-win32-x64 ${CLIENT_OUT_DIR_EXECUTABLE}win64/gui
 
@@ -140,7 +134,7 @@ package_gui_win32_client:
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}win32
 	@cp -rf ${BIN_DIR}/win32/server.exe ${CLIENT_BIN_DIR}win32/server.exe
 
-	@cd client && npm run package-win32 && cd ..
+	@cd client && npm install && npm run package-win32 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}win32 && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}win32 && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-win32-ia32 ${CLIENT_OUT_DIR_EXECUTABLE}win32/gui
 
@@ -149,7 +143,7 @@ package_gui_linux_client:
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}linux
 	@cp -rf ${BIN_DIR}/linux/server ${CLIENT_BIN_DIR}linux/server
 
-	@cd client && npm run package-linux && cp -r icon out/${PROJECT}-linux-x64 && cd ..
+	@cd client && npm install && npm run package-linux && cp -r icon out/${PROJECT}-linux-x64 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}linux && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}linux && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-linux-x64 ${CLIENT_OUT_DIR_EXECUTABLE}linux/gui
 
@@ -158,7 +152,7 @@ package_gui_linux_client_arm64:
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}linux
 	@cp -rf ${BIN_DIR}/linux_arm64/server ${CLIENT_BIN_DIR}linux/server
 
-	@cd client && npm run package-linux-arm64 && cp -r icon out/${PROJECT}-linux-arm64 && cd ..
+	@cd client && npm install && npm run package-linux-arm64 && cp -r icon out/${PROJECT}-linux-arm64 && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}linux_arm64 && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}linux_arm64 && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-linux-arm64 ${CLIENT_OUT_DIR_EXECUTABLE}linux_arm64/gui
 
@@ -167,7 +161,7 @@ package_gui_mac_client:
 	@rm -rf ${CLIENT_BIN_DIR}/* && mkdir -p ${CLIENT_BIN_DIR}darwin
 	@cp -rf ${BIN_DIR}/darwin/server ${CLIENT_BIN_DIR}darwin/server
 
-	@cd client && npm run package-mac && cd ..
+	@cd client && npm install && npm run package-mac && cd ..
 	@rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin && mkdir -p ${CLIENT_OUT_DIR_EXECUTABLE}darwin && \
 		mv ${CLIENT_OUT_DIR}${PROJECT}-darwin-x64 ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui && \
 		mv ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui/zd.app ${CLIENT_OUT_DIR_EXECUTABLE}darwin/zd.app && rm -rf ${CLIENT_OUT_DIR_EXECUTABLE}darwin/gui
@@ -176,18 +170,18 @@ package_gui_mac_client:
 # launcher
 compile_launcher_win64:
 	@echo 'start compile win64 launcher'
-	@~/go/bin/rsrc -arch amd64 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
+	@rsrc -arch amd64 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
 	@cd cmd/launcher && \
-        CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
+    GOOS=windows GOARCH=amd64 \
 		${BUILD_CMD_WIN} -x -v \
 		-o ../../${BIN_DIR}/win64/${PROJECT}-gui.exe && \
 		cd ..
 
 compile_launcher_win32:
 	@echo 'start compile win32 launcher'
-	@~/go/bin/rsrc -arch 386 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
+	@rsrc -arch 386 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
 	@cd cmd/launcher && \
-        CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 \
+        GOOS=windows GOARCH=386 \
 		${BUILD_CMD_WIN} -x -v \
 		-o ../../${BIN_DIR}/win32/${PROJECT}-gui.exe && \
         cd ..
@@ -195,39 +189,34 @@ compile_launcher_win32:
 # command line
 compile_command_win64:
 	@echo 'start compile win64'
-	@CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 \
+	@GOOS=windows GOARCH=amd64 \
 		${BUILD_CMD_WIN} -x -v \
  		-o ${BIN_DIR}/win64/${PROJECT}.exe ${COMMAND_MAIN_FILE}
 
 compile_command_win32:
 	@echo 'start compile win32'
-	@CGO_ENABLED=1 CC=i686-w64-mingw32-gcc CXX=i686-w64-mingw32-g++ GOOS=windows GOARCH=386 \
+	@GOOS=windows GOARCH=386 \
 		${BUILD_CMD_WIN} -x -v \
  		-o ${BIN_DIR}/win32/${PROJECT}.exe ${COMMAND_MAIN_FILE}
 
 compile_command_linux:
 	@echo 'start compile linux'
 	@rm -rf ${BIN_DIR}/linux/${PROJECT}
-ifeq ($(OS),"Mac")
-	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-gcc CXX=/usr/local/gcc-4.8.1-for-linux64/bin/x86_64-pc-linux-g++ \
+	@GOOS=linux GOARCH=amd64 \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/linux/${PROJECT} ${COMMAND_MAIN_FILE}
-else
-	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=gcc CXX=g++ \
-		${BUILD_CMD_UNIX} \
-		-o ${BIN_DIR}/linux/${PROJECT} ${COMMAND_MAIN_FILE}
-endif
+
 
 compile_command_linux_arm64:
 	@echo 'start compile linux for arm64'
 	@rm -rf ${BIN_DIR}/linux_arm64/${PROJECT}
-	@CGO_ENABLED=1 GOOS=linux GOARCH=arm64 GOARM=7 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar \
+	@GOOS=linux GOARCH=arm64 GOARM=7 \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/linux_arm64/${PROJECT} ${COMMAND_MAIN_FILE}
 
 compile_command_mac:
 	@echo 'start compile mac'
-	@CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 \
+	@GOOS=darwin GOARCH=amd64 \
 		${BUILD_CMD_UNIX} \
 		-o ${BIN_DIR}/darwin/${PROJECT} ${COMMAND_MAIN_FILE}
 
@@ -265,9 +254,9 @@ copy_files:
 	@rm -rf ${BIN_OUT}darwin/runtime/php \
 		${BIN_OUT}darwin/runtime/protobuf/bin/linux \
 		${BIN_OUT}darwin/runtime/protobuf/bin/win*
-	@rm -rf ${BIN_OUT}win32/runtime/protobuf/bin/mac \
-		${BIN_OUT}win32/runtime/protobuf/bin/linux \
-		${BIN_OUT}win32/runtime/protobuf/bin/win64
+	# @rm -rf ${BIN_OUT}win32/runtime/protobuf/bin/mac \
+	# 	${BIN_OUT}win32/runtime/protobuf/bin/linux \
+	# 	${BIN_OUT}win32/runtime/protobuf/bin/win64
 	@rm -rf ${BIN_OUT}win64/runtime/protobuf/bin/mac \
 		${BIN_OUT}win64/runtime/protobuf/bin/linux \
 		${BIN_OUT}win64/runtime/protobuf/bin/win32
