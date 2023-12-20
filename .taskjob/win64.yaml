@@ -190,7 +190,7 @@ tasks:
 
   build_ui:
     desc: build ui
-    dir: client
+    dir: ui
     cmds:
       - yarn install
       - yarn build --dest ../client/ui

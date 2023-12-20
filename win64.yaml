@@ -121,7 +121,7 @@ tasks:
   compile_command_win64:
     desc: compile command win64
     cmds:
-      - GOOS=windows GOARCH=amd64 go build -ldflags {{.LDFLAGS}} -o {{.BIN_DIR}}/win64/{{.PROJECT}}.exe cmd/command/main.go
+      - GOOS=windows GOARCH=amd64 go build -ldflags "{{.LDFLAGS}}" -o {{.BIN_DIR}}/win64/{{.PROJECT}}.exe cmd/command/main.go
 
   package_gui_win64_client:
     desc: package gui win64 client
@@ -145,7 +145,7 @@ tasks:
   compile_server_win64:
     desc: compile server win64
     cmds:
-      - GOOS=windows GOARCH=amd64 go build -ldflags {{.LDFLAGS}} -o {{.BIN_DIR}}/win64/server.exe cmd/server/main.go
+      - GOOS=windows GOARCH=amd64 go build -ldflags "{{.LDFLAGS}}" -o {{.BIN_DIR}}/win64/server.exe cmd/server/main.go
       - rm -rf {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
       - mkdir -p {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
       - cp {{.BIN_DIR}}/win64/server.exe {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/server.exe
@@ -161,14 +161,13 @@ tasks:
       - task: compile_launcher_win64_dep
     dir: cmd/launcher
     cmds:
-      - GOOS=windows GOARCH=amd64 go build -ldflags {{.LDFLAGS}} -o ../../{{.BIN_DIR}}/win64/{{.PROJECT}}-gui.exe
+      - GOOS=windows GOARCH=amd64 go build -ldflags "{{.LDFLAGS}}" -o ../../{{.BIN_DIR}}/win64/{{.PROJECT}}-gui.exe
 
   prepare_build:
     desc: prepare build
     cmds:
       - task: clear
       - task: update_version_in_config
-      - task: gen_version_file
       - task: prepare_res
 
   prepare_res:
@@ -176,21 +175,17 @@ tasks:
     cmds:
       - cp res/zh/sample.yaml demo/default.yaml
 
-  gen_version_file:
-    desc: gen version file
-    cmds:
-      - mkdir -p {{.QINIU_DIR}}/{{.PROJECT}}
-
   update_version_in_config:
     desc: update version in config
     cmds:
+      - mkdir -p {{.QINIU_DIR}}/{{.PROJECT}}
       - sed -i "s/Version.*/Version = {{.VERSION}}/" .zd.conf
       - echo '{"version":"{{.VERSION}}"}' > {{.QINIU_DIR}}/{{.PROJECT}}/version.json
       - echo '{{.VERSION}}' > {{.QINIU_DIR}}/{{.PROJECT}}/version.txt
 
   build_ui:
     desc: build ui
-    dir: client
+    dir: ui
     cmds:
       - yarn install
       - yarn build --dest ../client/ui

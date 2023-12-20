@@ -45,3 +45,4 @@ client/yarn-error.log
 **/allure-results/
 /test/unittest/out/
 .task
+.release
