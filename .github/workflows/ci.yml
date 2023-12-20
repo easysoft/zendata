@@ -1,0 +1,58 @@
+name: build
+
+on:
+  push:
+    branches:
+      - '*'
+
+env:
+  GO_VERSION: '1.21'
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          check-latest: true
+      - name: install gox
+        run: |
+          echo "install gox"
+          go install github.com/mitchellh/gox@latest
+      - name: install task
+        run: |
+          echo "install task"
+          go install github.com/go-task/task/v3/cmd/task@latest
+      - name: install upx
+        uses: crazy-max/ghaction-upx@v3
+        with:
+          install-only: true
+      - name: install dep
+        run: |
+          echo "install dep tools"
+          sudo apt update
+          sudo apt install -y zip unzip sqlite3 wine64 git wget curl
+      - name: install rsrc
+        run: |
+          echo "install rsrc"
+          wget https://github.com/akavel/rsrc/releases/download/v0.10.2/rsrc_linux_amd64
+          chmod +x rsrc_linux_amd64
+          sudo mv rsrc_linux_amd64 /usr/bin/rsrc
+      - name: install nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14.21.3
+      - name: install yarn
+        run: |
+          echo "install yarn"
+          npm install -g yarn
+          yarn --version
+          npm --version
+      - name: build
+        run: |
+          task -t .task/win64.yaml

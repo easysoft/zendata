@@ -1,0 +1,207 @@
+version: '3'
+
+vars:
+  GOOS: $(go env GOOS)
+  GOARCH: $(go env GOARCH)
+  BIN_DIR: bin
+  CLIENT_OUT_DIR: client/out
+  CLIENT_BIN_DIR: client/bin
+  CLIENT_OUT_DIR_EXECUTABLE: {{.CLIENT_OUT_DIR}}/executable/
+  CLIENT_OUT_DIR_UPGRADE: {{.CLIENT_OUT_DIR}}/upgrade/
+  QINIU_DIR: .release/qiniu
+  VERSION:
+    sh: head -n 1 VERSION
+  PROJECT: zd
+  GO_VERSION:
+    sh: go version
+  BUILD_TIME:
+    sh: git show -s --format=%cd
+  GIT_HASH:
+    sh: git show -s --format=%H
+  LDFLAGS: "-w -s \
+    -X 'main.AppVersion={{.VERSION}}' \
+    -X 'main.BuildTime={{.BUILD_TIME}}' \
+    -X 'main.GoVersion={{.GO_VERSION}' \
+    -X 'main.GitHash={{.GIT_HASH}}'"
+
+tasks:
+  default:
+    cmds:
+      - tasks: clear
+      - tasks: build_ui
+      - tasks: prepare_build
+      - tasks: compile_all
+      - tasks: copy_files
+      - tasks: package
+
+  package:
+    desc: package
+    env:
+      - PLATFORMS:
+          sh: ls {{.CLIENT_OUT_DIR_EXECUTABLE}}
+    cmds:
+      - find . -name .DS_Store -print0 | xargs -0 rm -f
+      - for platform in {{.PLATFORMS}}; do mkdir -p {{.QINIU_DIST_DIR}}/$${platform}; done
+      - tasks: package_win64
+
+  package_win64:
+    desc: package win64
+    dir: {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+    tasks:
+      - zip -ry {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64.zip .
+      - md5sum {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64.zip > {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64.zip.md5
+      - cp -r ../../../ui ./
+      - zip -ry {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64-upgrade.zip .
+      - md5sum {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64-upgrade.zip > {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64-upgrade.zip.md5
+
+  copy_files:
+    desc: copy files
+    env:
+      - PLATFORMS:
+          sh: ls {{.CLIENT_OUT_DIR_EXECUTABLE}}
+    cmds:
+      - cp -r .zd.conf {{.BIN_DIR}}
+      - cp -r data {{.BIN_DIR}}
+      - cp -r yaml {{.BIN_DIR}}
+      - cp -r users {{.BIN_DIR}}
+      - cp -r demo {{.BIN_DIR}}
+      - cp -r runtime {{.BIN_DIR}}
+      - rm -rf {{.BIN_DIR}}/demo/out
+      - rm -rf {{.BIN_DIR}}/yaml/article/chinese/slang/out
+      - rm -rf {{.BIN_DIR}}/runtime/protobuf/out
+      - mkdir -p {{.BIN_DIR}}/tmp/cache
+      - sqlite3 tmp/cache/.data.db ".backup '{{.BIN_DIR}}/tmp/cache/.data.db'"
+      - sqlite3 '{{.BIN_DIR}}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
+      - tasks: copy_files_win64
+      # - |
+      #     for platform in {{.PLATFORMS}};do \
+      #       cp -r .zd.conf "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
+      #       cp -r bin/data "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
+      #       cp -r bin/runtime "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
+      #       cp -r bin/yaml "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
+      #       cp -r bin/users "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
+      #       cp -r bin/demo "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
+      #       cp -r bin/tmp "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
+      #       cp {{.BIN_DIR}}/$${platform}/{{.PROJECT}}.exe "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}" || true; \
+      #       cp {{.BIN_DIR}}/$${platform}/{{.PROJECT}} "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}" || true; \
+      #       cp {{.BIN_DIR}}/$${platform}/{{.PROJECT}}-gui.exe "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}" || true; \
+      #     done
+      # - rm -rf {{.BIN_OUT}}/linux/runtime/php
+      # - rm -rf {{.BIN_OUT}}/linux/runtime/protobuf/bin/mac
+      # - rm -rf {{.BIN_OUT}}/linux/runtime/protobuf/bin/win*
+      # - rm -rf {{.BIN_OUT}}/darwin/runtime/php
+      # - rm -rf {{.BIN_OUT}}/darwin/runtime/protobuf/bin/linux
+      # - rm -rf {{.BIN_OUT}}/darwin/runtime/protobuf/bin/win*
+      # - rm -rf {{.BIN_OUT}}/win64/runtime/protobuf/bin/linux
+      # - rm -rf {{.BIN_OUT}}/win64/runtime/protobuf/bin/mac
+
+  copy_files_win64:
+    desc: copy files win64
+    cmds:
+      - cp -r .zd.conf {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp -r bin/data {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp -r bin/runtime {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp -r bin/yaml {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp -r bin/users {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp -r bin/demo {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp -r bin/tmp {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp {{.BIN_DIR}}/win64/{{.PROJECT}}.exe {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+      - cp {{.BIN_DIR}}/win64/{{.PROJECT}}-gui.exe {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
+
+  compile_all:
+    desc: compile all
+    cmds:
+      - tasks: compile_win64
+
+  compile_win64:
+    desc: compile win64
+    cmds:
+      - tasks: compile_launcher_win64
+      - tasks: compile_server_win64
+      - tasks: package_gui_win64_client
+      - tasks: compile_command_win64
+
+  compile_command_win64:
+    desc: compile command win64
+    cmds:
+      - GOOS=windows GOARCH=amd64 go build -ldflags {{.LDFLAGS}} -o {{.BIN_DIR}}/win64/{{.PROJECT}}.exe cmd/command/main.go
+
+  package_gui_win64_client:
+    desc: package gui win64 client
+    cmds:
+      - rm -rf {{.CLIENT_BIN_DIR}}/*
+      - mkdir -p {{.CLIENT_BIN_DIR}}/win64
+      - cp -rf {{.BIN_DIR}}/win64/server.exe {{.CLIENT_BIN_DIR}}/win64/server.exe
+      - tasks: package_win64_client
+      - rm -rf {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
+      - mkdir -p {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
+      - cp -rf {{.CLIENT_BIN_DIR}}/win64 {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
+      - mv {{.CLIENT_OUT_DIR}}/{{.PROJECT}}-win32-x64 {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/gui
+
+  package_win64_client:
+    desc: package win64 client
+    dir: client
+    cmds:
+      - npm install
+      - npm run package-win64
+
+  compile_server_win64:
+    desc: compile server win64
+    cmds:
+      - GOOS=windows GOARCH=amd64 go build -ldflags {{.LDFLAGS}} -o {{.BIN_DIR}}/win64/server.exe cmd/server/main.go
+      - rm -rf {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
+      - mkdir -p {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
+      - cp {{.BIN_DIR}}/win64/server.exe {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/server.exe
+
+  compile_launcher_win64_dep:
+    desc: compile launcher win64 dep
+    cmds:
+      - rsrc -arch amd64 -manifest xdoc/main.manifest -ico xdoc/favicon.ico -o cmd/launcher/main.syso
+
+  compile_launcher_win64:
+    desc: compile launcher win64
+    deps:
+      - tasks: compile_launcher_win64_dep
+    dir: cmd/launcher
+    cmds:
+      - GOOS=windows GOARCH=amd64 go build -ldflags {{.LDFLAGS}} -o ../../{{.BIN_DIR}}/win64/{{.PROJECT}}-gui.exe
+
+  prepare_build:
+    desc: prepare build
+    cmds:
+      - tasks: clear
+      - tasks: update_version_in_config
+      - tasks: gen_version_file
+      - tasks: prepare_res
+
+  prepare_res:
+    desc: prepare res
+    cmds:
+      - cp res/zh/sample.yaml demo/default.yaml
+
+  gen_version_file:
+    desc: gen version file
+    cmds:
+      - mkdir -p {{.QINIU_DIR}}/{{.PROJECT}}
+
+  update_version_in_config:
+    desc: update version in config
+    cmds:
+      - sed -i "s/Version.*/Version = {{.VERSION}}/" .zd.conf
+      - echo '{"version":"{{.VERSION}}"}' > {{.QINIU_DIR}}/{{.PROJECT}}/version.json
+
+  build_ui:
+    desc: build ui
+    dir: client
+    cmds:
+      - yarn install
+      - yarn build --dest ../client/ui
+
+  clear:
+    desc: clear
+    cmds:
+      - rm -rf {{.BIN_DIR}}
+      - rm -rf {{.CLIENT_OUT_DIR}}
+    status:
+      - test -d {{.BIN_DIR}}
+      - test -d {{.CLIENT_OUT_DIR}}
