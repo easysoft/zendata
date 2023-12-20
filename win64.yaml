@@ -3,11 +3,11 @@ version: '3'
 vars:
   GOOS: $(go env GOOS)
   GOARCH: $(go env GOARCH)
-  BIN_DIR: bin
+  BIN_DIR: $(pwd)/bin
   CLIENT_OUT_DIR: client/out
   CLIENT_BIN_DIR: client/bin
-  CLIENT_OUT_DIR_EXECUTABLE: {{.CLIENT_OUT_DIR}}/executable/
-  CLIENT_OUT_DIR_UPGRADE: {{.CLIENT_OUT_DIR}}/upgrade/
+  CLIENT_OUT_DIR_EXECUTABLE: "{{.CLIENT_OUT_DIR}}/executable/"
+  CLIENT_OUT_DIR_UPGRADE: "{{.CLIENT_OUT_DIR}}/upgrade/"
   QINIU_DIR: .release/qiniu
   VERSION:
     sh: head -n 1 VERSION
@@ -21,33 +21,33 @@ vars:
   LDFLAGS: "-w -s \
     -X 'main.AppVersion={{.VERSION}}' \
     -X 'main.BuildTime={{.BUILD_TIME}}' \
-    -X 'main.GoVersion={{.GO_VERSION}' \
+    -X 'main.GoVersion={{.GO_VERSION}}' \
     -X 'main.GitHash={{.GIT_HASH}}'"
 
 tasks:
   default:
     cmds:
-      - tasks: clear
-      - tasks: build_ui
-      - tasks: prepare_build
-      - tasks: compile_all
-      - tasks: copy_files
-      - tasks: package
+      - task: clear
+      - task: build_ui
+      - task: prepare_build
+      - task: compile_all
+      - task: copy_files
+      - task: package
 
   package:
     desc: package
-    env:
-      - PLATFORMS:
-          sh: ls {{.CLIENT_OUT_DIR_EXECUTABLE}}
+    vars:
+      PLATFORMS:
+        sh: ls {{.CLIENT_OUT_DIR_EXECUTABLE}}
     cmds:
       - find . -name .DS_Store -print0 | xargs -0 rm -f
       - for platform in {{.PLATFORMS}}; do mkdir -p {{.QINIU_DIST_DIR}}/$${platform}; done
-      - tasks: package_win64
+      - task: package_win64
 
   package_win64:
     desc: package win64
-    dir: {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/
-    tasks:
+    dir: "{{.CLIENT_OUT_DIR_EXECUTABLE}}/win64/"
+    cmds:
       - zip -ry {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64.zip .
       - md5sum {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64.zip > {{.QINIU_DIST_DIR}}/win64/{{.PROJECT}}-win64.zip.md5
       - cp -r ../../../ui ./
@@ -56,9 +56,6 @@ tasks:
 
   copy_files:
     desc: copy files
-    env:
-      - PLATFORMS:
-          sh: ls {{.CLIENT_OUT_DIR_EXECUTABLE}}
     cmds:
       - cp -r .zd.conf {{.BIN_DIR}}
       - cp -r data {{.BIN_DIR}}
@@ -72,7 +69,7 @@ tasks:
       - mkdir -p {{.BIN_DIR}}/tmp/cache
       - sqlite3 tmp/cache/.data.db ".backup '{{.BIN_DIR}}/tmp/cache/.data.db'"
       - sqlite3 '{{.BIN_DIR}}/tmp/cache/.data.db' ".read 'xdoc/clear-data.txt'"
-      - tasks: copy_files_win64
+      - task: copy_files_win64
       # - |
       #     for platform in {{.PLATFORMS}};do \
       #       cp -r .zd.conf "{{.CLIENT_OUT_DIR_EXECUTABLE}}$${platform}"; \
@@ -111,15 +108,15 @@ tasks:
   compile_all:
     desc: compile all
     cmds:
-      - tasks: compile_win64
+      - task: compile_win64
 
   compile_win64:
     desc: compile win64
     cmds:
-      - tasks: compile_launcher_win64
-      - tasks: compile_server_win64
-      - tasks: package_gui_win64_client
-      - tasks: compile_command_win64
+      - task: compile_launcher_win64
+      - task: compile_server_win64
+      - task: package_gui_win64_client
+      - task: compile_command_win64
 
   compile_command_win64:
     desc: compile command win64
@@ -132,7 +129,7 @@ tasks:
       - rm -rf {{.CLIENT_BIN_DIR}}/*
       - mkdir -p {{.CLIENT_BIN_DIR}}/win64
       - cp -rf {{.BIN_DIR}}/win64/server.exe {{.CLIENT_BIN_DIR}}/win64/server.exe
-      - tasks: package_win64_client
+      - task: package_win64_client
       - rm -rf {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
       - mkdir -p {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
       - cp -rf {{.CLIENT_BIN_DIR}}/win64 {{.CLIENT_OUT_DIR_EXECUTABLE}}/win64
@@ -161,7 +158,7 @@ tasks:
   compile_launcher_win64:
     desc: compile launcher win64
     deps:
-      - tasks: compile_launcher_win64_dep
+      - task: compile_launcher_win64_dep
     dir: cmd/launcher
     cmds:
       - GOOS=windows GOARCH=amd64 go build -ldflags {{.LDFLAGS}} -o ../../{{.BIN_DIR}}/win64/{{.PROJECT}}-gui.exe
@@ -169,10 +166,10 @@ tasks:
   prepare_build:
     desc: prepare build
     cmds:
-      - tasks: clear
-      - tasks: update_version_in_config
-      - tasks: gen_version_file
-      - tasks: prepare_res
+      - task: clear
+      - task: update_version_in_config
+      - task: gen_version_file
+      - task: prepare_res
 
   prepare_res:
     desc: prepare res
@@ -189,6 +186,7 @@ tasks:
     cmds:
       - sed -i "s/Version.*/Version = {{.VERSION}}/" .zd.conf
       - echo '{"version":"{{.VERSION}}"}' > {{.QINIU_DIR}}/{{.PROJECT}}/version.json
+      - echo '{{.VERSION}}' > {{.QINIU_DIR}}/{{.PROJECT}}/version.txt
 
   build_ui:
     desc: build ui

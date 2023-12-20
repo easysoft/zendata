@@ -55,4 +55,4 @@ jobs:
           npm --version
       - name: build
         run: |
-          task -t .task/win64.yaml
+          task -t win64.yaml
