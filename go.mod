@@ -117,7 +117,7 @@ require (
 	github.com/snowlyg/helper v0.0.6
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xuri/efp v0.0.0-20210128032744-13be4fd5dcb5 // indirect
-	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
+	golang.org/x/image v0.10.0 // indirect
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
