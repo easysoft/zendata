@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
-	github.com/getkin/kin-openapi v0.120.0
+	github.com/getkin/kin-openapi v0.124.0
 	github.com/glebarez/sqlite v1.10.0
 	github.com/ozontech/allure-go/pkg/framework v0.6.21
 	golang.org/x/text v0.14.0
@@ -25,8 +25,8 @@ require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/flosch/pongo2/v4 v4.0.2 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
-	github.com/go-openapi/jsonpointer v0.19.6 // indirect
-	github.com/go-openapi/swag v0.22.4 // indirect
+	github.com/go-openapi/jsonpointer v0.20.2 // indirect
+	github.com/go-openapi/swag v0.22.8 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
