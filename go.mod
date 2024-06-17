@@ -1,13 +1,13 @@
 module github.com/easysoft/zendata
 
 go 1.21
-toolchain go1.22.3
+toolchain go1.22.4
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/getkin/kin-openapi v0.124.0
 	github.com/glebarez/sqlite v1.11.0
-	github.com/ozontech/allure-go/pkg/framework v0.6.21
+	github.com/ozontech/allure-go/pkg/framework v0.6.31
 	golang.org/x/text v0.15.0
 )
 
@@ -60,7 +60,7 @@ require (
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nwaples/rardecode v1.1.0 // indirect
-	github.com/ozontech/allure-go/pkg/allure v0.6.6 // indirect
+	github.com/ozontech/allure-go/pkg/allure v0.6.13 // indirect
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
