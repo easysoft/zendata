@@ -8,7 +8,7 @@ require (
 	github.com/getkin/kin-openapi v0.125.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/ozontech/allure-go/pkg/framework v0.6.31
-	golang.org/x/text v0.15.0
+	golang.org/x/text v0.16.0
 )
 
 require (
@@ -117,7 +117,7 @@ require (
 	github.com/snowlyg/helper v0.0.6
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xuri/efp v0.0.0-20210128032744-13be4fd5dcb5 // indirect
-	golang.org/x/image v0.10.0 // indirect
+	golang.org/x/image v0.18.0 // indirect
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
