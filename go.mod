@@ -102,7 +102,7 @@ require (
 	github.com/facebookgo/structtag v0.0.0-20150214074306-217e25fb9691 // indirect
 	github.com/facebookgo/subset v0.0.0-20200203212716-c811ad88dec4 // indirect
 	github.com/fatih/color v1.17.0
-	github.com/golang/protobuf v1.5.2
+	github.com/golang/protobuf v1.5.4
 	github.com/iris-contrib/middleware/cors v0.0.0-20220417122231-60b1fdb1e02b
 	github.com/jinzhu/copier v0.4.0
 	github.com/kataras/iris/v12 v12.2.11
