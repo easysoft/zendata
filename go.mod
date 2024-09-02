@@ -5,7 +5,7 @@ toolchain go1.22.5
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
-	github.com/getkin/kin-openapi v0.126.0
+	github.com/getkin/kin-openapi v0.127.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/ozontech/allure-go/pkg/framework v0.6.32
 	golang.org/x/text v0.16.0
