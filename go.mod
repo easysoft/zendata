@@ -122,6 +122,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.5.6
-	gorm.io/gorm v1.25.11
+	gorm.io/gorm v1.25.12
 	gorm.io/plugin/dbresolver v1.5.2
 )
