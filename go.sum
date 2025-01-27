@@ -173,10 +173,10 @@ github.com/nwaples/rardecode v1.1.0 h1:vSxaY8vQhOcVr4mm5e8XllHWTiM4JF507A0Katqw7
 github.com/nwaples/rardecode v1.1.0/go.mod h1:5DzqNKiOdpKKBH87u8VlvAnPZMXcGRhxWkRpHbbfGS0=
 github.com/oklog/ulid/v2 v2.1.0 h1:+9lhoxAP56we25tyYETBBY1YLA2SaoLvUFgrP2miPJU=
 github.com/oklog/ulid/v2 v2.1.0/go.mod h1:rcEKHmBBKfef9DhnvX7y1HZBYxjXb0cP5ExxNsTT1QQ=
-github.com/ozontech/allure-go/pkg/allure v0.6.13 h1:vkLSIvOEERHTxe+oq8DXDu/m+kLnVUkrXNN8xTKuKU4=
-github.com/ozontech/allure-go/pkg/allure v0.6.13/go.mod h1:4oEG2yq+DGOzJS/ZjPc87C/mx3tAnlYpYonk77Ru/vQ=
-github.com/ozontech/allure-go/pkg/framework v0.6.32 h1:xlqGCuuthbt+bpAeAd8Foei0XLtJYpDsv5XVYoOtNJE=
-github.com/ozontech/allure-go/pkg/framework v0.6.32/go.mod h1:wfqY4e4+w4BoRFDxHp7TNcdWfcCOWJV3BjrUqUughWY=
+github.com/ozontech/allure-go/pkg/allure v0.6.14 h1:lDamtSF+WtHQLg2+qQYijtC4Fk3KLGb6txNxxTZwUGc=
+github.com/ozontech/allure-go/pkg/allure v0.6.14/go.mod h1:4oEG2yq+DGOzJS/ZjPc87C/mx3tAnlYpYonk77Ru/vQ=
+github.com/ozontech/allure-go/pkg/framework v0.6.33 h1:R1Y3iwKskLNQlYvBDeGNe5WI9Er7MMqC9gWd71JpJig=
+github.com/ozontech/allure-go/pkg/framework v0.6.33/go.mod h1:oISDLE6Tfww35TBQz+1nrtbLtyBqR6ELxOtJ+MVjHOw=
 github.com/pborman/getopt v0.0.0-20170112200414-7148bc3a4c30/go.mod h1:85jBQOZwpVEaDAr341tbn15RS4fCAsIst0qp7i8ex1o=
 github.com/perimeterx/marshmallow v1.1.5 h1:a2LALqQ1BlHM8PZblsDdidgv1mWi1DgC2UmX50IvK2s=
 github.com/perimeterx/marshmallow v1.1.5/go.mod h1:dsXbUu8CRzfYP5a87xpp0xq9S3u0Vchtcl8we9tYaXw=

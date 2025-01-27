@@ -7,7 +7,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/getkin/kin-openapi v0.128.0
 	github.com/glebarez/sqlite v1.11.0
-	github.com/ozontech/allure-go/pkg/framework v0.6.32
+	github.com/ozontech/allure-go/pkg/framework v0.6.33
 	golang.org/x/text v0.21.0
 )
 
@@ -60,7 +60,7 @@ require (
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nwaples/rardecode v1.1.0 // indirect
-	github.com/ozontech/allure-go/pkg/allure v0.6.13 // indirect
+	github.com/ozontech/allure-go/pkg/allure v0.6.14 // indirect
 	github.com/perimeterx/marshmallow v1.1.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
