@@ -113,7 +113,7 @@ require (
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/satori/go.uuid v1.2.0
-	github.com/snowlyg/helper v0.1.46
+	github.com/snowlyg/helper v0.1.47
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	github.com/xuri/efp v0.0.0-20210128032744-13be4fd5dcb5 // indirect
 	golang.org/x/image v0.18.0 // indirect
