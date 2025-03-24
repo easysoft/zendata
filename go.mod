@@ -8,7 +8,7 @@ require (
 	github.com/getkin/kin-openapi v0.130.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/ozontech/allure-go/pkg/framework v0.6.33
-	golang.org/x/text v0.22.0
+	golang.org/x/text v0.23.0
 )
 
 require (
