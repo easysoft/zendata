@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  ### Containers ##################################
+  go23:
+    image: golang:1.23.8-bullseye
+    restart: always
+    command:
+      - sh
+      - -c
+      - "while true; do echo hello; sleep 1; done"
+    volumes:
+      - ./:/zd
+
+
+  sqlserver:
+    image: exoplatform/sqlserver:2017-CU8
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      - SA_PASSWORD=f123D2QGs
+      - SQLSERVER_DATABASE=zendata
+      - SQLSERVER_USER=root
+      - SQLSERVER_PASSWORD=f123D2QGs

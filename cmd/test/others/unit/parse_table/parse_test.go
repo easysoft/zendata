@@ -2,6 +2,8 @@ package parse_table
 
 import (
 	"flag"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlserver"
 	"log"
 	"os"
 	"path/filepath"
@@ -15,7 +17,6 @@ import (
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
 	"gopkg.in/yaml.v3"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -31,7 +32,7 @@ var (
 func setup() {
 	initArgs()
 
-	os.Chdir("../../../../")
+	os.Chdir("../../../../../")
 	configUtils.InitConfig("")
 	vari.DB, _ = commandConfig.NewGormDB()
 
@@ -220,8 +221,13 @@ func initTable(name string) {
 	sqls := fileUtils.ReadFile(filepath.Join(dir, name+".sql"))
 
 	arr := strings.Split(sqls, ";")
-
-	db, err := gorm.Open(mysql.Open(vari.GlobalVars.DBDsn))
+	var dialector gorm.Dialector
+	if strings.Contains(vari.GlobalVars.DBDsn, "sqlserver") {
+		dialector = sqlserver.Open(vari.GlobalVars.DBDsn)
+	} else {
+		dialector = mysql.Open(vari.GlobalVars.DBDsn)
+	}
+	db, err := gorm.Open(dialector)
 	if err != nil {
 		panic(err)
 	}

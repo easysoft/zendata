@@ -223,49 +223,54 @@ func (s *SqlParseService) genTablesYaml(statementMap map[string]string,
 
 		columns, types := s.getColumnsFromCreateStatement(createStr, recordsMap[tableName])
 
-		def := domain.DefSimple{}
-		def.Init(tableName, "automated export", "", "1.0")
+		s.writeColumnToYamlFile(tableName, columns, pkMap, fkMap, types)
+	}
+}
 
-		for _, col := range columns {
-			field := domain.FieldSimple{Field: col}
+func (s *SqlParseService) writeColumnToYamlFile(tableName string, columns []string,
+	pkMap map[string]string, fkMap map[string][2]string, types map[string]helper.FieldTypeInfo) {
+	def := domain.DefSimple{}
+	def.Init(tableName, "automated export", "", "1.0")
 
-			// pk
-			isPk := col == pkMap[tableName]
-			fkInfo, isFk := fkMap[col]
+	for _, col := range columns {
+		field := domain.FieldSimple{Field: col}
 
-			if isPk {
-				field.From = "keys.yaml"
-				field.Use = fmt.Sprintf("%s_%s", tableName, col)
-			} else if isFk {
-				field.From = "keys.yaml"
-				field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
-			} else {
-				field.Range = types[col].Rang
+		// pk
+		isPk := col == pkMap[tableName]
+		fkInfo, isFk := fkMap[col]
 
-				field.Type = types[col].Type
-				field.Loop = types[col].Loop
-				field.Format = types[col].Format
-				field.From = types[col].From
-				field.Use = types[col].Use
-				field.From = types[col].From
-				field.Select = types[col].Select
-				field.Prefix = types[col].Prefix
-
-				field.Note = types[col].Note
-			}
-
-			def.Fields = append(def.Fields, field)
-		}
-
-		bytes, _ := yaml.Marshal(&def)
-		content := strings.ReplaceAll(string(bytes), "'", "")
-		if vari.GlobalVars.Output != "" {
-			vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
-			outFile := vari.GlobalVars.Output + tableName + ".yaml"
-			fileUtils.WriteFile(outFile, content)
+		if isPk {
+			field.From = "keys.yaml"
+			field.Use = fmt.Sprintf("%s_%s", tableName, col)
+		} else if isFk {
+			field.From = "keys.yaml"
+			field.Use = fmt.Sprintf("%s_%s{:1}", fkInfo[0], fkInfo[1])
 		} else {
-			logUtils.PrintTo(content)
+			field.Range = types[col].Rang
+
+			field.Type = types[col].Type
+			field.Loop = types[col].Loop
+			field.Format = types[col].Format
+			field.From = types[col].From
+			field.Use = types[col].Use
+			field.From = types[col].From
+			field.Select = types[col].Select
+			field.Prefix = types[col].Prefix
+
+			field.Note = types[col].Note
 		}
+
+		def.Fields = append(def.Fields, field)
+	}
+
+	bytes, _ := yaml.Marshal(&def)
+	content := strings.ReplaceAll(string(bytes), "'", "")
+	if vari.GlobalVars.Output != "" {
+		vari.GlobalVars.Output = fileUtils.AddSepIfNeeded(vari.GlobalVars.Output)
+		outFile := vari.GlobalVars.Output + tableName + ".yaml"
+		fileUtils.WriteFile(outFile, content)
+	} else {
+		logUtils.PrintTo(content)
 	}
 }
 
