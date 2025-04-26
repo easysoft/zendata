@@ -1,20 +1,21 @@
 package ctrl
 
 import (
-	"path/filepath"
-
 	"github.com/easysoft/zendata/internal/pkg/helper"
 	"github.com/easysoft/zendata/internal/pkg/service"
 	fileUtils "github.com/easysoft/zendata/pkg/utils/file"
 	"github.com/easysoft/zendata/pkg/utils/vari"
+	"path/filepath"
+	"strings"
 )
 
 type MainCtrl struct {
-	MainService       *service.MainService       `inject:""`
-	FileService       *service.FileService       `inject:""`
-	TableParseService *service.TableParseService `inject:""`
-	MockService       *service.MockService       `inject:""`
-	ArticleService    *service.ArticleService    `inject:""`
+	MainService         *service.MainService         `inject:""`
+	FileService         *service.FileService         `inject:""`
+	TableParseService   *service.TableParseService   `inject:""`
+	MsTableParseService *service.MsTableParseService `inject:""`
+	MockService         *service.MockService         `inject:""`
+	ArticleService      *service.ArticleService      `inject:""`
 
 	SqlParseService *service.SqlParseService `inject:""`
 }
@@ -37,7 +38,11 @@ func (c *MainCtrl) Generate(files []string) {
 
 func (c *MainCtrl) GenYaml(input string) {
 	if vari.GlobalVars.DBDsn != "" { // from db table
-		c.TableParseService.GenYamlFromTable()
+		if strings.Contains(vari.GlobalVars.DBDsn, "sqlserver") {
+			c.MsTableParseService.GenYamlFromTable()
+		} else {
+			c.TableParseService.GenYamlFromTable()
+		}
 		return
 	}
 
