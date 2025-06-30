@@ -115,7 +115,7 @@ require (
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/mattn/go-runewidth v0.0.16
 	github.com/mholt/archiver/v3 v3.5.1
-	github.com/oklog/ulid/v2 v2.0.2
+	github.com/oklog/ulid/v2 v2.1.1
 	github.com/pierrec/lz4/v4 v4.1.3 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1
