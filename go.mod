@@ -110,7 +110,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/golang/protobuf v1.5.4
 	github.com/iris-contrib/middleware/cors v0.0.0-20220417122231-60b1fdb1e02b
-	github.com/jinzhu/copier v0.2.5
+	github.com/jinzhu/copier v0.4.0
 	github.com/kataras/iris/v12 v12.2.8
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/mattn/go-runewidth v0.0.16
